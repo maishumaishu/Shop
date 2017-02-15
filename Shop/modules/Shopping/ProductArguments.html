@@ -1,0 +1,75 @@
+﻿<div class="tabbable">
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="pull-right">
+                <div>
+                    <a data-bind="click:add" href="javascript:" class="btn btn-sm btn-primary">添加</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th style="width:280px;text-align:center;">编号</th>
+            <th style="text-align:center;width:280px;">名称</th>
+            <th style="text-align:center;">选项</th>
+            <th style="width:160px;text-align:center;">操作</th>
+        </tr>
+    </thead>
+    <tbody data-bind="">
+        <!--ko foreach:items-->
+        <tr>
+            <td data-bind="text:Id"></td>
+            <td data-bind="html:Name"></td>
+            <td data-bind="html:Fields"></td>
+            <td style="text-align:center;">
+                <button class="btn btn-primary btn-minier"><i class="icon-cog"></i></button>
+                <button data-bind="click:$parent.remove" data-dialog='type:"confirm",content:"你删除该记录吗？"' class="btn btn-danger btn-minier"><i class="icon-trash"></i></button>
+            </td>
+        </tr>
+        <!--/ko-->
+        <tr data-bind="visible:ko.unwrap(items).length==0">
+            <td style="height:100px;text-align:center;padding-top:40px;" colspan="4">
+                暂无商品参数
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<form name="dlg_edit" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <div class="modal-body" data-bind="with:item">
+                <input name="Id" type="hidden" />
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">名称</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:Name" class="form-control" autofocus placeholder="请取一个容易识别的名称，例如：书包参数" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">参数</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:Fields" class="form-control" placeholder="多个参数请用，分隔" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top:0;">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button data-bind="click:save" type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</form>

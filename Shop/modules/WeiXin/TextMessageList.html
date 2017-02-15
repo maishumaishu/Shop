@@ -1,0 +1,96 @@
+﻿<div id="categories" class="tabbable">
+    <div>
+        <ul id="myTab" class="nav nav-tabs">
+            <li class="pull-right">
+                <div>
+                    <button type="button" name="btnAdd" class="btn btn-sm btn-primary">添加</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<table id="tabTextMessageList"></table>
+
+<div name="dlg_textMessage" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 data-bind="text:title" class="modal-title">编辑文本消息</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">关键词</label>
+                    <div class="col-sm-10">
+                        <input name="KeyWord" type="text" class="form-control" placeholder="多关键词请用空格隔开" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">回复内容</label>
+                    <div class="col-sm-10">
+                        <textarea name="Content"style="height:200px;" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button name="btn_cancel" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button name="btn_save" data-bind="click:saveItem" type="button" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div id="preview_box" class="dialogBox">
+    <div class="pre_wrapper">
+        <div class="pre_hd">
+            <div style="margin-top:18px;" class="pre_nav_name">VKNEW小助手</div>
+        </div>
+        <div class="pre_bd" id="previewAction">
+            <div class="weixin_main">
+                <div class="talk_reply">
+                    <div class="talk_pic2">
+                        <img src="/Scripts/WeiXin/PreView/images/talk_pic2.gif" width="35" height="36" />
+                    </div>
+                    <div class="talk_info2">
+                        <div class="talk_head2">
+                            <p name="keyWord_dialog" id="keyWord_Dialog"></p>
+                        </div>
+                        <div class="talk_foot2"></div>
+                    </div>
+                </div>
+                <div class="talk_send">
+                    <div class="talk_pic1">
+                        <img src="/Scripts/WeiXin/PreView/images/talk_pic1.gif" width="35" height="36" />
+                    </div>
+                    <div class="talk_info1">
+                        <div class="talk_head1">
+                            <p id="content_Dialog" name="content_dialog">
+                            </p>
+                        </div>
+                        <div class="talk_foot1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pre_ft">
+            <div id="pre_nav_wrapper" class="pre_nav_wrapper group screen1">
+                <ul id="preview_screen1" class="pre_nav_list">
+                    <li id="preview_0" data-domid="0" class="previewlevel1 pre_nav ">
+                        <a href="javascript:;" class="pre_nav_btn">菜单一</a>
+                    </li>
+                    <li id="preview_5" data-domid="5" class="previewlevel1 pre_nav ">
+                        <a href="javascript:;" class="pre_nav_btn">菜单二</a>
+                        <ul class="pre_sub_nav_list none">
+                            <span class="pre_sub_nav_arrow"></span>
+                            <li id="preview_6" data-domid="6" class="previewlevel2 pre_sub_nav"><a href="javascript:;" class="pre_sub_nav_btn"></a></li>
+                        </ul>
+                    </li>
+                    <li id="preview_7" data-domid="7" class="previewlevel1 pre_nav no-extra"><a href="javascript:;" class="pre_nav_btn">菜单三</a> </li>
+                </ul>
+                <ul id="preview_screen2" class="pre_nav_list"></ul>
+            </div>
+        </div>
+        <span class="pre_windows_opr"><i onclick="closeBg()" id="pre_close" class="opr_icon closed"></i></span>
+    </div>
+</div>
+<div id="fullbg" onclick="closeBg()"></div>

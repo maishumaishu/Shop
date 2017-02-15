@@ -1,0 +1,422 @@
+﻿
+<ul class="nav nav-tabs">
+    <li data-bind="attr:{'class':type() == 'GivenByProduct'?'active':''}, click:switchPromotionType('GivenByProduct')" role="presentation" class="active"><a href="#">买就送（按商品）</a></li>
+    <li data-bind="attr:{'class':type() == 'GivenByAmount'?'active':''}, click:switchPromotionType('GivenByAmount')" role="presentation"><a href="#">买就送（按金额）</a></li>
+    <li data-bind="attr:{'class':type() == 'DiscountByProduct'?'active':''}, click:switchPromotionType('DiscountByProduct')" role="presentation"><a href="#">买即减（按商品）</a></li>
+    <li data-bind="attr:{'class':type() == 'DiscountByCategory'?'active':''}, click:switchPromotionType('DiscountByCategory')" role="presentation"><a href="#">买即减（按品类）</a></li>
+    <li class="pull-right">
+        <a href="javascript:" data-bind="click:back" class="btn btn-sm btn-primary">返回</a>
+    </li>
+    <li class="pull-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:5px 10px;">
+                添加 <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a data-bind="click:addGivenByProductPromotion" href="javascript:">商品：买就送</a></li>
+                <li><a data-bind="click:newDiscountByProductPromotion" href="javascript:">商品：折扣</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:">品类：折扣</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a data-bind="click:newGivenByAmountPromotion" href="javascript:">金额：买就送</a></li>
+            </ul>
+        </div>
+    </li>
+</ul>
+
+<!-- 商品：买就送 开始-->
+<div data-bind="visible:type() == 'GivenByProduct'">
+    <div data-bind="visible:ko.unwrap(givenByProductPromotions).length==0" style="">
+        <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+            <tr>
+                <td style="text-align:center;padding:50px 0px 50px 0px;">
+                    暂无活动
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- ko foreach:givenByProductPromotions -->
+    <div class="row">
+        <div class="col-xs-12">
+            <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+                <tr>
+                    <td>
+                        <div class="pull-left">
+                            <label>活动期间：</label>
+                            <span data-bind="text:['{0:d}',beginDate]"></span>
+                            <span>至</span>
+                            <span data-bind="text:['{0:d}',endDate]"></span>
+                        </div>
+                        <div class="pull-right">
+                            <!--<label>折扣：</label><span>15%</span>-->
+                            <span data-bind="click:remove" data-dialog="type:'confirm',content:'你确定要删除吗？'"><i class="icon-remove" style="font-size:large"></i></span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row" style="padding:0px 12px 0px 12px;">
+        <div class="col-lg-6" style="padding:0px;">
+            <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th colspan="4">购买商品</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;">品名</th>
+                        <th style="text-align:center;width:100px;text-align:right;">价格</th>
+                        <th style="text-align:center;width:100px;text-align:right;">购买数量</th>
+                        <th style="text-align:center;width:60px;text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-bind="visible:ko.unwrap(buyProducts).length==0">
+                        <td colspan="4" style="border:0px;text-align:center">
+                            <div style="padding:50px 0px 50px 0px;">暂无数据</div>
+                        </td>
+                    </tr>
+                    <!-- ko foreach:buyProducts-->
+                    <tr>
+                        <td data-bind="html:Name"></td>
+                        <td data-bind="money:Price"></td>
+                        <td data-bind="text:Quantity"></td>
+                        <td>
+                            <button class="btn btn-minier btn-danger"><i class="icon-trash"></i></button>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td style="text-align:center" colspan="4">
+                            <button data-bind="click:showDialogToBuy" class="btn btn-primary btn-sm">添加购买商品</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="col-lg-6" style="padding:0px;">
+            <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th colspan="5">赠送商品</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;">品名</th>
+                        <th style="text-align:center;width:100px;text-align:right;">价格</th>
+                        <th style="text-align:center;width:100px;text-align:right;">赠送数量</th>
+                        <th style="text-align:center;width:60px;text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-bind="visible:ko.unwrap(givenProducts).length==0">
+                        <td colspan="5" style="border:0px;text-align:center">
+                            <div style="padding:50px 0px 50px 0px;">暂无数据</div>
+                        </td>
+                    </tr>
+                    <!-- ko foreach:givenProducts-->
+                    <tr>
+                        <td data-bind="html:Name"></td>
+                        <td data-bind="money:Price"></td>
+                        <td data-bind="text:Quantity"></td>
+                        <td>
+                            <button class="btn btn-minier btn-danger"><i class="icon-trash"></i></button>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td style="text-align:center" colspan="5">
+                            <button data-bind="click:showDialogToGiven" class="btn btn-primary btn-sm">添加赠送商品</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+    <!-- /ko -->
+</div>
+<!-- 商品：买就送 结束-->
+<!-- 金额：买就送 开始-->
+<div data-bind="visible:type() == 'GivenByAmount'">
+    <div data-bind="visible:ko.unwrap($root.givenByAmountPromotions).length==0" style="">
+        <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+            <tr>
+                <td style="text-align:center;padding:50px 0px 50px 0px;">
+                    暂无活动
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- ko foreach:$root.givenByAmountPromotions -->
+    <!--<div class="row">
+        <div class="col-xs-12">-->
+    <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+        <tr>
+            <td>
+                <div class="pull-left">
+                    <label>活动期间：</label>
+                    <span data-bind="text:['{0:d}',beginDate]"></span>
+                    <span>至</span>
+                    <span data-bind="text:['{0:d}',endDate]"></span>
+                    <label style="margin-left:20px;">消费金额：</label>
+                    <span data-bind="money:minAmount"></span>
+                    <span data-bind="visible:maxAmount">至</span>
+                    <span data-bind="visible:maxAmount,money:maxAmount"></span>
+
+                </div>
+                <div class="pull-right">
+                    <!--<label>折扣：</label><span>15%</span>-->
+                    <span data-bind="click:remove" data-dialog="type:'confirm',content:'你确定要删除吗？'"><i class="icon-remove" style="font-size:large"></i></span>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <!--</div>
+    </div>-->
+    <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th colspan="5">赠送商品</th>
+            </tr>
+            <tr>
+                <th style="text-align:center;">品名</th>
+                <th style="text-align:center;text-align:right;">价格</th>
+                <th style="text-align:center;text-align:right;">赠送数量</th>
+                <th style="text-align:center;text-align:center;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-bind="visible:ko.unwrap($root.givenByAmountPromotions).length==0">
+                <td colspan="5" style="border:0px;text-align:center">
+                    <div style="padding:50px 0px 50px 0px;">暂无数据</div>
+                </td>
+            </tr>
+            <!-- ko foreach:givenProducts-->
+            <tr>
+                <td data-bind="html:Name"></td>
+                <td style="text-align:right;" data-bind="money:Price"></td>
+                <td style="text-align:right;" data-bind="text:Quantity"></td>
+                <td style="text-align:center;">
+                    <button class="btn btn-minier btn-danger"><i class="icon-trash"></i></button>
+                </td>
+            </tr>
+            <!-- /ko -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td style="text-align:center" colspan="5">
+                    <button data-bind="click:newGivenProduct" class="btn btn-primary btn-sm">添加赠送商品</button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <!-- /ko -->
+</div>
+<!-- 金额：买就送 结束-->
+<!-- 商品：折扣 开始-->
+<div data-bind="visible:type() == 'DiscountByProduct'">
+    <div data-bind="visible:ko.unwrap($root.discountByProductPromotions).length==0">
+        <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+            <tr>
+                <td style="text-align:center;padding:50px 0px 50px 0px;">
+                    暂无数据
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div data-bind="visible:ko.unwrap($root.discountByProductPromotions).length>0, foreach:discountByProductPromotions">
+        <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+            <tr>
+                <td>
+                    <div class="pull-left">
+                        <label>活动期间：</label>
+                        <span data-bind="text:['{0:d}',beginDate]"></span>
+                        <span>至</span>
+                        <span data-bind="text:['{0:d}',endDate]"></span>
+                        <span style="margin-left:20px;" data-bind="text:pricePercent"></span>
+                        <label>折</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+            <thead>
+                <tr>
+                    <th style="text-align:center;">品名</th>
+                    <th style="text-align:center;text-align:right;">价格</th>
+                    <th style="text-align:center;text-align:right;">赠送数量</th>
+                    <th style="text-align:center;text-align:center;">操作</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach:discountProducts">
+                <tr>
+                    <td data-bind="html:Name"></td>
+                    <td style="text-align:right;" data-bind="money:Price"></td>
+                    <td style="text-align:right;" data-bind="text:Quantity"></td>
+                    <td style="text-align:center;">
+                        <button class="btn btn-minier btn-danger"><i class="icon-trash"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td style="text-align:center" colspan="4">
+                        <button data-bind="" class="btn btn-primary btn-sm">添加折扣商品</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<!-- 商品：折扣 结束-->
+<!-- 品类：折扣 开始-->
+<div data-bind="visible:type() == 'DiscountByCategory'">
+    <div data-bind="visible:ko.unwrap($root.discountByCategoryPromotions).length==0">
+        <table border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;margin-bottom:0px;">
+            <tr>
+                <td style="text-align:center;padding:50px 0px 50px 0px;">
+                    暂无活动
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+<!-- 品类：折扣 结束-->
+
+<form data-bind="with:product" name="dlg_product" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">&nbsp;</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">*编号</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:Id" class="form-control" autofocus placeholder="请输入商品编号，产品页面可找到" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">*数量</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:Quantity" class="form-control" placeholder="请输入商品需要购买的数量" />
+                        </div>
+                    </div>
+                    <!--<div class="form-group">
+                        <label class="control-label col-sm-2">现价</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:NewPrice" class="form-control" placeholder="请输入现价，不输入表示价格原来价格" />
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button name="btnOK" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form data-bind="with:amountGivenPromotion" name="dlg_amount" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">&nbsp;</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">*最低金额</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:minAmount" class="form-control" autofocus placeholder="请输入消费最低金额" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">最高金额</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:maxAmount" class="form-control" autofocus placeholder="请输入消费最高金额" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form data-bind="with:productDiscountPromotion" name="dlg_product_discount" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">&nbsp;</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <!--<div class="form-group">
+                        <label class="control-label col-sm-2">*编号</label>
+                        <div class="col-sm-10">
+                            <input data-bind="value:productId" class="form-control" autofocus placeholder="请输入商品编号，产品页面可找到" />
+                        </div>
+                    </div>-->
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">*折点</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <input data-bind="value:pricePercent" class="form-control" autofocus placeholder="请输入小于10的数字，例如：8.8" />
+                                <span class="input-group-addon">
+                                    折
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form data-bind="with:categoryDiscountPromotion" name="dlg_category_discount" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</form>

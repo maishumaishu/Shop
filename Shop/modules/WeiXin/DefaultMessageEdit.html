@@ -1,0 +1,212 @@
+﻿<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs" id="Ul1">
+                            <li class="active">
+                                <a data-toggle="tab" href="#attention">
+                                    <i class="green icon-comment bigger-110"></i>关注消息
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#nomatches">
+                                    <i class="green icon-comment-alt bigger-110"></i>
+                                    未匹配消息
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="attention" class="tab-pane in active">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="widget-box">
+                                            <div class="widget-header">
+                                                <h4><i class="blue icon-edit"></i>文本回复</h4>
+                                            </div>
+                                            <div class="widget-body">
+                                                <div class="widget-main">
+                                                    <h5>文本内容</h5>
+                                                    <p data-bind="text:AttentionMessageText.Content"></p>
+                                                    <hr />
+                                                    <div>
+                                                        <p>
+                                                            启用
+                                                            <label>
+                                                                <input id="AttentionTextCheckBox" data-bind="checked:AttentionMessageText.ParamIsEnalbed,click:AttentionMessageText._changeEnabled" type="checkbox" aria-readonly="true" class="ace ace-switch ace-switch-6" id="Id-check-horizontal"><span class="lbl"></span>
+                                                            </label>
+                                                            <button data-bind="click:AttentionMessageText.EditMessage" class="btn btn-sm btn-primary pull-right">
+                                                                <i class="icon-edit align-top bigger-125"></i>
+                                                                编辑信息
+                                                            </button>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="widget-box">
+                                            <div class="widget-header">
+                                                <h4><i class="blue icon-picture"></i>图文回复</h4>
+                                            </div>
+                                            <div class="widget-body">
+                                                <div class="widget-main">
+                                                    <h5 data-bind="text:AttentionMessageNews.Title"></h5>
+                                                    <div>
+                                                        <img data-bind="attr:{src:AttentionMessageNews.ParamImgUrl()}" src="" width="266" height="27" class="img-responsive">
+                                                    </div>
+                                                    <p data-bind="text:AttentionMessageNews.SubDescription"></p>
+                                                    <hr />
+                                                    <div>
+                                                        <p>
+                                                            启用
+                                                            <label>
+                                                                <input id="Checkbox1" data-bind="checked:AttentionMessageNews.ParamIsEnalbed,click:AttentionMessageNews._changeEnabled,visible:!AttentionMessageNews.ParamIsEnalbed" type="checkbox" class="ace ace-switch ace-switch-6">
+                                                                <span class="lbl"></span>
+                                                            </label>
+                                                            <a data-bind="click:AttentionMessageNews.EditMessage" class="btn btn-sm btn-primary pull-right">
+                                                                <i class="icon-picture align-top bigger-125"></i>
+                                                                编辑信息
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="widget-box">
+                                            <div class="widget-header">
+                                                <h4><i class="blue icon-microphone"></i>音乐回复</h4>
+                                            </div>
+                                            <div class="widget-body">
+                                                <div class="widget-main">
+
+                                                    <h5 data-bind="text:AttentionMessageMusic.Title"></h5>
+                                                    <p data-bind="text:AttentionMessageMusic.Description"></p>
+                                                    <hr />
+                                                    <div>
+                                                        <p>
+                                                            启用
+                                                            <label>
+                                                                <input id="Checkbox2" type="checkbox" class="ace ace-switch ace-switch-6" data-bind="checked:AttentionMessageMusic.ParamIsEnalbed,click:AttentionMessageMusic._changeEnabled "><span class="lbl"></span>
+                                                            </label>
+                                                            <a data-bind="click:AttentionMessageMusic.EditMessage" href="" class="btn btn-sm btn-primary pull-right">
+                                                                <i class="icon-microphone align-top bigger-125"></i>
+                                                                编辑信息
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="nomatches" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="widget-box">
+                                            <div class="widget-header">
+                                                <h4><i class="blue icon-edit"></i>文本回复</h4>
+                                            </div>
+                                            <div class="widget-body">
+                                                <div class="widget-main">
+                                                    <h5>文本内容</h5>
+                                                    <p data-bind="text:UnmatchMessageText.Content"></p>
+                                                    <hr />
+                                                    <div>
+                                                        <p>
+                                                            启用
+                                                            <label>
+                                                                <input id="Checkbox3" data-bind="checked:UnmatchMessageText.ParamIsEnalbed,click:UnmatchMessageText._changeEnabled" type="checkbox" class="ace ace-switch ace-switch-6"><span class="lbl"></span>
+                                                            </label>
+                                                            <button data-bind="click:UnmatchMessageText.EditMessage" class="btn btn-sm btn-primary pull-right">
+                                                                <i class="icon-edit align-top bigger-125"></i>
+                                                                编辑信息
+                                                            </button>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="widget-box">
+                                            <div class="widget-header">
+                                                <h4><i class="blue icon-picture"></i>图文回复</h4>
+                                            </div>
+                                            <div class="widget-body">
+                                                <div class="widget-main">
+                                                    <h5 data-bind="text:UnmatchMessageNews.Title"></h5>
+                                                    <div>
+                                                        <img data-bind="attr:{src:UnmatchMessageNews.ParamImgUrl()}" src="" width="266" height="27" class="img-responsive">
+                                                    </div>
+                                                    <p data-bind="text:UnmatchMessageNews.SubDescription"></p>
+
+                                                    <hr />
+                                                    <div>
+                                                        <p>
+                                                            启用
+                                                            <label>
+                                                                <input id="Checkbox4" data-bind="checked:UnmatchMessageNews.ParamIsEnalbed,click:UnmatchMessageNews._changeEnabled,visible:!UnmatchMessageNews.ParamIsEnalbed" type="checkbox" class="ace ace-switch ace-switch-6"><span class="lbl"></span>
+                                                            </label>
+                                                            <button data-bind="click:UnmatchMessageNews.EditMessage" class="btn btn-sm btn-primary pull-right">
+                                                                <i class="icon-picture align-top bigger-125"></i>
+                                                                编辑信息
+                                                            </button>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="widget-box">
+                                            <div class="widget-header">
+                                                <h4><i class="blue icon-microphone"></i>音乐回复</h4>
+                                            </div>
+                                            <div class="widget-body">
+                                                <div class="widget-main">
+                                                    <h5 data-bind="text:UnmatchMessageMusic.Title"></h5>
+                                                    <p data-bind="text:UnmatchMessageMusic.Description"></p>
+
+                                                    <hr />
+                                                    <div>
+                                                        <p>
+                                                            启用
+                                                            <label>
+                                                                <input data-bind="checked:UnmatchMessageMusic.ParamIsEnalbed,click:UnmatchMessageMusic._changeEnabled " id="Checkbox5" type="checkbox" class="ace ace-switch ace-switch-6" checked><span class="lbl"></span>
+                                                            </label>
+                                                            <button data-bind="click:UnmatchMessageMusic.EditMessage" class="btn btn-sm btn-primary pull-right">
+                                                                <i class="icon-microphone align-top bigger-125"></i>
+                                                                编辑信息
+                                                            </button>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /span -->
+            </div>
+            <!-- /row -->
+            <script type="text/javascript">
+                var $path_assets = "assets";//this will be used in gritter alerts containing images
+            </script>
+            <!-- PAGE CONTENT ENDS -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+</div>

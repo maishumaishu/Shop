@@ -1,0 +1,560 @@
+﻿@charset "utf-8";
+/* CSS Document */
+body{font-family: "Microsoft YaHei", "微软雅黑", Helvetica, "黑体", Arial, Tahoma; font-size:12px; color:#555; height:100%;}
+*{ margin:0; padding:0px; list-style: none !important;}
+a{ text-decoration:none;color:#555;blr:expression(this.onFocus=this.blur()); outline: none;}
+a img{ border:none;}
+a:hover{ text-decoration:underline;}
+.clear{ clear:both;}
+.Arial{ font-family:Arial, Helvetica, sans-serif;}
+.fl{ float:left;}
+.fr{ float:right;}
+
+
+
+
+
+.weixin_main{ height:362px; padding:3px 0 0 0px;}
+.weixin_head{ height:14px; line-height:10px; background:url(/Scripts/WeiXin/PreView/images/weixin_head.gif) no-repeat left; overflow:hidden;}
+.weixin_info{ height:auto; padding:0 6px; display:block;background:url(/Scripts/WeiXin/PreView/images/weixin_bg.gif) repeat-y;height:auto;}
+.weixin_foot{ height:14px; display:block; background:url(/Scripts/WeiXin/PreView/images/weixin_foot.gif) no-repeat top left;}
+/*微信内容部-单篇文章*/
+.weixin_link{width:250px; height:29px; display:block; text-decoration:none;}
+.info_title{font-size:14px; line-height:20px; padding:4px 14px;}
+.info_title a{color:#000; text-decoration:none;}
+.info_time{font-size:10px; line-height:18px; color:#bbb; padding-bottom:5px; padding:0 14px;}
+.info_pic{width:210px; height:100px; overflow:hidden; background:#8c8d93 center center; margin:0 14px;}
+.info_article{height:auto; font-size:10px; line-height:14px; padding:8px 14px 4px 14px;}
+.info_article a{color:#555; text-decoration:none; border:none;}
+
+/*微信内容部-多篇文章*/
+.pic_name{font-size:14px; position:absolute; left:13px; bottom:10px; z-index:9999; font-weight:bold;}
+.pic_name a{ color:#FFF; text-decoration:none; display:block; width:210px;}
+.pic_namebg{width:210px; height:22px; background-color:#000; opacity:0.5; filter: alpha(opacity=50); padding:0 4px; position:absolute; left:10px; bottom:8px; display:block;}
+.title_pic{width:218px; height:100px; padding:1px 10px 8px 10px; position:relative;}
+.weixin_pic ul{margin:0;padding: 0;list-style-type: none;}
+.weixin_pic ul li:last-child{height:43px; overflow:hidden;}
+.weixin_pic ul li{width:218px; height:48px; padding:0px 10px; border-top: solid 1px #ddd; display:block; font-size:11px; line-height:16px; overflow:hidden;}
+.weixin_pic ul li p{padding:0; margin:0; width:180px; padding:6px 0; float:left;}
+.weixin_pic ul li a{color:#222; text-decoration:none; display:block;}
+.weixin_pic ul li img{width:38px; height:38px; float:right; padding:5px 0;}
+
+/*文本回复*/
+.talk_send{padding:5px 0 5px 0; width:202px; float:left;}
+.talk_reply{padding:5px 0 5px 0; width:202px; float:right;}
+.talk_pic1{ width:36px; height:36px; float:left;}
+.talk_info1{ background:url(/Scripts/WeiXin/PreView/images/talk_mind1.gif) repeat-y; float:right; width:166px;}
+.talk_head1{ background:url(/Scripts/WeiXin/PreView/images/talk_head1.gif) no-repeat; height:auto;display:block;}
+.talk_head1 p{ padding:0; margin:0; font-size:12px; color:#000; width:136px; padding:8px 0 1px 18px; line-height:18px;}
+.talk_foot1{ background:url(/Scripts/WeiXin/PreView/images/talk_foot1.gif) no-repeat; height:10px; display:block; overflow:hidden;}
+
+.talk_pic2{ width:36px; height:36px; float:right;}
+.talk_info2{ background:url(/Scripts/WeiXin/PreView/images/talk_mind2.gif) repeat-y; float:left; width:166px;}
+.talk_head2{ background:url(/Scripts/WeiXin/PreView/images/talk_head2.gif) no-repeat; height:auto;display:block;}
+.talk_head2 p{ padding:0; margin:0; font-size:12px; color:#000; width:136px; padding:8px 0px 1px 12px; line-height:18px;}
+.talk_foot2{ background:url(/Scripts/WeiXin/PreView/images/talk_foot2.gif) no-repeat; height:10px; display:block; overflow:hidden;}
+
+
+/*音乐回复*/
+.music_send{padding:5px 0 5px 0; width:232px; float:left;}
+.music_info{ background:url(/Scripts/WeiXin/PreView/images/music_mind.gif) repeat-y; float:right; width:196px;}
+.music_head{ background:url(/Scripts/WeiXin/PreView/images/music_head.gif) no-repeat; height:auto;display:block; float:left;width:196px;}
+.music_player{ width:42px; height:55px; display:block; float:left; padding:10px 0 2px 18px;}
+.music_title{font-size:12px; color:#000; width:122px; line-height:16px; float:right; font-weight:bold; padding:9px 9px 2px 0;}
+.music_intro{font-size:10px; color:#999; width:122px; line-height:13px; float:right;padding:0 9px 2px 0;}
+.music_foot{ background:url(/Scripts/WeiXin/PreView/images/music_foot.gif) no-repeat top; height:10px; display:block; overflow:hidden; float:left;width:196px;}
+
+
+
+
+#fullbg {
+    background-color: #000;
+	filter: alpha(opacity = 50);
+	-moz-opacity: .5;
+	-khtml-opacity: .5;
+	opacity: .5;
+	filter: alpha(opacity = 50);
+	-moz-opacity: .5;
+	-khtml-opacity: .5;
+	opacity: .5;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	display:none;
+}
+
+
+
+
+#dialogBox a {
+	text-shadow: none;
+	-webkit-text-shadow: none;
+	-moz-text-shadow: none
+}
+#loadingDialogBox {
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	overflow: hidden;
+	width: 100px;
+	top: 200px;
+	text-align: center;
+	text-align: center
+}
+.dialogBox {
+	display: none;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 1001
+}
+.dialogBox .background {
+	background-color: #000;
+	filter: alpha(opacity = 50);
+	-moz-opacity: .5;
+	-khtml-opacity: .5;
+	opacity: .5;
+	filter: alpha(opacity = 50);
+	-moz-opacity: .5;
+	-khtml-opacity: .5;
+	opacity: .5;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%
+}
+.dialogBox .dialog {
+	box-shadow: 0 3px 8px #aaa;
+	-moz-box-shadow: 0 3px 8px #aaa;
+	-webkit-box-shadow: 0 3px 8px #aaa;
+	margin: 0 auto;
+	position: relative;
+	overflow: hidden;
+	overflow: hidden;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background-color: #f3f3f3
+}
+.dialogBox .dialog .title {
+	background-color: #e7e7e7;
+	background-image: -moz-linear-gradient(top, #f3f2f2 0, #dfdfdf 100%);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f3f2f2), to(#dfdfdf));
+	background-image: -webkit-linear-gradient(top, #f3f2f2 0, #dfdfdf 100%);
+	background-image: -o-linear-gradient(top, #f3f2f2 0, #dfdfdf 100%);
+	background-image: linear-gradient(to bottom, #f3f2f2 0, #dfdfdf 100%);
+	text-align: left;
+	text-align: left;
+	padding: 0 20px;
+	border-top: 1px solid #FFF;
+	border-bottom: 1px solid #DDD;
+	text-shadow: 0 1px 1px #fff;
+	line-height: 40px;
+	height: 40px
+}
+.dialogBox .dialog .content {
+	border-bottom: 1px solid #ddd;
+	border-top: 1px solid #fff;
+	color: #666;
+	padding: 20px 15px;
+	text-shadow: 0 1px 1px #fff;
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: relative;
+	min-height: 50px;
+	text-align: left;
+	text-align: left
+}
+.dialogBox .dialog .operation {
+	background-color: #f9f9f9;
+	border-top: 1px solid #fff;
+	padding: 2px;
+	text-align: center;
+	text-align: center
+}
+.dialogBox .dialog .operation button {
+	margin-left: 5px;
+	margin-right: 5px
+}
+.dialogBox .dialog ul {
+	overflow: hidden;
+	overflow: hidden
+}
+.dialogBox .dialog .close-tip-icon {
+	background: url('/Scripts/WeiXin/PreView/images/new/icon_popup_close.png') no-repeat 0 0;
+	width: 16px;
+	height: 16px;
+	top: 13px;
+	right: 13px
+}
+.dialogBox .dialog .close-tip-icon:hover {
+	background-position: -16px 0
+}
+.dialogBox .dialog .setting_dialog_content {
+	padding: 0;
+	text-shadow: none;
+	border-top: 0
+}
+.dialogBox .dialog .rn-reg-t-wrapper {
+	border-bottom: 0;
+	box-shadow: 0 1px 5px #aaa;
+	-moz-box-shadow: 0 1px 5px #aaa;
+	-webkit-box-shadow: 0 1px 5px #aaa
+}
+.dialogBox .dialog .rn-reg-t {
+	border-top: 1px solid #cecece
+}
+.dialogBox .dialog .popup_content h4 {
+	font-size: 16px;
+	font-weight: normal;
+	color: #000;
+	margin-bottom: 10px
+}
+.dialogBox .dialog .popup_content input, .dialogBox .dialog .popup_content textarea {
+	width: 100%;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	outline: 0;
+	padding: 5px 10px;
+	border: 1px solid #b3b3b3;
+	box-shadow: inset 0 1px 5px #ddd;
+	-moz-box-shadow: inset 0 1px 5px #ddd;
+	-webkit-box-shadow: inset 0 1px 5px #ddd;
+	resize: none
+}
+.dialogBox .dialog .popup_content input:focus, .dialogBox .dialog .popup_content textarea:focus {
+	box-shadow: 0 0 5px #aedcfa;
+	-moz-box-shadow: 0 0 5px #aedcfa;
+	-webkit-box-shadow: 0 0 5px #aedcfa;
+	border: 1px solid #4a9bdf
+}
+.dialogBox .dialog .popup_content textarea {
+	height: 115px;
+	width: 500px
+}
+.dialogBox .dialog .popup_content .wrapper {
+	margin: 75px auto 0 auto;
+	width: 500px
+}
+.dialogBox .dialog .popup_content .wrapper.avatar_modify {
+	margin-top: 65px;
+	width: 750px
+}
+.dialogBox .dialog .popup_content .modify_tips {
+	color: #ababab
+}
+.dialogBox .dialog .popup_content .ensure_input {
+	border: 1px solid #bcbcbc;
+	text-align: center;
+	text-align: center;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	color: #5c5c5c;
+	box-shadow: inset 0 1px 5px #bbb;
+	-moz-box-shadow: inset 0 1px 5px #bbb;
+	-webkit-box-shadow: inset 0 1px 5px #bbb;
+	background-color: #e7e7e7;
+	padding: 5px
+}
+.dialogBox .dialog .popup_content .ensure_userinfo .ensure_input {
+	text-align: left;
+	text-align: left;
+	min-height: 65px;
+	padding: 30px 20px
+}
+.dialogBox .dialog .popup_content .ensure_avatar .headImgArea {
+	float: none;
+	margin: 30px auto 0
+}
+.dialogBox .dialog .popup_content .ensure_avatar .ensure_input {
+	margin: 20px auto
+}
+.dialogBox .dialog .operation {
+	text-align: center;
+	text-align: center;
+	padding: 20px
+}
+.dialogBox .dialog .operation button {
+	width: 125px;
+	text-align: center;
+	text-align: center;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	margin: 0 10px
+}
+.dialogBox .dialog .operation button.longer {
+	width: 156px
+}
+.dialogBox .dialog .avatar_modify {
+	width: 700px
+}
+.dialogBox .dialog .cropImgArea {
+	overflow: visible
+}
+.dialogBox .dialog .cropImgArea h4 {
+	font-weight: normal
+}
+.dialogBox .dialog .cropImgArea .head-img-box {
+	position: relative;
+	position: relative;
+	overflow: visible
+}
+.dialogBox .dialog .cropImgArea .head-img-box .cLine {
+	overflow: visible
+}
+.dialogBox .dialog .cropImgArea .example {
+	float: left;
+	float: left;
+	margin-top: -78px
+}
+.dialogBox .dialog .cropImgArea .upload-wrapper {
+	position: absolute;
+	position: absolute;
+	left: 262px;
+	bottom: 21px;
+	text-align: left;
+	text-align: left
+}
+.dialogBox .dialog .cropImgArea .upload-wrapper .desc {
+	margin-top: 10px;
+	font-size: 12px
+}
+.dialogBox .dialog .cropImgArea .upload-wrapper button {
+	width: 78px
+}
+.dialogBox .dialog .cropImgArea .split-line {
+	float: left;
+	float: left;
+	height: 245px;
+	border-left: 1px solid #ccc;
+	margin: 0 35px 0 45px;
+	border-right: 1px solid #fff
+}
+.dialogBox .dialog .protocol {
+	text-align: left;
+	text-align: left;
+	padding-left: 160px;
+	min-height: 135px;
+	background: url('/Scripts/WeiXin/PreView/images/icon_mod_protocel.png') no-repeat 0 -6px
+}
+.dialogBox .dialog .protocol li {
+	font-size: 16px
+}
+.dialogBox .dialog .error_tips {
+	color: #b11516;
+	display: none;
+	display: none;
+	display: none
+}
+.dialogBox .dialog .error_tips i {
+	margin-right: 4px;
+	font-style: normal;
+	font-size: 15px
+}
+.pre_wrapper {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	margin-top: -315px;
+	margin-left: -161px;
+	width: 322px;
+	background: transparent url("/Scripts/WeiXin/PreView/images/bg_pre.png") no-repeat 0 0
+}
+.pre_hd {
+	text-align: center;
+	font-size: 0
+}
+.pre_nav_name {
+	display: inline-block;
+	width: 140px;
+	padding-top: 116px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	word-wrap: normal;
+	line-height: 32px;
+	font-size: 12px;
+	font-weight: 400;
+	color: #fff
+}
+.pre_bd {
+	height: 310px;
+	margin-left: 30px;
+	margin-right: 28px;
+	overflow-y: auto;
+	position: relative
+}
+.pre_item_wrapper {
+	max-height: 100%
+}
+.pre_item {
+	margin-top: 10px;
+	margin-bottom: 20px
+}
+.pre_avator {
+	float: left;
+	font-size: 0;
+	box-shadow: 1px 1px 1px #ccc;
+	-moz-box-shadow: 1px 1px 1px #ccc;
+	-webkit-box-shadow: 1px 1px 1px #ccc
+}
+.pre_user_pic {
+	display: inline-block;
+	width: 45px;
+	height: 45px
+}
+.pre_content {
+	margin-left: 50px
+}
+.pre_ft {
+	min-height: 152px
+}
+.pre_nav_wrapper {
+	margin-left: 78px;
+	margin-right: 36px
+}
+.pre_nav_arrow {
+	display: inline-block;
+	width: 8px;
+	height: 12px;
+	margin-top: 14px;
+	background: transparent url("/Scripts/WeiXin/PreView/images/icon_add_on_pre_nav.png") no-repeat
+}
+.pre_nav_arrow.prev {
+	float: left;
+	background-position: 0 0
+}
+.pre_nav_arrow.next {
+	float: right;
+	background-position: -8px 0
+}
+.pre_nav_list {
+	display: none;
+	margin-left: 12px;
+	margin-right: 12px;
+	white-space: nowrap;
+	letter-spacing: -4px
+}
+.pre_nav {
+	display: inline-block;
+*display:inline;
+*zoom:1;
+	position: relative;
+	width: 33%;
+	line-height: 40px;
+	vertical-align: top;
+	text-align: center;
+	letter-spacing: normal;
+	background: transparent url("/Scripts/WeiXin/PreView/images/icon_add_on_split_v.png") no-repeat 100% 50%
+}
+.pre_nav.no-extra {
+	background: 0
+}
+.pre_nav_btn {
+	display: block;
+	margin-right: 12px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	word-wrap: normal;
+	font-size: 12px;
+	color: #fff;
+	text-decoration: none;
+	text-shadow: 0 1px 1px #000
+}
+.pre_nav_btn:hover {
+	color: #a4a4a4;
+	text-shadow: 0 1px 1px #000
+}
+.pre_sub_nav_list {
+	position: absolute;
+	bottom: 52px;
+	left: -50%;
+	margin-left: 10px;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border: 1px solid #434343;
+	box-shadow: 0 1px 3px #808080, inset 0 1px 0 #656565;
+	background-color: #4f4f4f
+}
+.pre_sub_nav_arrow {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	margin-left: -7px;
+	width: 14px;
+	height: 10px;
+	margin-bottom: -10px;
+	background: transparent url("/Scripts/WeiXin/PreView/images/icon_add_on_sub_nav_arrow.png") no-repeat 0 0
+}
+.pre_sub_nav {
+	margin: 1px 1px 1px 1px;
+	padding-bottom: 1px;
+	padding-left: 1px;
+	padding-right: 1px;
+	background: transparent url("/Scripts/WeiXin/PreView/images/.png") no-repeat center bottom
+}
+.pre_sub_nav.no_extra {
+	background: 0
+}
+.pre_sub_nav_btn {
+	display: block;
+	width: 85px;
+	color: #fff;
+	line-height: 28px;
+	font-size: 12px;
+	text-decoration: none;
+	text-shadow: 0 1px 1px #444;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: normal
+}
+.pre_sub_nav_btn:hover {
+	background-color: #2b2b2b
+}
+.pre_windows_opr {
+	position: absolute;
+	top: -10px;
+	right: -16px;
+	cursor: pointer
+}
+.opr_icon {
+	display: inline-block;
+	width: 65px;
+	height: 65px;
+	background: transparent url("/Scripts/WeiXin/PreView/images/icon_opr65.png") no-repeat
+}
+.screen1 #pre_prev {
+	display: none
+}
+.screen1 #preview_screen1 {
+	display: block
+}
+.screen1 #preview_screen2 {
+	display: none
+}
+.screen2 #pre_next {
+	display: none
+}
+.screen2 #preview_screen1 {
+	display: none
+}
+.screen2 #preview_screen2 {
+	display: block
+}
+
+.none{ display:none;}
