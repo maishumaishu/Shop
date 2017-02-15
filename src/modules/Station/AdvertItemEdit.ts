@@ -11,7 +11,7 @@ class PageModel {
     }
     back() {
         //location.href = 'Index.html#Station/AdvertItemList';
-        app.back({}).fail(function () {
+        app.back({}).catch(function () {
             app.redirect('Station/AdvertItemList');
         });
     }
@@ -41,50 +41,60 @@ class PageModel {
 }
 
 
-class AdvertItemEditPage extends chitu.Page {
-    constructor(params) {
-        super(params);
+//class AdvertItemEditPage extends chitu.Page {
+export default function (page: chitu.Page) {
+    //      super(params);
 
-        //slet site = window['site'];
-        let page = this;
+    //slet site = window['site'];
 
-        var model = new PageModel();
+    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+        page.element.innerHTML = html;
+        page_load(page, page.routeData.values);
+    })
 
-        ko.applyBindings(model, page.element);
-        this.load.add(function (sender, args) {
-            // if (!args.id) {
-            //     model.advertItem.id('');
-            //     model.advertItem.imgUrl('');
-            //     model.advertItem.linkUrl('');
-            //     validation.showAllMessages(false);
-            //     return;
-            // }
 
-            $.ajax({
-                url: site.config.siteUrl + 'AdvertItem/GetAdvertItem',
-                data: { id: args.id }
-            }).done(function (result) {
-                model.advertItem.id(result.Id);
-                model.advertItem.imgUrl(result.ImgUrl);
-                model.advertItem.linkUrl(result.LinkUrl);
-            });
 
-            requirejs(['jquery.fileupload'], () => {
-                (<any>$('#fileupload')).fileupload({
-                    url: site.config.shopUrl + 'Common/UploadImage?dir=AD',
-                    dataType: 'json'
-                }).on('fileuploaddone', function (e, data) {
-                    //$('#ImgUrl').val(Site.imageServerUrl + data.result.path);
-                    model.advertItem.imgUrl(data.result.path);
-                }).on('fileuploadfail', function (error) {
-                    site.showInfo('上传图片失败');
-                });
-            });
 
-        });
+    // this.load.add();
 
-    }
 }
 
+function page_load(sender: chitu.Page, args) {
+    // function () {
+    // if (!args.id) {
+    //     model.advertItem.id('');
+    //     model.advertItem.imgUrl('');
+    //     model.advertItem.linkUrl('');
+    //     validation.showAllMessages(false);
+    //     return;
+    // }
+    var model = new PageModel();
+    ko.applyBindings(model, sender.element);
 
-export = AdvertItemEditPage;
+    $.ajax({
+        url: site.config.siteUrl + 'AdvertItem/GetAdvertItem',
+        data: { id: args.id }
+    }).done(function (result) {
+        model.advertItem.id(result.Id);
+        model.advertItem.imgUrl(result.ImgUrl);
+        model.advertItem.linkUrl(result.LinkUrl);
+    });
+
+    requirejs(['jquery.fileupload'], () => {
+        (<any>$('#fileupload')).fileupload({
+            url: site.config.shopUrl + 'Common/UploadImage?dir=AD',
+            dataType: 'json'
+        }).on('fileuploaddone', function (e, data) {
+            //$('#ImgUrl').val(Site.imageServerUrl + data.result.path);
+            model.advertItem.imgUrl(data.result.path);
+        }).on('fileuploadfail', function (error) {
+            site.showInfo('上传图片失败');
+        });
+    });
+
+    // }
+}
+//}
+
+
+//export = AdvertItemEditPage;

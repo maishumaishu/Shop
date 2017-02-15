@@ -76,257 +76,249 @@ class PageModel {
     }
 }
 
-class CouponCodeListPage extends chitu.Page {
-    constructor(params) {
-        super(params);
-
-        let page = this;
-        var CODE_COLUMN_INDEX = 2;
-        var USAGED_COLUMN_INDEX = 3;
-        //=================================================
-        // 优惠码表格
-        var dataSource = new JData.WebDataSource();
-        dataSource.set_selectUrl(selectUrl);
-        var $gridView = (<any>$('<table>').appendTo(page.element)).gridView({
-            dataSource: dataSource,
-            columns: [
-                { dataField: 'Id', visible: false },
-                { dataField: 'Title', headerText: '名称' },
-                { dataField: 'Code', headerText: '优惠码' },
-                { dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{0:g}' },
-                { dataField: 'Operator', headerText: '操作员' },
-                {
-                    dataField: 'UsedDateTime', headerText: '状态',
-                    displayValue: function (container, value) {
-
-                        var dataItem = $(container).parents('tr').first().data('dataItem');
-
-                        var arr = dataItem.ValidEnd.toFormattedString('d').substr(0, 10).split('-');
-                        var validEnd = new Date(arr[0], arr[1] - 1, arr[2]);
-
-                        var today = new Date();
-                        var dd = today.getDate();
-                        var mm = today.getMonth();
-                        var yyyy = today.getFullYear();
-                        var currentDate = new Date(yyyy, mm, dd);
-
-                        var text;
-                        var status;
-                        if (value) {
-                            status = 'used';
-                            text = '已使用';
-                        }
-                        else if (currentDate > validEnd) {
-                            status = 'expired';
-                            text = '已过期';
-                        }
-                        else {
-                            status = 'valid';
-                            text = '可使用';
-                        }
-
-                        var $btn = $('<button>').attr('class', 'btn btn-info btn-minier')
-                            .append('<i class="icon-pencil">')
-                            .append(`<span>${text}</span>`);
-
-
-
-                        if (status != 'valid')
-                            $btn.attr('disabled', 'disabled');
-
-                        $btn.appendTo(container);
-
-                        $btn.click(function () {
-                            var cells = $(container).parents('tr').first().prop('cells');
-                            $('#couponCode').html($(cells[CODE_COLUMN_INDEX]).text());
-                            (<any>$('#usageConfirm')).confirm({
-                                ok: function () {
-                                    $.ajax({
-                                        url: site.config.shopUrl + 'Coupon/UseCouponCode?code=' + $(cells[CODE_COLUMN_INDEX]).text(),
-                                        success: function () {
-                                            (<any>$('#usageConfirm')).dialog('close');
-                                            $btn.attr('disabled', 'disabled').find('span').html('已使用');
-                                            bootbox.alert('已成功使用优惠码"' + $(cells[CODE_COLUMN_INDEX]).text() + '"');
-                                        }
-                                    });
-
-                                }
-                            });
-                        });
-                    }
-                }
-
-            ],
-            allowPaging: true,
-            rowCreated: function (sender, args) {
-                if (args.row.get_rowType() != JData.DataControlRowType.DataRow)
-                    return;
-
-            }
-        });
-
-        dataSource.select($gridView.data('JData.GridView').get_selectArguments());
-
-        //=================================================
-
-        (<any>$('#CouponId')).dropDownList({
-            dataSource: 'ShoppingData/Coupons',
-            displayField: 'Title'
-        });
-
-        requirejs(['jquery.validate'], function () {
-            let validator = (<any>$('#dlgGenerator')).validate({
-                rules: {
-                    CouponId: {
-                        required: true
-                    },
-                    Count: {
-                        required: true,
-                        min: 1,
-                        max: 1000
-                    }
-                }
-            });
-
-            (<any>$('#dlgGenerator')).confirm({
-                title: '创建优惠码',
-                title_html: true,
-                width: '400px',
-                autoOpen: false,
-                open: function () {
-                    $('#Count').focus();
-                    validator.resetForm();
-                }
-            });
-
-            //=================================================
-            // 使用优惠码窗口
-            var codeInputValidator = (<any>$('#codeInput')).validate({
-                rules: {
-                    CouponCode: { required: true }
-                }
-            });
-            (<any>$('#codeInput')).confirm({
-                title: '使用优惠码',
-                title_html: true,
-                width: '400px',
-                autoOpen: false,
-                open: function () {
-                    $('#CouponCode').focus();
-                    $('#CouponCode').val('');
-                    codeInputValidator.resetForm();
-                },
-                ok: function () {
-                    if (!(<any>$('#codeInput')).isValid())
-                        return;
-
-                    $('#couponCode').html($('#CouponCode').val());
-                    (<any>$('#usageConfirm')).confirm({
-                        ok: function () {
-                            (<any>$('#usageConfirm')).dialog('close');
-
-                            $.ajax({
-                                url: site.config.shopUrl + 'Coupon/UseCouponCode',
-                                data: { code: $('#CouponCode').val() }
-
-                            }).done(function (data) {
-                                (<any>$('#codeInput')).dialog('close');
-                                $gridView.find('td').each(function () {
-                                    if ($(this).text() == $('#CouponCode').val()) {
-                                        var cells = $(this).parents('tr').first().prop('cells');
-                                        var cell = cells[USAGED_COLUMN_INDEX];
-                                        $(cell).find('button').attr('disabled', 'disabled').find('span').html('已使用');
-                                    }
-                                });
-                                if (data.Type == 'ErrorObject' && data.Code != 'Success')
-                                    (<any>$).dialog.alert('失败', data.Message, function () { });
-                                else
-                                 (<any>$).dialog.alert('成功', '使用优惠码"' + $('#CouponCode').val() + '"成功');
-                            });
-                        }
-                    });
-                }
-            });
-        });
-
-
-
-
-
-
-
-
-
-        $('#useCouponCode').click(function () {
-            (<any>$('#codeInput')).dialog('open');
-        });
-
-        $('#btnSearch').click(function () {
-            var url;
-            var searchText = $('#txtSearch').val();
-            if (searchText) {
-                var filter;
-                if (searchText.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
-                    filter = `Coupon.Id = Guid"${searchText}"`; //$.validator.format('Coupon.Id = Guid"{0}"', searchText);
-                }
-                else {
-                    filter = `Code = "${searchText}"`;//$.validator.format('Code = "{0}"', searchText);
-                }
-
-                url = selectUrl + '&filter=' + encodeURI(filter);
-            }
-            else {
-                url = selectUrl;
-            }
-
-            dataSource.set_selectUrl(url);
-            var args = new JData.DataSourceSelectArguments();
-            args.set_maximumRows(10);
-
-            dataSource.select(args);
-        });
-
-        (function () {
-            //var filter;
-
-
-
-            var model = new PageModel(dataSource);
-
-            model.filter.toString = ko.computed(function () {
-                var value = '';
-                if (this.searchText()) {
-                    if (this.searchText().match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
-                        value = `Coupon.Id = Guid"${this.searchText()}"`;//$.validator.format('Coupon.Id = Guid"{0}"', this.searchText());
-                    }
-                    else {
-                        value = `Code = "${this.searchText()}"`; //$.validator.format('Code = "{0}"', this.searchText());
-                    }
-                }
-
-                var status = this.status();
-                if (status && value)
-                    value = value + ' and ';
-
-                switch (status) {
-                    case 'used':
-                        value = value + 'UsedDateTime != null';
-                        break;
-                    case 'notUsed':
-                        value = value + 'UsedDateTime == null and DateTime.Now.Date <= Coupon.ValidEnd';
-                        break;
-                    case 'expired':
-                        value = value + 'UsedDateTime == null and DateTime.Now.Date > Coupon.ValidEnd';
-                        break;
-                }
-
-                return value;
-
-            }, model.filter);
-
-            ko.applyBindings(model, page.element);
-        })();
-    }
+export default function (page: chitu.Page) {
+  requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+        page.element.innerHTML = html;
+        page_load(page);
+    })
 }
 
-export = CouponCodeListPage;
+function page_load(page: chitu.Page) {
+    var CODE_COLUMN_INDEX = 2;
+    var USAGED_COLUMN_INDEX = 3;
+    //=================================================
+    // 优惠码表格
+    var dataSource = new JData.WebDataSource();
+    dataSource.set_selectUrl(selectUrl);
+    var $gridView = (<any>$('<table>').appendTo(page.element)).gridView({
+        dataSource: dataSource,
+        columns: [
+            { dataField: 'Id', visible: false },
+            { dataField: 'Title', headerText: '名称' },
+            { dataField: 'Code', headerText: '优惠码' },
+            { dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{0:g}' },
+            { dataField: 'Operator', headerText: '操作员' },
+            {
+                dataField: 'UsedDateTime', headerText: '状态',
+                displayValue: function (container, value) {
+
+                    var dataItem = $(container).parents('tr').first().data('dataItem');
+
+                    var arr = dataItem.ValidEnd.toFormattedString('d').substr(0, 10).split('-');
+                    var validEnd = new Date(arr[0], arr[1] - 1, arr[2]);
+
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth();
+                    var yyyy = today.getFullYear();
+                    var currentDate = new Date(yyyy, mm, dd);
+
+                    var text;
+                    var status;
+                    if (value) {
+                        status = 'used';
+                        text = '已使用';
+                    }
+                    else if (currentDate > validEnd) {
+                        status = 'expired';
+                        text = '已过期';
+                    }
+                    else {
+                        status = 'valid';
+                        text = '可使用';
+                    }
+
+                    var $btn = $('<button>').attr('class', 'btn btn-info btn-minier')
+                        .append('<i class="icon-pencil">')
+                        .append(`<span>${text}</span>`);
+
+
+
+                    if (status != 'valid')
+                        $btn.attr('disabled', 'disabled');
+
+                    $btn.appendTo(container);
+
+                    $btn.click(function () {
+                        var cells = $(container).parents('tr').first().prop('cells');
+                        $('#couponCode').html($(cells[CODE_COLUMN_INDEX]).text());
+                        (<any>$('#usageConfirm')).confirm({
+                            ok: function () {
+                                $.ajax({
+                                    url: site.config.shopUrl + 'Coupon/UseCouponCode?code=' + $(cells[CODE_COLUMN_INDEX]).text(),
+                                    success: function () {
+                                        (<any>$('#usageConfirm')).dialog('close');
+                                        $btn.attr('disabled', 'disabled').find('span').html('已使用');
+                                        bootbox.alert('已成功使用优惠码"' + $(cells[CODE_COLUMN_INDEX]).text() + '"');
+                                    }
+                                });
+
+                            }
+                        });
+                    });
+                }
+            }
+
+        ],
+        allowPaging: true,
+        rowCreated: function (sender, args) {
+            if (args.row.get_rowType() != JData.DataControlRowType.DataRow)
+                return;
+
+        }
+    });
+
+    dataSource.select($gridView.data('JData.GridView').get_selectArguments());
+
+    //=================================================
+
+    (<any>$('#CouponId')).dropDownList({
+        dataSource: 'ShoppingData/Coupons',
+        displayField: 'Title'
+    });
+
+    requirejs(['jquery.validate'], function () {
+        let validator = (<any>$('#dlgGenerator')).validate({
+            rules: {
+                CouponId: {
+                    required: true
+                },
+                Count: {
+                    required: true,
+                    min: 1,
+                    max: 1000
+                }
+            }
+        });
+
+        (<any>$('#dlgGenerator')).confirm({
+            title: '创建优惠码',
+            title_html: true,
+            width: '400px',
+            autoOpen: false,
+            open: function () {
+                $('#Count').focus();
+                validator.resetForm();
+            }
+        });
+
+        //=================================================
+        // 使用优惠码窗口
+        var codeInputValidator = (<any>$('#codeInput')).validate({
+            rules: {
+                CouponCode: { required: true }
+            }
+        });
+        (<any>$('#codeInput')).confirm({
+            title: '使用优惠码',
+            title_html: true,
+            width: '400px',
+            autoOpen: false,
+            open: function () {
+                $('#CouponCode').focus();
+                $('#CouponCode').val('');
+                codeInputValidator.resetForm();
+            },
+            ok: function () {
+                if (!(<any>$('#codeInput')).isValid())
+                    return;
+
+                $('#couponCode').html($('#CouponCode').val());
+                (<any>$('#usageConfirm')).confirm({
+                    ok: function () {
+                        (<any>$('#usageConfirm')).dialog('close');
+
+                        $.ajax({
+                            url: site.config.shopUrl + 'Coupon/UseCouponCode',
+                            data: { code: $('#CouponCode').val() }
+
+                        }).done(function (data) {
+                            (<any>$('#codeInput')).dialog('close');
+                            $gridView.find('td').each(function () {
+                                if ($(this).text() == $('#CouponCode').val()) {
+                                    var cells = $(this).parents('tr').first().prop('cells');
+                                    var cell = cells[USAGED_COLUMN_INDEX];
+                                    $(cell).find('button').attr('disabled', 'disabled').find('span').html('已使用');
+                                }
+                            });
+                            if (data.Type == 'ErrorObject' && data.Code != 'Success')
+                                (<any>$).dialog.alert('失败', data.Message, function () { });
+                            else
+                                 (<any>$).dialog.alert('成功', '使用优惠码"' + $('#CouponCode').val() + '"成功');
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    $('#useCouponCode').click(function () {
+        (<any>$('#codeInput')).dialog('open');
+    });
+
+    $('#btnSearch').click(function () {
+        var url;
+        var searchText = $('#txtSearch').val();
+        if (searchText) {
+            var filter;
+            if (searchText.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
+                filter = `Coupon.Id = Guid"${searchText}"`; //$.validator.format('Coupon.Id = Guid"{0}"', searchText);
+            }
+            else {
+                filter = `Code = "${searchText}"`;//$.validator.format('Code = "{0}"', searchText);
+            }
+
+            url = selectUrl + '&filter=' + encodeURI(filter);
+        }
+        else {
+            url = selectUrl;
+        }
+
+        dataSource.set_selectUrl(url);
+        var args = new JData.DataSourceSelectArguments();
+        args.set_maximumRows(10);
+
+        dataSource.select(args);
+    });
+
+    (function () {
+        //var filter;
+
+
+
+        var model = new PageModel(dataSource);
+
+        model.filter.toString = ko.computed(function () {
+            var value = '';
+            if (this.searchText()) {
+                if (this.searchText().match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
+                    value = `Coupon.Id = Guid"${this.searchText()}"`;//$.validator.format('Coupon.Id = Guid"{0}"', this.searchText());
+                }
+                else {
+                    value = `Code = "${this.searchText()}"`; //$.validator.format('Code = "{0}"', this.searchText());
+                }
+            }
+
+            var status = this.status();
+            if (status && value)
+                value = value + ' and ';
+
+            switch (status) {
+                case 'used':
+                    value = value + 'UsedDateTime != null';
+                    break;
+                case 'notUsed':
+                    value = value + 'UsedDateTime == null and DateTime.Now.Date <= Coupon.ValidEnd';
+                    break;
+                case 'expired':
+                    value = value + 'UsedDateTime == null and DateTime.Now.Date > Coupon.ValidEnd';
+                    break;
+            }
+
+            return value;
+
+        }, model.filter);
+
+        ko.applyBindings(model, page.element);
+    })();
+}

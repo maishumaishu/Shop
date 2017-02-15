@@ -1,9 +1,4 @@
 ﻿
 
-class IndexPage extends chitu.Page{
-    constructor(params){
-        super(params);
-    }
+export default function (page: chitu.Page) {
 }
-
-export = IndexPage;

@@ -7,30 +7,28 @@
 import weixin = require('services/WeiXin');
 import bootbox = require('bootbox');
 
-class SettingPage extends chitu.Page {
-    constructor(params) {
-        super(params);
-        this.load.add(this.page_load);
-    }
+function page_load(page: chitu.Page, args) {
 
-    private page_load(page: SettingPage, args) {
-
-        function SaveSetting() {
-            //service.weixin.getSetting
-            var obj = {};
-            $($(page.element).find('form').serializeArray()).each(function () {
-                obj[this.name] = this.value;
-            });
-            weixin.saveSetting(obj).done(function () {
-                bootbox.alert('修改成功');
-            });
-        };
-
-        weixin.getSetting().done(function (data) {
-            data.SaveSetting = SaveSetting;
-            ko.applyBindings(data, page.element);
+    function SaveSetting() {
+        //service.weixin.getSetting
+        var obj = {};
+        $($(page.element).find('form').serializeArray()).each(function () {
+            obj[this.name] = this.value;
         });
-    }
+        weixin.saveSetting(obj).done(function () {
+            bootbox.alert('修改成功');
+        });
+    };
+
+    weixin.getSetting().done(function (data) {
+        data.SaveSetting = SaveSetting;
+        ko.applyBindings(data, page.element);
+    });
 }
 
-export = SettingPage;
+export default function (page: chitu.Page) {
+    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+        page.element.innerHTML = html;
+        page_load(page, page.routeData.values);
+    })
+}

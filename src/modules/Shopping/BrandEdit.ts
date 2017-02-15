@@ -82,7 +82,7 @@ class BrandEditPage extends chitu.Page {
 
         var model = {
             back: function () {
-                app.back().fail(function () {
+                app.back().catch(function () {
                     app.redirect('#Shopping/BrandList');
                 });
             },

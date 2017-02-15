@@ -13,7 +13,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         shell: {
             ts_user: {
-                command: 'tsc -p Shop',
+                command: 'tsc -p src',
                 options: {
                     failOnError: false
                 }

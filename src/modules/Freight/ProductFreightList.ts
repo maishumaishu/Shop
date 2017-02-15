@@ -6,11 +6,17 @@
 import Service = require('services/Service');
 import freight = require('services/Freight');
 let JData = window['JData'];
-export = class ProductFreightListPage extends chitu.Page {
-    constructor(params) {
-        super(params);
 
-        let page = this;
+export default function (page: chitu.Page) {
+
+
+
+    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+        page.element.innerHTML = html;
+        page_load();
+        //page_load(page, page.routeData.values);
+    })
+    function page_load() {
         var $gridView = (<any>$('<table>').appendTo(page.element)).gridView({
             dataSource: freight.productFreight,
             columns: [
@@ -23,9 +29,7 @@ export = class ProductFreightListPage extends chitu.Page {
             allowPaging: true
         });
         var sel_args = $gridView.data('JData.GridView').get_selectArguments();
-        page.load.add(function (sender, args) {
-            return freight.productFreight.select(sel_args);
-        });
+        freight.productFreight.select(sel_args);
 
         var $dlg_productFreight = $(page.element).find('[Name="productFreight"]')
         var model = {
@@ -46,18 +50,16 @@ export = class ProductFreightListPage extends chitu.Page {
 
         ko.applyBindings(model, page.element);
 
-        page.load.add(function () {
-            var args = new JData.DataSourceSelectArguments();
-            args.set_selection('Id, Name');
-            model.solutions.removeAll();
-            return freight.freightSolutions
-                .select(args)
-                .done(function (items) {
-                    $.each(items, function () {
-                        model.solutions.unshift(this);
-                    });
-                    model.selectedSolutionId('00000000-0000-0000-0000-000000000000');
+        var args = new JData.DataSourceSelectArguments();
+        args.set_selection('Id, Name');
+        model.solutions.removeAll();
+        return freight.freightSolutions
+            .select(args)
+            .done(function (items) {
+                $.each(items, function () {
+                    model.solutions.unshift(this);
                 });
-        });
-    }
+                model.selectedSolutionId('00000000-0000-0000-0000-000000000000');
+            });
+    };
 }

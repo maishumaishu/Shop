@@ -40,15 +40,14 @@ class PageModel {
     }
 }
 
-class ChangePasswordPage extends chitu.Page {
-    constructor(params) {
-        super(params);
-    }
-
-    private page_load(page: ChangePasswordPage, args) {
-        var model = new PageModel();
-        ko.applyBindings(model, page.element);
-    }
+export default function (page: chitu.Page) {
+    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+        page.element.innerHTML = html;
+        page_load(page, page.routeData.values);
+    })
 }
 
-export = ChangePasswordPage;
+function page_load(page: chitu.Page, args) {
+    var model = new PageModel();
+    ko.applyBindings(model, page.element);
+}

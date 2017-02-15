@@ -8,6 +8,16 @@ let extentions = {
     }
 }
 
+function format(source: string, ...params: string[]): string {
+    for (var i = 0; i < params.length; i++) {
+        source = source.replace(new RegExp("\\{" + i + "\\}", "g"), function () {
+            return params[i];
+        });
+    }
+
+    return source;
+}
+
 
 Number.prototype['toFormattedString'] = function (format) {
     var reg = new RegExp('^C[0-9]+');
@@ -18,22 +28,22 @@ Number.prototype['toFormattedString'] = function (format) {
     return this;
 };
 
-Date.prototype['toFormattedString'] = function (format) {
-    switch (format) {
+Date.prototype['toFormattedString'] = function (pattern) {
+    switch (pattern) {
         case 'd':
-            return chitu.Utility.format("{0}-{1}-{2}", this.getFullYear(), this.getMonth() + 1, this.getDate());
+            return format("{0}-{1}-{2}", this.getFullYear(), this.getMonth() + 1, this.getDate());
         case 'g':
-            return chitu.Utility.format("{0}-{1}-{2} {3}:{4}", this.getFullYear(), this.getMonth() + 1, this.getDate(), this.getHours(), this.getMinutes());
+            return format("{0}-{1}-{2} {3}:{4}", this.getFullYear(), this.getMonth() + 1, this.getDate(), this.getHours(), this.getMinutes());
         case 'G':
-            return chitu.Utility.format("{0}-{1}-{2} {3}:{4}:{5}", this.getFullYear(), this.getMonth() + 1, this.getDate(), this.getHours(), this.getMinutes(), this.getSeconds());
+            return format("{0}-{1}-{2} {3}:{4}:{5}", this.getFullYear(), this.getMonth() + 1, this.getDate(), this.getHours(), this.getMinutes(), this.getSeconds());
         case 't':
-            return chitu.Utility.format("{0}:{1}", this.getHours(), this.getMinutes());
+            return format("{0}:{1}", this.getHours(), this.getMinutes());
         case 'T':
-            return chitu.Utility.format("{0}:{1}:{2}", this.getHours(), this.getMinutes(), this.getSeconds());
+            return format("{0}:{1}:{2}", this.getHours(), this.getMinutes(), this.getSeconds());
     }
 
-    if (format != null && (<any>$).datepicker != null)
-        return (<any>$).datepicker.formatDate(format, this)
+    if (pattern != null && (<any>$).datepicker != null)
+        return (<any>$).datepicker.formatDate(pattern, this)
 
     return this.toString();
 };
