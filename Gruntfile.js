@@ -1,5 +1,5 @@
 var dest_root = 'www';
-var src_root = 'Shop';
+var src_root = 'src';
 var ts_options = {
     module: 'amd',
     target: 'es5',
