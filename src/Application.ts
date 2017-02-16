@@ -5,22 +5,6 @@ import ko_ext = require('common/ko_ext/core');
 ko_ext.image.imageServer = 'http://a.alinq.cn';
 ko_ext.image.storeName = '零食有约';
 
-// {
-//             pathBase: 'mod/',
-//             container: (routeData: chitu.RouteData, previous: chitu.PageContainer) => {
-//                 let contentElement = document.getElementById('mainContent');
-//                 let containerElement = document.createElement('div');
-//                 contentElement.appendChild(containerElement);
-//                 console.assert(contentElement != null);
-//                 var c: chitu.PageContainer = chitu.PageContainerFactory.createInstance({
-//                     app: this, routeData, previous,
-//                     element: containerElement
-//                 });
-
-//                 return c;
-//             },
-//         }
-
 class Application extends chitu.Application {
 
     nav_bar = {
@@ -36,8 +20,6 @@ class Application extends chitu.Application {
     protected createPageElement(routeData: chitu.RouteData): HTMLElement {
         let element = document.createElement('div');
         document.getElementById('mainContent').appendChild(element);
-        debugger;
-
         return element;
     }
 }
@@ -45,10 +27,7 @@ class Application extends chitu.Application {
 var app = new Application();
 var expanded = false;
 app.pageCreated.add(function (sender, page) {
-    /// <param name="page" type="chitu.Page"/>
     page.load.add(function (sender, args) {
-
-
         var url = '#' + args['controller'] + '/' + args['action'];
         var $url = $('#sidebar').find('[href="' + url + '"]').parent().children('a').first();
         //=====================================================
