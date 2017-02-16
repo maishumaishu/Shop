@@ -61,7 +61,7 @@ requirejs.config({
         'jquery.validate': 'scripts/jquery.validate',
         'jquery-ui': 'scripts/jquery-ui',
         'jquery.ui.widget': 'scripts/jquery.ui.widget',
-        knockout: 'scripts/knockout-3.2.0.debug',
+        knockout: 'scripts/knockout-3.2.0',
         'ko.ext': 'common/knockout.extentions',
         'ko.map': 'scripts/knockout.mapping.debug',
         'ko.val': 'scripts/knockout.validation.cn',
