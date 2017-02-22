@@ -67,10 +67,10 @@ function getConditionText(promotionRule: PromotionContentRule) {
     var promotion = promotionRule.promotion;
     var condition_text;
     if (promotion.method() == promotionMethods.count) {
-        condition_text = chitu.Utility.format('购买指定商品任意 {0} 件,', <any>ko.unwrap(promotionRule.buyCount));
+        condition_text = `购买指定商品任意 ${ko.unwrap(promotionRule.buyCount)} 件`//chitu.Utility.format('购买指定商品任意 {0} 件,', <any>ko.unwrap(promotionRule.buyCount));
     }
     else if (promotion.method() == promotionMethods.amount) {
-        condition_text = chitu.Utility.format('购买指定商品满 {0} 元,', new Number(promotionRule.buyAmount())['toFormattedString']('￥{0:C2}'));
+        condition_text = `购买指定商品满 ${new Number(promotionRule.buyAmount())['toFormattedString']('￥{0:C2}')} 元,`;
     }
     return condition_text;
 }
@@ -324,7 +324,9 @@ class ProductPromotionContentRule extends PromotionContentRule {
                 if (i > 0)
                     str = str + "，";
 
-                str = str + chitu.Utility.format(' “{0}” {1} 件', ko.unwrap(products[i].name), ko.unwrap(products[i].quantity));
+                let name = ko.unwrap(products[i].name);
+                let count = ko.unwrap(products[i].quantity);
+                str = str + ` “${name}” ${count} 件`;
             }
             return getConditionText(this) + str;
         });
@@ -370,7 +372,8 @@ class AmountPromotionContentRule extends PromotionContentRule {
         this.reduceAmount = ko.observable<number>().extend({ required: true });
         this.givenValue = ko.computed(() => this.reduceAmount() == null ? '' : this.reduceAmount().toString());
         this.description = ko.computed(() => {
-            var given_text = chitu.Utility.format('即减 {0} 元', new Number(this.reduceAmount())['toFormattedString']('￥{0:C2}'));
+            let str = new Number(this.reduceAmount())['toFormattedString']('￥{0:C2}');
+            var given_text = `即减 ${str} 元`;
             return getConditionText(this) + given_text;
         });
     }

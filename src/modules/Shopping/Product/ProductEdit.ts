@@ -4,7 +4,7 @@ import Product = require('models/Product');
 import app = require('Application');
 import shopping = require('services/Shopping');
 import Service = require('services/Service');
-import ProductGroupDialog = require('modules/Shopping/Product/ProductGroupDialog');
+// import ProductGroupDialog = require('modules/Shopping/Product/ProductGroupDialog');
 import mapping = require('knockout.mapping');
 import val = require('knockout.validation');
 
@@ -31,7 +31,7 @@ class PageModel {
     }
 
     back() {
-        app.back().fail(function () {
+        app.backFail.add(function () {
             location.href = '#Shopping/ProductList';
         });
     }
