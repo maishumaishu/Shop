@@ -1,5 +1,5 @@
 ﻿
-import shopAdmin = require('services/ShopAdmin');
+import shopAdmin = require('services/User');
 import app = require('Application');
 import site = require('Site');
 import validation = require('knockout.validation');
@@ -22,7 +22,7 @@ function page_load(page: chitu.Page) {
 
             return shopAdmin.login(model.username(), model.password())
                 .then(function () {
-                    $('#navbar').find('[name="username"]').text(model.username());
+                    //$('#navbar').find('[name="username"]').text(model.username());
                     app.redirect(site.config.startUrl);
                     $ctrls.show();
                 });

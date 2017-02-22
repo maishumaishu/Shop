@@ -1,4 +1,4 @@
-import Validation = require('core/validate');
+import Validation = require('common/validate');
 import smsService = require('services/SMS');
 import userService = require('services/User');
 

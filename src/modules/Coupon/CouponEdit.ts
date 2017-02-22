@@ -1,6 +1,7 @@
 import app = require('Application');
 import site = require('Site');
 import shoppingService = require('services/Shopping');
+import UE = require('common/ue.ext');
 
 let JData = window['JData'];
 
@@ -14,14 +15,15 @@ export default function (page: chitu.Page) {
 function page_load(page: chitu.Page, args: any) {
     var ue_ready = $.Deferred();
 
-    var ue: any;
-    requirejs(['com/ue.ext'], function (UE) {
-        ue = UE.getEditor('couponCodeEditor');
-        ue.ready(function () {
-            ue.setHeight(120);
-            ue_ready.resolve();
-        });
-    })
+    //var ue: any;
+    // requirejs(['com/ue.ext'], function (UE) {
+    //     ue = UE.getEditor('couponCodeEditor');
+    //     ue.ready(function () {
+    //         ue.setHeight(120);
+    //         ue_ready.resolve();
+    //     });
+    // })
+
 
     var model = {
         coupon: {
@@ -34,7 +36,7 @@ function page_load(page: chitu.Page, args: any) {
             ValidBegin: ko.observable().extend({ required: true }),
             ValidEnd: ko.observable().extend({ required: true }),
             Picture: ko.observable(),
-            Remark: ko.observable(),
+            Remark: ko.observable<string>(),
             BrandNames: ko.observable(),
             CategoryNames: ko.observable(),
             ProductNames: ko.observable()
@@ -45,7 +47,7 @@ function page_load(page: chitu.Page, args: any) {
             })
         },
         save: function () {
-            model.coupon.Remark(ue.getContent());
+            //model.coupon.Remark(ue.getContent());
             var result = $.Deferred();
             var dataItem = ko.mapping.toJS(model.coupon);
             debugger;
@@ -63,6 +65,8 @@ function page_load(page: chitu.Page, args: any) {
     };
 
     ko.applyBindings(model, page.element);
+
+    UE.createEditor('couponCodeEditor', model.coupon.Remark);
 
     (<any>$('[name="ReceiveBegin"],[name="ReceiveEnd"],[name="ValidBegin"],[name="ValidEnd"]')).datepicker({
         dateFormat: 'yy-mm-dd',
@@ -88,7 +92,7 @@ function page_load(page: chitu.Page, args: any) {
 
                 ko.mapping.fromJS(coupon, {}, model.coupon);
 
-                ue.setContent(model.coupon.Remark() || '');
+                // ue.setContent(model.coupon.Remark() || '');
             })
     }
     //})

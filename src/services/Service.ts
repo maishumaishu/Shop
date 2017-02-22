@@ -11,6 +11,41 @@ function ajax<T>(settings: JQueryAjaxSettings) {
     });
 }
 
+/** 实现数据的存储，以及数据修改的通知 */
+class ValueStore<T> {
+    private funcs = new Array<(args: T) => void>();
+    private _value: T;
+
+    constructor() {
+    }
+    add(func: (value: T) => any): (args: T) => any {
+        this.funcs.push(func);
+        return func;
+    }
+    remove(func: (value: T) => any) {
+        this.funcs = this.funcs.filter(o => o != func);
+    }
+    fire(value: T) {
+        this.funcs.forEach(o => o(value));
+    }
+    get value(): T {
+        return this._value;
+    }
+    set value(value: T) {
+        if (this._value == value)
+            return;
+
+        this._value = value;
+        this.fire(value);
+    }
+}
+
+let username = new ValueStore<string>();
+username.value = localStorage['username'];
+username.add((value) => {
+    localStorage['username'] = value;
+})
+
 export = class Service {
     static error = $.Callbacks()
     static config = {
@@ -88,7 +123,15 @@ export = class Service {
         }
         localStorage.setItem('userId', value);
     }
+    static get username() {
+        return username;
+    }
+    // static set username(value: string) {
+    //     localStorage.setItem('username', value);
+    // }
 }
+
+
 
 window['models'] = {};
 window['translators'] = window['translators'] || {};

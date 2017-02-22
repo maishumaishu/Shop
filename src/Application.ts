@@ -84,9 +84,12 @@ export = app;
 
 //=================================================================================
 var model = {
-    menus: ko.observableArray()
-
+    menus: ko.observableArray(),
+    topBar: {
+        username: ko.observable<string>(Service.username.value)
+    }
 };
+Service.username.add((value) => model.topBar.username(value));
 
 requirejs(['text!data/Menu.json'], function (text) {
     let data = JSON.parse(text);
@@ -112,8 +115,14 @@ requirejs(['text!data/Menu.json'], function (text) {
     model.menus(data);
 });
 
+let headerNavbar = document.getElementById('header-navbar');
+let sidebar = document.getElementById('sidebar');
+console.assert(headerNavbar != null);
+console.assert(sidebar != null);
 
-ko.applyBindings(model, document.getElementById('sidebar'));
-ko.applyBindings(model, document.getElementById('navbar'));
+ko.applyBindings(model, sidebar);
+//ko.applyBindings(model, document.getElementById('navbar'));
+ko.applyBindings(model, headerNavbar);
+
 //=================================================================================
 
