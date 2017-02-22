@@ -2975,7 +2975,7 @@ li [class^="icon-"], li [class*=" icon-"], .nav-list li [class^="icon-"], .nav-l
     color: #FFF !important;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25) !important;
     background-image: none !important;
-    border: 5px solid #FFF;
+    border: 1px solid #FFF;
     border-radius: 0;
     box-shadow: none !important;
     -webkit-transition: all ease .15s;
