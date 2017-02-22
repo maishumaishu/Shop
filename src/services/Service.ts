@@ -1,10 +1,20 @@
 ﻿
 import $ = require('jquery');
 
-let service_host = 'service.alinq.cn:2800'
+let service_host = 'service.alinq.cn:2800';
+
+function ajax<T>(settings: JQueryAjaxSettings) {
+    return new Promise<T>((reslove, reject) => {
+        $.ajax(settings)
+            .done((o) => reslove(o))
+            .fail((o) => reject(o))
+    });
+}
+
 export = class Service {
     static error = $.Callbacks()
     static config = {
+        serviceHost: service_host,
         shopUrl: `http://${service_host}/AdminServices/Shop/`,
         weixinUrl: `http://${service_host}/AdminServices/WeiXin/`,
         siteUrl: `http://${service_host}/AdminServices/Site/`,
@@ -22,9 +32,8 @@ export = class Service {
         return $.ajax({ url: url, data: data, method: 'get' });
     }
 
-    static putAsJson(path: string, data) {
-        var url = Service.config.shopUrl + path;
-        return $.ajax({
+    static getAsJson<T>(url: string, data) {
+        return ajax<T>({
             headers: {
                 'content-type': 'application/json'
             },
@@ -33,9 +42,18 @@ export = class Service {
         });
     }
 
-    static postAsJson(path: string, data) {
-        var url = Service.config.shopUrl + path;
-        return $.ajax({
+    static putAsJson<T>(url: string, data) {
+        return ajax<T>({
+            headers: {
+                'content-type': 'application/json'
+            },
+            url: url, data: JSON.stringify(data),
+            method: 'put'
+        });
+    }
+
+    static postAsJson<T>(url: string, data) {
+        return ajax<T>({
             headers: {
                 'content-type': 'application/json'
             },
@@ -44,21 +62,38 @@ export = class Service {
         });
     }
 
-    ajax(options: { url: string, data?, method?: string }) {
-        // data = data || {};
-        // return $.ajax({ url, data, method: 'post' });
-        return $.ajax(options);
+    ajax<T>(options: JQueryAjaxSettings) {
+        return ajax<T>(options);
     }
 
     static appToken = "58424776034ff82470d06d3d";
-    static token = '';
     static storeId = '58401d1906c02a2b8877bd13';
+    static get token() {
+        return localStorage['token'];
+    };
+    static set token(value: string) {
+        if (value === undefined) {
+            localStorage.removeItem('token');
+            return;
+        }
+        localStorage.setItem('token', value);
+    }
+    static get userId() {
+        return localStorage['userId'];
+    };
+    static set userId(value: string) {
+        if (value === undefined) {
+            localStorage.removeItem('userId');
+            return;
+        }
+        localStorage.setItem('userId', value);
+    }
 }
 
 window['models'] = {};
 window['translators'] = window['translators'] || {};
 window['services'] = window['services'] || {};
 
-// export = <Services>window['services'];
+
 
 
