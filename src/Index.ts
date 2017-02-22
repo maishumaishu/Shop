@@ -67,6 +67,8 @@ requirejs.config({
         'ko.val': 'scripts/knockout.validation.cn',
         'knockout.validation': 'scripts/knockout.validation',
         'knockout.mapping': 'scripts/knockout.mapping',
+        react: 'scripts/react',
+        'react-dom': 'scripts/react-dom',
         move: 'scripts/move',
         'MicrosoftAjax.debug': 'scripts/MicrosoftAjax.debug',
         text: 'scripts/text',
@@ -80,13 +82,13 @@ requirejs.config({
         'ue': 'ueditor'
     }
 });
-var references = ['Application', 'Site', 'ErrorHandle', 'knockout', 'ko.map', 'custom'];
-requirejs(references, function (app) {
-    /// <param name="app" type="chitu.Application"/>
-    if (arguments.length > 0) {
-        window['ko'] = arguments[3];
-        window['ko'].mapping = arguments[4];
-    }
+var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom'];
+requirejs(references, function (React, ReactDOM, ko, mapping, app) {
+    window['React'] = React;
+    window['ReactDOM'] = ReactDOM;
+    window['ko'] = ko;
+    window['ko'].mapping = mapping;
+
     app.run()
 
     var model = {

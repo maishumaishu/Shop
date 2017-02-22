@@ -37,13 +37,22 @@ module.exports = function (grunt) {
                 options: {
                     compress: false,
                 },
-                files: [{
-                    expand: true,
-                    cwd: src_root + '/content',
-                    src: ['**/*.styl'],
-                    dest: dest_root + '/content',
-                    ext: '.css'
-                }]
+                files: [
+                    {
+                        expand: true,
+                        cwd: src_root + '/content',
+                        src: ['**/*.styl'],
+                        dest: dest_root + '/content',
+                        ext: '.css'
+                    },
+                    {
+                        expand: true,
+                        cwd: src_root + '/modules',
+                        src: ['**/*.styl'],
+                        dest: dest_root + '/modules',
+                        ext: '.css'
+                    }
+                ]
             },
             // bootstrap: {
             //     files: [{

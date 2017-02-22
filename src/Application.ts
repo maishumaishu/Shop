@@ -1,9 +1,12 @@
 ﻿
 import ko = require('knockout');
 import ko_ext = require('common/ko_ext/core');
+import Service = require('services/Service');
 
 ko_ext.image.imageServer = 'http://a.alinq.cn';
 ko_ext.image.storeName = '零食有约';
+
+
 
 class Application extends chitu.Application {
 
@@ -19,7 +22,12 @@ class Application extends chitu.Application {
 
     protected createPageElement(routeData: chitu.RouteData): HTMLElement {
         let element = document.createElement('div');
-        document.getElementById('mainContent').appendChild(element);
+        if (['User.Login', 'User.Register'].indexOf(routeData.pageName) >= 0) {
+            document.body.appendChild(element);
+        }
+        else {
+            document.getElementById('mainContent').appendChild(element);
+        }
         return element;
     }
 }
@@ -67,5 +75,10 @@ app.backFail.add((sender) => {
     }
 });
 
+if (Service.token == null) {
+    app.redirect('User/Login');
+}
+
 window['app'] = app;
 export = app;
+
