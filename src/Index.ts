@@ -91,38 +91,7 @@ requirejs(references, function (React, ReactDOM, ko, mapping, app) {
 
     app.run()
 
-    var model = {
-        menus: ko.observableArray()
 
-    };
-
-    requirejs(['text!data/Menu.json'], function (text) {
-        let data = JSON.parse(text);
-        var stack = [];
-        for (var i = 0; i < data.length; i++)
-            stack.push(data[i]);
-
-        while (stack.length > 0) {
-            var item = stack.pop();
-            item.Url = item.Url || '';
-            item.Children = item.Children || [];
-            item.Icon = item.Icon || '';
-            item.Visible = (item.Visible === undefined) ? true : item.Visible;
-            item.VisibleChildren = [];
-
-            for (var i = 0; i < item.Children.length; i++) {
-                if (item.Children[i].Visible === undefined || item.Children[i].Visible !== false)
-                    item.VisibleChildren.push(item.Children[i]);
-
-                stack.push(item.Children[i]);
-            }
-        }
-        model.menus(data);
-    });
-
-
-    ko.applyBindings(model, document.getElementById('sidebar'));
-    ko.applyBindings(model, document.getElementById('navbar'));
 
     requirejs(['ace'], function () { });
 });
