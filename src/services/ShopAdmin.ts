@@ -3,23 +3,16 @@ import Service = require('services/Service');
 
 class ShopAdmin extends Service {
     login(username, password) {
-        debugger;
-        return $.ajax({ url: 'User/GetAppToken', method: 'post' }).pipe(function (appToken) {
-            debugger;
-            $.cookie('AppToken', appToken);
-            var url = Service.config.memberUrl + 'Admin/GetAdminToken';
-            return $.ajax({
-                url: url,
-                dataType: "json",
-                data: { appToken: appToken, username: username, password: password }
-            });
-        }).done(function (userToken) {
-            $.cookie('Token', userToken);
+        let url = `http://${Service.config.serviceHost}/user/login`;
+        return Service.getAsJson<{ token: string, userId: string }>(url, { username, password }).then((o) => {
+            Service.token = o.token;
+            Service.userId = o.userId;
         })
+
     }
     logout() {
-        Service.appToken = '';
-        Service.token = '';
+        Service.token = undefined;
+        Service.userId = undefined;
         return $.Deferred().resolve();
     }
     changePassword(password) {
