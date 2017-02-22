@@ -10,7 +10,7 @@ class ShoppingService extends services {
     getProduct(productId: string) {
         let url = services.config.shopUrl + 'Product/GetProduct';
         let data = { productId: productId };
-        return this.ajax({ url, data }).then(data => {
+        return this.ajax<any>({ url, data }).then(data => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
             return data;
@@ -41,10 +41,10 @@ class ShoppingService extends services {
         debugger;
         var obj = ko.mapping.toJS(product, { ignore: ['ExtProperties'] });
         if (obj.Id) {
-            return services.putAsJson('Product/UpdateProduct', obj);
+            return services.putAsJson(services.config.shopUrl + 'Product/UpdateProduct', obj);
         }
         else {
-            return services.putAsJson('Product/SaveProduct', obj);
+            return services.putAsJson(services.config.shopUrl + 'Product/SaveProduct', obj);
         }
     }
     removeProduct(productId) {
