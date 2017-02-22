@@ -21,7 +21,7 @@ function page_load(page: chitu.Page) {
                 return val.showAllMessages();
 
             return shopAdmin.login(model.username(), model.password())
-                .done(function () {
+                .then(function () {
                     $('#navbar').find('[name="username"]').text(model.username());
                     app.redirect(site.config.startUrl);
                     $ctrls.show();
