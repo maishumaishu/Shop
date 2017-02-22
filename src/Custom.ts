@@ -1,4 +1,4 @@
-import services = require('services/Service');
+import Service = require('services/Service');
 import bootbox = require('bootbox');
 
 let JData = window['JData'];
@@ -46,45 +46,30 @@ let JData = window['JData'];
             options.data = options.data || {};
             options.headers = options.headers || {};
 
-            // var appToken = "E26297B41339791C2F79EA9F5D66CC090C47F8265F984EA7239322642C0B333D65E49B0DDC581C3C";
-            // var token = "EFF37347E349626066055C5DA0EE895BA324ECCEE1DE8DED406F81087BFAC8B02819259C34553F88";
-
-
-            // if (typeof options.data === 'string')
-            //     options.data = options.data + '&$appToken=' + appToken;
-            // else
-            //     options.data.$appToken = appToken;
-            //}
-
-            //if ($.cookie('Token')) {
-            // if (typeof options.data === 'string')
-            //     options.data = options.data + '&$token=' + token;
-            // else
-            //     options.data.$token = token;
-            //}
-
-            if (services.appToken) {
-                options.headers['application-token'] = services.appToken;
+            if (Service.appToken) {
+                options.headers['application-token'] = Service.appToken;
             }
-            if (services.token) {
-                options.headers['user-token'] = services.token;
+            if (Service.token) {
+                options.headers['user-token'] = Service.token;
             }
 
             if ((options.url as string).indexOf('?') < 0)
-                options.url = options.url + `?storeId=${services.storeId}`;
+                options.url = options.url + `?storeId=${Service.storeId}`;
             else
-                options.url = options.url + `&storeId=${services.storeId}`;
+                options.url = options.url + `&storeId=${Service.storeId}`;
+
+
 
 
             options.traditional = true
             var result = $.Deferred();
             _ajax(options)
-                .then(function (data) {
-                    if (data.Type == 'ErrorObject' && data.Code != 'Success') {
-                        services.error.fire(data);
-                    }
-                    return data;
-                })
+                // .then(function (data) {
+                //     if (data.Type == 'ErrorObject' && data.Code != 'Success') {
+                //         services.error.fire(data);
+                //     }
+                //     return data;
+                // })
                 .done(function (data) {
                     if (data.Type == 'ErrorObject') {
                         if (data.Code == 'Success') {
@@ -93,6 +78,13 @@ let JData = window['JData'];
                         }
 
                         result.reject(data);
+                        Service.error.fire(data);
+                        return;
+                    }
+                    else if (data.name !== undefined && data.message !== undefined && data.stack !== undefined) {
+                        let err = { Code: data.name, Message: data.message };
+                        result.reject(err);
+                        Service.error.fire(err);
                         return;
                     }
 
@@ -101,7 +93,7 @@ let JData = window['JData'];
                 .fail(function (error) {
                     //debugger;
                     var obj = { Code: error.status, Message: error.statusText };
-                    services.error.fire(obj);
+                    Service.error.fire(obj);
                 });
             return result;
         }
@@ -293,7 +285,10 @@ let JData = window['JData'];
                 })
                 return result;
             },
-            dropDownList: function (options) {
+            dropDownList: function (options: {
+                dataSource: string, selectedValue?: Object, displayField?: string,
+                valueField?: string, serviceUrl?: string
+            }) {
                 /// <param name='options' type='Object'>
                 /// Arguments:
                 /// dataSource: string, notNull, 数据源 <br/>
@@ -302,7 +297,7 @@ let JData = window['JData'];
                 /// valueField: string, null, 默认值为 Id <br/>
                 /// </param>
 
-                options = options || {};
+                options = options || ({} as any);
                 options = $.extend({
                     displayField: 'Name',
                     valueField: 'Id'
@@ -316,7 +311,7 @@ let JData = window['JData'];
                 var field_id = options.valueField;
                 var field_name = options.displayField;
                 var dataSource = options.dataSource;
-                var serviceUrl = options.serviceUrl || services.config.shopUrl;
+                var serviceUrl = options.serviceUrl || Service.config.shopUrl;
 
                 var arr = dataSource.split('/');
                 if (arr.length != 2) {
@@ -340,8 +335,8 @@ let JData = window['JData'];
                     }
 
 
-                    if (options.success != null) {
-                        options.success();
+                    if (options['success'] != null) {
+                        options['success']();
                     }
 
                 });
