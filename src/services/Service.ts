@@ -1,7 +1,7 @@
 ﻿
 import $ = require('jquery');
 
-let service_host = 'service.alinq.cn:2800';
+let service_host = 'service.alinq.cn:2800';//'localhost:2800';//
 
 function ajax<T>(settings: JQueryAjaxSettings) {
     return new Promise<T>((reslove, reject) => {
@@ -61,21 +61,22 @@ export = class Service {
         return $.ajax({ url: url, data: data, method: 'post' });
     }
 
-    static get(path: string, data?): JQueryPromise<any> {
-        data = data || {};
-        var url = Service.config.shopUrl + path;
-        return $.ajax({ url: url, data: data, method: 'get' });
+    static get<T>(url: string, data?) {
+        //data = data || {};
+        //var url = Service.config.shopUrl + path;
+        //return $.ajax({ url: url, data: data, method: 'get' });
+        return ajax<T>({ url: url, data: data, method: 'get' });
     }
 
-    static getByJson<T>(url: string, data) {
-        return ajax<T>({
-            headers: {
-                'content-type': 'application/json'
-            },
-            url: url, data: JSON.stringify(data),
-            method: 'get'
-        });
-    }
+    // static getByJson<T>(url: string, data) {
+    //     return ajax<T>({
+    //         headers: {
+    //             'content-type': 'application/json'
+    //         },
+    //         url: url, data: JSON.stringify(data),
+    //         method: 'get'
+    //     });
+    // }
 
     static putByJson<T>(url: string, data) {
         return ajax<T>({

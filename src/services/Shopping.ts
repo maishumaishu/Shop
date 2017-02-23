@@ -7,6 +7,9 @@ let JData = window['JData'];
 
 
 class ShoppingService extends services {
+    private url(path: string) {
+        return `${services.config.shopUrl}${path}`;
+    }
     getProduct(productId: string) {
         let url = services.config.shopUrl + 'Product/GetProduct';
         let data = { productId: productId };
@@ -16,9 +19,9 @@ class ShoppingService extends services {
             return data;
         });
     }
-    getProductList(pageIndex: number, searchText?: string): JQueryPromise<{ TotalRowCount: number, DataItems: Array<Product> }> {
+    getProductList(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
 
-        var url = 'Product/GetProducts';
+        var url = this.url('Product/GetProducts');
         if (searchText) {
             url = url + '?searchText=' + encodeURI(searchText);
         }
@@ -26,7 +29,7 @@ class ShoppingService extends services {
         var maximumRows = 10;
         var start = pageIndex * maximumRows;
         var args = { StartRowIndex: start, MaximumRows: maximumRows };
-        return services.get(url, args).then(function (result) {
+        return services.get<any>(url, args).then(function (result) {
             for (var i = 0; i < result.DataItems.length; i++) {
                 result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);
             }
@@ -54,46 +57,44 @@ class ShoppingService extends services {
         return services.callMethod('Product/ProductTop', { id: productId });
     }
     onShelve(productId) {
-        /// <returns type="jQuery.Deferred"/>
-        return services.callMethod('Product/OnShelve', { productId: productId });
+        //return services.callMethod('Product/OnShelve', { productId: productId });
+        return services.putByJson(this.url('Product/OnShelve'), { productId });
     }
     offShelve(productId) {
-        /// <returns type="jQuery.Deferred"/>
-        return services.callMethod('Product/OffShelve', { productId: productId });
+        return services.putByJson(this.url('Product/OffShelve'), { productId });
+        //return services.callMethod('Product/OffShelve', { productId: productId });
     }
     getCategories() {
-        let url = `${services.config.shopUrl}/ShoppingData/select?source=ProductCategories&selection=Id,Name`;
-        return services.getByJson<any>(url, {})
+        let url = this.url('ShoppingData/select?source=ProductCategories&selection=Id,Name');
+        return services.get<any>(url)
             .then(function (result) {
                 return result.DataItems;
             });
     }
     getBrands() {
-        let url = `${services.config.shopUrl}/ShoppingData/select?source=Brands&selection=Id,Name`
-        return services.getByJson<any>(url, {})
+        let url = this.url('ShoppingData/select?source=Brands&selection=Id,Name');
+        return services.get<any>(url, {})
             .then(function (result) {
                 return result.DataItems;
             });
     }
     setStock(productId, quantity) {
-        /// <returns type="jQuery.Deferred"/>
         return services.callMethod('Product/SetStock', { productId: productId, quantity: quantity });
     }
     getProductStocks(productIds) {
-        /// <returns type="jQuery.Deferred"/>
-        return services.get('Product/GetProductStocks', { productIds: productIds });
+        let url = this.url('Product/GetProductStocks');
+        return services.get<Array<any>>(url, { productIds: productIds });
     }
     getBuyLimitedNumbers(productIds) {
-        /// <returns type="jQuery.Deferred"/>
-        return services.get('Product/GetBuyLimitedNumbers', { productIds: productIds });
+        let url = this.url('Product/GetBuyLimitedNumbers');
+        return services.get<Array<any>>(url, { productIds: productIds });
     }
     buyLimited(productId, quantity) {
-        /// <returns type="jQuery.Deferred"/>
         return services.callMethod('Product/SetBuyLimitedQuantity', { productId: productId, quantity: quantity });
     }
     getRegionFreights(solutionId) {
         let url = `${services.config.shopUrl}Freight/GetRegionFreights`
-        return services.getByJson<Array<any>>(url, { solutionId: solutionId });
+        return services.get<Array<any>>(url, { solutionId: solutionId });
     }
     setRegionFreight(id, freight, freeAmount) {
         return services.callMethod('Freight/SetRegionFreight', { id: id, freight: freight, freeAmount: freeAmount });
@@ -110,13 +111,6 @@ class ShoppingService extends services {
     getProductArguments(argumentId) {
         return services.callMethod('Product/GetProductArguments', { argumentId: argumentId });
     }
-    productGroups = new JData.WebDataSource(services.config.shopUrl + 'ShoppingData/Select?source=ProductGroups&selection=Id,Name,ArgumentNames,\
-                                                                      CustomFieldName1,CustomFieldName2,CustomFieldName3,CustomFieldName4,CustomFieldName5,CustomFieldName6,\
-                                                                      CustomFieldValues1,CustomFieldValues2,CustomFieldValues3,CustomFieldValues4,CustomFieldValues5,CustomFieldValues6,\
-                                                                      CustomFieldSortNumber1,CustomFieldSortNumber2,CustomFieldSortNumber3,CustomFieldSortNumber4,CustomFieldSortNumber5,CustomFieldSortNumber6',
-        services.config.shopUrl + 'ShoppingData/Insert?source=ProductGroups',
-        services.config.shopUrl + 'ShoppingData/Update?source=ProductGroups',
-        services.config.shopUrl + 'ShoppingData/Delete?source=ProductGroups');
 }
 
 

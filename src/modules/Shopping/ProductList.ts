@@ -67,29 +67,26 @@ function page_load(page: chitu.Page, args) {
         homeProducts: ko.observableArray<any>(),
         paging: new PagingModel(),
         offShelve: function (item) {
-            return shopping.offShelve(item.Id()).done($.proxy(
-                function () {
-                    this._item.OffShelve(true);
+            return shopping.offShelve(item.Id()).then(() => {
+                item.OffShelve(true);
 
-                    var sel_args = new JData.DataSourceSelectArguments();
-                    sel_args.set_filter('ProductId=Guid"' + this._item.Id() + '"');
-                    station.homeProduct.select(sel_args).done(function (result) {
-                        if (result.length > 0)
-                            station.homeProduct.delete(result[0]);
+                var sel_args = new JData.DataSourceSelectArguments();
+                sel_args.set_filter('ProductId=Guid"' + item.Id() + '"');
+                station.homeProduct.select(sel_args).done(function (result) {
+                    if (result.length > 0)
+                        station.homeProduct.delete(result[0]);
 
-                    })
-                },
-                { _item: item })
-            );
+                })
+            });
         },
         onShelve: function (item) {
-            return shopping.onShelve(item.Id()).done(function () {
+            return shopping.onShelve(item.Id()).then(function () {
                 item.OffShelve(false);
             })
         },
         handlePage: function (pageIndex) {
             g_pageIndex = pageIndex;
-            return shopping.getProductList(pageIndex, model.searchText()).pipe(function (result) {
+            return shopping.getProductList(pageIndex, model.searchText()).then(function (result) {
                 model.paging.pageIndex(pageIndex);
                 model.paging.recordCount(result.TotalRowCount);
                 model.products.removeAll();
@@ -99,9 +96,10 @@ function page_load(page: chitu.Page, args) {
                     model.products.push(obj);
                     productIds.push(ko.unwrap(result.DataItems[i].Id));
                 }
-                return $.when(shopping.getProductStocks(productIds),
-                    shopping.getBuyLimitedNumbers(productIds));
-            }).done(function (stocks, limitedNumbers) {
+                return Promise.all([shopping.getProductStocks(productIds), shopping.getBuyLimitedNumbers(productIds)]);
+            }).then(function (result) {
+                let stocks = result[0];
+                let limitedNumbers = result[1];
                 var products = model.products();
                 for (var j = 0; j < stocks.length; j++) {
                     for (var i = 0; i < products.length; i++) {
