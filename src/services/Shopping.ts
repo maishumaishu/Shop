@@ -41,10 +41,10 @@ class ShoppingService extends services {
         debugger;
         var obj = ko.mapping.toJS(product, { ignore: ['ExtProperties'] });
         if (obj.Id) {
-            return services.putAsJson(services.config.shopUrl + 'Product/UpdateProduct', obj);
+            return services.putByJson(services.config.shopUrl + 'Product/UpdateProduct', obj);
         }
         else {
-            return services.putAsJson(services.config.shopUrl + 'Product/SaveProduct', obj);
+            return services.putByJson(services.config.shopUrl + 'Product/SaveProduct', obj);
         }
     }
     removeProduct(productId) {
@@ -89,12 +89,8 @@ class ShoppingService extends services {
         return services.callMethod('Product/SetBuyLimitedQuantity', { productId: productId, quantity: quantity });
     }
     getRegionFreights(solutionId) {
-        return services.callMethod('Freight/GetRegionFreights', { solutionId: solutionId }).then(function (items) {
-            for (var i = 0; i < items.length; i++) {
-                items[i] = ko.mapping.fromJS(items[i]);
-            }
-            return items;
-        });
+        let url = `${services.config.shopUrl}Freight/GetRegionFreights`
+        return services.getByJson<Array<any>>(url, { solutionId: solutionId });
     }
     setRegionFreight(id, freight, freeAmount) {
         return services.callMethod('Freight/SetRegionFreight', { id: id, freight: freight, freeAmount: freeAmount });
@@ -120,19 +116,6 @@ class ShoppingService extends services {
         services.config.shopUrl + 'ShoppingData/Delete?source=ProductGroups');
 }
 
-// services.shopping = {
-
-//     //productArguments: new JData.WebDataSource(site.config.shopUrl + 'ShoppingData/Select?source=ProductArguments&selection=Id,Name,Fields,CreateDateTime',
-//     //                                                   site.config.shopUrl + 'ShoppingData/Insert?source=ProductArguments',
-//     //                                                   site.config.shopUrl + 'ShoppingData/Update?source=ProductArguments',
-//     //                                                   site.config.shopUrl + 'ShoppingData/Delete?source=ProductArguments'),
-
-//     //productPropertyDefines: new JData.WebDataSource(site.config.shopUrl + 'ShoppingData/Select?source=ProductPropertyDefines&selection=Id,Name,CreateDateTime',
-//     //    site.config.shopUrl + 'ShoppingData/Insert?source=ProductPropertyDefines',
-//     //    site.config.shopUrl + 'ShoppingData/Update?source=ProductPropertyDefines',
-//     //    site.config.shopUrl + 'ShoppingData/Delete?source=ProductPropertyDefines'),
-
-// }
 
 module outlet {
     export var dataSource = function () {

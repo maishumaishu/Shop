@@ -1,7 +1,7 @@
 
 import site = require('Site');
 import Service = require('services/Service');
-//let html = requirejs(['text!modules/Shopping/OrderList.html']);
+// import Utility = require('Utility');
 let JData = window['JData'];
 
 export default function (page: chitu.Page) {
@@ -62,7 +62,7 @@ function page_load(page: chitu.Page, args: any) {
                 .click(function () {
 
                     $('#orderId').val(order.Id);
-                    $('#createDateTime').val(Utility.format('{0:d}', order.OrderDate));
+                    $('#createDateTime').val((order.OrderDate as Date).toLocaleString());
                     $('#consignee').val(order.Consignee);
                     $('#receiptAddress').val(order.ReceiptAddress);
 
@@ -129,7 +129,7 @@ function page_load(page: chitu.Page, args: any) {
                 .html('详细')
                 .appendTo(cell)
                 .click(function () {
-                    var url = Utility.format(site.config.shopUrl + 'ShoppingData/Select?source=OrderDetails&filter=OrderId%3dGuid"{0}"&selection=Price,ProductName,Quantity,Unit', order.Id);
+                    var url = `${site.config.shopUrl}ShoppingData/Select?source=OrderDetails&filter=OrderId%3dGuid"${order.Id}"&selection=Price,ProductName,Quantity,Unit`;
                     $.ajax(url).done(function (data) {
 
                         $.extend(order, {
@@ -139,7 +139,7 @@ function page_load(page: chitu.Page, args: any) {
 
                         currentOrder.Consignee(order.Consignee);
                         currentOrder.DeliveryType(order.DeliveryType);
-                        currentOrder.OrderDate(Utility.format('{0:G}', order.OrderDate));
+                        currentOrder.OrderDate((order.OrderDate as Date).toLocaleString());
                         currentOrder.Status(order.Status);
                         currentOrder.ReceiptAddress(order.ReceiptAddress);
                         currentOrder.OrderDetails.removeAll();
@@ -157,7 +157,7 @@ function page_load(page: chitu.Page, args: any) {
 
                         (<any>$orderDetail).dialog({
                             width: 'auto',
-                            title: Utility.format("<div class='widget-header widget-header-small' style='padding-top:6px;'><h5>{0}</h5></div>", '订单详情'),
+                            title: "<div class='widget-header widget-header-small' style='padding-top:6px;'><h5>订单详情</h5></div>", 
                             title_html: true,
                             close: function () {
 
@@ -253,7 +253,7 @@ function page_load(page: chitu.Page, args: any) {
             if (!event.target.dlg_element) {
                 event.target.dlg_element = $(event.target).next('[data-role="export"]');
                 (<any>$(event.target.dlg_element)).dialog({
-                    title: Utility.format("<div class='widget-header widget-header-small' style='padding-top:6px;'><h5>{0}</h5></div>", '订单导出'),
+                    title: "<div class='widget-header widget-header-small' style='padding-top:6px;'><h5>订单导出</h5></div>",
                     title_html: true,
                     position: {
                         my: 'right top',
@@ -348,7 +348,7 @@ function page_load(page: chitu.Page, args: any) {
 
             deferred.done(function (searchText) {
                 if (searchText)
-                    arg.set_filter(Utility.format('Serial == "{0}" or Member.Name == "{0}"', searchText));
+                    arg.set_filter(`Serial == "${searchText}" or Member.Name == "${searchText}"`);
                 else
                     arg.set_filter(null);
 

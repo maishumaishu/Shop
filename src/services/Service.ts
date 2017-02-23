@@ -67,7 +67,17 @@ export = class Service {
         return $.ajax({ url: url, data: data, method: 'get' });
     }
 
-    static getAsJson<T>(url: string, data) {
+    static getByJson<T>(url: string, data) {
+        return ajax<T>({
+            headers: {
+                'content-type': 'application/json'
+            },
+            url: url, data: JSON.stringify(data),
+            method: 'get'
+        });
+    }
+
+    static putByJson<T>(url: string, data) {
         return ajax<T>({
             headers: {
                 'content-type': 'application/json'
@@ -77,17 +87,7 @@ export = class Service {
         });
     }
 
-    static putAsJson<T>(url: string, data) {
-        return ajax<T>({
-            headers: {
-                'content-type': 'application/json'
-            },
-            url: url, data: JSON.stringify(data),
-            method: 'put'
-        });
-    }
-
-    static postAsJson<T>(url: string, data) {
+    static postByJson<T>(url: string, data) {
         return ajax<T>({
             headers: {
                 'content-type': 'application/json'

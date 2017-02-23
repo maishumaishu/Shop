@@ -9,3 +9,5 @@ class Utility {
         return source;
     }
 }
+
+export = Utility

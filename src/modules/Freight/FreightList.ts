@@ -57,16 +57,20 @@ export default function (page: chitu.Page) {
         }
     };
 
-    ko.applyBindings(model, page.element);
 
     requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
         page.element.innerHTML = html;
+        ko.applyBindings(model, page.element);
+
         page_load(page, page.routeData.values);
     })
 
     function page_load(sender, args) {
         app.nav_bar.title(decodeURI(args.name));
-        return shopping.getRegionFreights(args.id).done(function (items) {
+        return shopping.getRegionFreights(args.id).then(function (items) {
+            for (var i = 0; i < items.length; i++) {
+                items[i] = ko.mapping.fromJS(items[i]);
+            }
             model.freights(items);
         });
     };

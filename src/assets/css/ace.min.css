@@ -1308,7 +1308,7 @@ blockquote, blockquote.pull-right {
         border-left: 1px solid #DDD;
         padding: 0;
         position: relative;
-        float: left !important;
+        float: right;
     }
 
         .ace-nav > li:first-child {
@@ -1659,7 +1659,7 @@ blockquote, blockquote.pull-right {
 
         .ace-nav > li {
             display: inline-block;
-            float: none !important;
+            /*float: none !important;*/
             text-align: left;
             letter-spacing: normal;
         }
@@ -2810,7 +2810,7 @@ li [class^="icon-"], li [class*=" icon-"], .nav-list li [class^="icon-"], .nav-l
         left: 0;
         bottom: auto;
         top: auto !important;
-        margin-top: 40px;
+        /*margin-top: 40px;*/
         border: 1px solid #CCC;
         border-left-width: 0;
         box-shadow: 2px 1px 2px 0 rgba(0,0,0,0.2);

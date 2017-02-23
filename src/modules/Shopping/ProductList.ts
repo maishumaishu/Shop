@@ -166,7 +166,7 @@ function page_load(page: chitu.Page, args) {
             return station.homeProduct
                 .insert(obj)
                 .done(function () {
-                    var msg = Utility.format('推荐产品"{0}"成功', item.Name())
+                    var msg = `推荐产品"${item.Name()}"成功`;
                     bootbox.alert(msg);
                 });
         },
