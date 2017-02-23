@@ -4,7 +4,6 @@ import Product = require('models/Product');
 import app = require('Application');
 import shopping = require('services/Shopping');
 import Service = require('services/Service');
-// import ProductGroupDialog = require('modules/Shopping/Product/ProductGroupDialog');
 import mapping = require('knockout.mapping');
 import val = require('knockout.validation');
 
@@ -23,17 +22,17 @@ interface KeyValue {
 
 class PageModel {
     private $dlg_groups: JQuery;
-    private page: ProductEditPage;
+    private page: chitu.Page;
 
-    constructor(page: ProductEditPage) {
+    constructor(page: chitu.Page) {
         this.$dlg_groups = $(page.element).find('[name="groupList"]');
         this.page = page;
     }
 
     back() {
-        app.backFail.add(function () {
+        app.back().catch(() => {
             location.href = '#Shopping/ProductList';
-        });
+        })
     }
 
     product = new Product();
@@ -49,62 +48,52 @@ class PageModel {
     }
 }
 
-class ProductEditPage extends chitu.Page {
-    private model: PageModel;
-
-    constructor(params) {
-        super(params);
-
-        requirejs(['css!content/Shopping/ProductEdit.css']);
-
-        this.model = new PageModel(this);
-        ko.applyBindings(this.model, this.element);
-
-
-        UE.createEditor('productEditEditor', this.model.product.Introduce);
-
-
-        requirejs(['common/ImageFileResize'], () => {
-            (<any>$(this.element).find('[name="ImageUpload"]')).imageFileResize({
-                max_width: 800,
-                max_height: 800,
-                callback: (file, imageData) => {
-                    var img_base64 = imageData.split(';')[1].split(',')[1];
-                    $.ajax({
-                        url: Service.config.shopUrl + 'Common/UploadImage?dir=Shopping',
-                        method: 'post',
-                        dataType: 'json',
-                        data: {
-                            imageData: img_base64
-                        }
-                    }).done((result) => {
-                        var path = result.path;
-                        if (path[0] == '/') {
-                            path = path.substr(1, path.length - 1);
-                        }
-                        this.model.product.ImagePaths.push(Service.config.shopUrl + path);
-                    });
-                }
-            });
+export default function (page: chitu.Page) {
+    requirejs(['common/ImageFileResize'], () => {
+        (<any>$(this.element).find('[name="ImageUpload"]')).imageFileResize({
+            max_width: 800,
+            max_height: 800,
+            callback: (file, imageData) => {
+                var img_base64 = imageData.split(';')[1].split(',')[1];
+                $.ajax({
+                    url: Service.config.shopUrl + 'Common/UploadImage?dir=Shopping',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {
+                        imageData: img_base64
+                    }
+                }).done((result) => {
+                    var path = result.path;
+                    if (path[0] == '/') {
+                        path = path.substr(1, path.length - 1);
+                    }
+                    this.model.product.ImagePaths.push(Service.config.shopUrl + path);
+                });
+            }
         });
+    });
 
-        this.load.add(this.page_load);
-    }
-
-    private page_load(page: ProductEditPage, args: any) {
-        let categories_deferred = shopping.getCategories().done(function (data) {
-            mapping.fromJS(data, {}, page.model.categories);
-        });
-        let brands_deferred = shopping.getBrands().done(function (data) {
-            mapping.fromJS(data, {}, page.model.brands);
-        });
-        return $.when(categories_deferred, brands_deferred)
-            .pipe(() => shopping.getProduct(args.id))
-            .done(function (data) {
-                mapping.fromJS(data, {}, page.model.product);
-            });
-    }
+    requirejs([`text!${page.routeData.actionPath}.html`, 'css!content/Shopping/ProductEdit.css'], function (html) {
+        page.element.innerHTML = html;
+        let model = new PageModel(page);
+        UE.createEditor('productEditEditor', model.product.Introduce);
+        ko.applyBindings(model, page.element);
+        page_load(page, model, page.routeData.values);
+    });
 
 }
 
-export = ProductEditPage;
+function page_load(page: chitu.Page, model: PageModel, args: any) {
+    let categories_deferred = shopping.getCategories().then(function (data) {
+        mapping.fromJS(data, {}, model.categories);
+    });
+    let brands_deferred = shopping.getBrands().then(function (data) {
+        mapping.fromJS(data, {}, model.brands);
+    });
+
+    return Promise.all([categories_deferred, brands_deferred]).then(() => {
+        return shopping.getProduct(args.id);
+    }).then((data) => {
+        mapping.fromJS(data, {}, model.product);
+    });
+}

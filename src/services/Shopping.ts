@@ -62,15 +62,18 @@ class ShoppingService extends services {
         return services.callMethod('Product/OffShelve', { productId: productId });
     }
     getCategories() {
-        /// <returns type="jQuery.Deferred"/>
-        return services.callMethod('ShoppingData/select?source=ProductCategories&selection=Id,Name').then(function (result) {
-            return result.DataItems;
-        });
+        let url = `${services.config.shopUrl}/ShoppingData/select?source=ProductCategories&selection=Id,Name`;
+        return services.getByJson<any>(url, {})
+            .then(function (result) {
+                return result.DataItems;
+            });
     }
     getBrands() {
-        return services.callMethod('ShoppingData/select?source=Brands&selection=Id,Name').then(function (result) {
-            return result.DataItems;
-        });
+        let url = `${services.config.shopUrl}/ShoppingData/select?source=Brands&selection=Id,Name`
+        return services.getByJson<any>(url, {})
+            .then(function (result) {
+                return result.DataItems;
+            });
     }
     setStock(productId, quantity) {
         /// <returns type="jQuery.Deferred"/>

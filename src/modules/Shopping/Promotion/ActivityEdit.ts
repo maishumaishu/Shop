@@ -617,12 +617,12 @@ class ActivityEditPage extends chitu.Page {
 
         ko.applyBindings(model, page.element);
 
-        shopping.getCategories().done(function (data) {
+        shopping.getCategories().then(function (data) {
             data.unshift({ Name: '请选择类别', Id: '' })
             model.categories(data);
         });
 
-        shopping.getBrands().done((data: Array<any>) => {
+        shopping.getBrands().then((data: Array<any>) => {
             data.unshift({ Name: '请选择品牌', Id: '' })
             model.brands(data);
         })
