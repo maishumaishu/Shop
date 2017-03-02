@@ -51,6 +51,13 @@ module.exports = function (grunt) {
                         src: ['**/*.styl'],
                         dest: dest_root + '/modules',
                         ext: '.css'
+                    },
+                     {
+                        expand: true,
+                        cwd: src_root + '/mobile',
+                        src: ['**/*.styl'],
+                        dest: dest_root + '/mobile',
+                        ext: '.css'
                     }
                 ]
             },

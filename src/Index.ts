@@ -40,7 +40,7 @@ requirejs.config({
                 'css!scripts/jQuery.FileUpload/css/jquery.fileupload-ui.css']
         },
         'Site': {
-            deps: ['jquery.cookie']
+            deps: ['jquery.cookie', 'bootbox']
         },
         'Application': {
             deps: ['chitu']

@@ -13,7 +13,6 @@ class UserService {
             Service.token = o.token;
             Service.userId = o.userId;
             Service.username.value = username;
-
         })
     }
     register(model: RegisterModel) {

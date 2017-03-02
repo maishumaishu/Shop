@@ -280,7 +280,7 @@ interface JQueryGenericPromise<T> {
      * @param doneFilter A function that is called when the Deferred is resolved.
      * @param failFilter An optional function that is called when the Deferred is rejected.
      */
-    then<U>(doneFilter: (value?: T, ...values: any[]) => U|JQueryPromise<U>, failFilter?: (...reasons: any[]) => any, progressFilter?: (...progression: any[]) => any): JQueryPromise<U>;
+    then<U>(doneFilter: (value?: T, ...values: any[]) => U | JQueryPromise<U>, failFilter?: (...reasons: any[]) => any, progressFilter?: (...progression: any[]) => any): JQueryPromise<U>;
 
     /**
      * Add handlers to be called when the Deferred object is resolved, rejected, or still in progress.
@@ -299,7 +299,7 @@ interface JQueryPromiseCallback<T> {
 }
 
 interface JQueryPromiseOperator<T, U> {
-    (callback1: JQueryPromiseCallback<T>|JQueryPromiseCallback<T>[], ...callbacksN: Array<JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[]>): JQueryPromise<U>;
+    (callback1: JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[], ...callbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<U>;
 }
 
 /**
@@ -316,27 +316,27 @@ interface JQueryPromise<T> extends JQueryGenericPromise<T> {
      * @param alwaysCallbacks1 A function, or array of functions, that is called when the Deferred is resolved or rejected.
      * @param alwaysCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved or rejected.
      */
-    always(alwaysCallback1?: JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[], ...alwaysCallbacksN: Array<JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
+    always(alwaysCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...alwaysCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
     /**
      * Add handlers to be called when the Deferred object is resolved.
      * 
      * @param doneCallbacks1 A function, or array of functions, that are called when the Deferred is resolved.
      * @param doneCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved.
      */
-    done(doneCallback1?: JQueryPromiseCallback<T>|JQueryPromiseCallback<T>[], ...doneCallbackN: Array<JQueryPromiseCallback<T>|JQueryPromiseCallback<T>[]>): JQueryPromise<T>;
+    done(doneCallback1?: JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[], ...doneCallbackN: Array<JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[]>): JQueryPromise<T>;
     /**
      * Add handlers to be called when the Deferred object is rejected.
      * 
      * @param failCallbacks1 A function, or array of functions, that are called when the Deferred is rejected.
      * @param failCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is rejected.
      */
-    fail(failCallback1?: JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[], ...failCallbacksN: Array<JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
+    fail(failCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...failCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
     /**
      * Add handlers to be called when the Deferred object generates progress notifications.
      * 
      * @param progressCallbacks A function, or array of functions, to be called when the Deferred generates progress notifications.
      */
-    progress(progressCallback1?: JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[], ...progressCallbackN: Array<JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
+    progress(progressCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...progressCallbackN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
 
     // Deprecated - given no typings
     pipe(doneFilter?: (x: any) => any, failFilter?: (x: any) => any, progressFilter?: (x: any) => any): JQueryPromise<any>;
@@ -356,27 +356,27 @@ interface JQueryDeferred<T> extends JQueryGenericPromise<T> {
      * @param alwaysCallbacks1 A function, or array of functions, that is called when the Deferred is resolved or rejected.
      * @param alwaysCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved or rejected.
      */
-    always(alwaysCallback1?: JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[], ...alwaysCallbacksN: Array<JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
+    always(alwaysCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...alwaysCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
     /**
      * Add handlers to be called when the Deferred object is resolved.
      * 
      * @param doneCallbacks1 A function, or array of functions, that are called when the Deferred is resolved.
      * @param doneCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved.
      */
-    done(doneCallback1?: JQueryPromiseCallback<T>|JQueryPromiseCallback<T>[], ...doneCallbackN: Array<JQueryPromiseCallback<T>|JQueryPromiseCallback<T>[]>): JQueryDeferred<T>;
+    done(doneCallback1?: JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[], ...doneCallbackN: Array<JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[]>): JQueryDeferred<T>;
     /**
      * Add handlers to be called when the Deferred object is rejected.
      * 
      * @param failCallbacks1 A function, or array of functions, that are called when the Deferred is rejected.
      * @param failCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is rejected.
      */
-    fail(failCallback1?: JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[], ...failCallbacksN: Array<JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
+    fail(failCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...failCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
     /**
      * Add handlers to be called when the Deferred object generates progress notifications.
      * 
      * @param progressCallbacks A function, or array of functions, to be called when the Deferred generates progress notifications.
      */
-    progress(progressCallback1?: JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[], ...progressCallbackN: Array<JQueryPromiseCallback<any>|JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
+    progress(progressCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...progressCallbackN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
 
     /**
      * Call the progressCallbacks on a Deferred object with the given args.
@@ -556,47 +556,47 @@ interface JQuerySerializeArrayElement {
     value: string;
 }
 
-interface JQueryAnimationOptions { 
+interface JQueryAnimationOptions {
     /**
      * A string or number determining how long the animation will run.
      */
-    duration?: any; 
+    duration?: any;
     /**
      * A string indicating which easing function to use for the transition.
      */
-    easing?: string; 
+    easing?: string;
     /**
      * A function to call once the animation is complete.
      */
-    complete?: Function; 
+    complete?: Function;
     /**
      * A function to be called for each animated property of each animated element. This function provides an opportunity to modify the Tween object to change the value of the property before it is set.
      */
-    step?: (now: number, tween: any) => any; 
+    step?: (now: number, tween: any) => any;
     /**
      * A function to be called after each step of the animation, only once per animated element regardless of the number of animated properties. (version added: 1.8)
      */
-    progress?: (animation: JQueryPromise<any>, progress: number, remainingMs: number) => any; 
+    progress?: (animation: JQueryPromise<any>, progress: number, remainingMs: number) => any;
     /**
      * A function to call when the animation begins. (version added: 1.8)
      */
-    start?: (animation: JQueryPromise<any>) => any; 
+    start?: (animation: JQueryPromise<any>) => any;
     /**
      * A function to be called when the animation completes (its Promise object is resolved). (version added: 1.8)
      */
-    done?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any; 
+    done?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any;
     /**
      * A function to be called when the animation fails to complete (its Promise object is rejected). (version added: 1.8)
      */
-    fail?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any; 
+    fail?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any;
     /**
      * A function to be called when the animation completes or stops without completing (its Promise object is either resolved or rejected). (version added: 1.8)
      */
-    always?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any; 
+    always?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any;
     /**
      * A Boolean indicating whether to place the animation in the effects queue. If false, the animation will begin immediately. As of jQuery 1.7, the queue option can also accept a string, in which case the animation is added to the queue represented by that string. When a custom queue name is used the animation does not automatically start; you must call .dequeue("queuename") to start it.
      */
-    queue?: any; 
+    queue?: any;
     /**
      * A map of one or more of the CSS properties defined by the properties argument and their corresponding easing functions. (version added: 1.4)
      */
@@ -661,7 +661,7 @@ interface JQueryStatic {
      * @param success A callback function that is executed if the request succeeds.
      * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
      */
-    get(url: string, data?: Object|string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
+    get(url: string, data?: Object | string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
     /**
      * Load JSON-encoded data from the server using a GET HTTP request.
      *
@@ -676,7 +676,7 @@ interface JQueryStatic {
      * @param data A plain object or string that is sent to the server with the request.
      * @param success A callback function that is executed if the request succeeds.
      */
-    getJSON(url: string, data?: Object|string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
+    getJSON(url: string, data?: Object | string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
     /**
      * Load a JavaScript file from the server using a GET HTTP request, then execute it.
      *
@@ -706,7 +706,7 @@ interface JQueryStatic {
      * @param success A callback function that is executed if the request succeeds. Required if dataType is provided, but can be null in that case.
      * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
      */
-    post(url: string, data?: Object|string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
+    post(url: string, data?: Object | string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
 
     /**
      * A multi-purpose callbacks list object that provides a powerful way to manage callback lists.
@@ -728,7 +728,7 @@ interface JQueryStatic {
      * @param selector A string containing a selector expression
      * @param context A DOM Element, Document, or jQuery to use as context
      */
-    (selector: string, context?: Element|JQuery): JQuery;
+    (selector: string, context?: Element | JQuery): JQuery;
 
     /**
      * Accepts a string containing a CSS selector which is then used to match a set of elements.
@@ -798,7 +798,7 @@ interface JQueryStatic {
      *
      * @param deferreds One or more Deferred objects, or plain JavaScript objects.
      */
-    when<T>(...deferreds: Array<T|JQueryPromise<T>/* as JQueryDeferred<T> */>): JQueryPromise<T>;
+    when<T>(...deferreds: Array<T | JQueryPromise<T>/* as JQueryDeferred<T> */>): JQueryPromise<T>;
 
     /**
      * Hook directly into jQuery to override how particular CSS properties are retrieved or set, normalize CSS property naming, or create custom properties.
@@ -951,7 +951,7 @@ interface JQueryStatic {
     each<T>(
         collection: T[],
         callback: (indexInArray: number, valueOfElement: T) => any
-        ): any;
+    ): any;
 
     /**
      * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
@@ -962,7 +962,7 @@ interface JQueryStatic {
     each(
         collection: any,
         callback: (indexInArray: any, valueOfElement: any) => any
-        ): any;
+    ): any;
 
     /**
      * Merge the contents of two or more objects together into the first object.
@@ -1192,7 +1192,7 @@ interface JQuery extends JDataStatic {
      * @param data A plain object or string that is sent to the server with the request.
      * @param complete A callback function that is executed when the request completes.
      */
-    load(url: string, data?: string|Object, complete?: (responseText: string, textStatus: string, XMLHttpRequest: XMLHttpRequest) => any): JQuery;
+    load(url: string, data?: string | Object, complete?: (responseText: string, textStatus: string, XMLHttpRequest: XMLHttpRequest) => any): JQuery;
 
     /**
      * Encode a set of form elements as a string for submission.
@@ -1233,21 +1233,21 @@ interface JQuery extends JDataStatic {
      * @param attributeName The name of the attribute to set.
      * @param value A value to set for the attribute.
      */
-    attr(attributeName: string, value: string|number): JQuery;
+    attr(attributeName: string, value: string | number): JQuery;
     /**
      * Set one or more attributes for the set of matched elements.
      *
      * @param attributeName The name of the attribute to set.
      * @param func A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old attribute value as arguments.
      */
-    attr(attributeName: string, func: (index: number, attr: string) => string|number): JQuery;
+    attr(attributeName: string, func: (index: number, attr: string) => string | number): JQuery;
     /**
      * Set one or more attributes for the set of matched elements.
      *
      * @param attributes An object of attribute-value pairs to set.
      */
     attr(attributes: Object): JQuery;
-    
+
     /**
      * Determine whether any of the matched elements are assigned the given class.
      *
@@ -1264,7 +1264,7 @@ interface JQuery extends JDataStatic {
      *
      * @param htmlString A string of HTML to set as the content of each matched element.
      */
-    html(htmlString: string|number): JQuery;
+    html(htmlString: string | number): JQuery;
     /**
      * Set the HTML contents of each element in the set of matched elements.
      *
@@ -1289,7 +1289,7 @@ interface JQuery extends JDataStatic {
      * @param propertyName The name of the property to set.
      * @param value A value to set for the property.
      */
-    prop(propertyName: string, value: string|number|boolean): JQuery;
+    prop(propertyName: string, value: string | number | boolean): JQuery;
     /**
      * Set one or more properties for the set of matched elements.
      *
@@ -1361,7 +1361,7 @@ interface JQuery extends JDataStatic {
      *
      * @param value A string of text or an array of strings corresponding to the value of each matched element to set as selected/checked.
      */
-    val(value: string|string[]): JQuery;
+    val(value: string | string[]): JQuery;
     /**
      * Set the value of each element in the set of matched elements.
      *
@@ -1382,14 +1382,14 @@ interface JQuery extends JDataStatic {
      * @param propertyName A CSS property name.
      * @param value A value to set for the property.
      */
-    css(propertyName: string, value: string|number): JQuery;
+    css(propertyName: string, value: string | number): JQuery;
     /**
      * Set one or more CSS properties for the set of matched elements.
      *
      * @param propertyName A CSS property name.
      * @param value A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old value as arguments.
      */
-    css(propertyName: string, value: (index: number, value: string) => string|number): JQuery;
+    css(propertyName: string, value: (index: number, value: string) => string | number): JQuery;
     /**
      * Set one or more CSS properties for the set of matched elements.
      *
@@ -1406,13 +1406,13 @@ interface JQuery extends JDataStatic {
      *
      * @param value An integer representing the number of pixels, or an integer with an optional unit of measure appended (as a string).
      */
-    height(value: number|string): JQuery;
+    height(value: number | string): JQuery;
     /**
      * Set the CSS height of every matched element.
      *
      * @param func A function returning the height to set. Receives the index position of the element in the set and the old height as arguments. Within the function, this refers to the current element in the set.
      */
-    height(func: (index: number, height: number) => number|string): JQuery;
+    height(func: (index: number, height: number) => number | string): JQuery;
 
     /**
      * Get the current computed height for the first element in the set of matched elements, including padding but not border.
@@ -1424,8 +1424,8 @@ interface JQuery extends JDataStatic {
      *
      * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
      */
-    innerHeight(height: number|string): JQuery;
-    
+    innerHeight(height: number | string): JQuery;
+
     /**
      * Get the current computed width for the first element in the set of matched elements, including padding but not border.
      */
@@ -1436,8 +1436,8 @@ interface JQuery extends JDataStatic {
      *
      * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
      */
-    innerWidth(width: number|string): JQuery;
-    
+    innerWidth(width: number | string): JQuery;
+
     /**
      * Get the current coordinates of the first element in the set of matched elements, relative to the document.
      */
@@ -1467,7 +1467,7 @@ interface JQuery extends JDataStatic {
      *
      * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
      */
-    outerHeight(height: number|string): JQuery;
+    outerHeight(height: number | string): JQuery;
 
     /**
      * Get the current computed width for the first element in the set of matched elements, including padding and border.
@@ -1481,7 +1481,7 @@ interface JQuery extends JDataStatic {
      *
      * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
      */
-    outerWidth(width: number|string): JQuery;
+    outerWidth(width: number | string): JQuery;
 
     /**
      * Get the current coordinates of the first element in the set of matched elements, relative to the offset parent.
@@ -1519,13 +1519,13 @@ interface JQuery extends JDataStatic {
      *
      * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
      */
-    width(value: number|string): JQuery;
+    width(value: number | string): JQuery;
     /**
      * Set the CSS width of each element in the set of matched elements.
      *
      * @param func A function returning the width to set. Receives the index position of the element in the set and the old width as arguments. Within the function, this refers to the current element in the set.
      */
-    width(func: (index: number, width: number) => number|string): JQuery;
+    width(func: (index: number, width: number) => number | string): JQuery;
 
     /**
      * Remove from the queue all items that have not yet been run.
@@ -1593,7 +1593,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    animate(properties: Object, duration?: string|number, complete?: Function): JQuery;
+    animate(properties: Object, duration?: string | number, complete?: Function): JQuery;
     /**
      * Perform a custom animation of a set of CSS properties.
      *
@@ -1602,7 +1602,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition. (default: swing)
      * @param complete A function to call once the animation is complete.
      */
-    animate(properties: Object, duration?: string|number, easing?: string, complete?: Function): JQuery;
+    animate(properties: Object, duration?: string | number, easing?: string, complete?: Function): JQuery;
     /**
      * Perform a custom animation of a set of CSS properties.
      *
@@ -1625,7 +1625,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    fadeIn(duration?: number|string, complete?: Function): JQuery;
+    fadeIn(duration?: number | string, complete?: Function): JQuery;
     /**
      * Display the matched elements by fading them to opaque.
      *
@@ -1633,7 +1633,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    fadeIn(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    fadeIn(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Display the matched elements by fading them to opaque.
      *
@@ -1647,7 +1647,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    fadeOut(duration?: number|string, complete?: Function): JQuery;
+    fadeOut(duration?: number | string, complete?: Function): JQuery;
     /**
      * Hide the matched elements by fading them to transparent.
      *
@@ -1655,7 +1655,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    fadeOut(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    fadeOut(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Hide the matched elements by fading them to transparent.
      *
@@ -1670,7 +1670,7 @@ interface JQuery extends JDataStatic {
      * @param opacity A number between 0 and 1 denoting the target opacity.
      * @param complete A function to call once the animation is complete.
      */
-    fadeTo(duration: string|number, opacity: number, complete?: Function): JQuery;
+    fadeTo(duration: string | number, opacity: number, complete?: Function): JQuery;
     /**
      * Adjust the opacity of the matched elements.
      *
@@ -1679,7 +1679,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    fadeTo(duration: string|number, opacity: number, easing?: string, complete?: Function): JQuery;
+    fadeTo(duration: string | number, opacity: number, easing?: string, complete?: Function): JQuery;
 
     /**
      * Display or hide the matched elements by animating their opacity.
@@ -1687,7 +1687,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    fadeToggle(duration?: number|string, complete?: Function): JQuery;
+    fadeToggle(duration?: number | string, complete?: Function): JQuery;
     /**
      * Display or hide the matched elements by animating their opacity.
      *
@@ -1695,7 +1695,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    fadeToggle(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    fadeToggle(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Display or hide the matched elements by animating their opacity.
      *
@@ -1716,7 +1716,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    hide(duration?: number|string, complete?: Function): JQuery;
+    hide(duration?: number | string, complete?: Function): JQuery;
     /**
      * Hide the matched elements.
      *
@@ -1724,7 +1724,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    hide(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    hide(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Hide the matched elements.
      *
@@ -1738,7 +1738,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    show(duration?: number|string, complete?: Function): JQuery;
+    show(duration?: number | string, complete?: Function): JQuery;
     /**
      * Display the matched elements.
      *
@@ -1746,7 +1746,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    show(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    show(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Display the matched elements.
      *
@@ -1760,7 +1760,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    slideDown(duration?: number|string, complete?: Function): JQuery;
+    slideDown(duration?: number | string, complete?: Function): JQuery;
     /**
      * Display the matched elements with a sliding motion.
      *
@@ -1768,7 +1768,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    slideDown(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    slideDown(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Display the matched elements with a sliding motion.
      *
@@ -1782,7 +1782,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    slideToggle(duration?: number|string, complete?: Function): JQuery;
+    slideToggle(duration?: number | string, complete?: Function): JQuery;
     /**
      * Display or hide the matched elements with a sliding motion.
      *
@@ -1790,7 +1790,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    slideToggle(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    slideToggle(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Display or hide the matched elements with a sliding motion.
      *
@@ -1804,7 +1804,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    slideUp(duration?: number|string, complete?: Function): JQuery;
+    slideUp(duration?: number | string, complete?: Function): JQuery;
     /**
      * Hide the matched elements with a sliding motion.
      *
@@ -1812,7 +1812,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    slideUp(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    slideUp(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Hide the matched elements with a sliding motion.
      *
@@ -1842,7 +1842,7 @@ interface JQuery extends JDataStatic {
      * @param duration A string or number determining how long the animation will run.
      * @param complete A function to call once the animation is complete.
      */
-    toggle(duration?: number|string, complete?: Function): JQuery;
+    toggle(duration?: number | string, complete?: Function): JQuery;
     /**
      * Display or hide the matched elements.
      *
@@ -1850,7 +1850,7 @@ interface JQuery extends JDataStatic {
      * @param easing A string indicating which easing function to use for the transition.
      * @param complete A function to call once the animation is complete.
      */
-    toggle(duration?: number|string, easing?: string, complete?: Function): JQuery;
+    toggle(duration?: number | string, easing?: string, complete?: Function): JQuery;
     /**
      * Display or hide the matched elements.
      *
@@ -2442,14 +2442,14 @@ interface JQuery extends JDataStatic {
      * @param eventType A string containing a JavaScript event type, such as click or submit.
      * @param extraParameters Additional parameters to pass along to the event handler.
      */
-    trigger(eventType: string, extraParameters?: any[]|Object): JQuery;
+    trigger(eventType: string, extraParameters?: any[] | Object): JQuery;
     /**
      * Execute all handlers and behaviors attached to the matched elements for the given event type.
      * 
      * @param event A jQuery.Event object.
      * @param extraParameters Additional parameters to pass along to the event handler.
      */
-    trigger(event: JQueryEventObject, extraParameters?: any[]|Object): JQuery;
+    trigger(event: JQueryEventObject, extraParameters?: any[] | Object): JQuery;
 
     /**
      * Execute all handlers attached to an element for an event.
@@ -2570,13 +2570,13 @@ interface JQuery extends JDataStatic {
      * param content1 HTML string, DOM element, array of elements, or jQuery object to insert after each element in the set of matched elements.
      * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert after each element in the set of matched elements.
      */
-    after(content1: JQuery|any[]|Element|Text|string, ...content2: any[]): JQuery;
+    after(content1: JQuery | any[] | Element | Text | string, ...content2: any[]): JQuery;
     /**
      * Insert content, specified by the parameter, after each element in the set of matched elements.
      * 
      * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert after each element in the set of matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
      */
-    after(func: (index: number, html: string) => string|Element|JQuery): JQuery;
+    after(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
      * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
@@ -2584,20 +2584,20 @@ interface JQuery extends JDataStatic {
      * param content1 DOM element, array of elements, HTML string, or jQuery object to insert at the end of each element in the set of matched elements.
      * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the end of each element in the set of matched elements.
      */
-    append(content1: JQuery|any[]|Element|Text|string, ...content2: any[]): JQuery;
+    append(content1: JQuery | any[] | Element | Text | string, ...content2: any[]): JQuery;
     /**
      * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
      * 
      * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert at the end of each element in the set of matched elements. Receives the index position of the element in the set and the old HTML value of the element as arguments. Within the function, this refers to the current element in the set.
      */
-    append(func: (index: number, html: string) => string|Element|JQuery): JQuery;
+    append(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
      * Insert every element in the set of matched elements to the end of the target.
      * 
      * @param target A selector, element, HTML string, array of elements, or jQuery object; the matched set of elements will be inserted at the end of the element(s) specified by this parameter.
      */
-    appendTo(target: JQuery|any[]|Element|string): JQuery;
+    appendTo(target: JQuery | any[] | Element | string): JQuery;
 
     /**
      * Insert content, specified by the parameter, before each element in the set of matched elements.
@@ -2605,13 +2605,13 @@ interface JQuery extends JDataStatic {
      * param content1 HTML string, DOM element, array of elements, or jQuery object to insert before each element in the set of matched elements.
      * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert before each element in the set of matched elements.
      */
-    before(content1: JQuery|any[]|Element|Text|string, ...content2: any[]): JQuery;
+    before(content1: JQuery | any[] | Element | Text | string, ...content2: any[]): JQuery;
     /**
      * Insert content, specified by the parameter, before each element in the set of matched elements.
      * 
      * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert before each element in the set of matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
      */
-    before(func: (index: number, html: string) => string|Element|JQuery): JQuery;
+    before(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
      * Create a deep copy of the set of matched elements.
@@ -2638,14 +2638,14 @@ interface JQuery extends JDataStatic {
      * 
      * param target A selector, element, array of elements, HTML string, or jQuery object; the matched set of elements will be inserted after the element(s) specified by this parameter.
      */
-    insertAfter(target: JQuery|any[]|Element|Text|string): JQuery;
+    insertAfter(target: JQuery | any[] | Element | Text | string): JQuery;
 
     /**
      * Insert every element in the set of matched elements before the target.
      * 
      * param target A selector, element, array of elements, HTML string, or jQuery object; the matched set of elements will be inserted before the element(s) specified by this parameter.
      */
-    insertBefore(target: JQuery|any[]|Element|Text|string): JQuery;
+    insertBefore(target: JQuery | any[] | Element | Text | string): JQuery;
 
     /**
      * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
@@ -2653,20 +2653,20 @@ interface JQuery extends JDataStatic {
      * param content1 DOM element, array of elements, HTML string, or jQuery object to insert at the beginning of each element in the set of matched elements.
      * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the beginning of each element in the set of matched elements.
      */
-    prepend(content1: JQuery|any[]|Element|Text|string, ...content2: any[]): JQuery;
+    prepend(content1: JQuery | any[] | Element | Text | string, ...content2: any[]): JQuery;
     /**
      * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
      * 
      * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert at the beginning of each element in the set of matched elements. Receives the index position of the element in the set and the old HTML value of the element as arguments. Within the function, this refers to the current element in the set.
      */
-    prepend(func: (index: number, html: string) => string|Element|JQuery): JQuery;
+    prepend(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
      * Insert every element in the set of matched elements to the beginning of the target.
      * 
      * @param target A selector, element, HTML string, array of elements, or jQuery object; the matched set of elements will be inserted at the beginning of the element(s) specified by this parameter.
      */
-    prependTo(target: JQuery|any[]|Element|string): JQuery;
+    prependTo(target: JQuery | any[] | Element | string): JQuery;
 
     /**
      * Remove the set of matched elements from the DOM.
@@ -2680,20 +2680,20 @@ interface JQuery extends JDataStatic {
      * 
      * @param target A selector string, jQuery object, DOM element, or array of elements indicating which element(s) to replace.
      */
-    replaceAll(target: JQuery|any[]|Element|string): JQuery;
+    replaceAll(target: JQuery | any[] | Element | string): JQuery;
 
     /**
      * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
      * 
      * param newContent The content to insert. May be an HTML string, DOM element, array of DOM elements, or jQuery object.
      */
-    replaceWith(newContent: JQuery|any[]|Element|Text|string): JQuery;
+    replaceWith(newContent: JQuery | any[] | Element | Text | string): JQuery;
     /**
      * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
      * 
      * param func A function that returns content with which to replace the set of matched elements.
      */
-    replaceWith(func: () => Element|JQuery): JQuery;
+    replaceWith(func: () => Element | JQuery): JQuery;
 
     /**
      * Get the combined text contents of each element in the set of matched elements, including their descendants.
@@ -2704,7 +2704,7 @@ interface JQuery extends JDataStatic {
      * 
      * @param text The text to set as the content of each matched element. When Number or Boolean is supplied, it will be converted to a String representation.
      */
-    text(text: string|number|boolean): JQuery;
+    text(text: string | number | boolean): JQuery;
     /**
      * Set the content of each element in the set of matched elements to the specified text.
      * 
@@ -2727,20 +2727,20 @@ interface JQuery extends JDataStatic {
      * 
      * @param wrappingElement A selector, element, HTML string, or jQuery object specifying the structure to wrap around the matched elements.
      */
-    wrap(wrappingElement: JQuery|Element|string): JQuery;
+    wrap(wrappingElement: JQuery | Element | string): JQuery;
     /**
      * Wrap an HTML structure around each element in the set of matched elements.
      * 
      * @param func A callback function returning the HTML content or jQuery object to wrap around the matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
      */
-    wrap(func: (index: number) => string|JQuery): JQuery;
+    wrap(func: (index: number) => string | JQuery): JQuery;
 
     /**
      * Wrap an HTML structure around all elements in the set of matched elements.
      * 
      * @param wrappingElement A selector, element, HTML string, or jQuery object specifying the structure to wrap around the matched elements.
      */
-    wrapAll(wrappingElement: JQuery|Element|string): JQuery;
+    wrapAll(wrappingElement: JQuery | Element | string): JQuery;
     wrapAll(func: (index: number) => string): JQuery;
 
     /**
@@ -2748,7 +2748,7 @@ interface JQuery extends JDataStatic {
      * 
      * @param wrappingElement An HTML snippet, selector expression, jQuery object, or DOM element specifying the structure to wrap around the content of the matched elements.
      */
-    wrapInner(wrappingElement: JQuery|Element|string): JQuery;
+    wrapInner(wrappingElement: JQuery | Element | string): JQuery;
     /**
      * Wrap an HTML structure around the content of each element in the set of matched elements.
      * 
@@ -2783,7 +2783,7 @@ interface JQuery extends JDataStatic {
      * 
      * @param selector A selector representing a jQuery collection in which to look for an element.
      */
-    index(selector: string|JQuery|Element): number;
+    index(selector: string | JQuery | Element): number;
 
     /**
      * The number of elements in the jQuery object.
@@ -3166,6 +3166,13 @@ interface JQuery extends JDataStatic {
      * @param callback The new function to add to the queue, with a function to call that will dequeue the next item.
      */
     queue(queueName: string, callback: Function): JQuery;
+
+    /** 文件上传 */
+    fileupload(options?: JQueryAjaxSettings): JQuery
+
+    /** Bootstrap */
+    /** 模态框，模态框经过了优化，更加灵活，以弹出对话框的形式出现，具有最小和最实用的功能集。 */
+    modal(options?: { backdrop?: boolean | 'static', keyboard?: boolean } | 'toggle' | 'show' | 'hide' | 'handleUpdate'): JQuery;
 }
 declare module "jquery" {
     export = $;

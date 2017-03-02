@@ -421,6 +421,7 @@ declare module React {
 
         height?: number | string;
         left?: number | string;
+        listStyle?: string,
         margin?: number | string;
         marginBottom?: number | string;
         marginLeft?: number | string;
@@ -433,7 +434,8 @@ declare module React {
         paddingLeft?: number | string;
         paddingRight?: number | string;
         paddingTop?: number | string;
-        position?: 'relative' | 'absolute' | 'fixed'
+        position?: 'relative' | 'absolute' | 'fixed';
+        right?: number | string;
         textAlign?: string;
         top?: number | string;
         transform?: string;

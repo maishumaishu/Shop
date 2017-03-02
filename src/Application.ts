@@ -28,6 +28,10 @@ class Application extends chitu.Application {
         else {
             document.getElementById('mainContent').appendChild(element);
         }
+
+        let className = routeData.pageName.split('.').join('-');
+        element.className = className;
+
         return element;
     }
 }
@@ -66,14 +70,6 @@ app.pageCreated.add(function (sender, page) {
         }
     });
 })
-
-app.backFail.add((sender) => {
-    switch (sender.currentPage.name) {
-        case 'Shopping.ProductEdit':
-            app.redirect('Shopping/ProductList');
-            break;
-    }
-});
 
 if (Service.token == null) {
     app.redirect('User/Login');
