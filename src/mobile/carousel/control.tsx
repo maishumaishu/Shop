@@ -370,7 +370,7 @@ export class Data {
     images: string[] = [];
 }
 
-export class Control extends React.Component<{ images: string[] }, {}> {
+export class Control extends React.Component<Data, {}> {
     render() {
         let images = this.props.images;
         return (
@@ -392,7 +392,7 @@ export class Control extends React.Component<{ images: string[] }, {}> {
                         )}
                     </div>
                 </div> :
-                <div style={{ minHeight: 120, backgroundColor: 'whitesmoke' }}>
+                <div style={{ minHeight: 120, backgroundColor: '#ccc' }}>
 
                 </div>
         );

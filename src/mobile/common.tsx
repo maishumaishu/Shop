@@ -1,3 +1,5 @@
+
+
 /** 实现数据的存储，以及数据修改的通知 */
 export class ValueStore<T> {
     private funcs = new Array<(args: T) => void>();
@@ -91,66 +93,6 @@ export abstract class Control<T> {
     }
 }
 //==============================================================
-// Editor
-// export interface EditorArgument<T> {
-//     editorElement: HTMLElement,
-//     controlElement: HTMLElement,
-//     controlId?: string,
-// }
-// export interface EditorConstructor<T> {
-//     new (args: EditorArgument<T>): Editor<T>;
-// }
-// export abstract class Editor<T> {
-//     private args: EditorArgument<T>;
-//     private _data: ValueStoreContainer<T>;
-
-//     protected element: HTMLElement;
-
-//     abstract dataType: { new (): T };
-//     abstract controlType: ControlConstructor<T>;
-//     protected abstract renderEditor(): void;
-
-//     constructor(args: EditorArgument<T>) {
-//         this.args = args;
-//         this.element = args.editorElement;
-//     }
-
-//     protected get data(): ValueStoreContainer<T> {
-//         if (this._data == null) {
-//             console.assert(this.dataType != null);
-//             this._data = new ValueStoreContainer(this.dataType);
-//         }
-
-//         return this._data as any;
-//     }
-
-
-//     private renderControl(controlType: ControlConstructor<T>, element: HTMLElement, data: T) {
-//         let controlElement = this.args.controlElement;
-//         element.innerHTML = "";
-
-//         new controlType({ element, data });
-//     }
-
-//     render() {
-
-//         let controlElement = this.args.controlElement;
-//         console.assert(controlElement != null);
-//         console.assert(this.controlType != null);
-
-//         this.renderControl(this.controlType, controlElement, this.data.values());
-//         this.renderEditor();
-
-//         this.data.add(() => {
-//             this.renderControl(this.controlType, controlElement, this.data.values());
-//         })
-//     }
-
-//     static path(controlName: string) {
-//         return `${controlsDir}/${controlName}/editor`;
-//     }
-// }
-// //==============================================================
 export interface EditorProps {
     controlElement: HTMLElement,
     controlId: string,
@@ -165,8 +107,6 @@ export abstract class Editor<S> extends React.Component<EditorProps, S> {
         setTimeout(() => {
             this.renderControl(new this.dataType());
         }, 10);
-
-        // this.setState()
     }
 
     setState(state: any, callback?: () => any): void {
@@ -180,8 +120,6 @@ export abstract class Editor<S> extends React.Component<EditorProps, S> {
         let reactElement = React.createElement(this.controlType, data);
         ReactDOM.render(reactElement, this.props.controlElement)
     }
-
-
 
     static path(controlName: string) {
         return `${controlsDir}/${controlName}/editor`;

@@ -1,6 +1,7 @@
 import components = require('mobile/componentDefines');
 import bootbox = require('bootbox');
 import { Editor, EditorProps } from 'mobile/common'
+import station = require('services/Station');
 
 function guid() {
     function s4() {
@@ -24,15 +25,38 @@ export default function (page: chitu.Page) {
     class Page extends React.Component<{}, State>{
         private selectedContainer: HTMLElement;
         private allContainer: HTMLElement;
+        private editors: Editor<any>[];
 
         constructor(props) {
             super(props);
 
             this.state = { componentInstances: [] };
+            this.editors = [];
             Promise.all([this.loadComponetInstances()]).then(data => {
                 this.state.componentInstances = data[0];
                 this.setState(this.state);
             })
+        }
+
+        save() {
+            let elements = this.selectedContainer.querySelectorAll('li');
+            let controls = [];
+            for (let i = 0; i < elements.length; i++) {
+                let controlId = elements[i].getAttribute('data-controlId');
+                let controlName = elements[i].getAttribute('data-controlName');
+                let data = this.getControlData(controlId);
+                controls.push({ controlId, controlName, data });
+            }
+            station.savePageData({ pageId: 'abc', controls });
+        }
+
+        getControlData(controlId: string): Object {
+            for (let i = 0; i < this.editors.length; i++) {
+                if (this.editors[i].props.controlId == controlId) {
+                    return this.editors[i].state;
+                }
+            }
+            return {};
         }
 
         loadComponetInstances() {
@@ -69,7 +93,7 @@ export default function (page: chitu.Page) {
             let self = this;
             ($([this.selectedContainer]) as any).sortable({
                 // revert: true,
-                receive(event: Event & { toElement: HTMLElement }, ui: { item: JQuery, placeholder: JQuery,helper:JQuery }) {
+                receive(event: Event & { toElement: HTMLElement }, ui: { item: JQuery, placeholder: JQuery, helper: JQuery }) {
                     let controlName = ui.item.attr('data-controlName');
                     console.assert(controlName != null);
 
@@ -78,7 +102,7 @@ export default function (page: chitu.Page) {
                     let controlId = element.getAttribute('data-controlId');
                     console.assert(controlId == null);
 
-                    self.loadControlInstance(guid(), controlName,element);
+                    self.loadControlInstance(guid(), controlName, element);
                     self.activeControlInstance(element);
                     self.attachClickEvent(element);
                 }
@@ -121,19 +145,11 @@ export default function (page: chitu.Page) {
 
             $(page.element).find('.editors').append(editorElement);
             let editorType = await this.getEditorType(controlName);
-            // let args: EditorArgument<any> = {
-            //     editorElement: editorElement,
-            //     controlElement: element,
-            // };
-            // let editor = new editorType(args);
-            // editor.render();
-
-            //React.ComponentClass<any>;
 
             let props: EditorProps = { controlElement: element, controlId };
             let reactElement = React.createElement(editorType, props);
-            ReactDOM.render(reactElement, editorElement);
-            // ReactDOM.render(editorType, editorElement);
+            let editor = ReactDOM.render(reactElement, editorElement) as Editor<any>;
+            this.editors.push(editor);
         }
 
         getEditorType(controlName: string): Promise<React.ComponentClass<any>> {
@@ -224,7 +240,8 @@ export default function (page: chitu.Page) {
                                 <h4>页面设计</h4>
                             </li>
                             <li className="pull-right">
-                                <a className="btn btn-primary btn-sm pull-right">保存</a>
+                                <a className="btn btn-primary btn-sm pull-right"
+                                    onClick={() => this.save()}>保存</a>
                             </li>
                         </ul>
                     </div>

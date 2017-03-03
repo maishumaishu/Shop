@@ -28,6 +28,7 @@ export default class EditorComponent extends Editor<Data>{
 
     render() {
         let images = this.state.images;
+        
         return (
             <div ref={(o: HTMLElement) => this.editorElement = o} className="carousel-editor">
                 <div style={{ height: 30 }}>
@@ -37,28 +38,35 @@ export default class EditorComponent extends Editor<Data>{
                                 $(this.dialogElement).modal({ keyboard: false });
                             }}>添加图片</button>
                     </div>
-                    <h4>设置轮播图片</h4>
+                    <h4 className="pull-left">设置轮播图片</h4>
                     <div className="clearfix"></div>
                 </div>
                 <hr />
                 <table className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>序号</th>
-                            <th>图片</th>
-                            <th>链接地址</th>
-                            <th>操作</th>
+                            <th className="text-center" style={{ width: 60 }}>序号</th>
+                            <th className="text-center" style={{ width: 120 }}>图片</th>
+                            <th className="text-center">链接地址</th>
+                            <th className="text-center" style={{ width: 120 }}>操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {images.map((o, i) => (
                             <tr key={i}>
                                 <td></td>
-                                <td>
+                                <td className="text-center">
                                     <img src={o} style={{ width: 100 }} />
                                 </td>
                                 <td></td>
-                                <td></td>
+                                <td style={{ textAlign: 'center', paddingTop: 20 }}>
+                                    <button className="btn btn-minier btn-info" >
+                                        <i className="icon-pencil"></i>
+                                    </button>
+                                    <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}>
+                                        <i className="icon-trash"></i>
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                         {images.length == 0 ?

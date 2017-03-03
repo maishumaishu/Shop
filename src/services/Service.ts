@@ -68,16 +68,6 @@ export = class Service {
         return ajax<T>({ url: url, data: data, method: 'get' });
     }
 
-    // static getByJson<T>(url: string, data) {
-    //     return ajax<T>({
-    //         headers: {
-    //             'content-type': 'application/json'
-    //         },
-    //         url: url, data: JSON.stringify(data),
-    //         method: 'get'
-    //     });
-    // }
-
     static putByJson<T>(url: string, data) {
         return ajax<T>({
             headers: {
