@@ -12,14 +12,16 @@ class StationService extends Service {
         Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
     )
     savePageData(data: { pageId: string, controls: any[] }) {
-        // console.assert(pageId != null);
-        // console.assert(data != null);
         let url = `${Service.config.siteUrl}Page/SavePageData`;
         Service.post(url, { data: JSON.stringify(data) });
     }
-    getPageData(pageId: string) {
+    getPageData(pageId: string, fields?: string[]) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
-      return  Service.get(url, { pageId });
+        let data = { pageId, fields: undefined };
+        if (fields != null) {
+            data.fields = JSON.stringify(fields);
+        }
+        return Service.get(url, data);
     }
 }
 
