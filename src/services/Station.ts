@@ -15,7 +15,11 @@ class StationService extends Service {
         // console.assert(pageId != null);
         // console.assert(data != null);
         let url = `${Service.config.siteUrl}Page/SavePageData`;
-        Service.postByJson(url, data);
+        Service.post(url, { data: JSON.stringify(data) });
+    }
+    getPageData(pageId: string) {
+        let url = `${Service.config.siteUrl}Page/GetPageData`;
+      return  Service.get(url, { pageId });
     }
 }
 

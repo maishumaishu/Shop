@@ -88,6 +88,13 @@ export = class Service {
         });
     }
 
+    static post<T>(url: string, data) {
+        return ajax<T>({
+            url: url, data,
+            method: 'post'
+        });
+    }
+
     ajax<T>(options: JQueryAjaxSettings) {
         return ajax<T>(options);
     }

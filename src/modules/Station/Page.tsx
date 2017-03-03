@@ -14,7 +14,10 @@ function guid() {
 };
 
 // const controlsDir = 'mobile';
-
+let pageId = "abc";
+station.getPageData("abc").then((o) => {
+    debugger;
+})
 export default function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
@@ -47,7 +50,7 @@ export default function (page: chitu.Page) {
                 let data = this.getControlData(controlId);
                 controls.push({ controlId, controlName, data });
             }
-            station.savePageData({ pageId: 'abc', controls });
+            station.savePageData({ pageId, controls });
         }
 
         getControlData(controlId: string): Object {
