@@ -1,4 +1,4 @@
-import { Editor, EditorProps } from 'mobile/common';
+import { Editor, EditorProps, EditorState } from 'mobile/common';
 import { Data, default as Control } from 'mobile/towColumnProduct/control'
 
 class EditorComponent extends React.Component<{}, {}>{
@@ -12,13 +12,12 @@ class EditorComponent extends React.Component<{}, {}>{
 }
 
 
-export default class MyEditor extends Editor<{}> {
-    controlType = Control;
-    dataType = Data;
+export default class MyEditor extends Editor<EditorState> {
+    constructor(props) {
+        super(props, Control, Data);
+    }
 
-    // protected renderEditor() {
-    //     ReactDOM.render(<EditorComponent />, this.element);
-    // }
+
     render() {
         return (
             <div>

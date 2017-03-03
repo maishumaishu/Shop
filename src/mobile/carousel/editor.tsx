@@ -1,34 +1,33 @@
-import { Editor, EditorProps } from 'mobile/common';
+import { Editor, EditorProps, EditorState } from 'mobile/common';
 import { default as Control, Data } from 'mobile/carousel/control';
 import { ImageFileSelector } from 'common/controls';
 import site = require('Site');
 
 requirejs([`css!${Editor.path('carousel')}.css`]);
 
-export default class EditorComponent extends Editor<Data>{
+export default class EditorComponent extends Editor<EditorState>{
 
     private editorElement: HTMLElement;
     private dialogElement: HTMLElement;
     private imageFileSelector: ImageFileSelector;
 
-    controlType = Control;
-    dataType = Data;
+    // controlType = Control;
+    // dataType = Data;
 
     constructor(props) {
-        super(props);
-        this.state = { images: [] };
+        super(props, Control, Data);
     }
 
     addItem() {
-        this.state.images.push(this.imageFileSelector.imageDatas[0]);
+        this.state.controlData.images.push(this.imageFileSelector.imageDatas[0]);
         this.setState(this.state);
         $(this.dialogElement).modal('hide');
     }
 
 
     render() {
-        let images = this.state.images;
-        
+        let images = this.state.controlData.images;
+
         return (
             <div ref={(o: HTMLElement) => this.editorElement = o} className="carousel-editor">
                 <div style={{ height: 30 }}>

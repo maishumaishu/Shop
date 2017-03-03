@@ -1,17 +1,25 @@
 ﻿
 import Service = require('services/Service');
 
-
 let JData = window['JData'];
 
-class StationService extends Service {
+export interface ControlData {
+    controlId: string, controlName: string, data: any
+}
+
+export interface PageData {
+    pageId: string,
+    controls: Array<ControlData>
+}
+
+export class StationService extends Service {
     homeProduct = new JData.WebDataSource(
         Service.config.siteUrl + 'MicroStationData/Select?source=HomeProducts',
         Service.config.siteUrl + 'MicroStationData/Insert?source=HomeProducts',
         Service.config.siteUrl + 'MicroStationData/Update?source=HomeProducts',
         Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
     )
-    savePageData(data: { pageId: string, controls: any[] }) {
+    savePageData(data: PageData) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
         Service.post(url, { data: JSON.stringify(data) });
     }
@@ -21,8 +29,8 @@ class StationService extends Service {
         if (fields != null) {
             data.fields = JSON.stringify(fields);
         }
-        return Service.get(url, data);
+        return Service.get<PageData>(url, data);
     }
 }
 
-export = new StationService();
+export default new StationService();

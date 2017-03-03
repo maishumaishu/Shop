@@ -1,5 +1,5 @@
 import shopping = require('services/Shopping');
-import station = require('services/Station');
+import { default as station } from 'services/Station';
 import app = require('Application');
 import bootbox = require('bootbox');
 
