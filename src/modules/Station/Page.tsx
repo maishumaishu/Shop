@@ -1,7 +1,7 @@
 import components = require('mobile/componentDefines');
 import bootbox = require('bootbox');
-import { Editor, EditorProps } from 'mobile/common'
-import station = require('services/Station');
+import { Editor, EditorProps, EditorState } from 'mobile/common'
+import { default as station, PageData, ControlData } from 'services/Station';
 
 function guid() {
     function s4() {
@@ -13,32 +13,24 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 };
 
-// const controlsDir = 'mobile';
 let pageId = "abc";
-station.getPageData("abc").then((o) => {
-    debugger;
-})
-export default function (page: chitu.Page) {
+export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
     let editorTypes: { [propName: string]: React.ComponentClass<any> } = {};
     type State = {
-        componentInstances: Array<{ controlId: string, controlName: string }>,
+        componentInstances: ControlData[],
     }
-    class Page extends React.Component<{}, State>{
+    class Page extends React.Component<{ pageData: PageData }, State>{
         private selectedContainer: HTMLElement;
         private allContainer: HTMLElement;
-        private editors: Editor<any>[];
+        private editors: Editor<EditorState>[];
 
         constructor(props) {
             super(props);
 
-            this.state = { componentInstances: [] };
+            this.state = { componentInstances: this.props.pageData.controls };
             this.editors = [];
-            Promise.all([this.loadComponetInstances()]).then(data => {
-                this.state.componentInstances = data[0];
-                this.setState(this.state);
-            })
         }
 
         save() {
@@ -47,6 +39,9 @@ export default function (page: chitu.Page) {
             for (let i = 0; i < elements.length; i++) {
                 let controlId = elements[i].getAttribute('data-controlId');
                 let controlName = elements[i].getAttribute('data-controlName');
+                if (controlId == null || controlName == null)
+                    continue;
+
                 let data = this.getControlData(controlId);
                 controls.push({ controlId, controlName, data });
             }
@@ -56,19 +51,10 @@ export default function (page: chitu.Page) {
         getControlData(controlId: string): Object {
             for (let i = 0; i < this.editors.length; i++) {
                 if (this.editors[i].props.controlId == controlId) {
-                    return this.editors[i].state;
+                    return this.editors[i].state.controlData;
                 }
             }
             return {};
-        }
-
-        loadComponetInstances() {
-            let pageComponents = [
-                { controlId: "1", controlName: 'towColumnProduct' },
-                { controlId: "2", controlName: 'singleColumnProduct' }
-            ]
-
-            return Promise.resolve(pageComponents);
         }
 
         componentDidMount() {
@@ -137,7 +123,7 @@ export default function (page: chitu.Page) {
             }
         }
 
-        async loadControlInstance(controlId: string, controlName: string, element: HTMLElement) {
+        async loadControlInstance(controlId: string, controlName: string, element: HTMLElement, controlData?: any) {
             let editorElement = document.createElement('div');
 
             element.setAttribute('data-controlName', controlName);
@@ -149,7 +135,7 @@ export default function (page: chitu.Page) {
             $(page.element).find('.editors').append(editorElement);
             let editorType = await this.getEditorType(controlName);
 
-            let props: EditorProps = { controlElement: element, controlId };
+            let props: EditorProps = { controlElement: element, controlId, controlData };
             let reactElement = React.createElement(editorType, props);
             let editor = ReactDOM.render(reactElement, editorElement) as Editor<any>;
             this.editors.push(editor);
@@ -258,7 +244,7 @@ export default function (page: chitu.Page) {
                                                 return;
                                             }
 
-                                            this.loadControlInstance(o.controlId, o.controlName, e);
+                                            this.loadControlInstance(o.controlId, o.controlName, e, o.data);
                                             this.attachClickEvent(e);
                                         }}>
                                     </li>
@@ -298,5 +284,7 @@ export default function (page: chitu.Page) {
         }
     }
 
-    ReactDOM.render(<Page />, page.element);
+    let pageData = await station.getPageData(pageId);
+
+    ReactDOM.render(<Page pageData={pageData} />, page.element);
 }

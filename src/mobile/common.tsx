@@ -96,27 +96,34 @@ export abstract class Control<T> {
 export interface EditorProps {
     controlElement: HTMLElement,
     controlId: string,
+    controlData?: any
 }
-export abstract class Editor<S> extends React.Component<EditorProps, S> {
-    abstract controlType: React.ComponentClass<any>;
-    abstract dataType: { new () };
+export interface EditorState {
+    controlData: any
+}
+export abstract class Editor<S extends EditorState> extends React.Component<EditorProps, S> {
+    private controlType: React.ComponentClass<any>;
+    // abstract dataType: { new () };
 
-    constructor(props) {
+    constructor(props: EditorProps, controlType: React.ComponentClass<any>, controlDataType: { new () }) {
         super(props);
 
-        setTimeout(() => {
-            this.renderControl(new this.dataType());
-        }, 10);
+        this.state = { controlData: (props.controlData || new controlDataType()) } as S;
+        this.controlType = controlType;
+    }
+
+    componentDidMount() {
+        this.renderControl(this.state.controlData);
     }
 
     setState(state: any, callback?: () => any): void {
         super.setState(state, callback);
-        this.renderControl(state);
+        this.renderControl((state as S).controlData);
     }
 
     renderControl(data) {
         console.assert(this.controlType != null);
-        console.assert(this.dataType != null);
+        // console.assert(this.dataType != null);
         let reactElement = React.createElement(this.controlType, data);
         ReactDOM.render(reactElement, this.props.controlElement)
     }
