@@ -1,32 +1,34 @@
-import { Editor, EditorProps, EditorState } from 'mobile/common';
+import { Editor, EditorProps, EditorState, guid } from 'mobile/common';
 import { default as Control, Data } from 'mobile/carousel/control';
-import { ImageFileSelector } from 'common/controls';
 import site = require('Site');
+import { default as station } from 'services/Station';
+import { ImageUpload } from 'common/ImageUpload';
 
 requirejs([`css!${Editor.path('carousel')}.css`]);
 
-export default class EditorComponent extends Editor<EditorState>{
+export default class EditorComponent extends Editor<EditorState<Data>>{
 
     private editorElement: HTMLElement;
     private dialogElement: HTMLElement;
-    private imageFileSelector: ImageFileSelector;
 
-    // controlType = Control;
-    // dataType = Data;
+    private imageName: string;
 
     constructor(props) {
         super(props, Control, Data);
     }
 
     addItem() {
-        this.state.controlData.images.push(this.imageFileSelector.imageDatas[0]);
+        console.assert(this.imageName != null);
+        let imageUrl = station.imageUrl(this.props.pageId, this.imageName);
+        this.state.controlData.images.push(imageUrl);
         this.setState(this.state);
         $(this.dialogElement).modal('hide');
     }
 
-
     render() {
         let images = this.state.controlData.images;
+        let imageWidth = 720;
+        let imageHeight = 322;
 
         return (
             <div ref={(o: HTMLElement) => this.editorElement = o} className="carousel-editor">
@@ -123,7 +125,16 @@ export default class EditorComponent extends Editor<EditorState>{
                                     <div className="form-group">
                                         <label className="control-label col-sm-2">图片</label>
                                         <div className="col-sm-10 fileupload">
-                                            <ImageFileSelector ref={o => this.imageFileSelector = o} size={{ width: 720, height: 322 }} />
+                                            {/*<ImageFileSelector ref={o => this.imageFileSelector = o} size={{ width: imageWidth, height: imageHeight }}
+                                                imageLoaded={(data) => {
+                                                    this.imageName = `${guid()}_${imageWidth}_${imageHeight}`;
+                                                    station.saveImage(this.props.pageId, this.imageName, data)
+                                                }} />*/}
+                                            <ImageUpload size={{ width: imageWidth, height: imageHeight }}
+                                                upload={(data) => {
+                                                    this.imageName = `${guid()}_${imageWidth}_${imageHeight}`;
+                                                    return station.saveImage(this.props.pageId, this.imageName, data);
+                                                }} />
                                         </div>
                                     </div>
                                 </div>

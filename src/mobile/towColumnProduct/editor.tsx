@@ -12,7 +12,7 @@ class EditorComponent extends React.Component<{}, {}>{
 }
 
 
-export default class MyEditor extends Editor<EditorState> {
+export default class MyEditor extends Editor<EditorState<Data>> {
     constructor(props) {
         super(props, Control, Data);
     }

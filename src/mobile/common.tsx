@@ -96,12 +96,13 @@ export abstract class Control<T> {
 export interface EditorProps {
     controlElement: HTMLElement,
     controlId: string,
-    controlData?: any
+    controlData?: any,
+    pageId: string,
 }
-export interface EditorState {
-    controlData: any
+export interface EditorState<T> {
+    controlData: T
 }
-export abstract class Editor<S extends EditorState> extends React.Component<EditorProps, S> {
+export abstract class Editor<S extends EditorState<any>> extends React.Component<EditorProps, S> {
     private controlType: React.ComponentClass<any>;
     // abstract dataType: { new () };
 
@@ -110,15 +111,17 @@ export abstract class Editor<S extends EditorState> extends React.Component<Edit
 
         this.state = { controlData: (props.controlData || new controlDataType()) } as S;
         this.controlType = controlType;
+        
     }
 
     componentDidMount() {
+        debugger;
         this.renderControl(this.state.controlData);
     }
 
-    setState(state: any, callback?: () => any): void {
-        super.setState(state, callback);
-        this.renderControl((state as S).controlData);
+    componentDidUpdate(){
+        debugger;
+        this.renderControl(this.state.controlData);
     }
 
     renderControl(data) {
@@ -131,4 +134,14 @@ export abstract class Editor<S extends EditorState> extends React.Component<Edit
     static path(controlName: string) {
         return `${controlsDir}/${controlName}/editor`;
     }
+}
+
+export function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
 }

@@ -8,7 +8,8 @@ export interface ControlData {
 }
 
 export interface PageData {
-    pageId: string,
+    _id: string,
+    name: string,
     controls: Array<ControlData>
 }
 
@@ -19,17 +20,37 @@ export class StationService extends Service {
         Service.config.siteUrl + 'MicroStationData/Update?source=HomeProducts',
         Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
     )
-    savePageData(data: PageData) {
-        let url = `${Service.config.siteUrl}Page/SavePageData`;
-        Service.post(url, { data: JSON.stringify(data) });
+    savePageControls(pageId: string, controls: any[]) {
+        let url = `${Service.config.siteUrl}Page/SavePageControls`;
+        Service.post(url, { pageId, controls: JSON.stringify(controls) });
     }
-    getPageData(pageId: string, fields?: string[]) {
+    private getPageData(pageId: string, fields?: string[]) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let data = { pageId, fields: undefined };
         if (fields != null) {
             data.fields = JSON.stringify(fields);
         }
         return Service.get<PageData>(url, data);
+    }
+    /** 通过页面名称获取页面 id 
+     * @param name 页面名称
+     */
+    getPageId(name: string): Promise<string> {
+        let url = `${Service.config.siteUrl}Page/GetPageId`;
+        return Service.get<{ "_id": string }>(url, { name }).then(o => o._id);
+    }
+    getPageDataByName(name: string) {
+        return this.getPageId(name).then(o => {
+            return this.getPageData(o);
+        })
+    }
+    saveImage(pageId: string, name: string, image: string) {
+        let url = `${Service.config.siteUrl}Page/SaveImage`;
+        return Service.postByJson(url, { pageId, name, image });
+    }
+    imageUrl(pageId: string, fileName: string) {
+        let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-token=${Service.appToken}`;
+        return url;
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿
 import $ = require('jquery');
 
-let service_host = 'service.alinq.cn:2800';//'localhost:2800';//
+let service_host = 'localhost:2800';//'service.alinq.cn:2800';//
 
 function ajax<T>(settings: JQueryAjaxSettings) {
     return new Promise<T>((reslove, reject) => {
@@ -54,6 +54,7 @@ export = class Service {
         weixinUrl: `http://${service_host}/AdminServices/WeiXin/`,
         siteUrl: `http://${service_host}/AdminServices/Site/`,
         memberUrl: `http://${service_host}/AdminServices/Member/`,
+        imageUrl:`http://${service_host}/UserServices/Site/`
     }
     static callMethod(path: string, data?): JQueryPromise<any> {
         data = data || {};

@@ -253,7 +253,8 @@ class ImageFileLoader {
 interface ImageFileSelectorProps extends React.Props<ImageFileSelector> {
     multiple?: boolean,
     allowRemove?: boolean,
-    size?: { width: number, height: number }
+    size?: { width: number, height: number },
+    imageLoaded?: (data: string) => void;
 }
 
 import bootbox = require('bootbox');
@@ -313,13 +314,15 @@ export class ImageFileSelector extends React.Component<ImageFileSelectorProps, {
                                 imageFileLoader.fileLoad.add((data) => {
                                     this.state.images[i] = data;
                                     this.setState(this.state);
+                                    if (this.props.imageLoaded)
+                                        this.props.imageLoaded(data);
                                 })
                             }} />
                         <img src={o} style={{ width: '100%' }} />
                     </div>
                 )}
                 {this.state.images.length == 0 ?
-                    <div className="pull-left item">
+                    <div className="item">
                         <input type="file" accept="images/*" multiple={false}
                             ref={(o: HTMLInputElement) => {
                                 if (o == null) {
@@ -444,3 +447,4 @@ export class ImageBox extends React.Component<
         );
     }
 }
+

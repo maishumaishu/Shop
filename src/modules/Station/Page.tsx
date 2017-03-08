@@ -13,7 +13,6 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 };
 
-let pageId = "abc";
 export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
@@ -24,13 +23,15 @@ export default async function (page: chitu.Page) {
     class Page extends React.Component<{ pageData: PageData }, State>{
         private selectedContainer: HTMLElement;
         private allContainer: HTMLElement;
-        private editors: Editor<EditorState>[];
+        private editors: Editor<EditorState<any>>[];
+        private pageId: string;
 
         constructor(props) {
             super(props);
 
             this.state = { componentInstances: this.props.pageData.controls };
             this.editors = [];
+            this.pageId = this.props.pageData._id;
         }
 
         save() {
@@ -45,7 +46,7 @@ export default async function (page: chitu.Page) {
                 let data = this.getControlData(controlId);
                 controls.push({ controlId, controlName, data });
             }
-            station.savePageData({ pageId, controls });
+            station.savePageControls(this.pageId, controls);
         }
 
         getControlData(controlId: string): Object {
@@ -135,7 +136,7 @@ export default async function (page: chitu.Page) {
             $(page.element).find('.editors').append(editorElement);
             let editorType = await this.getEditorType(controlName);
 
-            let props: EditorProps = { controlElement: element, controlId, controlData };
+            let props: EditorProps = { controlElement: element, controlId, controlData, pageId: this.pageId };
             let reactElement = React.createElement(editorType, props);
             let editor = ReactDOM.render(reactElement, editorElement) as Editor<any>;
             this.editors.push(editor);
@@ -220,7 +221,7 @@ export default async function (page: chitu.Page) {
         }
 
         render() {
-            let selectedComponents = this.state.componentInstances;
+            let selectedComponents = this.state.componentInstances || [];
             return (
                 <div>
                     <div name="tabs" className="tabbable">
@@ -284,7 +285,6 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let pageData = await station.getPageData(pageId);
-
+    let pageData = await station.getPageDataByName("首页");
     ReactDOM.render(<Page pageData={pageData} />, page.element);
 }
