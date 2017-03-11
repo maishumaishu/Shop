@@ -6,7 +6,7 @@ declare namespace wuzhui {
         constructor(element: T);
         html: string;
         visible: boolean;
-        readonly element: T;
+         element: T;
         appendChild(child: Control<any> | HTMLElement): void;
         style(value: CSSStyleDeclaration | string): void;
         static getControlByElement(element: HTMLElement): Control<any>;
@@ -46,7 +46,7 @@ declare namespace wuzhui {
             items: any[];
         }>;
         constructor(primaryKeys: string[]);
-        readonly selectArguments: DataSourceSelectArguments;
+         selectArguments: DataSourceSelectArguments;
         protected executeInsert(item: T): Promise<any>;
         protected executeDelete(item: T): Promise<any>;
         protected executeUpdate(item: T): Promise<any>;
@@ -57,9 +57,9 @@ declare namespace wuzhui {
         isSameItem(theItem: T, otherItem: T): boolean;
         private checkPrimaryKeys(item);
         select(): Promise<void>;
-        readonly canDelete: boolean;
-        readonly canInsert: boolean;
-        readonly canUpdate: boolean;
+         canDelete: boolean;
+         canInsert: boolean;
+         canUpdate: boolean;
     }
     class DataSourceSelectArguments {
         startRowIndex: number;
@@ -79,9 +79,9 @@ declare namespace wuzhui {
     class WebDataSource<T> extends DataSource<T> {
         private args;
         constructor(args: WebDataSourceArguments);
-        readonly canDelete: boolean;
-        readonly canInsert: boolean;
-        readonly canUpdate: boolean;
+         canDelete: boolean;
+         canInsert: boolean;
+         canUpdate: boolean;
         protected executeInsert(item: T): Promise<any>;
         protected executeDelete(item: T): Promise<any>;
         protected executeUpdate(item: T): Promise<any>;
@@ -95,9 +95,9 @@ declare namespace wuzhui {
         protected executeDelete(item: T): Promise<any>;
         protected executeUpdate(item: T): Promise<any>;
         protected executeSelect(args: any): Promise<Array<T> | DataSourceSelectResult<T>>;
-        readonly canDelete: boolean;
-        readonly canInsert: boolean;
-        readonly canUpdate: boolean;
+         canDelete: boolean;
+         canInsert: boolean;
+         canUpdate: boolean;
         private getPrimaryKeyValues(item);
         private findItem(pkValues);
     }
@@ -127,14 +127,14 @@ declare namespace wuzhui {
         private _rowType;
         private _gridView;
         constructor(rowType: GridViewRowType);
-        readonly rowType: GridViewRowType;
-        readonly gridView: GridView<T>;
-        readonly cells: GridViewCell[];
+         rowType: GridViewRowType;
+         gridView: GridView<T>;
+         cells: GridViewCell[];
     }
     class GridViewDataRow<T> extends GridViewRow<T> {
         private _dataItem;
         constructor(gridView: GridView<T>, dataItem: any);
-        readonly dataItem: any;
+         dataItem: any;
     }
     interface GridViewArguments<T> {
         dataSource: DataSource<T>;
@@ -164,8 +164,8 @@ declare namespace wuzhui {
             row: GridViewRow<T>;
         }>;
         constructor(params: GridViewArguments<T>);
-        readonly columns: DataControlField[];
-        readonly dataSource: DataSource<T>;
+         columns: DataControlField[];
+         dataSource: DataSource<T>;
         private appendEmptyRow();
         private appendDataRow(dataItem);
         private on_sort(sender, args);
@@ -201,7 +201,7 @@ declare namespace wuzhui {
         private _totalRowCount;
         private _pageSize;
         init(dataSource: DataSource<any>): void;
-        readonly pageCount: number;
+         pageCount: number;
         pageSize: number;
         pageIndex: number;
         totalRowCount: number;
@@ -277,7 +277,7 @@ declare namespace wuzhui {
     class GridViewCell extends Control<HTMLTableCellElement> {
         private _field;
         constructor(field: DataControlField);
-        readonly field: DataControlField;
+         field: DataControlField;
     }
     interface DataControlFieldParams {
         footerText?: string;
@@ -328,7 +328,7 @@ declare namespace wuzhui {
         itemStyle: string | CSSStyleDeclaration;
         footerStyle: string | CSSStyleDeclaration;
         headerStyle: string | CSSStyleDeclaration;
-        readonly visible: boolean;
+         visible: boolean;
         gridView: GridView<any>;
         /**
          * Gets a sort expression that is used by a data source control to sort data.
@@ -376,17 +376,17 @@ declare namespace wuzhui {
         /**
          * Gets the caption displayed for a field when the field's value is null.
          */
-        readonly nullText: string;
+         nullText: string;
         createItemCell(dataItem: any): GridViewCell;
         /**
          * Gets the field for the value.
          */
-        readonly dataField: string;
+         dataField: string;
         /**
          * Gets the string that specifies the display format for the value of the field.
          */
-        readonly dataFormatString: string;
-        readonly controlStyle: string | CSSStyleDeclaration;
+         dataFormatString: string;
+         controlStyle: string | CSSStyleDeclaration;
     }
 }
 declare namespace wuzhui {
