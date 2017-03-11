@@ -39,9 +39,9 @@ interface ValidateField {
     //names?: string,
     depends?: () => boolean | string,
     display?: string,
-    element?: HTMLElement,
+    element?: HTMLInputElement,
     type?: string,
-    rules: string,
+    rules: string[],
     value?: string,
     checked?: boolean
 }
@@ -171,6 +171,9 @@ class FormValidator {
     private conditionals: { [propName: string]: Function };
 
     constructor(form: HTMLElement, fields: ValidateField[], callback?: ErrorCallback) {
+        if (!form)
+            throw new Error(`Argument form can not be null.`);
+
         this.callback = callback || defaults.callback;
         //this.errors = [];
         this.fields = {};
@@ -214,12 +217,23 @@ class FormValidator {
      * @public
      * Sets a custom message for one of the rules
      */
-    setMessage(rule: string, message: string) {
+    setMessage(rule: string, message: string, elementName?: string) {
+        if (elementName)
+            rule = elementName + '.' + rule;
+
         this.messages[rule] = message;
 
         // return this for chaining
         return this;
     };
+
+    setMessages(items: { rule: string, message: string, elementName?: string }[]) {
+        items = items || [];
+        for (let i = 0; i < items.length; i++)
+            this.setMessage(items[i].rule, items[i].message, items[i].elementName);
+
+        return this;
+    }
 
     /*
     * @public
@@ -231,7 +245,6 @@ class FormValidator {
     * }]
     * Sets new custom validation rules set
     */
-
     setRules(fields: ValidateField[]) {
         this.fields = {};
 
@@ -337,13 +350,12 @@ class FormValidator {
             if (!element)
                 continue;
 
-            let elementId = element.id;
-            if (!elementId) {
-                elementId = guid();
-                element.id = elementId;
+            // let elementId = element.id;
+            if (!element.id) {
+                element.id = guid();
             }
 
-            field.id = elementId;
+            field.id = element.id;
             field.element = element;
             field.type = element.type;
 
@@ -394,9 +406,9 @@ class FormValidator {
      * Looks at the fields value and evaluates it against the given rules
      */
 
-    private _validateField(field): ValidatorError {
+    private _validateField(field: ValidateField): ValidatorError {
         var i, j,
-            rules = field.rules.split('|'),
+            rules = field.rules,//.split('|'),
             indexOfRequired = field.rules.indexOf('required'),
             isEmpty = (!field.value || field.value === '' || field.value === undefined);
 

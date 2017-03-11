@@ -1,13 +1,15 @@
 export class ImageUpload extends React.Component<
-    { upload: (data: string) => Promise<any>, size?: { width: number, height: number } },
+    { upload: (data: string) => Promise<any>, size?: { width: number, height: number } } & React.Props<ImageUpload>,
     { status: 'default' | 'loading' | 'finish' }>{
 
     private imageData: string;
+
     constructor(props) {
         super(props);
         this.state = { status: 'default' };
     }
-    inputFile_onchange(event: React.FormEvent) {
+
+    private inputFile_onchange(event: React.FormEvent) {
         this.processfile((event.target as HTMLInputElement).files[0], this.props.size).then(data => {
             this.state.status = 'loading';
             this.setState(this.state);
@@ -18,6 +20,13 @@ export class ImageUpload extends React.Component<
             });
         });
     }
+
+    public clear() {
+        this.imageData = null;
+        this.state.status = 'default';
+        this.setState(this.state);
+    }
+
     render() {
         var element: JSX.Element;
         switch (this.state.status) {

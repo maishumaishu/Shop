@@ -30,9 +30,10 @@ export class Callback<T> {
 
 //============================================================
 // 按钮
+type CinfirmDelegate = () => string;
 interface ButtonProps extends React.Props<Button> {
     onClick?: (event: React.MouseEvent) => Promise<any>,
-    confirm?: string,
+    confirm?: string | CinfirmDelegate,
     className?: string,
     style?: React.CSSProperties,
     disabled?: boolean,
@@ -138,6 +139,14 @@ export class Button extends React.Component<ButtonProps, {}>{
 
     }
 
+    private confirmText(): string {
+        if (typeof this.props.confirm == 'function') {
+            return this.props.confirm();
+        }
+
+        return this.props.confirm;
+    }
+
     render() {
         // debugger;
         let children = getChildren(this.props);
@@ -153,8 +162,8 @@ export class Button extends React.Component<ButtonProps, {}>{
                         style={{ display: 'block', transform: 'translateY(-10000px)', transition: `${this.animateTime / 1000}s` }}>
                         <div className="modal-dialog">
                             <div className="modal-content">
-                                <div className="modal-body">
-                                    <h5 dangerouslySetInnerHTML={{ __html: this.props.confirm }}></h5>
+                                <div className="modal-body text-left">
+                                    <h5 dangerouslySetInnerHTML={{ __html: this.confirmText() }}></h5>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" onClick={() => this.cancel()} className="btn btn-default">取消</button>

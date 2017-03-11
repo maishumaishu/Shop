@@ -43,18 +43,20 @@ export default function (page: chitu.Page) {
         componentDidMount() {
             this.registerValidation =
                 new Validation(this.formElement, [
-                    { name: 'mobile', rules: 'required|callback_mobile' },
-                    { name: 'verifyCode', rules: 'required' },
-                    { name: 'password', rules: 'required' },
-                    { name: 'confirmPassword', rules: 'required|matches[password]' }
+                    { name: 'mobile', rules: ['required', 'callback_mobile'] },
+                    { name: 'verifyCode', rules: ['required'] },
+                    { name: 'password', rules: ['required'] },
+                    { name: 'confirmPassword', rules: ['required', 'matches[password]'] }
                 ]).registerCallback('mobile', function (value) {
                     value = value || '';
                     return value.length == 11 && /^1[34578]\d{9}$/.test(value);
-                }).setMessage('mobile', '手机号码不正确')
-                    .setMessage('confirmPassword.matches', '两次输入的密码不正确');
+                }).setMessages([
+                    { rule: 'mobile', message: '手机号码不正确' },
+                    { rule: 'matches', message: '两次输入的密码不正确', elementName: 'confirmPassword' }
+                ])
 
             this.verifyCodeValidation = new Validation(this.formElement, [
-                { name: 'mobile', rules: 'required|callback_mobile' }
+                { name: 'mobile', rules: ['required', 'callback_mobile'] }
             ]).registerCallback('mobile', function (value) {
                 value = value || '';
                 return value.length == 11 && /^1[34578]\d{9}$/.test(value);

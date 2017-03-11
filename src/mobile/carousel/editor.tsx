@@ -3,26 +3,57 @@ import { default as Control, Data } from 'mobile/carousel/control';
 import site = require('Site');
 import { default as station } from 'services/Station';
 import { ImageUpload } from 'common/ImageUpload';
+import { Button } from 'common/controls';
+import FormValidator = require('common/validate');
 
+/**
+ * TODO:
+ * 1. 表单验证
+ * 2. 窗口关闭后，数据清除
+ * 3. 编辑，删除功能
+ */
 requirejs([`css!${Editor.path('carousel')}.css`]);
 
 export default class EditorComponent extends Editor<EditorState<Data>>{
 
     private editorElement: HTMLElement;
     private dialogElement: HTMLElement;
-
+    private validator: FormValidator;
     private imageName: string;
+    private imageUpload: ImageUpload;
 
     constructor(props) {
         super(props, Control, Data);
     }
 
+    componentDidMount() {
+        super.componentDidMount();
+
+        this.validator = new FormValidator(this.dialogElement, [
+            { name: 'image', rules: ['required'] }
+        ]);
+    }
+
     addItem() {
+        if (this.validator.validateForm()) {
+            return;
+        }
+
         console.assert(this.imageName != null);
         let imageUrl = station.imageUrl(this.props.pageId, this.imageName);
         this.state.controlData.images.push(imageUrl);
         this.setState(this.state);
         $(this.dialogElement).modal('hide');
+    }
+
+    removeItem(index: number) {
+        this.state.controlData.images = this.state.controlData.images.filter((o, i) => index != i);
+        this.setState(this.state);
+    }
+
+    showAddDialog() {
+        $(this.dialogElement).modal({ keyboard: false });
+        this.imageUpload.clear();
     }
 
     render() {
@@ -35,9 +66,7 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                 <div style={{ height: 30 }}>
                     <div className="pull-right">
                         <button className="btn btn-sm btn-primary"
-                            onClick={() => {
-                                $(this.dialogElement).modal({ keyboard: false });
-                            }}>添加图片</button>
+                            onClick={() => this.showAddDialog()}>添加图片</button>
                     </div>
                     <h4 className="pull-left">设置轮播图片</h4>
                     <div className="clearfix"></div>
@@ -64,9 +93,13 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                                     <button className="btn btn-minier btn-info" >
                                         <i className="icon-pencil"></i>
                                     </button>
-                                    <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}>
+                                    <Button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
+                                        confirm={"确定要删除该图片吗？"}
+                                        onClick={() => {
+                                            return Promise.resolve();
+                                        }}>
                                         <i className="icon-trash"></i>
-                                    </button>
+                                    </Button>
                                 </td>
                             </tr>
                         ))}
@@ -125,16 +158,12 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                                     <div className="form-group">
                                         <label className="control-label col-sm-2">图片</label>
                                         <div className="col-sm-10 fileupload">
-                                            {/*<ImageFileSelector ref={o => this.imageFileSelector = o} size={{ width: imageWidth, height: imageHeight }}
-                                                imageLoaded={(data) => {
-                                                    this.imageName = `${guid()}_${imageWidth}_${imageHeight}`;
-                                                    station.saveImage(this.props.pageId, this.imageName, data)
-                                                }} />*/}
-                                            <ImageUpload size={{ width: imageWidth, height: imageHeight }}
+                                            <ImageUpload ref={(o) => this.imageUpload = o} size={{ width: imageWidth, height: imageHeight }}
                                                 upload={(data) => {
                                                     this.imageName = `${guid()}_${imageWidth}_${imageHeight}`;
                                                     return station.saveImage(this.props.pageId, this.imageName, data);
                                                 }} />
+                                            <input type="hidden" value={this.imageName} />
                                         </div>
                                     </div>
                                 </div>
