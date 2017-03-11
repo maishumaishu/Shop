@@ -1,7 +1,7 @@
 ﻿
 import $ = require('jquery');
 
-let service_host = 'localhost:2800';//'service.alinq.cn:2800';//
+let service_host = '192.168.1.9:2800';// 'service.alinq.cn:2800';// 
 
 function ajax<T>(settings: JQueryAjaxSettings) {
     return new Promise<T>((reslove, reject) => {
@@ -50,11 +50,11 @@ export = class Service {
     static error = $.Callbacks()
     static config = {
         serviceHost: service_host,
-        shopUrl: `http://${service_host}/AdminServices/Shop/`,
-        weixinUrl: `http://${service_host}/AdminServices/WeiXin/`,
-        siteUrl: `http://${service_host}/AdminServices/Site/`,
-        memberUrl: `http://${service_host}/AdminServices/Member/`,
-        imageUrl:`http://${service_host}/UserServices/Site/`
+        shopUrl: `http://${service_host}/AdminTestServices/Shop/`,
+        weixinUrl: `http://${service_host}/AdminTestServices/WeiXin/`,
+        siteUrl: `http://${service_host}/AdminTestServices/Site/`,
+        memberUrl: `http://${service_host}/AdminTestServices/Member/`,
+        imageUrl: `http://${service_host}/UserServices/Site/`
     }
     static callMethod(path: string, data?): JQueryPromise<any> {
         data = data || {};
