@@ -17,9 +17,10 @@ function page_load(page: chitu.Page) {
         username: ko.observable(''),//admin
         password: ko.observable(''),
         login: function () {
-            if (!(model as any).isValid())
-                return val.showAllMessages();
-
+            if (!(model as any).isValid()) {
+                val.showAllMessages();
+                return Promise.resolve();
+            }
             return shopAdmin.login(model.username(), model.password())
                 .then(function () {
                     //$('#navbar').find('[name="username"]').text(model.username());
