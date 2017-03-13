@@ -152,13 +152,13 @@ export class Button extends React.Component<ButtonProps, {}>{
         let children = getChildren(this.props);
         return (
             <span>
-                <button ref={(o: HTMLButtonElement) => this.buttonElement = o}
+                <button ref={(o: HTMLButtonElement) => this.buttonElement = this.buttonElement || o}
                     onClick={(e) => this.onClick(e)} className={this.props.className}
                     style={this.props.style} disabled={this.props.disabled}>
                     {children.map(o => (o))}
                 </button>
                 <div style={{ display: 'none' }}>
-                    <div ref={(o: HTMLElement) => this.dialogElement = o} className="modal"
+                    <div ref={(o: HTMLElement) => this.dialogElement = this.dialogElement || o} className="modal"
                         style={{ display: 'block', transform: 'translateY(-10000px)', transition: `${this.animateTime / 1000}s` }}>
                         <div className="modal-dialog">
                             <div className="modal-content">
