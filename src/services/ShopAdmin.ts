@@ -4,8 +4,8 @@ import Service = require('services/Service');
 class ShopAdmin extends Service {
 
     logout() {
-        Service.token = undefined;
-        Service.userId = undefined;
+        Service.set_token(undefined);
+        Service.set_userId(undefined);
         return $.Deferred().resolve();
     }
     changePassword(password) {

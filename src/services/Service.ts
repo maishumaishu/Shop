@@ -1,13 +1,52 @@
 ﻿
 import $ = require('jquery');
 
-let service_host = '192.168.1.9:2800';// 'service.alinq.cn:2800';// 
+let service_host = 'localhost:2800'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
 
 function ajax<T>(settings: JQueryAjaxSettings) {
-    return new Promise<T>((reslove, reject) => {
+    settings.headers = settings.headers || {};
+    let options = settings;
+    if (Service.appToken) {
+        options.headers['application-token'] = Service.appToken;
+    }
+    if (Service.token) {
+        options.headers['user-token'] = Service.token;
+    }
+
+    if ((options.url as string).indexOf('?') < 0)
+        options.url = options.url + `?storeId=${Service.storeId}`;
+    else
+        options.url = options.url + `&storeId=${Service.storeId}`;
+
+    return new Promise<T>((resolve, reject) => {
         $.ajax(settings)
-            .done((o) => reslove(o))
-            .fail((o) => reject(o))
+            .done(function (data) {
+                if (data.Type == 'ErrorObject') {
+                    if (data.Code == 'Success') {
+                        resolve(data);
+                        return;
+                    }
+
+                    reject(data);
+                    Service.error.fire(data);
+                    return;
+                }
+                else if (data.name !== undefined && data.message !== undefined && data.stack !== undefined) {
+                    let err = { Code: data.name, Message: data.message };
+                    reject(err);
+                    Service.error.fire(err);
+                    return;
+                }
+
+                resolve(data);
+            })
+            .fail(function (error) {
+                //debugger;
+                var obj = { Code: error.status, Message: error.statusText };
+                Service.error.fire(obj);
+            });
+        // .done((o) => reslove(o))
+        // .fail((o) => reject(o))
     });
 }
 
@@ -46,14 +85,14 @@ username.add((value) => {
     localStorage['username'] = value;
 })
 
-export = class Service {
+class Service {
     static error = $.Callbacks()
     static config = {
         serviceHost: service_host,
-        shopUrl: `http://${service_host}/AdminTestServices/Shop/`,
-        weixinUrl: `http://${service_host}/AdminTestServices/WeiXin/`,
-        siteUrl: `http://${service_host}/AdminTestServices/Site/`,
-        memberUrl: `http://${service_host}/AdminTestServices/Member/`,
+        shopUrl: `http://${service_host}/AdminServices/Shop/`,
+        weixinUrl: `http://${service_host}/AdminServices/WeiXin/`,
+        siteUrl: `http://${service_host}/AdminServices/Site/`,
+        memberUrl: `http://${service_host}/AdminServices/Member/`,
         imageUrl: `http://${service_host}/UserServices/Site/`
     }
     static callMethod(path: string, data?): JQueryPromise<any> {
@@ -105,7 +144,7 @@ export = class Service {
     static get token() {
         return localStorage['token'];
     };
-    static set token(value: string) {
+    static set_token(value: string) {
         if (value === undefined) {
             localStorage.removeItem('token');
             return;
@@ -115,7 +154,7 @@ export = class Service {
     static get userId() {
         return localStorage['userId'];
     };
-    static set userId(value: string) {
+    static set_userId(value: string) {
         if (value === undefined) {
             localStorage.removeItem('userId');
             return;
@@ -137,5 +176,5 @@ window['translators'] = window['translators'] || {};
 window['services'] = window['services'] || {};
 
 
-
+export = Service;
 

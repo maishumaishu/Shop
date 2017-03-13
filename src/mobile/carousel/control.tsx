@@ -1,5 +1,7 @@
-import { ValueStoreContainer, ControlArguments } from 'mobile/common'
-import { ImageBox } from 'common/controls';
+import { ValueStoreContainer, ControlArguments, controlsDir } from 'mobile/common'
+import { ImageBox } from '../controls';
+
+requirejs([`css!${controlsDir}/carousel/control`]);
 
 let Carousel = (function () {
 

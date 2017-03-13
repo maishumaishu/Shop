@@ -1,7 +1,7 @@
 ﻿
 import Service = require('services/Service');
 
-let JData = window['JData'];
+// let JData = window['JData'];
 
 export interface ControlData {
     controlId: string, controlName: string, data: any
@@ -14,12 +14,19 @@ export interface PageData {
 }
 
 export class StationService extends Service {
-    homeProduct = new JData.WebDataSource(
-        Service.config.siteUrl + 'MicroStationData/Select?source=HomeProducts',
-        Service.config.siteUrl + 'MicroStationData/Insert?source=HomeProducts',
-        Service.config.siteUrl + 'MicroStationData/Update?source=HomeProducts',
-        Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
-    )
+    private _homeProduct: JData.WebDataSource;
+
+    get homeProduct():JData.WebDataSource {
+        if (!this._homeProduct) {
+            this._homeProduct = new JData.WebDataSource(
+                Service.config.siteUrl + 'MicroStationData/Select?source=HomeProducts',
+                Service.config.siteUrl + 'MicroStationData/Insert?source=HomeProducts',
+                Service.config.siteUrl + 'MicroStationData/Update?source=HomeProducts',
+                Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
+            );
+        }
+        return this._homeProduct;
+    }
     savePageControls(pageId: string, controls: any[]) {
         let url = `${Service.config.siteUrl}Page/SavePageControls`;
         Service.post(url, { pageId, controls: JSON.stringify(controls) });

@@ -35,9 +35,9 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
     }
 
     addItem() {
-        if (this.validator.validateForm()) {
-            return;
-        }
+        // if (this.validator.validateForm()) {
+        //     return;
+        // }
 
         console.assert(this.imageName != null);
         let imageUrl = station.imageUrl(this.props.pageId, this.imageName);
@@ -96,6 +96,7 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                                     <Button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
                                         confirm={"确定要删除该图片吗？"}
                                         onClick={() => {
+                                            this.removeItem(i);
                                             return Promise.resolve();
                                         }}>
                                         <i className="icon-trash"></i>
@@ -163,14 +164,14 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                                                     this.imageName = `${guid()}_${imageWidth}_${imageHeight}`;
                                                     return station.saveImage(this.props.pageId, this.imageName, data);
                                                 }} />
-                                            <input type="hidden" value={this.imageName} />
+                                            <input type="hidden" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer" style={{ marginTop: 0 }}>
                                 <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
-                                <button type="button" className="btn btn-primary" onClick={() => this.addItem()}> 保存</button>
+                                <button type="button" className="btn btn-primary" onClick={() => this.addItem()}> 确定</button>
                             </div>
                         </div>
                     </div>

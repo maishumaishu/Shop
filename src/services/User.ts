@@ -10,8 +10,8 @@ class UserService {
     login(username, password) {
         let url = `http://${Service.config.serviceHost}/user/login`;
         return Service.get<{ token: string, userId: string }>(url, { username, password }).then((o) => {
-            Service.token = o.token;
-            Service.userId = o.userId;
+            Service.set_token(o.token);
+            Service.set_userId(o.userId);
             Service.username.value = username;
         })
     }
@@ -20,8 +20,8 @@ class UserService {
         let url = `http://${Service.config.serviceHost}/user/register`;
         return Service.postByJson<{ token: string, userId: string }>(url, model)
             .then((result) => {
-                Service.token = result.token;
-                Service.userId = result.userId;
+                Service.set_token(result.token);
+                Service.set_userId(result.userId);
             });
     }
 }
