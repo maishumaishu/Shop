@@ -1,6 +1,9 @@
 declare namespace JData {
     class WebDataSource {
-        set_selectUrl(value: string);
+        constructor(selectUrl: string, insertUrl: string, updateUrl: string, deleteUrl: string);
+        delete(item: any);
+        insert(item: any);
+        select(args?: any);
     }
 }
 
@@ -14,9 +17,9 @@ interface JDataStatic {
         allowPaging: boolean,
         rowCreated: Function
     });
-    dialog({});
+    dialog({ });
     valid();
-    validate({});
+    validate({ });
     datepicker
 }
 
