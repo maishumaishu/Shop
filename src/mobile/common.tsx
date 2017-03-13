@@ -77,7 +77,7 @@ export class ValueStoreContainer<T> {
 }
 
 
-const controlsDir = 'mobile';
+export const controlsDir = 'mobile';
 
 //==============================================================
 // Control
