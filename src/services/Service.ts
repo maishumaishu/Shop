@@ -174,7 +174,7 @@ class Service {
 window['models'] = {};
 window['translators'] = window['translators'] || {};
 window['services'] = window['services'] || {};
-
+export = Service;
 
 export = Service;
 

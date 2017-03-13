@@ -551,7 +551,7 @@ class Promotion {
 }
 
 class Model {
-    page: ActivityEditPage;
+    page: chitu.Page;
     activityId: string
     createPromotion: Function
     removePromotion: Function
@@ -564,7 +564,7 @@ class Model {
         type: ko.observable('Given')
     }
 
-    constructor(page: ActivityEditPage, activityId: string) {
+    constructor(page: chitu.Page, activityId: string) {
         if (page == null)
             throw new Error('Argument "page" is null.');
 
@@ -600,61 +600,57 @@ class Model {
 
 }
 
-// export var func = function (page) {
-//     /// <param name="page" type="chitu.Page"/>
 
-
-// };
-class ActivityEditPage extends chitu.Page {
-    constructor(params) {
-        super(params);
-        this.load.add(this.page_load);
-    }
-
-    private page_load(page: ActivityEditPage, args) {
-        var activityId = args.id;
-        var model = new Model(page, activityId);
-
-        ko.applyBindings(model, page.element);
-
-        shopping.getCategories().then(function (data) {
-            data.unshift({ Name: '请选择类别', Id: '' })
-            model.categories(data);
-        });
-
-        shopping.getBrands().then((data: Array<any>) => {
-            data.unshift({ Name: '请选择品牌', Id: '' })
-            model.brands(data);
-        })
-
-        sv_activity.getPromotions(activityId).done(function (data) {
-            /// <param name="data" type="Array"/>
-            for (var i = 0; i < data.length; i++) {
-                var content = new PromotionContent(data[i].Id);
-                content.type(data[i].Type);
-                content.method(data[i].Method);
-                for (var j = 0; j < data[i].PromotionContentRules.length; j++) {
-                    var item = data[i].PromotionContentRules[j];
-                    var content_rule = content.newRule(item.Type, item.Method, item.Description);
-                    content_rule.id = item.Id;
-                    content_rule.levelValue(item.LevelValue);
-
-                    content.rules.push(content_rule);
-                }
-
-                var range = new PromotionRange(data[i].Id, model);
-                for (var j = 0; j < data[i].PromotionRangeRules.length; j++) {
-                    var item = data[i].PromotionRangeRules[j];
-                    var range_rule = range.newRule(item.Id, item.ObjectType, item.ObjectId, item.ObjectName, item.CollectionType, item.PromotionId);
-
-                    range.rules.push(range_rule);
-                }
-
-                range.allProducts(data[i].IsAll);
-
-                model.promotions.push({ id: data[i].Id, content: content, range: range, createDateTime: data[i].CreateDateTime });
-            }
-        });
-    }
+export default function (page: chitu.Page) {
+    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+        page.element.innerHTML = html;
+        page_load(page, page.routeData.values);
+    });
 }
-export = ActivityEditPage;
+
+function page_load(page: chitu.Page, args) {
+    var activityId = args.id;
+    var model = new Model(page, activityId);
+
+    ko.applyBindings(model, page.element);
+
+    shopping.getCategories().then(function (data) {
+        data.unshift({ Name: '请选择类别', Id: '' })
+        model.categories(data);
+    });
+
+    shopping.getBrands().then((data: Array<any>) => {
+        data.unshift({ Name: '请选择品牌', Id: '' })
+        model.brands(data);
+    })
+
+    sv_activity.getPromotions(activityId).done(function (data) {
+        /// <param name="data" type="Array"/>
+        for (var i = 0; i < data.length; i++) {
+            var content = new PromotionContent(data[i].Id);
+            content.type(data[i].Type);
+            content.method(data[i].Method);
+            for (var j = 0; j < data[i].PromotionContentRules.length; j++) {
+                var item = data[i].PromotionContentRules[j];
+                var content_rule = content.newRule(item.Type, item.Method, item.Description);
+                content_rule.id = item.Id;
+                content_rule.levelValue(item.LevelValue);
+
+                content.rules.push(content_rule);
+            }
+
+            var range = new PromotionRange(data[i].Id, model);
+            for (var j = 0; j < data[i].PromotionRangeRules.length; j++) {
+                var item = data[i].PromotionRangeRules[j];
+                var range_rule = range.newRule(item.Id, item.ObjectType, item.ObjectId, item.ObjectName, item.CollectionType, item.PromotionId);
+
+                range.rules.push(range_rule);
+            }
+
+            range.allProducts(data[i].IsAll);
+
+            model.promotions.push({ id: data[i].Id, content: content, range: range, createDateTime: data[i].CreateDateTime });
+        }
+    });
+}
+// }
