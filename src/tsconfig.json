@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es6",
         "module": "amd",
-        "sourceMap": true,
+        "sourceMap": false,
         "outDir": "../www",
         "jsx": "react"
     }

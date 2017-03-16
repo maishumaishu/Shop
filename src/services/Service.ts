@@ -89,10 +89,10 @@ class Service {
     static error = $.Callbacks()
     static config = {
         serviceHost: service_host,
-        shopUrl: `http://${service_host}/AdminServices/Shop/`,
-        weixinUrl: `http://${service_host}/AdminServices/WeiXin/`,
-        siteUrl: `http://${service_host}/AdminServices/Site/`,
-        memberUrl: `http://${service_host}/AdminServices/Member/`,
+        shopUrl: `http://${service_host}/ShopTest/`,
+        weixinUrl: `http://${service_host}/WeiXinTest/`,
+        siteUrl: `http://${service_host}/SiteTest/`,
+        memberUrl: `http://${service_host}/MemberTest/`,
         imageUrl: `http://${service_host}/UserServices/Site/`
     }
     static callMethod(path: string, data?): JQueryPromise<any> {
@@ -174,7 +174,5 @@ class Service {
 window['models'] = {};
 window['translators'] = window['translators'] || {};
 window['services'] = window['services'] || {};
-export = Service;
-
 export = Service;
 

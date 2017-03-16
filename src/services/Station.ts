@@ -16,7 +16,7 @@ export interface PageData {
 export class StationService extends Service {
     private _homeProduct: JData.WebDataSource;
 
-    get homeProduct():JData.WebDataSource {
+    get homeProduct(): JData.WebDataSource {
         if (!this._homeProduct) {
             this._homeProduct = new JData.WebDataSource(
                 Service.config.siteUrl + 'MicroStationData/Select?source=HomeProducts',
@@ -58,6 +58,23 @@ export class StationService extends Service {
     imageUrl(pageId: string, fileName: string) {
         let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-token=${Service.appToken}`;
         return url;
+    }
+    removeImage(pageId: string, name: string) {
+        let url = `${Service.config.siteUrl}Page/RemoveImage`;
+        return Service.postByJson(url, { pageId, name });
+    }
+    getImageNameFromUrl(imageUrl: string) {
+        var arr = imageUrl.split('?');
+        console.assert(arr.length == 2);
+        var params = this.pareeUrlQuery(arr[1]);
+        return params.name;
+    }
+    private pareeUrlQuery(query): any {
+        let match, pl = /\+/g, search = /([^&=]+)=?([^&]*)/g, decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
+        let urlParams = {};
+        while (match = search.exec(query))
+            urlParams[decode(match[1])] = decode(match[2]);
+        return urlParams;
     }
 }
 

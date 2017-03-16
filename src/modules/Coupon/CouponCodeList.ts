@@ -77,7 +77,7 @@ class PageModel {
 }
 
 export default function (page: chitu.Page) {
-  requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
         page.element.innerHTML = html;
         page_load(page);
     })
@@ -104,8 +104,12 @@ function page_load(page: chitu.Page) {
 
                     var dataItem = $(container).parents('tr').first().data('dataItem');
 
-                    var arr = dataItem.ValidEnd.toFormattedString('d').substr(0, 10).split('-');
-                    var validEnd = new Date(arr[0], arr[1] - 1, arr[2]);
+
+                    var validEnd = new Date();
+                    if (dataItem.ValidEnd) {
+                        // var arr = dataItem.ValidEnd.toFormattedString('d').substr(0, 10).split('-');
+                        validEnd = new Date(dataItem.ValidEnd);
+                    }
 
                     var today = new Date();
                     var dd = today.getDate();

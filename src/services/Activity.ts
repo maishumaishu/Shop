@@ -34,7 +34,7 @@ class ActivityService extends Service {
     }
     getPromotions(activityId) {
         /// <returns type="jQuery.Deferred"/>
-        return $.ajax({ url: baseUrl + 'GetPromotions', method: 'post', data: { activityId: activityId } });
+        return $.ajax({ url: baseUrl + 'GetPromotions', method: 'get', data: { activityId: activityId } });
     }
     addRangeRule(objectId, objectName, objectType, collectionType, promotionId) {
         /// <returns type="jQuery.Deferred"/>
