@@ -20,33 +20,33 @@ function ajax<T>(settings: JQueryAjaxSettings) {
 
     return new Promise<T>((resolve, reject) => {
         $.ajax(settings)
-            .done(function (data) {
-                if (data.Type == 'ErrorObject') {
-                    if (data.Code == 'Success') {
-                        resolve(data);
-                        return;
-                    }
+            // .done(function (data) {
+            //     if (data.Type == 'ErrorObject') {
+            //         if (data.Code == 'Success') {
+            //             resolve(data);
+            //             return;
+            //         }
 
-                    reject(data);
-                    Service.error.fire(data);
-                    return;
-                }
-                else if (data.name !== undefined && data.message !== undefined && data.stack !== undefined) {
-                    let err = { Code: data.name, Message: data.message };
-                    reject(err);
-                    Service.error.fire(err);
-                    return;
-                }
+            //         reject(data);
+            //         Service.error.fire(data);
+            //         return;
+            //     }
+            //     else if (data.name !== undefined && data.message !== undefined && data.stack !== undefined) {
+            //         let err = { Code: data.name, Message: data.message };
+            //         reject(err);
+            //         Service.error.fire(err);
+            //         return;
+            //     }
 
-                resolve(data);
-            })
-            .fail(function (error) {
-                //debugger;
-                var obj = { Code: error.status, Message: error.statusText };
-                Service.error.fire(obj);
-            });
-        // .done((o) => reslove(o))
-        // .fail((o) => reject(o))
+            //     resolve(data);
+            // })
+            // .fail(function (error) {
+            //     //debugger;
+            //     var obj = { Code: error.status, Message: error.statusText };
+            //     Service.error.fire(obj);
+            // });
+        .done((o) => resolve(o))
+        .fail((o) => reject(o))
     });
 }
 

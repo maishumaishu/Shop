@@ -38,18 +38,27 @@ import Services = require('services/Service');
 let JData = window['JData'];
 
 class FreightService extends Services {
-    freightSolutions = new JData.WebDataSource(
-        Services.config.shopUrl + 'ShoppingData/Select?source=FreightSolutions&selection=Id,Name',
-        Services.config.shopUrl + 'Freight/AddFreightSolution', //'/ShoppingData/Insert?source=FreightSolutions',
-        Services.config.shopUrl + 'ShoppingData/Update?source=FreightSolutions',
-        Services.config.shopUrl + 'ShoppingData/Delete?source=FreightSolutions'
-    )
-    productFreight = new JData.WebDataSource(
-        Services.config.shopUrl + 'ShoppingData/Select?source=ProductFreights&selection=Id,Name,ObjectId,ObjectType,FreightSolution.Name as SolutionName,IsSingle',
-        Services.config.shopUrl + 'Freight/AddProductFreight',
-        Services.config.shopUrl + 'ShoppingData/Update?source=ProductFreights',
-        Services.config.shopUrl + 'ShoppingData/Delete?source=ProductFreights'
-    );
+    freightSolutions: JData.WebDataSource;
+    productFreight: JData.WebDataSource;
+
+    constructor() {
+        super();
+
+        this.freightSolutions = new JData.WebDataSource(
+            Services.config.shopUrl + 'ShoppingData/Select?source=FreightSolutions&selection=Id,Name',
+            Services.config.shopUrl + 'Freight/AddFreightSolution', //'/ShoppingData/Insert?source=FreightSolutions',
+            Services.config.shopUrl + 'ShoppingData/Update?source=FreightSolutions',
+            Services.config.shopUrl + 'ShoppingData/Delete?source=FreightSolutions'
+        )
+        this.freightSolutions.set_method('post');
+        this.productFreight = new JData.WebDataSource(
+            Services.config.shopUrl + 'ShoppingData/Select?source=ProductFreights&selection=Id,Name,ObjectId,ObjectType,FreightSolution.Name as SolutionName,IsSingle',
+            Services.config.shopUrl + 'Freight/AddProductFreight',
+            Services.config.shopUrl + 'ShoppingData/Update?source=ProductFreights',
+            Services.config.shopUrl + 'ShoppingData/Delete?source=ProductFreights'
+        );
+        this.productFreight.set_method('post');
+    }
 }
 
 export = new FreightService();

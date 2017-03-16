@@ -104,7 +104,6 @@ export interface EditorState<T> {
 }
 export abstract class Editor<S extends EditorState<any>> extends React.Component<EditorProps, S> {
     private controlType: React.ComponentClass<any>;
-    // abstract dataType: { new () };
 
     constructor(props: EditorProps, controlType: React.ComponentClass<any>, controlDataType: { new () }) {
         super(props);
@@ -115,12 +114,10 @@ export abstract class Editor<S extends EditorState<any>> extends React.Component
     }
 
     componentDidMount() {
-        debugger;
         this.renderControl(this.state.controlData);
     }
 
     componentDidUpdate(){
-        debugger;
         this.renderControl(this.state.controlData);
     }
 
