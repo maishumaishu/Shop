@@ -54,16 +54,20 @@ requirejs.config({
         css: '../scripts/css',
         JData: '../scripts/JData',
         jquery: '../scripts/jquery-2.1.3',
+        'jquery-ui': '../scripts/jquery-ui',
+        'jquery.cookie': '../scripts/jquery.cookie',
+        'MicrosoftAjax.debug': '../scripts/MicrosoftAjax.debug',
         react: '../scripts/react',
         'react-dom': '../scripts/react-dom',
         text: 'scripts/text',
         ue: 'ueditor',
         common: '../common',
         mobile: './',
+        custom: '../Custom',
         services: '../services'
     }
 });
-var references = ['react', 'react-dom'];
+var references = ['react', 'react-dom', 'custom'];
 requirejs(references, function (React, ReactDOM) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;

@@ -315,7 +315,7 @@ class FormValidator {
      * @public
      * Runs the validation when the form is submitted.
      */
-    validateForm() {
+    validateForm(): boolean {
         //this.clearErrors();
         return this._validateFields(this.fields);
     };
@@ -335,7 +335,7 @@ class FormValidator {
         return this._validateFields(fields);
     }
 
-    private _validateFields(fields: { [propName: string]: ValidateField }) {
+    private _validateFields(fields: { [propName: string]: ValidateField }): boolean {
         //this.errors = [];
         let errors = [];
         for (var key in fields) {

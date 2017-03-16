@@ -2,7 +2,7 @@ import { Editor, EditorProps, EditorState, guid } from 'mobile/common';
 import { default as Control, Data } from 'mobile/carousel/control';
 import site = require('Site');
 import { default as station } from 'services/Station';
-import { ImageUpload } from 'common/ImageUpload';
+import { ImagePreview } from 'common/ImagePreview';
 import { Button } from 'common/controls';
 import FormValidator = require('common/validate');
 
@@ -19,8 +19,8 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
     private editorElement: HTMLElement;
     private dialogElement: HTMLElement;
     private validator: FormValidator;
-    private imageName: string;
-    private imageUpload: ImageUpload;
+    // private imageName: string;
+    private imageUpload: ImagePreview;
 
     constructor(props) {
         super(props, Control, Data);
@@ -30,25 +30,37 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
         super.componentDidMount();
 
         this.validator = new FormValidator(this.dialogElement, [
-            { name: 'image', rules: ['required'] }
+            { name: 'image', display: '图片', rules: ['required'] },
+            { name: 'url', display: '链接', rules: ['required'] }
         ]);
     }
 
     addItem() {
-        // if (this.validator.validateForm()) {
-        //     return;
-        // }
+        if (!this.validator.validateForm()) {
+            return Promise.reject({});
+        }
 
-        console.assert(this.imageName != null);
-        let imageUrl = station.imageUrl(this.props.pageId, this.imageName);
-        this.state.controlData.images.push(imageUrl);
-        this.setState(this.state);
-        $(this.dialogElement).modal('hide');
+        let data = this.imageUpload.state.imageData;
+        let { width, height } = this.imageUpload.props.size;
+        let imageName = `${guid()}_${width}_${height}`;
+        return station.saveImage(this.props.pageId, imageName, data).then(o => {
+            console.assert(imageName != null);
+            let imageUrl = station.imageUrl(this.props.pageId, imageName);
+            this.state.controlData.images.push(imageUrl);
+            this.setState(this.state);
+            $(this.dialogElement).modal('hide');
+        });
     }
 
     removeItem(index: number) {
-        this.state.controlData.images = this.state.controlData.images.filter((o, i) => index != i);
-        this.setState(this.state);
+        let imageUrl = this.state.controlData.images[index];
+        let name = station.getImageNameFromUrl(imageUrl);
+        return station.removeImage(this.props.pageId, name).then(() => {
+            // this.removeItem(i);
+            this.state.controlData.images = this.state.controlData.images.filter((o, i) => index != i);
+            this.setState(this.state);
+        });
+
     }
 
     showAddDialog() {
@@ -96,6 +108,7 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                                     <Button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
                                         confirm={"确定要删除该图片吗？"}
                                         onClick={() => {
+
                                             this.removeItem(i);
                                             return Promise.resolve();
                                         }}>
@@ -123,7 +136,7 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                 </div>
 
                 {/*　弹出窗口　*/}
-                <form className="modal fade" ref={(o: HTMLElement) => this.dialogElement = o}>
+                <div className="modal fade" ref={(o: HTMLElement) => this.dialogElement = o}>
                     <input name="Id" type="hidden" />
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -147,36 +160,38 @@ export default class EditorComponent extends Editor<EditorState<Data>>{
                                     <div className="form-group">
                                         <label className="control-label col-sm-2">链接</label>
                                         <div className="col-sm-10">
-                                            <input name="Name" className="form-control" />
+                                            <input name="url" className="form-control" />
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label className="control-label col-sm-2">备注</label>
                                         <div className="col-sm-10">
-                                            <input name="Remark" className="form-control" />
+                                            <input name="remark" className="form-control" />
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label className="control-label col-sm-2">图片</label>
                                         <div className="col-sm-10 fileupload">
-                                            <ImageUpload ref={(o) => this.imageUpload = o} size={{ width: imageWidth, height: imageHeight }}
-                                                upload={(data) => {
-                                                    this.imageName = `${guid()}_${imageWidth}_${imageHeight}`;
-                                                    return station.saveImage(this.props.pageId, this.imageName, data);
-                                                }} />
-                                            <input type="hidden" />
+                                            <ImagePreview ref={(o) => this.imageUpload = o}
+                                                size={{ width: imageWidth, height: imageHeight }} />
+                                            <input name="image" type="hidden" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer" style={{ marginTop: 0 }}>
                                 <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
-                                <button type="button" className="btn btn-primary" onClick={() => this.addItem()}> 确定</button>
+                                <Button className="btn btn-primary" onClick={() => this.addItem()}> 确定</Button>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         );
     }
+
+    // upload={(data) => {
+    //                                                 this.imageName = `${guid()}_${imageWidth}_${imageHeight}`;
+    //                                                 return station.saveImage(this.props.pageId, this.imageName, data);
+    //                                             }}
 }
