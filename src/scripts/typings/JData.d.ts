@@ -3,7 +3,9 @@ declare namespace JData {
         constructor(selectUrl: string, insertUrl: string, updateUrl: string, deleteUrl: string);
         delete(item: any);
         insert(item: any);
+        update(item: any);
         select(args?: any);
+        set_method(method: 'post' | 'get')
     }
 }
 
