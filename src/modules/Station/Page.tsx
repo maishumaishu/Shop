@@ -2,6 +2,7 @@ import components = require('mobile/componentDefines');
 import bootbox = require('bootbox');
 import { Editor, EditorProps, EditorState } from 'mobile/common'
 import { default as station, PageData, ControlData } from 'services/Station';
+import { Button } from 'common/controls';
 
 function guid() {
     function s4() {
@@ -34,7 +35,7 @@ export default async function (page: chitu.Page) {
             this.pageId = this.props.pageData._id;
         }
 
-        save() {
+        save() :Promise<any> {
             let elements = this.selectedContainer.querySelectorAll('li');
             let controls = [];
             for (let i = 0; i < elements.length; i++) {
@@ -46,7 +47,7 @@ export default async function (page: chitu.Page) {
                 let data = this.getControlData(controlId);
                 controls.push({ controlId, controlName, data });
             }
-            station.savePageControls(this.pageId, controls);
+            return station.savePageControls(this.pageId, controls);
         }
 
         getControlData(controlId: string): Object {
@@ -230,8 +231,8 @@ export default async function (page: chitu.Page) {
                                 <h4>页面设计</h4>
                             </li>
                             <li className="pull-right">
-                                <a className="btn btn-primary btn-sm pull-right"
-                                    onClick={() => this.save()}>保存</a>
+                                <Button className="btn btn-primary btn-sm pull-right"
+                                    onClick={() => this.save()} >保存</Button>
                             </li>
                         </ul>
                     </div>

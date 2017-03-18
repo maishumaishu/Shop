@@ -368,25 +368,28 @@ let Carousel = (function () {
 
 })();
 
+export interface CarouselItem {
+    image: string, url: string, name: string
+}
 export class Data {
-    images: string[] = [];
+    items: CarouselItem[] = [];
 }
 
 export class Control extends React.Component<Data, {}> {
     render() {
-        let images = this.props.images;
+        let items = this.props.items;
         return (
-            images.length > 0 ?
+            items.length > 0 ?
                 <div style={{ minHeight: '80px' }} name="ad-swiper" className="carousel slide">
                     <ol className="carousel-indicators">
-                        {images.map((o, i) =>
+                        {items.map((o, i) =>
                             <li key={i}></li>
                         )}
                     </ol>
                     <div className="carousel-inner">
-                        {images.map((o, i) =>
+                        {items.map((o, i) =>
                             <div key={i} className={i == 0 ? "item active" : "item"}>
-                                <ImageBox src={o} imageText="" className="img-responsive">
+                                <ImageBox src={o.image} imageText="" className="img-responsive">
                                 </ImageBox>
                                 <div className="carousel-caption">
                                 </div>

@@ -50,6 +50,10 @@ function ajax<T>(settings: JQueryAjaxSettings) {
     });
 }
 
+window['ObjectId'] = function(value){
+    return value;
+}
+
 /** 实现数据的存储，以及数据修改的通知 */
 class ValueStore<T> {
     private funcs = new Array<(args: T) => void>();

@@ -1,5 +1,5 @@
 export class ImagePreview extends React.Component<
-    { size: { width: number, height: number } } & React.Props<ImagePreview>,
+    { size: { width: number, height: number }, inputName?: string } & React.Props<ImagePreview>,
     { imageData: string }>{
     constructor(props) {
         super(props);
@@ -7,6 +7,7 @@ export class ImagePreview extends React.Component<
     }
 
     private inputFile_onchange(event: React.FormEvent) {
+        debugger;
         this.processfile((event.target as HTMLInputElement).files[0], this.props.size)
             .then(data => {
                 this.state.imageData = data;
@@ -50,7 +51,7 @@ export class ImagePreview extends React.Component<
                     var ctx = canvas.getContext("2d");
                     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-                    let data = canvas.toDataURL("/jpeg", 0.4);
+                    let data = canvas.toDataURL("/jpeg", 0.2);
                     resolve(data);
                 }
             }
@@ -64,8 +65,8 @@ export class ImagePreview extends React.Component<
 
     render() {
         return <div className="item">
-            <input type="file" accept="images/*" multiple={false}
-                onChange={(ev) => this.inputFile_onchange(ev)} />
+            <input name={this.props.inputName} type="file" accept="images/*" multiple={false}
+                onChange={(ev) => this.inputFile_onchange(ev)}/>
             {this.state.imageData ?
                 <img src={this.state.imageData} style={{ width: '100%' }} /> :
                 <i className="icon-camera"></i>

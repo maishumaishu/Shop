@@ -29,7 +29,7 @@ export class StationService extends Service {
     }
     savePageControls(pageId: string, controls: any[]) {
         let url = `${Service.config.siteUrl}Page/SavePageControls`;
-        Service.post(url, { pageId, controls: JSON.stringify(controls) });
+        return Service.post(url, { pageId, controls: JSON.stringify(controls) });
     }
     private getPageData(pageId: string, fields?: string[]) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
