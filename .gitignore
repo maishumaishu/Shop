@@ -1,5 +1,6 @@
 /node_modules
 /www
+/user_www
 /.git
 /.tscache
 .baseDir.*
