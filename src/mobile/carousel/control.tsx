@@ -1,4 +1,4 @@
-import { ValueStoreContainer, ControlArguments, controlsDir } from 'mobile/common'
+import { ControlArguments, controlsDir } from 'mobile/common'
 import { ImageBox } from '../controls';
 
 requirejs([`css!${controlsDir}/carousel/control`]);
@@ -373,14 +373,22 @@ export interface CarouselItem {
 }
 export class Data {
     items: CarouselItem[] = [];
+    autoplay: boolean = false
 }
 
 export class Control extends React.Component<Data, {}> {
+    componentDidMount() {
+
+    }
     render() {
         let items = this.props.items;
         return (
             items.length > 0 ?
-                <div style={{ minHeight: '80px' }} name="ad-swiper" className="carousel slide">
+                <div style={{ minHeight: '80px' }} name="ad-swiper" className="carousel slide"
+                    ref={(e: HTMLElement) => {
+                        if (!e) return;
+                        var c = new Carousel(e, { autoplay: this.props.autoplay });
+                    }}>
                     <ol className="carousel-indicators">
                         {items.map((o, i) =>
                             <li key={i}></li>

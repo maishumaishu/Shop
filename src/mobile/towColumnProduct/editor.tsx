@@ -1,4 +1,4 @@
-import { Editor, EditorProps, EditorState } from 'mobile/common';
+import { Editor, EditorProps, EditorState } from 'mobile/editor';
 import { Data, default as Control } from 'mobile/towColumnProduct/control'
 
 class EditorComponent extends React.Component<{}, {}>{

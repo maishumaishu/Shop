@@ -1,4 +1,4 @@
-import { Editor, EditorProps, EditorState, guid } from 'mobile/common';
+import { Editor, EditorProps, EditorState, guid } from 'mobile/editor';
 import { default as Control, Data, CarouselItem } from 'mobile/carousel/control';
 import site = require('Site');
 import { default as station } from 'services/Station';
@@ -20,7 +20,6 @@ export default class EditorComponent extends Editor<EditorState<Data> & { editIt
     private dialogElement: HTMLElement;
     private validator: FormValidator;
     private imageUpload: ImagePreview;
-    // private editItemIndex: number;
 
     private urlInput: HTMLInputElement;
     private numberSelect: HTMLSelectElement;
@@ -247,5 +246,9 @@ export default class EditorComponent extends Editor<EditorState<Data> & { editIt
                 </div>
             </div>
         );
+    }
+    renderControl(data: Data) {
+        data.autoplay = false;
+        super.renderControl(data);
     }
 }

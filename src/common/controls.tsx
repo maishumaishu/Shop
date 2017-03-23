@@ -141,10 +141,10 @@ export class Button extends React.Component<ButtonProps, {}>{
 
     private confirmText(): string {
         if (typeof this.props.confirm == 'function') {
-            return this.props.confirm();
+            return (this.props.confirm as () => string)();
         }
 
-        return this.props.confirm;
+        return this.props.confirm as string;
     }
 
     render() {

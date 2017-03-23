@@ -1,6 +1,6 @@
 import components = require('mobile/componentDefines');
 import bootbox = require('bootbox');
-import { Editor, EditorProps, EditorState } from 'mobile/common'
+import { Editor, EditorProps, EditorState } from 'mobile/editor'
 import { default as station, PageData, ControlData } from 'services/Station';
 import { Button } from 'common/controls';
 
