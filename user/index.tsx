@@ -12,7 +12,7 @@ requirejs.config({
         text: 'scripts/text',
         //================================
         chitu: 'scripts/chitu',
-        mobile: 'controls',
+        mobile: '.',
         react: 'scripts/react',
         'react-dom': 'scripts/react-dom'
     }

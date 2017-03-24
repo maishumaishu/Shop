@@ -6,13 +6,13 @@ export default function (page: chitu.Page) {
             let controlElement = document.createElement('div');
             page.element.appendChild(controlElement);
 
-            let controlPath = `controls/${pageData.controls[i].controlName}/control`;
+            let controlPath = `components/${pageData.controls[i].controlName}/control`;
             console.log(controlPath);
             requirejs([controlPath], o => {
-                debugger;
-                let reactElement = React.createElement(o.Control, pageData.controls[i].data);
+                var control = o.default;
+                console.assert(control != null);
+                let reactElement = React.createElement(control, pageData.controls[i].data);
                 ReactDOM.render(reactElement, controlElement, function () {
-                    debugger;
                 })
             });
         }

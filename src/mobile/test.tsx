@@ -1,4 +1,4 @@
-import { default as CarouselEditoir } from 'carousel/editor';
+import { default as CarouselEditoir } from 'components/carousel/editor';
 import { default as station } from 'services/Station';
 
 export function guid() {
