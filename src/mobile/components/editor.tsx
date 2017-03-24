@@ -1,4 +1,4 @@
-import { ControlArguments, controlsDir } from 'mobile/common'
+import { ControlArguments, componentsDir } from 'mobile/common'
 
 export interface EditorProps {
     controlElement: HTMLElement,
@@ -36,7 +36,7 @@ export abstract class Editor<S extends EditorState<any>> extends React.Component
     }
 
     static path(controlName: string) {
-        return `${controlsDir}/${controlName}/editor`;
+        return `${componentsDir}/${controlName}/editor`;
     }
 }
 

@@ -1,7 +1,7 @@
-import { Control, ControlArguments,controlsDir } from 'mobile/common';
+import { Control, ControlArguments, componentsDir } from 'mobile/common';
 import { ImageBox } from 'controls';
 
-requirejs([`css!${controlsDir}/towColumnProduct/control`]);
+requirejs([`css!${componentsDir}/towColumnProduct/control`]);
 
 type Product = {
     id: string,
@@ -39,7 +39,7 @@ export default class MyControl extends React.Component<{}, {}> {
                         </div>
                     </div>
                 </a>
-                 <a className="col-xs-6 text-center item">
+                <a className="col-xs-6 text-center item">
                     <img src="http://service.alinq.cn:2800/AdminServices/Shop/Images/Editor/96a34cac654f47e9acb46c4ca0ca169a_360_360.jpeg?application-token=58424776034ff82470d06d3d&amp;storeId=58401d1906c02a2b8877bd13" width="360px" height="360px" />
                     <div className="bottom">
                         <div className="interception">合禾果枇杷蜜</div><div>

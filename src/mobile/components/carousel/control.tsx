@@ -1,7 +1,7 @@
-import { ControlArguments, controlsDir } from 'mobile/common'
+import { ControlArguments, componentsDir } from 'mobile/common'
 import { ImageBox } from 'controls';
 
-requirejs([`css!${controlsDir}/carousel/control`]);
+requirejs([`css!${componentsDir}/carousel/control`]);
 
 let Carousel = (function () {
 
