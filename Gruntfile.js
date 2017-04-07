@@ -1,5 +1,5 @@
 var admin_dest = 'www';
-var admin_src = 'src';
+var admin_src = 'admin';
 var user_dest = 'user_www';
 var user_src = 'user';
 var ts_options = {
@@ -15,13 +15,13 @@ module.exports = function (grunt) {
     grunt.initConfig({
         shell: {
             admin: {
-                command: 'tsc -p src',
+                command: `tsc -p ${admin_src}`,
                 options: {
                     failOnError: false
                 }
             },
             user: {
-                command: 'tsc -p user',
+                command: `tsc -p ${user_src}`,
                 options: {
                     failOnError: false
                 }
