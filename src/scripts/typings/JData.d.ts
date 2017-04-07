@@ -19,7 +19,7 @@ interface JDataStatic {
         allowPaging: boolean,
         rowCreated: Function
     });
-    dialog({ });
+    dialog(options?: {});
     valid();
     validate({ });
     datepicker

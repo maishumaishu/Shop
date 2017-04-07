@@ -3172,7 +3172,10 @@ interface JQuery extends JDataStatic {
 
     /** Bootstrap */
     /** 模态框，模态框经过了优化，更加灵活，以弹出对话框的形式出现，具有最小和最实用的功能集。 */
-    modal(options?: { backdrop?: boolean | 'static', keyboard?: boolean } | 'toggle' | 'show' | 'hide' | 'handleUpdate'): JQuery;
+    modal(options?: {
+        backdrop?: boolean | 'static', keyboard?: boolean,
+        show?: boolean
+    } | 'toggle' | 'show' | 'hide' | 'handleUpdate'): JQuery;
 }
 declare module "jquery" {
     export = $;
