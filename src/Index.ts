@@ -62,7 +62,6 @@ requirejs.config({
         'jquery-ui': 'scripts/jquery-ui',
         'jquery.ui.widget': 'scripts/jquery.ui.widget',
         knockout: 'scripts/knockout-3.2.0',
-        'ko.ext': 'common/knockout.extentions',
         'ko.map': 'scripts/knockout.mapping.debug',
         'ko.val': 'scripts/knockout.validation.cn',
         'knockout.validation': 'scripts/knockout.validation',
@@ -79,10 +78,12 @@ requirejs.config({
         content: 'content',
         com: 'common',
         //app: 'App',
-        'ue': 'ueditor'
+        ueditor: 'scripts/ueditor',
+        'ue': 'scripts/ueditor',
+        'wuzhui': 'scripts/wuzhui'
     }
 });
-var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom'];
+var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];
 requirejs(references, function (React, ReactDOM, ko, mapping, app) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;

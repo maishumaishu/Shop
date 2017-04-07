@@ -1,4 +1,4 @@
-import Service = require('services/Service');
+import { default as Service } from 'services/Service';
 import bootbox = require('bootbox');
 
 let JData = window['JData'];
@@ -47,19 +47,23 @@ let JData = window['JData'];
             options.headers = options.headers || {};
 
             if (Service.appToken) {
-                options.headers['application-token'] = Service.appToken;
+                options.headers['application-key'] = Service.appToken;
             }
             if (Service.token) {
                 options.headers['user-token'] = Service.token;
             }
 
-            if ((options.url as string).indexOf('?') < 0)
-                options.url = options.url + `?storeId=${Service.storeId}`;
-            else
-                options.url = options.url + `&storeId=${Service.storeId}`;
-
-
-
+            if (options.method != 'get') {
+                if (options.url.indexOf('storeId') < 0) {
+                    if ((options.url as string).indexOf('?') < 0)
+                        options.url = options.url + `?storeId=${Service.storeId}`;
+                    else
+                        options.url = options.url + `&storeId=${Service.storeId}`;
+                }
+            }
+            else {
+                options.data.storeId = Service.storeId;
+            }
 
             options.traditional = true
             var result = $.Deferred();
@@ -71,6 +75,7 @@ let JData = window['JData'];
                 //     return data;
                 // })
                 .done(function (data) {
+                    data = data || {};
                     if (data.Type == 'ErrorObject') {
                         if (data.Code == 'Success') {
                             result.resolve(data);
@@ -154,6 +159,12 @@ let JData = window['JData'];
         JData.GridView.prototype = $.extend(JData.GridView.prototype, {
             get_cssClass: function () {
                 return 'table table-striped table-bordered table-hover';
+            },
+            get_emptyDataRowStyle:function(){
+                let style = new JData.TableItemStyle();
+                style.set_height('300px');
+                style.set_textAlign('center');
+                return style;
             }
         });
 
@@ -171,6 +182,7 @@ let JData = window['JData'];
                 return 'table table-striped table-bordered table-hover';
             }
         });
+
         //var cmd = new JData.CommandField();
         //cmd.get_itemStyle
         JData.CommandField.prototype = $.extend(JData.CommandField.prototype, {

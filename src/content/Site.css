@@ -108,3 +108,33 @@ div[data-role="editor-toolbar"] {
             left: -13px;
             transform: none !important;
         }
+
+
+ul.nav-tabs  li  button {
+    margin-left: 2px;
+}
+
+.pagingBar {
+    background-color: #eff3f8;
+    text-align: right;
+}
+
+.pagingBar .total {
+    float: left;
+}
+
+.pagingBar a {
+    /*background-color: #fafafa;
+    color: #2283c5;*/
+    margin-right: 4px;
+}
+
+.pagingBar a.active{
+    color: red;
+}
+
+.table .empty td {
+    height: 300px;
+    text-align: center;
+    padding-top: 120px;
+}

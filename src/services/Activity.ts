@@ -8,7 +8,8 @@
 //     }
 
 // })(function () {
-import Service = require('services/Service');
+import { default as Service } from 'services/Service';
+
 var baseUrl = Service.config.shopUrl + 'PromotionActivity/';
 let JData = window['JData'];
 class ActivityService extends Service {

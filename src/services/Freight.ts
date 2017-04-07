@@ -34,7 +34,8 @@
 //     return services;
 // });
 
-import Services = require('services/Service');
+import { default as Services } from 'services/Service';
+
 let JData = window['JData'];
 
 class FreightService extends Services {

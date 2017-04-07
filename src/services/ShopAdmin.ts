@@ -1,5 +1,6 @@
 ﻿
-import Service = require('services/Service');
+import { default as Service } from 'services/Service';
+
 
 class ShopAdmin extends Service {
 

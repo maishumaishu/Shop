@@ -1,61 +1,72 @@
 ﻿
 import $ = require('jquery');
 
-let service_host = 'localhost:2800'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
+
 
 function ajax<T>(settings: JQueryAjaxSettings) {
     settings.headers = settings.headers || {};
+    settings.data = settings.data || {}
+
     let options = settings;
     if (Service.appToken) {
-        options.headers['application-token'] = Service.appToken;
+        options.headers['application-key'] = Service.appToken;
     }
     if (Service.token) {
         options.headers['user-token'] = Service.token;
     }
 
-    if ((options.url as string).indexOf('?') < 0)
-        options.url = options.url + `?storeId=${Service.storeId}`;
-    else
-        options.url = options.url + `&storeId=${Service.storeId}`;
+    if (settings.method != 'get') {
+        if ((options.url as string).indexOf('?') < 0)
+            options.url = options.url + `?storeId=${Service.storeId}`;
+        else
+            options.url = options.url + `&storeId=${Service.storeId}`;
+    }
+    else {
+        options.data.storeId = Service.storeId;
+    }
 
     return new Promise<T>((resolve, reject) => {
         $.ajax(settings)
-            // .done(function (data) {
-            //     if (data.Type == 'ErrorObject') {
-            //         if (data.Code == 'Success') {
-            //             resolve(data);
-            //             return;
-            //         }
-
-            //         reject(data);
-            //         Service.error.fire(data);
-            //         return;
-            //     }
-            //     else if (data.name !== undefined && data.message !== undefined && data.stack !== undefined) {
-            //         let err = { Code: data.name, Message: data.message };
-            //         reject(err);
-            //         Service.error.fire(err);
-            //         return;
-            //     }
-
-            //     resolve(data);
-            // })
-            // .fail(function (error) {
-            //     //debugger;
-            //     var obj = { Code: error.status, Message: error.statusText };
-            //     Service.error.fire(obj);
-            // });
-        .done((o) => resolve(o))
-        .fail((o) => reject(o))
+            .then(data => {
+                if (data.Type == 'DataSourceSelectResult') {
+                    var selectResult = {} as wuzhui.DataSourceSelectResult<any>;
+                    selectResult.dataItems = data['DataItems'];
+                    selectResult.totalRowCount = data['TotalRowCount'];
+                    return selectResult;
+                }
+                return data;
+            })
+            .done((o) => resolve(o))
+            .fail((o) => reject(o))
     });
 }
 
-window['ObjectId'] = function(value){
+wuzhui.ajax = function (url: string, options: FetchOptions) {
+    options = options || {};
+    var q: Promise<any>;
+    if (!options.method || options.method == 'get')
+        q = ajax({ url, data: options.body });
+    else
+        q = ajax({ url, method: options.method, data: options.body });
+
+    q.then((data: any) => {
+        if (data.DataItems) {
+            data.dataItems = data.DataItems;
+            data.totalRowCount = data.TotalRowCount;
+        }
+        return data;
+    });
+
+    return q;
+}
+
+
+window['ObjectId'] = function (value) {
     return value;
 }
 
 /** 实现数据的存储，以及数据修改的通知 */
-class ValueStore<T> {
+export class ValueStore<T> {
     private funcs = new Array<(args: T) => void>();
     private _value: T;
 
@@ -89,16 +100,31 @@ username.add((value) => {
     localStorage['username'] = value;
 })
 
-class Service {
-    static error = $.Callbacks()
-    static config = {
-        serviceHost: service_host,
-        shopUrl: `http://${service_host}/ShopTest/`,
-        weixinUrl: `http://${service_host}/WeiXinTest/`,
-        siteUrl: `http://${service_host}/SiteTest/`,
-        memberUrl: `http://${service_host}/MemberTest/`,
-        imageUrl: `http://${service_host}/UserServices/Site/`
+
+let local_service_host = '192.168.1.9:2800'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
+let remote_service_host = 'shop.alinq.cn:2800';
+let urlConfigs = {
+    local: {
+        serviceHost: local_service_host,
+        shopUrl: `http://${local_service_host}/AdminShopTest/`,
+        weixinUrl: `http://${local_service_host}/AdminWeiXinTest/`,
+        siteUrl: `http://${local_service_host}/AdminSiteTest/`,
+        memberUrl: `http://${local_service_host}/AdminMemberTest/`,
+        imageUrl: `http://${local_service_host}/AdminSiteTest/`
+    },
+    remote: {
+        serviceHost: remote_service_host,
+        shopUrl: `http://${remote_service_host}/AdminShop/`,
+        weixinUrl: `http://${remote_service_host}/AdminWeiXin/`,
+        siteUrl: `http://${remote_service_host}/AdminSite/`,
+        memberUrl: `http://${remote_service_host}/AdminMember/`,
+        imageUrl: `http://${remote_service_host}/UserServices/Site/`
     }
+}
+
+export class Service {
+    static error = $.Callbacks()
+    static config = urlConfigs.local
     static callMethod(path: string, data?): JQueryPromise<any> {
         data = data || {};
         var url = Service.config.shopUrl + path;
@@ -139,12 +165,27 @@ class Service {
         });
     }
 
+    static put<T>(url: string, data) {
+        return ajax<T>({
+            url: url, data,
+            method: 'put'
+        });
+    }
+
+    static delete(url: string, data) {
+        return ajax({
+            url, data, method: 'delete'
+        })
+    }
+
     ajax<T>(options: JQueryAjaxSettings) {
         return ajax<T>(options);
     }
 
     static appToken = "58424776034ff82470d06d3d";
-    static storeId = '58401d1906c02a2b8877bd13';
+    static get storeId() {
+        return Service.userId;
+    }
     static get token() {
         return localStorage['token'];
     };
@@ -175,8 +216,9 @@ class Service {
 
 
 
+
 window['models'] = {};
 window['translators'] = window['translators'] || {};
 window['services'] = window['services'] || {};
-export = Service;
+export default Service;
 

@@ -1,6 +1,6 @@
 
 import site = require('Site');
-import Service = require('services/Service');
+import { default as Service } from 'services/Service';
 // import Utility = require('Utility');
 let JData = window['JData'];
 

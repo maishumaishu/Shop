@@ -36,7 +36,7 @@ module.exports = function (grunt) {
                     { expand: true, cwd: admin_src, src: ['**/*.css'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['fonts/**/*.*'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['assets/font/*.*'], dest: admin_dest },
-                    { expand: true, cwd: admin_src, src: ['ueditor/**/*.*'], dest: admin_dest },
+                    { expand: true, cwd: admin_src, src: ['scripts/ueditor/**/*.*'], dest: admin_dest },
                 ]
             },
             user: {

@@ -3,6 +3,8 @@ import bootbox = require('bootbox');
 import { Editor, EditorProps, EditorState } from 'mobile/components/editor'
 import { default as station, PageData, ControlData } from 'services/Station';
 import { Button } from 'common/controls';
+import app = require('Application');
+import FormValidator = require('common/formValidator');
 
 function guid() {
     function s4() {
@@ -14,28 +16,45 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 };
 
+export interface RouteValue {
+    onSave(pageData: PageData);
+    id: string;
+}
+
 export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
+    var routeValue: RouteValue = page.routeData.values || {};
     let editorTypes: { [propName: string]: React.ComponentClass<any> } = {};
     type State = {
         componentInstances: ControlData[],
+        pageName: string,
+        pageRemark: string,
+
     }
     class Page extends React.Component<{ pageData: PageData }, State>{
         private selectedContainer: HTMLElement;
         private allContainer: HTMLElement;
         private editors: Editor<EditorState<any>>[];
         private pageId: string;
+        private validator: FormValidator;
 
         constructor(props) {
             super(props);
 
-            this.state = { componentInstances: this.props.pageData.controls };
+            this.state = {
+                componentInstances: this.props.pageData.controls,
+                pageName: this.props.pageData.name,
+                pageRemark: this.props.pageData.remark
+            };
             this.editors = [];
             this.pageId = this.props.pageData._id;
         }
 
-        save() :Promise<any> {
+        save(): Promise<any> {
+            if (!this.validator.validateForm()) {
+                return;
+            }
             let elements = this.selectedContainer.querySelectorAll('li');
             let controls = [];
             for (let i = 0; i < elements.length; i++) {
@@ -47,7 +66,23 @@ export default async function (page: chitu.Page) {
                 let data = this.getControlData(controlId);
                 controls.push({ controlId, controlName, data });
             }
-            return station.savePageControls(this.pageId, controls);
+
+
+            let pageData: PageData = { _id: this.pageId, controls, name: this.state.pageName, remark: this.state.pageRemark };
+            return station.savePageData(pageData).then(data => {
+                if (routeValue.onSave) {
+                    routeValue.onSave(pageData);
+                }
+                return data;
+            });
+            // return station.savePageControls(this.pageId, controls, this.state.pageName, this.state.pageRemark)
+            //     .then((data) => {
+            //         // if(routeValue.onSave){
+            //         //     let pageData:PageData = {};
+            //         // routeValue.onSave()                    
+            //         // }
+            //         return data;
+            //     });
         }
 
         getControlData(controlId: string): Object {
@@ -111,6 +146,10 @@ export default async function (page: chitu.Page) {
                 }
             };
             //=======================================================
+            let formElement = page.element.querySelector('form') as HTMLElement;
+            this.validator = new FormValidator(formElement, {
+                name: { rules: ['required'], messages: { required: '请输入页面名称' } }
+            });
         }
 
         /** 绑定手机控件的点击事件 */
@@ -228,11 +267,20 @@ export default async function (page: chitu.Page) {
                     <div name="tabs" className="tabbable">
                         <ul className="nav nav-tabs">
                             <li className="pull-left">
-                                <h4>页面设计</h4>
+                                <h4>页面装修</h4>
                             </li>
                             <li className="pull-right">
-                                <Button className="btn btn-primary btn-sm pull-right"
-                                    onClick={() => this.save()} >保存</Button>
+                                <Button className="btn btn-primary btn-sm"
+                                    onClick={() => this.save()}
+                                    toast={<h5>
+                                        <i className="icon-ok-sign icon-2x text-success" />
+                                        <span style={{ marginLeft: 10 }}>保存页面成功</span>
+                                    </h5>}>保存</Button>
+                                <Button className="btn btn-primary btn-sm"
+                                    onClick={() => {
+                                        debugger;
+                                        return app.back();
+                                    }} >返回</Button>
                             </li>
                         </ul>
                     </div>
@@ -254,6 +302,33 @@ export default async function (page: chitu.Page) {
                             </ul>
                         </div>
                         <div className="all">
+                            <h5>页面信息</h5>
+                            <form className="row" style={{ height: 40 }}>
+                                <div className="col-xs-4">
+                                    <label className="control-label pull-left" style={{ paddingTop: 8 }}>名称</label>
+                                    <div style={{ paddingLeft: 40 }}>
+                                        <input name="name" className="form-control" placeholder="请输入页面名称（选填）"
+                                            value={this.state.pageName}
+                                            onChange={(e) => {
+                                                this.state.pageName = (e.target as HTMLInputElement).value;
+                                                this.setState(this.state);
+                                            }} />
+                                    </div>
+                                </div>
+                                <div className="col-xs-8">
+                                    <label className="control-label pull-left" style={{ paddingTop: 8 }}>备注</label>
+                                    <div style={{ paddingLeft: 40 }}>
+                                        <input name="remark" className="form-control pull-left" placeholder="请输入页面备注（必填）"
+                                            value={this.state.pageRemark || ''}
+                                            onChange={(e) => {
+                                                this.state.pageRemark = (e.target as HTMLInputElement).value;
+                                                this.setState(this.state);
+                                            }} />
+                                    </div>
+                                </div>
+                            </form>
+                            <hr />
+                            <h5>页面组件</h5>
                             <ul ref={(e: HTMLElement) => this.allContainer = e}>
                                 {components.map((c, i) => (
                                     <li key={c.name} data-controlName={c.name}
@@ -286,6 +361,10 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let pageData = await station.getPageDataByName("首页");
+    let pageId = page.routeData.values.id;
+    let pageData = {} as PageData;// PageData();// 
+    if (pageId)
+        pageData = await station.getPageData(pageId);
+
     ReactDOM.render(<Page pageData={pageData} />, page.element);
 }

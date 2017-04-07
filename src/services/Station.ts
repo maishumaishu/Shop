@@ -1,5 +1,5 @@
-﻿
-import Service = require('services/Service');
+﻿import { default as Service } from 'services/Service';
+
 
 // let JData = window['JData'];
 
@@ -10,12 +10,16 @@ export interface ControlData {
 export interface PageData {
     _id: string,
     name: string,
+    remark: string,
     controls: Array<ControlData>
 }
 
 export class StationService extends Service {
     private _homeProduct: JData.WebDataSource;
-
+    private url(path: string) {
+        let url = `${Service.config.siteUrl}${path}`;
+        return url;
+    }
     get homeProduct(): JData.WebDataSource {
         if (!this._homeProduct) {
             this._homeProduct = new JData.WebDataSource(
@@ -27,16 +31,17 @@ export class StationService extends Service {
         }
         return this._homeProduct;
     }
-    savePageControls(pageId: string, controls: any[]) {
-        let url = `${Service.config.siteUrl}Page/SavePageControls`;
-        return Service.post(url, { pageId, controls: JSON.stringify(controls) });
+    // savePageControls(pageId: string, controls: any[], name: string, remark?: string) {
+    //     let url = `${Service.config.siteUrl}Page/SavePageControls`;
+    //     return Service.post(url, { pageId, controls: JSON.stringify(controls), name, remark });
+    // }
+    savePageData(pageData: PageData) {
+        let url = `${Service.config.siteUrl}Page/SavePageData`;
+        return Service.postByJson(url, pageData);
     }
-    private getPageData(pageId: string, fields?: string[]) {
+    getPageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
-        let data = { pageId, fields: undefined };
-        if (fields != null) {
-            data.fields = JSON.stringify(fields);
-        }
+        let data = { pageId };
         return Service.get<PageData>(url, data);
     }
     /** 通过页面名称获取页面 id 
@@ -51,12 +56,18 @@ export class StationService extends Service {
             return this.getPageData(o);
         })
     }
+    getPageDatas() {
+        let url = this.url('Page/GetPageDatas');
+        return Service.get<PageData[]>(url).then(o => {
+            return o || [];
+        });
+    }
     saveImage(pageId: string, name: string, image: string) {
         let url = `${Service.config.siteUrl}Page/SaveImage`;
         return Service.postByJson(url, { pageId, name, image });
     }
     imageUrl(pageId: string, fileName: string) {
-        let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-token=${Service.appToken}`;
+        let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-key=${Service.appToken}`;
         return url;
     }
     removeImage(pageId: string, name: string) {

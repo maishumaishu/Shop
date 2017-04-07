@@ -1,6 +1,6 @@
 import app = require('Application');
 import site = require('Site');
-import shoppingService = require('services/Shopping');
+import { default as shopping } from 'services/Shopping';
 import UE = require('common/ue.ext');
 
 let JData = window['JData'];
@@ -51,12 +51,12 @@ function page_load(page: chitu.Page, args: any) {
             var result = $.Deferred();
             var dataItem = ko.mapping.toJS(model.coupon);
             debugger;
-            shoppingService.couponDataSource.set_method('post');
+            shopping.couponDataSource.set_method('post');
             if (model.coupon.Id()) {
-                result = shoppingService.couponDataSource.update(dataItem);
+                result = shopping.couponDataSource.update(dataItem);
             }
             else {
-                result = shoppingService.couponDataSource.insert(dataItem);
+                result = shopping.couponDataSource.insert(dataItem);
             }
             return result.done(function () {
                 model.back();
@@ -81,7 +81,7 @@ function page_load(page: chitu.Page, args: any) {
     if (args.id) {
         var sel_args = new JData.DataSourceSelectArguments();
         sel_args.set_filter('Id=Guid"' + args.id + '"');
-        $.when(shoppingService.couponDataSource.select(sel_args).then(function (coupons) {
+        $.when(shopping.couponDataSource.select(sel_args).then(function (coupons) {
             return coupons[0];
         }), ue_ready)
             .done(function (coupon: any) {

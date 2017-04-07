@@ -4,10 +4,9 @@ declare namespace wuzhui {
         private _visible;
         private _element;
         constructor(element: T);
-        html: string;
         visible: boolean;
          element: T;
-        appendChild(child: Control<any> | HTMLElement): void;
+        appendChild(child: Control<any> | HTMLElement, index?: number): void;
         style(value: CSSStyleDeclaration | string): void;
         static getControlByElement(element: HTMLElement): Control<any>;
     }
@@ -25,6 +24,7 @@ declare namespace wuzhui {
         }>;
         inserted: Callback<DataSource<T>, {
             item: any;
+            index?: number;
         }>;
         deleting: Callback<DataSource<T>, {
             item: any;
@@ -71,13 +71,19 @@ declare namespace wuzhui {
     }
     type WebDataSourceArguments = {
         primaryKeys?: string[];
-        selectUrl: string;
-        insertUrl?: string;
-        updateUrl?: string;
-        deleteUrl?: string;
+        select: string | ((args: DataSourceSelectArguments) => Promise<any>);
+        insert?: string | ((item: any) => Promise<any>);
+        update?: string | ((item: any) => Promise<any>);
+        delete?: string | ((item: any) => Promise<any>);
     };
     class WebDataSource<T> extends DataSource<T> {
         private args;
+        ajaxMethods: {
+            select: string;
+            update: string;
+            insert: string;
+            delete: string;
+        };
         constructor(args: WebDataSourceArguments);
          canDelete: boolean;
          canInsert: boolean;
@@ -123,28 +129,30 @@ declare namespace wuzhui {
         Paging = 3,
         Empty = 4,
     }
-    class GridViewRow<T> extends Control<HTMLTableRowElement> {
+    class GridViewRow extends Control<HTMLTableRowElement> {
         private _rowType;
         private _gridView;
         constructor(rowType: GridViewRowType);
          rowType: GridViewRowType;
-         gridView: GridView<T>;
+         gridView: GridView;
          cells: GridViewCell[];
     }
-    class GridViewDataRow<T> extends GridViewRow<T> {
+    class GridViewDataRow extends GridViewRow {
         private _dataItem;
-        constructor(gridView: GridView<T>, dataItem: any);
+        constructor(gridView: GridView, dataItem: any);
          dataItem: any;
     }
-    interface GridViewArguments<T> {
-        dataSource: DataSource<T>;
+    interface GridViewArguments {
+        dataSource: DataSource<any>;
         columns: Array<DataControlField>;
         showHeader?: boolean;
         showFooter?: boolean;
         element?: HTMLTableElement;
         emptyDataRowStyle?: string;
+        pageSize?: number;
+        pagerSettings?: PagerSettings;
     }
-    class GridView<T> extends Control<HTMLTableElement> {
+    class GridView extends Control<HTMLTableElement> {
         private _pageSize;
         private _selectedRowStyle;
         private _showFooter;
@@ -159,20 +167,25 @@ declare namespace wuzhui {
         private _params;
         static emptyRowClassName: string;
         static dataRowClassName: string;
-        emptyDataText: string;
-        rowCreated: Callback<GridView<T>, {
-            row: GridViewRow<T>;
+        static pagingBarClassName: string;
+        emptyDataHTML: string;
+        initDataHTML: string;
+        rowCreated: Callback<GridView, {
+            row: GridViewRow;
         }>;
-        constructor(params: GridViewArguments<T>);
+        constructor(params: GridViewArguments);
+        private createPagingBar(pagerSettings?);
          columns: DataControlField[];
-         dataSource: DataSource<T>;
+         dataSource: DataSource<any>;
         private appendEmptyRow();
-        private appendDataRow(dataItem);
+        private appendDataRow(dataItem, index?);
         private on_sort(sender, args);
         private appendHeaderRow();
         private appendFooterRow();
         private on_selectExecuted(items, args);
         private on_updateExecuted(item);
+        private on_insertExecuted(item, index?);
+        private on_deleteExecuted(item);
         private showEmptyRow();
         private hideEmptyRow();
     }
@@ -194,6 +207,10 @@ declare namespace wuzhui {
         pageButtonCount?: number;
         /** The text to display for the previous-page button. */
         previousPageText?: string;
+        /** Class name of the number buttons. */
+        buttonClassName?: string;
+        /** Class name of the active number button. */
+        activeButtonClassName?: string;
     }
     class PagingBar {
         private _pageIndex;
@@ -275,9 +292,28 @@ declare namespace wuzhui {
 }
 declare namespace wuzhui {
     class GridViewCell extends Control<HTMLTableCellElement> {
-        private _field;
-        constructor(field: DataControlField);
-         field: DataControlField;
+        constructor();
+    }
+    class GridViewDataCell extends GridViewCell {
+        private _value;
+        private _valueElement;
+        private nullText;
+        private dataFormatString;
+        private _dataField;
+        private render;
+        constructor(params: {
+            dataItem: any;
+            dataField: string;
+            render?: (element: HTMLElement, value) => void;
+            nullText?: string;
+            dataFormatString?: string;
+        });
+        protected  valueElement: HTMLElement;
+         dataField: string;
+        value: any;
+        private formatValue(...args);
+        private formatDate(value, format);
+        private formatNumber(value, format);
     }
     interface DataControlFieldParams {
         footerText?: string;
@@ -288,9 +324,10 @@ declare namespace wuzhui {
         visible?: boolean;
         sortExpression?: string;
     }
-    class GridViewHeaderCell extends GridViewCell {
+    class GridViewHeaderCell extends Control<HTMLTableHeaderCellElement> {
         private _sortType;
         private _iconElement;
+        private field;
         ascHTML: string;
         descHTML: string;
         sortingHTML: string;
@@ -329,7 +366,7 @@ declare namespace wuzhui {
         footerStyle: string | CSSStyleDeclaration;
         headerStyle: string | CSSStyleDeclaration;
          visible: boolean;
-        gridView: GridView<any>;
+        gridView: GridView;
         /**
          * Gets a sort expression that is used by a data source control to sort data.
          */
@@ -343,24 +380,18 @@ declare namespace wuzhui {
     }
 }
 declare namespace wuzhui {
-    class GridViewEditableCell extends GridViewCell {
+    class GridViewEditableCell extends GridViewDataCell {
         private _dataItem;
-        private _valueElement;
         private _editorElement;
-        private _value;
         private _valueType;
+        private _field;
         constructor(field: BoundField, dataItem: any);
+         field: BoundField;
         beginEdit(): void;
         endEdit(): void;
         cancelEdit(): void;
-        value: any;
-        createControl(): HTMLElement;
-        setControlValue(value: any): void;
-        getControlValue(): any;
-        private getCellHtml(value);
-        private formatValue(...args);
-        private formatDate(value, format);
-        private formatNumber(value, format);
+        protected createControl(): HTMLElement;
+        controlValue: any;
     }
     interface BoundFieldParams extends DataControlFieldParams {
         dataField: string;
@@ -409,22 +440,21 @@ declare namespace wuzhui {
         handleUpdate?: () => JQueryPromise<any>;
     }
     class CommandField extends DataControlField {
-        private _updating;
-        private _deleting;
+        private currentMode;
         constructor(params?: CommandFieldParams);
         private params();
-        cancelButtonHTML: string;
-        deleteButtonHTML: string;
-        editButtonHTML: string;
-        updateButtonHTML: string;
-        newButtonHTML: string;
-        insertButtonHTML: string;
-        cancelButtonClass: string;
-        deleteButtonClass: string;
-        editButtonClass: string;
-        newButtonClass: string;
-        updateButtonClass: string;
-        insertButtonClass: string;
+         cancelButtonHTML: string;
+         deleteButtonHTML: string;
+         editButtonHTML: string;
+         updateButtonHTML: string;
+         newButtonHTML: string;
+         insertButtonHTML: string;
+         cancelButtonClass: string;
+         deleteButtonClass: string;
+         editButtonClass: string;
+         newButtonClass: string;
+         updateButtonClass: string;
+         insertButtonClass: string;
         createItemCell(dataItem: any): GridViewCell;
         private createEditButton();
         private createDeleteButton();
@@ -432,6 +462,9 @@ declare namespace wuzhui {
         private createUpdateButton();
         private createCancelButton();
         private createNewButton();
+        private hideButton(button);
+        private showButton(button);
+        private findParentCell(element);
         private on_editButtonClick(e);
         private on_cancelButtonClick(e);
         private on_updateButtonClick(e);

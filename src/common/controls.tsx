@@ -33,10 +33,17 @@ export class Callback<T> {
 type CinfirmDelegate = () => string;
 interface ButtonProps extends React.Props<Button> {
     onClick?: (event: React.MouseEvent) => Promise<any>,
+    /**
+     * 确定框文本
+     */
     confirm?: string | CinfirmDelegate,
     className?: string,
     style?: React.CSSProperties,
     disabled?: boolean,
+    /**
+     * 弹窗文本
+     */
+    toast?: string | JSX.Element
 }
 
 function findPageView(p: HTMLElement): HTMLElement {
@@ -52,6 +59,95 @@ function findPageView(p: HTMLElement): HTMLElement {
     return null;
 }
 
+export class Dialog {
+    private static _toastDialogElement: HTMLElement;
+    private static _confirmDialogElement: HTMLElement;
+    static toast(options: { content: string | JSX.Element }) {
+        var contentElement: JSX.Element;
+        if (typeof options.content == 'string')
+            contentElement = <h5>{options.content}</h5>;
+        else
+            contentElement = options.content as JSX.Element;
+
+        var toastDialogElement = document.createElement('div');
+        toastDialogElement.className = 'modal fade';
+        document.body.appendChild(toastDialogElement);
+        ReactDOM.render(
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-body">
+                        {contentElement}
+                    </div>
+                </div>
+            </div>, toastDialogElement);
+
+        $(toastDialogElement).modal();
+        window.setTimeout(() => {
+            $(toastDialogElement).modal('hide');
+            setTimeout(() => {
+                $(toastDialogElement).remove();
+            }, 1000);
+        }, 1200);
+    }
+    static confirm(options: { content: string | JSX.Element, onconfirm: () => Promise<any> }) {
+        var contentElement: JSX.Element;
+        if (typeof options.content == 'string')
+            contentElement = <h5>{options.content}</h5>;
+        else
+            contentElement = options.content as JSX.Element;
+
+        let dialogElement = document.createElement('div');
+        dialogElement.className = 'modal fade';
+        document.body.appendChild(dialogElement);
+        ReactDOM.render(<div className="modal-dialog">
+            <div className="modal-content">
+                <div className="modal-body text-left">
+                    {contentElement}
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-default"
+                        onClick={() => {
+                            closeDialog();
+                        }}>取消</button>
+                    <button type="button" className="btn btn-primary"
+                        onClick={() => {
+                            closeDialog();
+                        }}>确认</button>
+                </div>
+            </div>
+        </div>, dialogElement);
+        $(dialogElement).modal();
+
+        var closing = false;
+        var closeDialog = () => {
+            if (closing)
+                return;
+
+            closing = true;
+            $(dialogElement).modal('hide');
+            window.setTimeout(() => {
+                $(dialogElement).remove();
+            }, 1000);
+        }
+    }
+    private static get toastDialogElement() {
+        if (!Dialog._toastDialogElement) {
+            Dialog._toastDialogElement = document.createElement('div');
+            Dialog._toastDialogElement.className = 'modal fade';
+            document.body.appendChild(Dialog._toastDialogElement);
+            ReactDOM.render(
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-body alert-success">
+                            <h5></h5>
+                        </div>
+                    </div>
+                </div>, Dialog._toastDialogElement);
+        }
+        return Dialog._toastDialogElement;
+    }
+}
+
 export class Button extends React.Component<ButtonProps, {}>{
 
     private buttonElement: HTMLButtonElement;
@@ -63,15 +159,11 @@ export class Button extends React.Component<ButtonProps, {}>{
 
     private onClick(e: React.MouseEvent) {
         this.currentClickEvent = e;
-        if (this.props.onClick == null) {
-            return;
-        }
-
         if (this.doing)
             return;
 
         if (this.props.confirm) {
-            this.showDialog();
+            Dialog.confirm({ content: this.confirmText(), onconfirm: (() => Promise.resolve()) });
         }
         else {
             this.execute(e);
@@ -90,7 +182,8 @@ export class Button extends React.Component<ButtonProps, {}>{
     }
 
     private execute(e) {
-        let result = this.props.onClick(e) as Promise<any>;
+        let onClick = this.props.onClick || (() => Promise.resolve());
+        let result = onClick(e);
         this.doing = true;
         if (result == null || result.catch == null || result.then == null) {
             this.doing = false;
@@ -99,6 +192,9 @@ export class Button extends React.Component<ButtonProps, {}>{
 
         result.then(o => {
             this.doing = false;
+            if (this.props.toast) {
+                Dialog.toast({ content: this.props.toast });
+            }
         }).catch(o => {
             this.doing = false;
         })
@@ -432,7 +528,7 @@ export function imageDelayLoad(element: HTMLImageElement, imageText?: string) {
 
 
 export class ImageBox extends React.Component<
-    { src: string, className?: string, imageText?: string },
+    { src: string, className?: string, imageText?: string } & React.HTMLAttributes,
     { width: string, height: string, src: string }> {
 
     private unmount = false;
@@ -452,7 +548,7 @@ export class ImageBox extends React.Component<
 
     render() {
         return (
-            <img ref="img" src={this.props.src} className={this.props.className}></img>
+            <img ref="img" {...this.props} ></img>
         );
     }
 }

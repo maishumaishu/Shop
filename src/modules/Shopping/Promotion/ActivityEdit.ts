@@ -1,5 +1,4 @@
-﻿
-import shopping = require('services/Shopping');
+﻿import { default as shopping } from 'services/Shopping';
 import ko = require('knockout');
 import validation = require('knockout.validation');
 import sv_activity = require('services/Activity');
@@ -614,12 +613,12 @@ function page_load(page: chitu.Page, args) {
 
     ko.applyBindings(model, page.element);
 
-    shopping.getCategories().then(function (data) {
+    shopping.categories().then(function (data) {
         data.unshift({ Name: '请选择类别', Id: '' })
         model.categories(data);
     });
 
-    shopping.getBrands().then((data: Array<any>) => {
+    shopping.brands().then((data: Array<any>) => {
         data.unshift({ Name: '请选择品牌', Id: '' })
         model.brands(data);
     })

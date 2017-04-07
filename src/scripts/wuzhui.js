@@ -16,12 +16,12 @@ var wuzhui;
             this._element = element;
             $(element).data(CONTROL_DATA_NAME, this);
         }
-        get html() {
-            return $(this.element).html();
-        }
-        set html(value) {
-            $(this.element).html(value);
-        }
+        // get html(): string {
+        //     return $(this.element).html();
+        // }
+        // set html(value) {
+        //     $(this.element).html(value);
+        // }
         get visible() {
             return $(this.element).is(':visible');
         }
@@ -34,7 +34,7 @@ var wuzhui;
         get element() {
             return this._element;
         }
-        appendChild(child) {
+        appendChild(child, index) {
             if (child == null)
                 throw wuzhui.Errors.argumentNull('child');
             let childElement;
@@ -42,7 +42,16 @@ var wuzhui;
                 childElement = child.element;
             else
                 childElement = child;
-            this.element.appendChild(childElement);
+            let placeChild;
+            if (index != null) {
+                placeChild = this.element.children[index];
+            }
+            if (placeChild == null) {
+                this.element.appendChild(childElement);
+            }
+            else {
+                this.element.insertBefore(childElement, placeChild);
+            }
         }
         style(value) {
             wuzhui.applyStyle(this.element, value);
@@ -97,10 +106,8 @@ var wuzhui;
             if (!this.canDelete)
                 throw wuzhui.Errors.dataSourceCanntDelete();
             this.checkPrimaryKeys(item);
-            //this.deleting.fireWith(this, [this, { item }]);
             wuzhui.fireCallback(this.deleting, this, { item });
             return this.executeDelete(item).then(() => {
-                // this.deleted.fireWith(this, [this, { item }]);
                 wuzhui.fireCallback(this.deleted, this, { item });
             });
         }
@@ -108,11 +115,9 @@ var wuzhui;
             if (!this.canUpdate)
                 throw wuzhui.Errors.dataSourceCanntUpdate();
             this.checkPrimaryKeys(item);
-            //this.updating.fireWith(this, [this, { item }]);
             wuzhui.fireCallback(this.updating, this, { item });
             return this.executeUpdate(item).then((data) => {
                 $.extend(item, data);
-                // this.updated.fireWith(this, [this, { item }]);
                 wuzhui.fireCallback(this.updated, this, { item });
             });
         }
@@ -139,7 +144,6 @@ var wuzhui;
         }
         select() {
             let args = this.selectArguments;
-            // this.selecting.fireWith(this, [this, { selectArguments: args }]);
             wuzhui.fireCallback(this.selecting, this, { selectArguments: args });
             return this.executeSelect(args).then((data) => {
                 let data_items;
@@ -155,7 +159,6 @@ var wuzhui;
                 else {
                     throw new Error('Type of the query result is expected as Array or DataSourceSelectResult.');
                 }
-                //this.selected.fireWith(this, [this, { selectArguments: args, items: data_items }]);
                 wuzhui.fireCallback(this.selected, this, { selectArguments: args, items: data_items });
             });
         }
@@ -182,36 +185,50 @@ var wuzhui;
     class WebDataSource extends DataSource {
         constructor(args) {
             super(args.primaryKeys);
+            this.ajaxMethods = {
+                select: 'get',
+                update: 'post',
+                insert: 'post',
+                delete: 'post'
+            };
             this.args = args;
         }
         get canDelete() {
-            return this.args.deleteUrl != null && this.primaryKeys.length > 0;
+            return this.args.delete != null && this.primaryKeys.length > 0;
         }
         get canInsert() {
-            return this.args.insertUrl != null && this.primaryKeys.length > 0;
+            return this.args.insert != null && this.primaryKeys.length > 0;
         }
         get canUpdate() {
-            return this.args.updateUrl != null && this.primaryKeys.length > 0;
+            return this.args.update != null && this.primaryKeys.length > 0;
         }
         executeInsert(item) {
             if (!item)
                 throw wuzhui.Errors.argumentNull("item");
-            return wuzhui.ajax(this.args.selectUrl, { body: this.formatData(item) });
+            if (typeof this.args.insert == 'string')
+                return wuzhui.ajax(this.args.insert, { body: this.formatData(item), method: this.ajaxMethods.insert });
+            return this.args.insert(item);
         }
         executeDelete(item) {
             if (!item)
                 throw wuzhui.Errors.argumentNull("item");
-            return wuzhui.ajax(this.args.deleteUrl, { body: this.formatData(item) });
+            if (typeof this.args.delete == 'string')
+                return wuzhui.ajax(this.args.delete, { body: this.formatData(item), method: this.ajaxMethods.delete });
+            return this.args.delete(item);
         }
         executeUpdate(item) {
             if (!item)
                 throw wuzhui.Errors.argumentNull("item");
-            return wuzhui.ajax(this.args.updateUrl, { body: this.formatData(item) });
+            if (typeof this.args.update == 'string')
+                return wuzhui.ajax(this.args.update, { body: this.formatData(item), method: this.ajaxMethods.update });
+            return this.args.update(item);
         }
         executeSelect(args) {
             if (!args)
                 throw wuzhui.Errors.argumentNull("args");
-            return wuzhui.ajax(this.args.selectUrl, { body: args });
+            if (typeof this.args.select == 'string')
+                return wuzhui.ajax(this.args.select, { body: args, method: this.ajaxMethods.select });
+            return this.args.select(args);
         }
         formatData(data) {
             let obj = $.extend({}, data);
@@ -341,7 +358,6 @@ var wuzhui;
     }
     wuzhui.Errors = Errors;
 })(wuzhui || (wuzhui = {}));
-/// <reference path="Control.ts"/>
 var wuzhui;
 (function (wuzhui) {
     var GridViewRowType;
@@ -352,6 +368,17 @@ var wuzhui;
         GridViewRowType[GridViewRowType["Paging"] = 3] = "Paging";
         GridViewRowType[GridViewRowType["Empty"] = 4] = "Empty";
     })(GridViewRowType = wuzhui.GridViewRowType || (wuzhui.GridViewRowType = {}));
+    function findParentElement(element, parentTagName) {
+        console.assert(element != null);
+        console.assert(parentTagName != null);
+        parentTagName = parentTagName.toUpperCase();
+        let p = element.parentElement;
+        while (p) {
+            if (p.tagName == parentTagName)
+                return p;
+            p = p.parentElement;
+        }
+    }
     class GridViewRow extends wuzhui.Control {
         constructor(rowType) {
             let element = document.createElement('tr');
@@ -363,7 +390,7 @@ var wuzhui;
         }
         get gridView() {
             if (this._gridView == null) {
-                let gridViewElement = $(this.element).parents('table').first()[0];
+                let gridViewElement = findParentElement(this.element, 'table');
                 console.assert(gridViewElement != null);
                 this._gridView = wuzhui.Control.getControlByElement(gridViewElement);
                 console.assert(this._gridView != null);
@@ -400,7 +427,8 @@ var wuzhui;
     class GridView extends wuzhui.Control {
         constructor(params) {
             super(params.element || document.createElement('table'));
-            this.emptyDataText = '暂无记录';
+            this.emptyDataHTML = '暂无记录';
+            this.initDataHTML = '数据正在加载中...';
             //========================================================
             // 样式
             // headerStyle: string;
@@ -410,7 +438,7 @@ var wuzhui;
             //private emptyDataRowStyle: string;
             //========================================================
             this.rowCreated = wuzhui.callbacks();
-            params = $.extend({
+            params = Object.assign({
                 showHeader: true, showFooter: false,
                 allowPaging: false
             }, params);
@@ -425,6 +453,14 @@ var wuzhui;
             this._dataSource = params.dataSource;
             this._dataSource.selected.add((sender, e) => this.on_selectExecuted(e.items, e.selectArguments));
             this._dataSource.updated.add((sender, e) => this.on_updateExecuted(e.item));
+            this._dataSource.inserted.add((sender, e) => this.on_insertExecuted(e.item, e.index));
+            this._dataSource.deleted.add((sender, e) => this.on_deleteExecuted(e.item));
+            this._dataSource.selecting.add((sender, e) => {
+                let display = this._emtpyRow.element.style.display;
+                if (display != 'none') {
+                    this._emtpyRow.element.cells[0].innerHTML = this.initDataHTML;
+                }
+            });
             if (params.showHeader) {
                 this._header = new wuzhui.Control(document.createElement('thead'));
                 this.appendChild(this._header);
@@ -433,12 +469,28 @@ var wuzhui;
             this._body = new wuzhui.Control(document.createElement('tbody'));
             this.appendChild(this._body);
             this.appendEmptyRow();
-            if (params.showFooter) {
+            let allowPaging = params.pageSize;
+            if (params.showFooter || allowPaging) {
                 this._footer = new wuzhui.Control(document.createElement('tfoot'));
                 this.appendChild(this._footer);
                 if (params.showFooter)
                     this.appendFooterRow();
+                if (allowPaging) {
+                    this.createPagingBar(params.pagerSettings);
+                    this.dataSource.selectArguments.maximumRows = params.pageSize;
+                }
             }
+            this.dataSource.select();
+        }
+        createPagingBar(pagerSettings) {
+            var pagingBarContainer = document.createElement('tr');
+            var pagingBarElement = document.createElement('td');
+            pagingBarElement.className = GridView.pagingBarClassName;
+            pagingBarElement.colSpan = this.columns.length;
+            pagingBarContainer.appendChild(pagingBarElement);
+            console.assert(this._footer != null);
+            this._footer.appendChild(pagingBarContainer);
+            new wuzhui.NumberPagingBar({ dataSource: this.dataSource, element: pagingBarElement, pagerSettings });
         }
         get columns() {
             return this._columns;
@@ -449,23 +501,23 @@ var wuzhui;
         appendEmptyRow() {
             this._emtpyRow = new GridViewRow(GridViewRowType.Empty);
             this._emtpyRow.element.className = GridView.emptyRowClassName;
-            let cell = document.createElement('td');
-            cell.colSpan = this.columns.length;
-            let textElement = document.createElement('span');
-            textElement.innerText = this.emptyDataText;
-            cell.appendChild(textElement);
+            let cell = new wuzhui.GridViewCell();
+            cell.element.colSpan = this.columns.length;
+            // cell.element.innerHTML = this.initDataHTML;
             if (!this._params.emptyDataRowStyle) {
-                wuzhui.applyStyle(cell, this._params.emptyDataRowStyle);
+                wuzhui.applyStyle(cell.element, this._params.emptyDataRowStyle);
             }
             this._emtpyRow.appendChild(cell);
             this._body.appendChild(this._emtpyRow);
             wuzhui.fireCallback(this.rowCreated, this, { row: this._emtpyRow });
         }
-        appendDataRow(dataItem) {
+        appendDataRow(dataItem, index) {
             var row = new GridViewDataRow(this, dataItem);
             row.element.className = GridView.dataRowClassName;
-            this._body.appendChild(row);
+            this._body.appendChild(row, index);
             wuzhui.fireCallback(this.rowCreated, this, { row });
+            if (this._emtpyRow.element.style.display != 'none')
+                this.hideEmptyRow();
         }
         on_sort(sender, args) {
             if (this._currentSortCell != null && this._currentSortCell != sender) {
@@ -479,7 +531,7 @@ var wuzhui;
                 var column = this.columns[i];
                 let cell = column.createHeaderCell();
                 if (cell instanceof wuzhui.GridViewHeaderCell) {
-                    cell.sorting.add(this.on_sort);
+                    cell.sorting.add((e, a) => this.on_sort(e, a));
                 }
                 row.appendChild(cell);
                 cell.visible = this.columns[i].visible;
@@ -497,13 +549,13 @@ var wuzhui;
             this._footer.appendChild(row);
         }
         on_selectExecuted(items, args) {
-            // Clear datarows
-            $(this._body.element).find(`.${GridView.dataRowClassName}`).each((i, e) => this._body.element.removeChild(e));
+            var rows = this._body.element.querySelectorAll(`.${GridView.dataRowClassName}`);
+            for (let i = 0; i < rows.length; i++)
+                this._body.element.removeChild(rows[i]);
             if (items.length == 0) {
                 this.showEmptyRow();
                 return;
             }
-            this.hideEmptyRow();
             for (let i = 0; i < items.length; i++) {
                 this.appendDataRow(items[i]);
             }
@@ -512,38 +564,61 @@ var wuzhui;
             console.assert(item != null);
             for (let i = 0; i < this._body.element.rows.length; i++) {
                 let row_element = this._body.element.rows[i];
-                let row = $(row_element).data('Control');
+                let row = wuzhui.Control.getControlByElement(row_element);
+                ;
                 if (!(row instanceof GridViewDataRow))
                     continue;
                 let dataItem = row.dataItem;
                 if (!this.dataSource.isSameItem(item, dataItem))
                     continue;
-                for (let i = 0; i < this.columns.length; i++) {
-                    let col = this.columns[i];
-                    if (!(col instanceof wuzhui.BoundField))
-                        continue;
-                    let cell = row.cells[i];
-                    if (cell instanceof wuzhui.GridViewEditableCell) {
-                        let c = cell;
-                        let value = item[col.dataField];
+                let cells = row.cells;
+                for (let j = 0; j < cells.length; j++) {
+                    let cell = cells[j];
+                    if (cell instanceof wuzhui.GridViewDataCell) {
+                        let value = item[cell.dataField];
                         if (value !== undefined) {
-                            c.value = value;
-                            dataItem[col.dataField] = value;
+                            cell.value = value;
+                            dataItem[cell.dataField] = value;
                         }
                     }
                 }
                 break;
             }
         }
+        on_insertExecuted(item, index) {
+            if (index == null)
+                index = 0;
+            this.appendDataRow(item, index);
+        }
+        on_deleteExecuted(item) {
+            let dataRowsCount = 0;
+            let rows = this._body.element.rows;
+            let dataRows = new Array();
+            for (let i = 0; i < rows.length; i++) {
+                let row = wuzhui.Control.getControlByElement(rows.item(i));
+                if ((row instanceof GridViewDataRow))
+                    dataRows.push(row);
+            }
+            for (let i = 0; i < dataRows.length; i++) {
+                let dataRow = dataRows[i];
+                if (!this.dataSource.isSameItem(item, dataRow.dataItem))
+                    continue;
+                dataRow.element.remove();
+                if (dataRows.length == 1)
+                    this.showEmptyRow();
+            }
+        }
         showEmptyRow() {
-            $(this._emtpyRow.element).show();
+            this._emtpyRow.element.cells[0].innerHTML = this.emptyDataHTML;
+            this._emtpyRow.element.style.removeProperty('display');
         }
         hideEmptyRow() {
-            $(this._emtpyRow.element).hide();
+            this._emtpyRow.element.style.display = 'none';
         }
     }
     GridView.emptyRowClassName = 'empty';
     GridView.dataRowClassName = 'data';
+    GridView.pagingBarClassName = 'pagingBar';
     wuzhui.GridView = GridView;
 })(wuzhui || (wuzhui = {}));
 var wuzhui;
@@ -640,6 +715,7 @@ var wuzhui;
             this.init(params.dataSource);
         }
         createPagingButton() {
+            var pagerSettings = this.pagerSettings;
             let button = document.createElement('a');
             button.href = 'javascript:';
             this.element.appendChild(button);
@@ -670,17 +746,23 @@ var wuzhui;
                 },
                 set active(value) {
                     if (value == true) {
-                        $(button).removeAttr('href');
+                        button.removeAttribute('href');
+                        if (pagerSettings.activeButtonClassName)
+                            button.className = pagerSettings.activeButtonClassName;
                         return;
                     }
                     button.href = 'javascript:';
+                    if (pagerSettings.buttonClassName)
+                        button.className = pagerSettings.buttonClassName;
+                    else
+                        button.removeAttribute('class');
                 }
             };
-            $(button).click(() => {
+            button.onclick = () => {
                 if (result.onclick) {
                     result.onclick(result, this);
                 }
-            });
+            };
             return result;
         }
         createTotalLabel() {
@@ -832,7 +914,6 @@ var wuzhui;
                     let err = new AjaxError(options.method);
                     err.name = 'timeout';
                     reject(err);
-                    this.error.fire(this, err);
                     clearTimeout(timeId);
                 }, wuzhui.ajaxTimeout);
             }
@@ -844,7 +925,6 @@ var wuzhui;
             })
                 .catch(err => {
                 reject(err);
-                this.error.fire(this, err);
                 if (timeId)
                     clearTimeout(timeId);
             });
@@ -853,36 +933,34 @@ var wuzhui;
     wuzhui.ajax = ajax;
     function _ajax(url, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let response = yield fetch(url, options);
-                if (response.status >= 300) {
-                    let err = new AjaxError(options.method);
-                    err.name = `${response.status}`;
-                    err.message = response.statusText;
-                    throw err;
-                }
-                let responseText = response.text();
-                let p;
-                if (typeof responseText == 'string') {
-                    p = new Promise((reslove, reject) => {
-                        reslove(responseText);
-                    });
-                }
-                else {
-                    p = responseText;
-                }
-                let text = yield responseText;
-                let textObject = JSON.parse(text);
-                let err = isError(textObject);
-                if (err)
-                    throw err;
-                textObject = this.travelJSON(textObject);
-                return textObject;
-            }
-            catch (err) {
-                this.error.fire(this, err);
+            // try {
+            let response = yield fetch(url, options);
+            if (response.status >= 300) {
+                let err = new AjaxError(options.method);
+                err.name = `${response.status}`;
+                err.message = response.statusText;
                 throw err;
             }
+            let responseText = response.text();
+            let p;
+            if (typeof responseText == 'string') {
+                p = new Promise((reslove, reject) => {
+                    reslove(responseText);
+                });
+            }
+            else {
+                p = responseText;
+            }
+            let text = yield responseText;
+            let textObject = JSON.parse(text);
+            let err = isError(textObject);
+            if (err)
+                throw err;
+            return textObject;
+            // }
+            // catch (err) {
+            //     throw err;
+            // }
         });
     }
     function applyStyle(element, value) {
@@ -924,21 +1002,138 @@ var wuzhui;
 var wuzhui;
 (function (wuzhui) {
     class GridViewCell extends wuzhui.Control {
-        constructor(field) {
+        constructor() {
             super(document.createElement('td'));
-            this._field = field;
-        }
-        get field() {
-            return this._field;
         }
     }
     wuzhui.GridViewCell = GridViewCell;
-    class GridViewHeaderCell extends GridViewCell {
+    class GridViewDataCell extends GridViewCell {
+        constructor(params) {
+            super();
+            this._valueElement = document.createElement('span');
+            this.element.appendChild(this._valueElement);
+            this.nullText = '' || params.nullText;
+            this.dataFormatString = params.dataFormatString;
+            this._dataField = params.dataField;
+            this.render = params.render || ((element, value) => {
+                if (!element)
+                    throw wuzhui.Errors.argumentNull('element');
+                var text;
+                if (value == null)
+                    text = this.nullText;
+                else if (this.dataFormatString)
+                    text = this.formatValue(this.dataFormatString, value);
+                else
+                    text = value;
+                element.innerHTML = text;
+            });
+            this.value = params.dataItem[params.dataField];
+            this.render(this.valueElement, this.value);
+        }
+        get valueElement() {
+            return this._valueElement;
+        }
+        get dataField() {
+            return this._dataField;
+        }
+        set value(value) {
+            if (this._value == value)
+                return;
+            this._value = value;
+            // this._valueElement.innerHTML = this.getCellHtml(value);
+            this.render(this._valueElement, value);
+        }
+        get value() {
+            return this._value;
+        }
+        // getCellHtml(value: any): string {
+        //     // if (this.html)
+        //     //     return this.html(value);
+        //     if (value == null)
+        //         return this.nullText;
+        //     if (this.dataFormatString)
+        //         return this.formatValue(this.dataFormatString, value);
+        //     return value;
+        // }
+        formatValue(...args) {
+            var result = '';
+            var format = args[0];
+            for (var i = 0;;) {
+                var open = format.indexOf('{', i);
+                var close = format.indexOf('}', i);
+                if ((open < 0) && (close < 0)) {
+                    result += format.slice(i);
+                    break;
+                }
+                if ((close > 0) && ((close < open) || (open < 0))) {
+                    if (format.charAt(close + 1) !== '}') {
+                        throw new Error('Sys.Res.stringFormatBraceMismatch');
+                    }
+                    result += format.slice(i, close + 1);
+                    i = close + 2;
+                    continue;
+                }
+                result += format.slice(i, open);
+                i = open + 1;
+                if (format.charAt(i) === '{') {
+                    result += '{';
+                    i++;
+                    continue;
+                }
+                if (close < 0)
+                    throw new Error('Sys.Res.stringFormatBraceMismatch');
+                var brace = format.substring(i, close);
+                var colonIndex = brace.indexOf(':');
+                var argNumber = parseInt((colonIndex < 0) ? brace : brace.substring(0, colonIndex), 10) + 1;
+                if (isNaN(argNumber))
+                    throw new Error('Sys.Res.stringFormatInvalid');
+                var argFormat = (colonIndex < 0) ? '' : brace.substring(colonIndex + 1);
+                var arg = args[argNumber];
+                if (typeof (arg) === "undefined" || arg === null) {
+                    arg = '';
+                }
+                if (arg instanceof Date)
+                    result = result + this.formatDate(arg, argFormat);
+                else if (arg instanceof Number || typeof arg == 'number')
+                    result = result + this.formatNumber(arg, argFormat);
+                else
+                    result = result + arg.toString();
+                i = close + 1;
+            }
+            return result;
+        }
+        formatDate(value, format) {
+            switch (format) {
+                case 'd':
+                    return `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()}`;
+                case 'g':
+                    return `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}`;
+                case 'G':
+                    return `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`;
+                case 't':
+                    return `${value.getHours()}:${value.getMinutes()}`;
+                case 'T':
+                    return `${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`;
+            }
+            return value.toString();
+        }
+        formatNumber(value, format) {
+            let reg = new RegExp('^C[0-9]+');
+            if (reg.test(format)) {
+                let num = format.substr(1);
+                return value.toFixed(num);
+            }
+            return value.toString();
+        }
+    }
+    wuzhui.GridViewDataCell = GridViewDataCell;
+    class GridViewHeaderCell extends wuzhui.Control {
         constructor(field) {
-            super(field);
+            super(document.createElement('th'));
             this.ascHTML = '↑';
             this.descHTML = '↓';
             this.sortingHTML = '...';
+            this.field = field;
             this.sorting = wuzhui.callbacks();
             this.sorted = wuzhui.callbacks();
             if (field.sortExpression) {
@@ -1067,15 +1262,15 @@ var wuzhui;
             return cell;
         }
         createFooterCell() {
-            let cell = new GridViewCell(this);
-            cell.html = this.footerText || '';
+            let cell = new GridViewCell();
+            cell.element.innerHTML = this.footerText || '';
             cell.style(this.footerStyle);
             return cell;
         }
         createItemCell(dataItem) {
             if (!dataItem)
                 throw wuzhui.Errors.argumentNull('dataItem');
-            let cell = new GridViewCell(this);
+            let cell = new GridViewCell();
             cell.style(this.itemStyle);
             return cell;
         }
@@ -1085,55 +1280,46 @@ var wuzhui;
 /// <reference path="DataControlField.ts"/>
 var wuzhui;
 (function (wuzhui) {
-    class GridViewEditableCell extends wuzhui.GridViewCell {
+    class GridViewEditableCell extends wuzhui.GridViewDataCell {
         constructor(field, dataItem) {
             if (field == null)
                 throw wuzhui.Errors.argumentNull('field');
             if (dataItem == null)
                 throw wuzhui.Errors.argumentNull('dataItem');
-            super(field);
+            super({
+                dataItem, dataField: field.dataField,
+                nullText: field.nullText, dataFormatString: field.dataFormatString
+            });
+            this._field = field;
             this._dataItem = dataItem;
-            this._valueElement = document.createElement('span');
-            if (field.nullText) {
-                this._valueElement.innerHTML = field.nullText;
-            }
             this._editorElement = this.createControl();
-            this.appendChild(this._valueElement);
             this.appendChild(this._editorElement);
             wuzhui.applyStyle(this._editorElement, this.field.controlStyle);
-            this.value = dataItem[field.dataField];
+            super.value = dataItem[field.dataField];
             if (this.value instanceof Date)
                 this._valueType = 'date';
             else
                 this._valueType = typeof this.value;
             $(this._editorElement).hide();
         }
+        get field() {
+            return this._field;
+        }
         beginEdit() {
-            $(this._valueElement).hide();
+            $(super.valueElement).hide();
             $(this._editorElement).show();
             let value = this._dataItem[this.field.dataField];
-            this.setControlValue(value);
+            this.controlValue = value;
         }
         endEdit() {
-            let value = this.getControlValue();
-            this._dataItem[this.field.dataField] = value;
-            this._valueElement.innerHTML = this.getCellHtml(value);
+            super.value = this.controlValue;
+            this._dataItem[this.field.dataField] = super.value;
             $(this._editorElement).hide();
-            $(this._valueElement).show();
+            $(super.valueElement).show();
         }
         cancelEdit() {
             $(this._editorElement).hide();
-            $(this._valueElement).show();
-        }
-        set value(value) {
-            if (this._value == value)
-                return;
-            this._value = value;
-            this.setControlValue(value);
-            this._valueElement.innerHTML = this.getCellHtml(value);
-        }
-        get value() {
-            return this._value;
+            $(super.valueElement).show();
         }
         //==============================================
         // Virtual Methods
@@ -1142,11 +1328,11 @@ var wuzhui;
             ctrl.appendChild(document.createElement('input'));
             return ctrl;
         }
-        setControlValue(value) {
-            $(this._editorElement).find('input').val(value);
+        set controlValue(value) {
+            this._editorElement.querySelector('input').value = value;
         }
-        getControlValue() {
-            var text = $(this._editorElement).find('input').val();
+        get controlValue() {
+            var text = this._editorElement.querySelector('input').value;
             switch (this._valueType) {
                 case 'number':
                     return new Number(text).valueOf();
@@ -1155,84 +1341,6 @@ var wuzhui;
                 default:
                     return text;
             }
-        }
-        //==============================================
-        getCellHtml(value) {
-            if (value == null)
-                return this.field.nullText;
-            if (this.field.dataFormatString)
-                return this.formatValue(this.field.dataFormatString, value);
-            return value;
-        }
-        formatValue(...args) {
-            var result = '';
-            var format = args[0];
-            for (var i = 0;;) {
-                var open = format.indexOf('{', i);
-                var close = format.indexOf('}', i);
-                if ((open < 0) && (close < 0)) {
-                    result += format.slice(i);
-                    break;
-                }
-                if ((close > 0) && ((close < open) || (open < 0))) {
-                    if (format.charAt(close + 1) !== '}') {
-                        throw new Error('Sys.Res.stringFormatBraceMismatch');
-                    }
-                    result += format.slice(i, close + 1);
-                    i = close + 2;
-                    continue;
-                }
-                result += format.slice(i, open);
-                i = open + 1;
-                if (format.charAt(i) === '{') {
-                    result += '{';
-                    i++;
-                    continue;
-                }
-                if (close < 0)
-                    throw new Error('Sys.Res.stringFormatBraceMismatch');
-                var brace = format.substring(i, close);
-                var colonIndex = brace.indexOf(':');
-                var argNumber = parseInt((colonIndex < 0) ? brace : brace.substring(0, colonIndex), 10) + 1;
-                if (isNaN(argNumber))
-                    throw new Error('Sys.Res.stringFormatInvalid');
-                var argFormat = (colonIndex < 0) ? '' : brace.substring(colonIndex + 1);
-                var arg = args[argNumber];
-                if (typeof (arg) === "undefined" || arg === null) {
-                    arg = '';
-                }
-                if (arg instanceof Date)
-                    result = result + this.formatDate(arg, argFormat);
-                else if (arg instanceof Number || typeof arg == 'number')
-                    result = result + this.formatNumber(arg, argFormat);
-                else
-                    result = result + arg.toString();
-                i = close + 1;
-            }
-            return result;
-        }
-        formatDate(value, format) {
-            switch (format) {
-                case 'd':
-                    return `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()}`;
-                case 'g':
-                    return `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}`;
-                case 'G':
-                    return `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`;
-                case 't':
-                    return `${value.getHours()}:${value.getMinutes()}`;
-                case 'T':
-                    return `${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`;
-            }
-            return value.toString();
-        }
-        formatNumber(value, format) {
-            let reg = new RegExp('^C[0-9]+');
-            if (reg.test(format)) {
-                let num = format.substr(1);
-                return value.toFixed(num);
-            }
-            return value.toString();
         }
     }
     wuzhui.GridViewEditableCell = GridViewEditableCell;
@@ -1279,14 +1387,15 @@ var wuzhui;
 (function (wuzhui) {
     class GridViewCommandCell extends wuzhui.GridViewCell {
         constructor(field) {
-            super(field);
+            super();
         }
     }
     class CommandField extends wuzhui.DataControlField {
         constructor(params) {
             super(params);
-            this._updating = false;
-            this._deleting = false;
+            // private _updating = false;
+            // private _deleting = false;
+            this.currentMode = 'read';
             if (!this.params().cancelButtonHTML)
                 this.params().cancelButtonHTML = '取消';
             if (!this.params().deleteButtonHTML)
@@ -1302,74 +1411,38 @@ var wuzhui;
         get cancelButtonHTML() {
             return this.params().cancelButtonHTML;
         }
-        set cancelButtonHTML(value) {
-            this.params().cancelButtonHTML = value;
-        }
         get deleteButtonHTML() {
             return this.params().deleteButtonHTML;
-        }
-        set deleteButtonHTML(value) {
-            this.params().deleteButtonHTML = value;
         }
         get editButtonHTML() {
             return this.params().editButtonHTML;
         }
-        set editButtonHTML(value) {
-            this.params().editButtonHTML = value;
-        }
         get updateButtonHTML() {
             return this.params().updateButtonHTML;
-        }
-        set updateButtonHTML(value) {
-            this.params().updateButtonHTML = value;
         }
         get newButtonHTML() {
             return this.params().newButtonHTML;
         }
-        set newButtonHTML(value) {
-            this.params().newButtonHTML = value;
-        }
         get insertButtonHTML() {
             return this.params().insertButtonHTML;
-        }
-        set insertButtonHTML(value) {
-            this.params().insertButtonHTML = value;
         }
         get cancelButtonClass() {
             return this.params().cancelButtonClass;
         }
-        set cancelButtonClass(value) {
-            this.params().cancelButtonClass = value;
-        }
         get deleteButtonClass() {
             return this.params().deleteButtonClass;
-        }
-        set deleteButtonClass(value) {
-            this.params().deleteButtonClass = value;
         }
         get editButtonClass() {
             return this.params().editButtonClass;
         }
-        set editButtonClass(value) {
-            this.params().editButtonClass = value;
-        }
         get newButtonClass() {
             return this.params().newButtonClass;
-        }
-        set newButtonClass(value) {
-            this.params().newButtonClass = value;
         }
         get updateButtonClass() {
             return this.params().updateButtonClass;
         }
-        set updateButtonClass(value) {
-            this.params().updateButtonClass = value;
-        }
         get insertButtonClass() {
             return this.params().insertButtonClass;
-        }
-        set insertButtonClass(value) {
-            this.params().insertButtonClass = value;
         }
         createItemCell(dataItem) {
             let cell = new GridViewCommandCell(this);
@@ -1380,7 +1453,8 @@ var wuzhui;
                 if (this.editButtonClass)
                     editButton.className = this.editButtonClass;
                 cell.editButton = editButton;
-                $(editButton).click(this.on_editButtonClick);
+                // $(editButton).click(this.on_editButtonClick);
+                editButton.addEventListener('click', (e) => this.on_editButtonClick(e));
                 cell.appendChild(editButton);
                 let updateButton = this.createUpdateButton();
                 updateButton.style.display = 'none';
@@ -1388,7 +1462,7 @@ var wuzhui;
                 if (this.updateButtonClass)
                     updateButton.className = this.updateButtonClass;
                 cell.updateButton = updateButton;
-                $(updateButton).click(this.on_updateButtonClick);
+                updateButton.addEventListener('click', (e) => this.on_updateButtonClick(e));
                 cell.appendChild(updateButton);
                 let cancelButton = this.createCancelButton();
                 cancelButton.style.display = 'none';
@@ -1396,7 +1470,7 @@ var wuzhui;
                 if (this.cancelButtonClass)
                     cancelButton.className = this.cancelButtonClass;
                 cell.cacelButton = cancelButton;
-                $(cancelButton).click(this.on_cancelButtonClick);
+                cancelButton.addEventListener('click', (e) => this.on_cancelButtonClick(e));
                 cell.appendChild(cancelButton);
             }
             if (this.params().showDeleteButton) {
@@ -1454,9 +1528,28 @@ var wuzhui;
             button.href = 'javascript:';
             return button;
         }
+        hideButton(button) {
+            button.style.display = 'none';
+        }
+        showButton(button) {
+            button.style.removeProperty('display');
+        }
+        findParentCell(element) {
+            let cellElement;
+            let p = element.parentElement;
+            while (p) {
+                if (p.tagName == 'TD') {
+                    cellElement = p;
+                    break;
+                }
+                p = p.parentElement;
+            }
+            return cellElement;
+        }
         on_editButtonClick(e) {
-            let cellElement = $(e.target).parents('td').first()[0];
-            let rowElement = cellElement.parentElement; //<HTMLTableRowElement>$(e.target).parents('tr').first()[0];
+            let cellElement = this.findParentCell(e.target);
+            console.assert(cellElement != null);
+            let rowElement = cellElement.parentElement;
             for (let i = 0; i < rowElement.cells.length; i++) {
                 let cell = wuzhui.Control.getControlByElement(rowElement.cells[i]);
                 if (cell instanceof wuzhui.GridViewEditableCell) {
@@ -1464,11 +1557,17 @@ var wuzhui;
                 }
             }
             let cell = wuzhui.Control.getControlByElement(cellElement);
-            $([cell.cacelButton, cell.updateButton]).show();
-            $(cell.editButton).hide();
+            this.showButton(cell.cacelButton);
+            this.showButton(cell.updateButton);
+            this.hideButton(cell.editButton);
+            if (cell.deleteButton)
+                this.hideButton(cell.deleteButton);
+            if (cell.newButton)
+                this.hideButton(cell.newButton);
         }
         on_cancelButtonClick(e) {
-            let cellElement = $(e.target).parents('td').first()[0];
+            let cellElement = this.findParentCell(e.target);
+            console.assert(cellElement != null);
             let rowElement = cellElement.parentElement;
             for (let i = 0; i < rowElement.cells.length; i++) {
                 let cell = wuzhui.Control.getControlByElement(rowElement.cells[i]);
@@ -1477,13 +1576,17 @@ var wuzhui;
                 }
             }
             let cell = wuzhui.Control.getControlByElement(cellElement);
-            $([cell.cacelButton, cell.updateButton]).hide();
-            $(cell.editButton).show();
+            this.hideButton(cell.cacelButton);
+            this.hideButton(cell.updateButton);
+            this.showButton(cell.editButton);
+            if (cell.deleteButton)
+                this.showButton(cell.deleteButton);
+            if (cell.newButton)
+                this.showButton(cell.newButton);
         }
         on_updateButtonClick(e) {
-            if (this._updating)
-                return;
-            this._updating = true;
+            if (e.target['_updating'])
+                e.target['_updating'] = true;
             let cellElement = $(e.target).parents('td').first()[0];
             let rowElement = cellElement.parentElement;
             let row = wuzhui.Control.getControlByElement(rowElement);
@@ -1496,33 +1599,37 @@ var wuzhui;
             for (var i = 0; i < rowElement.cells.length; i++) {
                 var cell = wuzhui.Control.getControlByElement(rowElement.cells[i]);
                 if (cell instanceof wuzhui.GridViewEditableCell) {
-                    dataItem[cell.field.dataField] = cell.getControlValue();
+                    dataItem[cell.field.dataField] = cell.controlValue;
                     editableCells.push(cell);
                 }
             }
-            dataSource.update(dataItem)
-                .then(() => {
-                editableCells.forEach((item) => item.endEdit());
-                let cell = wuzhui.Control.getControlByElement(cellElement);
-                $([cell.cacelButton, cell.updateButton]).hide();
-                $(cell.editButton).show();
-                this._updating = false;
-            })
-                .catch(() => this._updating = false);
+            try {
+                return dataSource.update(dataItem)
+                    .then(() => {
+                    editableCells.forEach((item) => item.endEdit());
+                    let cell = wuzhui.Control.getControlByElement(cellElement);
+                    this.hideButton(cell.cacelButton);
+                    this.hideButton(cell.updateButton);
+                    e.target['_updating'] = false;
+                })
+                    .catch(() => e.target['_updating'] = false);
+            }
+            finally {
+            }
         }
         on_deleteButtonClick(e) {
-            if (this._deleting)
-                return;
-            this._deleting = true;
+            // if (this._deleting)
+            //     return;
+            // this._deleting = true;
             let rowElement = $(e.target).parents('tr').first()[0];
             let row = wuzhui.Control.getControlByElement(rowElement);
             let dataSource = row.gridView.dataSource;
             dataSource.delete(row.dataItem)
                 .then(() => {
                 $(rowElement).remove();
-                this._deleting = false;
-            })
-                .catch(() => this._deleting = false);
+                // this._deleting = false;
+            });
+            // .catch(() => this._deleting = false);
         }
     }
     wuzhui.CommandField = CommandField;

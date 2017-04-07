@@ -1,5 +1,5 @@
 import { ControlArguments, componentsDir } from 'mobile/common'
-import { ImageBox } from 'controls';
+import { ImageBox } from 'mobile/controls';
 
 requirejs([`css!${componentsDir}/carousel/control`]);
 

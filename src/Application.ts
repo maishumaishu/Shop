@@ -1,7 +1,7 @@
 ﻿
 import ko = require('knockout');
 import ko_ext = require('common/ko_ext/core');
-import Service = require('services/Service');
+import { default as Service } from 'services/Service';
 
 ko_ext.image.imageServer = 'http://a.alinq.cn';
 ko_ext.image.storeName = '零食有约';
@@ -87,8 +87,8 @@ var model = {
 };
 Service.username.add((value) => model.topBar.username(value));
 
-requirejs(['text!data/Menu.json'], function (text) {
-    let data = JSON.parse(text);
+requirejs(['MenuData'], function (data) {
+    // let data = JSON.parse(text);
     var stack = [];
     for (var i = 0; i < data.length; i++)
         stack.push(data[i]);

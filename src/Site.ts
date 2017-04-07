@@ -1,4 +1,4 @@
-﻿import Service = require('services/Service');
+﻿import { default as Service } from 'services/Service';
 
 let bootbox = window['bootbox'];
 
@@ -71,8 +71,12 @@ class Site {
 
         startUrl: 'Home/Index'
     }
-
+    style = {
+        tableClassName: 'table table-striped table-bordered table-hover'
+    }
 }
+
+
 
 window['site'] = window['site'] || new Site();
 export = <Site>window['site'];

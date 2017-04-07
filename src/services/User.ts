@@ -1,4 +1,5 @@
-import Service = require('services/Service');
+import { default as Service } from 'services/Service';
+
 
 interface RegisterModel {
     user: { mobile: string, password: string },

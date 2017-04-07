@@ -1,5 +1,5 @@
 
-import shoppingService = require('services/Shopping');
+import { default as shopping } from 'services/Shopping';
 import site = require('Site');
 
 let JData = window['JData'];
@@ -42,7 +42,7 @@ function page_load(page: chitu.Page, args: any) {
     };
 
     var $table = (<any>$('<table data-bind="visible:currentIndex()==0">').appendTo(page.element)).gridView({
-        dataSource: shoppingService.couponDataSource,
+        dataSource: shopping.couponDataSource,
         columns: [
             { dataField: 'Id', headerText: '编号', width: '280px' },
             { dataField: 'Title', headerText: '名称', width: '180px' },
@@ -63,7 +63,7 @@ function page_load(page: chitu.Page, args: any) {
     });
 
     // page.load.add(function () {
-    shoppingService.couponDataSource.select($table.data('JData.GridView').get_selectArguments());
+    shopping.couponDataSource.select($table.data('JData.GridView').get_selectArguments());
     // });
 
     ko.applyBindings(model, page.element);
