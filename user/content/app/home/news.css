@@ -1,0 +1,24 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.home-news section {
+  padding-top: 50px;
+}
+.home-news.immersion section {
+  padding-top: 65px;
+}
+.home-news img {
+  height: auto;
+  display: block;
+  width: 100%;
+}

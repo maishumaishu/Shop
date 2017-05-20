@@ -13,9 +13,20 @@ import { default as Service } from 'services/Service';
 var baseUrl = Service.config.shopUrl + 'PromotionActivity/';
 let JData = window['JData'];
 class ActivityService extends Service {
-    activities = new JData.WebDataSource(baseUrl + 'GetActivities', baseUrl + 'AddActivity', null, baseUrl + 'DeleteActivity');
+    // activities = new JData.WebDataSource(baseUrl + 'GetActivities', baseUrl + 'AddActivity', null, baseUrl + 'DeleteActivity');
+    addActivity(item) {
+        let url = baseUrl + 'AddActivity';
+        return Service.postByJson(url, item);
+    }
     getActivity(id: string): JQueryPromise<any> {
         return $.ajax({ url: baseUrl + 'GetActivity', method: 'post', data: { id: id } });
+    }
+    deleteActivity(item) {
+        let url = baseUrl + 'DeleteActivity';
+        return Service.delete(url, item);
+    }
+    activities() {
+        return Service.get(baseUrl + 'GetActivities');
     }
     addPromotion(activityId, type, method) {
         /// <returns type="jQuery.Deferred"/>
@@ -51,7 +62,7 @@ class ActivityService extends Service {
             }
         });
     }
-    deleteRangeRule (id) {
+    deleteRangeRule(id) {
         /// <returns type="jQuery.Deferred"/>
         return $.ajax({
             url: baseUrl + 'DeleteRangeRule',
@@ -61,7 +72,7 @@ class ActivityService extends Service {
             }
         });
     }
-    addContentRule (levelValue, givenType, givenValue, promotionId, description) {
+    addContentRule(levelValue, givenType, givenValue, promotionId, description) {
         return $.ajax({
             url: baseUrl + 'AddContentRule',
             method: 'post',
@@ -74,7 +85,7 @@ class ActivityService extends Service {
             }
         });
     }
-    deleteContentRule (id) {
+    deleteContentRule(id) {
         return $.ajax({
             url: baseUrl + 'DeleteContentRule',
             method: 'post',
@@ -83,7 +94,7 @@ class ActivityService extends Service {
             }
         });
     }
-    changeCollectionType (ruleId, type) {
+    changeCollectionType(ruleId, type) {
         /// <returns type="jQuery.Deferred"/>
         return $.ajax({
             url: baseUrl + 'ChangeCollectionType',
@@ -94,7 +105,7 @@ class ActivityService extends Service {
             }
         });
     }
-    changeIsAll (promotionId, isAll) {
+    changeIsAll(promotionId, isAll) {
         return $.ajax({
             url: baseUrl + 'ChangeIsAll',
             method: 'post',
@@ -106,4 +117,5 @@ class ActivityService extends Service {
     }
 }
 
-export = new ActivityService();
+let active = new ActivityService();
+export default active;

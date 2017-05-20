@@ -69,12 +69,12 @@ declare namespace wuzhui {
         filter: string;
         constructor();
     }
-    type WebDataSourceArguments = {
+    type WebDataSourceArguments<T> = {
         primaryKeys?: string[];
         select: string | ((args: DataSourceSelectArguments) => Promise<any>);
-        insert?: string | ((item: any) => Promise<any>);
-        update?: string | ((item: any) => Promise<any>);
-        delete?: string | ((item: any) => Promise<any>);
+        insert?: string | ((item: T) => Promise<T>);
+        update?: string | ((item: T) => Promise<T>);
+        delete?: string | ((item: T) => Promise<T>);
     };
     class WebDataSource<T> extends DataSource<T> {
         private args;
@@ -84,7 +84,7 @@ declare namespace wuzhui {
             insert: string;
             delete: string;
         };
-        constructor(args: WebDataSourceArguments);
+        constructor(args: WebDataSourceArguments<T>);
          canDelete: boolean;
          canInsert: boolean;
          canUpdate: boolean;
@@ -151,6 +151,8 @@ declare namespace wuzhui {
         emptyDataRowStyle?: string;
         pageSize?: number;
         pagerSettings?: PagerSettings;
+        emptyDataHTML?: string;
+        initDataHTML?: string;
     }
     class GridView extends Control<HTMLTableElement> {
         private _pageSize;
@@ -168,8 +170,8 @@ declare namespace wuzhui {
         static emptyRowClassName: string;
         static dataRowClassName: string;
         static pagingBarClassName: string;
-        emptyDataHTML: string;
-        initDataHTML: string;
+        private emptyDataHTML;
+        private initDataHTML;
         rowCreated: Callback<GridView, {
             row: GridViewRow;
         }>;
@@ -437,7 +439,7 @@ declare namespace wuzhui {
         newButtonClass?: string;
         updateButtonClass?: string;
         insertButtonClass?: string;
-        handleUpdate?: () => JQueryPromise<any>;
+        handleUpdate?: () => Promise<any>;
     }
     class CommandField extends DataControlField {
         private currentMode;

@@ -1,7 +1,7 @@
 ﻿
 import shopAdmin = require('services/User');
 import app = require('Application');
-import site = require('Site');
+import { default as site } from 'Site';
 import validation = require('knockout.validation');
 
 export default async function (page: chitu.Page) {

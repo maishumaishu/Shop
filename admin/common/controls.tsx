@@ -481,7 +481,7 @@ export function imageDelayLoad(element: HTMLImageElement, imageText?: string) {
         element.setAttribute('height', img_height + 'px');
 
 
-    var src_replace = getPreviewImage(img_width, img_height);
+    var src_replace = getPreviewImage(imageText, img_width, img_height);
     element.setAttribute('src', src_replace);
 
     var image: HTMLImageElement = new Image();
@@ -490,10 +490,10 @@ export function imageDelayLoad(element: HTMLImageElement, imageText?: string) {
     };
     image.src = src;
 
-    function getPreviewImage(img_width, img_height) {
+    function getPreviewImage(imageText: string, img_width, img_height) {
 
         var scale = (img_height / img_width).toFixed(2);
-        var img_name = 'img_log' + scale;
+        var img_name = `${imageText}_${scale}`;//imageText + scale;
         var img_src = localStorage.getItem(img_name);
         if (img_src)
             return img_src;
@@ -548,7 +548,7 @@ export class ImageBox extends React.Component<
 
     render() {
         return (
-            <img ref="img" {...this.props} ></img>
+            <img ref="img" src={this.props.src} className={this.props.className} ></img>
         );
     }
 }

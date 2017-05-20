@@ -1,0 +1,215 @@
+﻿import React = require('react');
+import ReactDOM = require('react-dom');
+import { default as menuData, MenuNode } from 'MenuData';
+
+import { default as service } from 'services/Service';
+
+let viewContainer: HTMLElement;
+class Application extends chitu.Application {
+
+    constructor() {
+        super();
+    }
+
+    protected createPageElement(routeData: chitu.RouteData): HTMLElement {
+        let element = document.createElement('div');
+        console.assert(viewContainer != null, 'view container cannt be null.');
+        let className = routeData.pageName.split('.').join('-');
+        element.className = className;
+        viewContainer.appendChild(element);
+
+        return element;
+    }
+
+    run() {
+
+        let element = document.createElement('div');
+        document.body.insertBefore(element, document.body.children[0]);
+        ReactDOM.render(<Page />, element);
+
+        super.run();
+    }
+}
+
+var app = new Application();
+
+if (service.token == null && location.hash != '#User/Register' && location.hash != '#User/Login') {
+    app.redirect('User/Login');
+}
+
+window['app'] = app;
+export = app;
+
+class Page extends React.Component<any, {
+    currentNode: MenuNode, username: string
+}> {
+    constructor(props) {
+        super(props);
+        window.addEventListener('hashchange', () => {
+            let url = (window.location.hash.substr(1) || '').split('?')[0];
+            this.state.currentNode = this.findNodeByUrl(url);
+            this.setState(this.state);
+        });
+
+        service.username.add((value) => {
+            this.state.username = value;
+            this.setState(this.state);
+        })
+
+        let url = (window.location.hash.substr(1) || '').split('?')[0];
+        this.state = { currentNode: this.findNodeByUrl(url), username: service.username.value };
+    }
+    hideSecond() {
+
+    }
+    findNodeByUrl(url: string): MenuNode {
+        let stack = new Array<MenuNode>();
+        for (let i = 0; i < menuData.length; i++) {
+            stack.push(menuData[i]);
+        }
+        while (stack.length > 0) {
+            let node = stack.pop();
+            if (node.Url == url) {
+                return node;
+            }
+            let children = node.Children || [];
+            for (let j = 0; j < children.length; j++) {
+                stack.push(children[j]);
+            }
+        }
+        return null;
+    }
+    showPageByNode(node: MenuNode) {
+        let url = node.Url;
+        if (url == null && node.Children.length > 0) {
+            node = node.Children[0];
+            url = node.Url;
+        }
+
+        if (url == null && node.Children.length > 0) {
+            node = node.Children[0];
+            url = node.Url;
+        }
+
+        if (url) {
+            app.redirect(url);
+        }
+    }
+    render() {
+        let currentNode = this.state.currentNode;
+        let firstLevelNode: MenuNode;
+        let secondLevelNode: MenuNode;
+        let thirdLevelNode: MenuNode;
+
+        if (currentNode == null) {
+            return (
+                <div ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
+
+                </div>
+            );
+        }
+
+        let secondLevelNodes: Array<MenuNode> = [];
+        let thirdLevelNodes: Array<MenuNode> = [];
+        if (currentNode != null) {
+            if (currentNode.Parent == null) {
+                // secondLevelNodes = currentNode.Children || [];
+                firstLevelNode = currentNode;
+                secondLevelNode = currentNode;
+            }
+            else if (currentNode.Parent.Parent == null) {
+                // secondLevelNodes = currentNode.Parent.Children || [];
+                firstLevelNode = currentNode.Parent;
+                secondLevelNode = currentNode;
+            }
+            else if (currentNode.Parent.Parent.Parent == null) {
+                // secondLevelNodes = currentNode.Parent.Parent.Children || [];
+                thirdLevelNode = currentNode;
+                secondLevelNode = thirdLevelNode.Parent;
+                firstLevelNode = secondLevelNode.Parent;
+            }
+            else if (currentNode.Parent.Parent.Parent.Parent == null) {
+                // secondLevelNodes = currentNode.Parent.Parent.Children || [];
+                thirdLevelNode = currentNode.Parent;
+                secondLevelNode = thirdLevelNode.Parent;
+                firstLevelNode = secondLevelNode.Parent;
+            }
+            else {
+                throw new Error('not implement')
+            }
+        }
+
+        secondLevelNodes = firstLevelNode.Children || [].filter(o => o.Visible == null || o.Visible == true);;
+
+        thirdLevelNodes = (secondLevelNode.Children || []).filter(o => o.Visible == null || o.Visible == true);
+        if (thirdLevelNodes.length == 0) {
+            thirdLevelNodes.push(secondLevelNode);
+            thirdLevelNode = secondLevelNode;
+        }
+
+        return (
+            <div>
+                <div className="first">
+                    <ul className="list-group" style={{ margin: 0 }}>
+                        {menuData.map((o, i) =>
+                            <li key={i} className={o == firstLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}
+                                onClick={() => this.showPageByNode(o)}>
+                                <i className={o.Icon} style={{ fontSize: 16 }}></i>
+                                <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.Title}</span>
+                            </li>
+                        )}
+                    </ul>
+                </div>
+                <div className={secondLevelNodes.length == 0 ? "second hideSecond" : 'second'}>
+                    <ul className="list-group" style={{ margin: 0 }}>
+                        {secondLevelNodes.map((o, i) =>
+                            <li key={i} className={o == secondLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}
+                                onClick={() => this.showPageByNode(o)}>
+                                <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.Title}</span>
+                            </li>
+                        )}
+                    </ul>
+                </div>
+                <div className={secondLevelNodes.length == 0 ? "main hideSecond" : 'main'} >
+                    {secondLevelNodes.length > 0 ?
+                        <nav className="navbar navbar-default">
+                            <div className="container-fluid">
+                                <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+                                    <ul className="nav navbar-nav" style={{ width: '100%' }}>
+                                        {thirdLevelNodes.map((o, i) =>
+                                            <li key={i} className={thirdLevelNode == o ? "active" : ""} style={{ cursor: 'pointer' }}
+                                                onClick={() => app.redirect(o.Url)}>
+                                                <a> {o.Title}</a>
+                                            </li>
+                                        )}
+                                        <li className="light-blue pull-right">
+                                            <a data-toggle="dropdown" href="#" className="dropdown-toggle">
+                                                <span name="username" style={{ paddingRight: 10 }}>{this.state.username}</span>
+                                                <i className="icon-caret-down"></i>
+                                            </a>
+                                            <ul className="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                                                <li>
+                                                    <a href="#User/Logout">
+                                                        <i className="icon-off"></i>退出
+                                                </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav> : null}
+
+                    <div style={{ padding: 20 }}
+                        ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+
+
+
+

@@ -1,0 +1,35 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.shopping-purchase section {
+  padding-top: 60px;
+}
+.shopping-purchase.immersion section {
+  padding-top: 75px;
+}
+.shopping-purchase section {
+  padding-bottom: 50px;
+}
+.shopping-purchase .cust-prop {
+  border: 1px solid #bf0705;
+  margin-bottom: 8px;
+  margin-right: 10px;
+  border-radius: 4px;
+  padding: 4px 20px 4px 20px;
+  white-space: nowrap;
+  background-color: white;
+}
+.shopping-purchase .cust-prop.selected {
+  background-color: #bf0705;
+  color: white;
+}

@@ -1,3 +1,4 @@
+import * as ui from 'UI';
 
 interface KeyValue {
     key: string,
@@ -114,9 +115,10 @@ class ProductPropertiesModel {
 }
 
 export class PropertiesComponent extends React.Component<
-    { name: string, properties: KeyValue[] },
+    React.Props<PropertiesComponent> & { name: string, properties: KeyValue[] },
     { properties: KeyValue[] }>{
     private dialogElement: HTMLFormElement;
+    private fieldsInput: HTMLInputElement;
 
     constructor(props) {
         super(props);
@@ -125,23 +127,22 @@ export class PropertiesComponent extends React.Component<
     showPropertiesDialog() {
         $(this.dialogElement).modal();
     }
-    fieldsInputChanged(e: React.FormEvent) {
-        // let properties: KeyValue[] = [];
-        // var inputValue = (e.target as HTMLInputElement).value;
-        // let names = inputValue.replace(/，/g, ',').split(',');
-        // names.filter(o => o.trim() != '').forEach(key => {
-        //     let value = this.state.properties[key] || '';
-        //     properties.push({ key, value });
-        // });
-        // this.state.properties = properties;
-        // this.setState(this.state);
-    }
     componentDidMount() {
         let inputValue = this.state.properties.map(o => o.key).join(',');
         (this.dialogElement['fields'] as HTMLInputElement).value = inputValue;
     }
     dialogConfirm() {
+        let properties: KeyValue[] = [];
+        let names = (this.fieldsInput.value || '').replace(/，/g, ',').split(',').filter(o => o.trim() != '');
+        names.forEach(key => {
+            let value = this.state.properties[key] || '';
+            properties.push({ key, value });
+        })
 
+        this.state.properties = properties;
+        this.setState(this.state);
+
+        $(this.dialogElement).modal('hide');
     }
     render() {
         let inputValue = this.state.properties.map(o => o.key).join(', ');
@@ -166,7 +167,11 @@ export class PropertiesComponent extends React.Component<
                                 </label>
                                 <div className="col-lg-9">
                                     <input className="form-control" value={c.value}
-                                        onChange={(e) => this.fieldsInputChanged(e)} />
+                                        onChange={(e) => {
+                                            var property = this.state.properties.filter(d => d.key == c.key)[0];
+                                            property.value = (e.target as HTMLInputElement).value;
+                                            this.setState(this.state);
+                                        }} />
                                 </div>
                             </div>
                         )}
@@ -187,7 +192,8 @@ export class PropertiesComponent extends React.Component<
                                     <div className="form-group">
                                         <label className="control-label col-sm-2">名称</label>
                                         <div className="col-sm-10">
-                                            <input name="fields" className="form-control" placeholder="请输入参数名称" />
+                                            <input name="fields" className="form-control" placeholder="请输入参数名称"
+                                                ref={(e: HTMLInputElement) => this.fieldsInput = e || this.fieldsInput} />
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -200,8 +206,12 @@ export class PropertiesComponent extends React.Component<
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button data-bind="click:cancel" type="button" className="btn btn-default" data-dismiss="modal">取消</button>
-                                <button type="button" className="btn btn-primary">确认</button>
+                                <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
+                                <button type="button" className="btn btn-primary"
+                                    ref={(e: HTMLButtonElement) => {
+                                        if (!e) return;
+                                        e.onclick = () => this.dialogConfirm();
+                                    }}>确认</button>
                             </div>
                         </div>
                     </div>

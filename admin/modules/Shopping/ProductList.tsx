@@ -2,7 +2,7 @@ import { default as shopping, Product } from 'services/Shopping';
 import station from 'services/Station';
 import app = require('Application');
 import bootbox = require('bootbox');
-import site = require('Site');
+import { default as site } from 'Site';
 import ui = require('UI');
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
@@ -119,18 +119,16 @@ class Page extends React.Component<{}, PageState>{
         children.forEach(o => this.dataSource.deleted.fire(this.dataSource, { item: o }));
     }
     removeProduct(dataItem: Product) {
-        debugger;
-        this.dataSource.delete(dataItem);
+        return this.dataSource.delete(dataItem);
     }
     componentDidMount() {
         shopping.getProductList
         let dataSource = this.dataSource = new wuzhui.WebDataSource({
             primaryKeys: ['Id'],
-            select: (args)=>shopping.getProducts(args), //shopping.url('Product/GetProducts'),
+            select: (args) => shopping.getProducts(args),
             delete: shopping.url('Product/DeleteProduct'),
         });
         dataSource.ajaxMethods.delete = 'delete';
-        // dataSource.selectArguments.filter = 'ParentId == null';
         dataSource.selected.add((sender, args) => {
             let productIds = args.items.map(o => o.Id as string);
             shopping.getProductStocks(productIds).then(data => {
@@ -195,7 +193,8 @@ class Page extends React.Component<{}, PageState>{
                     headerStyle: { textAlign: 'center' } as CSSStyleDeclaration
                 }),
                 new wuzhui.BoundField({
-                    dataField: 'CategoryName', headerText: '类别'
+                    dataField: 'CategoryName', headerText: '类别',
+                    headerStyle: { textAlign: 'center' } as CSSStyleDeclaration,
                 }),
                 new wuzhui.CustomField({
                     createItemCell(dataItem: Product) {
@@ -285,7 +284,12 @@ class Page extends React.Component<{}, PageState>{
                                 <i className="icon-plus"></i>
                             </button>
                             <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
-                                onClick={() => self.removeProduct(dataItem)}>
+                                ref={(e: HTMLButtonElement) => {
+                                    if (!e) return;
+                                    e.onclick = ui.buttonOnClick(() => {
+                                        return self.removeProduct(dataItem);
+                                    }, { confirm: `确定删除商品'${dataItem.Name}'吗？` })
+                                }}>
                                 <i className="icon-trash"></i>
                             </button>
 
@@ -347,7 +351,7 @@ class Page extends React.Component<{}, PageState>{
 
                         </li>
                         <li data-bind="visible:tabs.current() == 'all'" className="pull-right">
-                            <a data-bind="click:productAdd" href="javascript:" className="btn btn-primary btn-sm pull-right">添加</a>
+                            <a href="#Shopping/Product/ProductEdit" className="btn btn-primary btn-sm pull-right">添加</a>
                             <button className="btn btn-primary btn-sm pull-right"
                                 onClick={() => this.search()}>搜索</button>
                             <input type="text" className="form-control" style={{ width: 300 }} placeholder="请输入SKU或名称、类别"

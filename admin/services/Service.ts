@@ -1,8 +1,6 @@
 ﻿
 import $ = require('jquery');
 
-
-
 function ajax<T>(settings: JQueryAjaxSettings) {
     settings.headers = settings.headers || {};
     settings.data = settings.data || {}
@@ -110,6 +108,7 @@ let urlConfigs = {
         weixinUrl: `http://${local_service_host}/AdminWeiXinTest/`,
         siteUrl: `http://${local_service_host}/AdminSiteTest/`,
         memberUrl: `http://${local_service_host}/AdminMemberTest/`,
+        accountUrl: `http://${local_service_host}/AdminAccountTest/`,
         imageUrl: `http://${local_service_host}/AdminSiteTest/`
     },
     remote: {
@@ -118,6 +117,7 @@ let urlConfigs = {
         weixinUrl: `http://${remote_service_host}/AdminWeiXin/`,
         siteUrl: `http://${remote_service_host}/AdminSite/`,
         memberUrl: `http://${remote_service_host}/AdminMember/`,
+        accountUrl: `http://${local_service_host}/AdminAccountTest/`,
         imageUrl: `http://${remote_service_host}/UserServices/Site/`
     }
 }
@@ -132,9 +132,6 @@ export class Service {
     }
 
     static get<T>(url: string, data?) {
-        //data = data || {};
-        //var url = Service.config.shopUrl + path;
-        //return $.ajax({ url: url, data: data, method: 'get' });
         return ajax<T>({ url: url, data: data, method: 'get' });
     }
 
@@ -182,14 +179,23 @@ export class Service {
         return ajax<T>(options);
     }
 
-    static appToken = "58424776034ff82470d06d3d";
+    static get appToken() {
+        return localStorage['appToken']
+    }
+    static set appToken(value: string) {
+        if (value === undefined)
+            localStorage.removeItem('appToken');
+
+        localStorage.setItem('appToken', value);
+    }
+
     static get storeId() {
         return Service.userId;
     }
     static get token() {
         return localStorage['token'];
     };
-    static set_token(value: string) {
+    static set token(value: string) {
         if (value === undefined) {
             localStorage.removeItem('token');
             return;
@@ -199,7 +205,7 @@ export class Service {
     static get userId() {
         return localStorage['userId'];
     };
-    static set_userId(value: string) {
+    static set userId(value: string) {
         if (value === undefined) {
             localStorage.removeItem('userId');
             return;
@@ -209,16 +215,7 @@ export class Service {
     static get username() {
         return username;
     }
-    // static set username(value: string) {
-    //     localStorage.setItem('username', value);
-    // }
 }
 
-
-
-
-window['models'] = {};
-window['translators'] = window['translators'] || {};
-window['services'] = window['services'] || {};
 export default Service;
 

@@ -6,20 +6,15 @@ import * as ui from 'UI';
 
 export default function (page: chitu.Page) {
 
-    {/*<div class="tabbable">
-    <ul class="nav nav-tabs">
-        <li class="pull-right">
-            <a data-bind="click:back" href="javascript:" class="btn btn-primary btn-sm">返回</a>
-        </li>
-    </ul>
-</div>*/}
-
     let tabbable = document.createElement('div');
     tabbable.className = 'tabbable';
     page.element.appendChild(tabbable);
 
     ReactDOM.render(
         <ul className="nav nav-tabs">
+            <li className="pull-left">
+                <h4 style={{ marginBottom: 0 }}>{page.routeData.values.name}</h4>
+            </li>
             <li className="pull-right">
                 <a className="btn btn-primary btn-sm" onClick={() => app.back()}>返回</a>
             </li>
