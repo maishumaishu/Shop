@@ -169,9 +169,6 @@ secondPanelWidth = 120px;
     position: absolute;
     height: 100%;
     margin-left: firstPanelWidth;
-    &.hideSecond {
-        display: none;
-    }
 }
 .second .list-group-item {
     background-color: #e7e7e7;
@@ -190,7 +187,25 @@ secondPanelWidth = 120px;
 
 .main {
     margin-left: firstPanelWidth + secondPanelWidth;
-    &.hideSecond {
+}
+
+.hideFirst {
+    .first {
+        display: none;
+    }
+    .second {
+        display: none;
+    }
+    .main {
+        margin-left: 0;
+    }
+}
+
+.hideSecond {
+    .second {
+        display: none;
+    }
+    .main {
         margin-left: firstPanelWidth;
     }
 }

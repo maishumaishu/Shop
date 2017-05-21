@@ -112,7 +112,7 @@ let menuData: MenuNode[] = [
         ]
     },
     {
-        Title: '其它',
+        Title: 'Others',
         Children: [
             { Url: "User/Login", Title: '登录' }
         ],

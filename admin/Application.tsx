@@ -109,6 +109,7 @@ class Page extends React.Component<any, {
             );
         }
 
+        let firstLevelNodes = menuData.filter(o => o.Visible == null || o.Visible == true);
         let secondLevelNodes: Array<MenuNode> = [];
         let thirdLevelNodes: Array<MenuNode> = [];
         if (currentNode != null) {
@@ -140,18 +141,25 @@ class Page extends React.Component<any, {
         }
 
         secondLevelNodes = firstLevelNode.Children || [].filter(o => o.Visible == null || o.Visible == true);;
-
         thirdLevelNodes = (secondLevelNode.Children || []).filter(o => o.Visible == null || o.Visible == true);
         if (thirdLevelNodes.length == 0) {
             thirdLevelNodes.push(secondLevelNode);
             thirdLevelNode = secondLevelNode;
         }
 
+        let nodeClassName = '';
+        if (firstLevelNode.Title == 'Others') {
+            nodeClassName = 'hideFirst';
+        }
+        else if (secondLevelNodes.length == 0) {
+            nodeClassName = 'hideSecond';
+        }
+
         return (
-            <div>
+            <div className={nodeClassName}>
                 <div className="first">
                     <ul className="list-group" style={{ margin: 0 }}>
-                        {menuData.map((o, i) =>
+                        {firstLevelNodes.map((o, i) =>
                             <li key={i} className={o == firstLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}
                                 onClick={() => this.showPageByNode(o)}>
                                 <i className={o.Icon} style={{ fontSize: 16 }}></i>
@@ -160,7 +168,7 @@ class Page extends React.Component<any, {
                         )}
                     </ul>
                 </div>
-                <div className={secondLevelNodes.length == 0 ? "second hideSecond" : 'second'}>
+                <div className="second">
                     <ul className="list-group" style={{ margin: 0 }}>
                         {secondLevelNodes.map((o, i) =>
                             <li key={i} className={o == secondLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}
