@@ -40,7 +40,7 @@ export function createEditor(editorId: string, field: KnockoutObservable<string>
     });
 }
 
-export function createUEEditor(editorId: string, field: ValueStore<string>) {
+export function createUEEditor(editorId: string, field: HTMLInputElement) {
     let ueditorLoadDeferred = $.Deferred();
 
     requirejs(references, function () {

@@ -8,14 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="assets/css/uncompressed/bootstrap.css" />
+    <!--<link rel="stylesheet" href="assets/css/uncompressed/bootstrap.css" />-->
+    <link rel="stylesheet" href="content/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/jquery-ui-1.10.3.full.min.css" />
     <link rel="stylesheet" href="assets/css/ace.min.css" />
     <link rel="stylesheet" href="content/Site.css" />
 </head>
 
 <body>
-    <div data-bind="with:topBar" id="header-navbar" class="navbar navbar-default" id="navbar">
+    <div data-bind="with:topBar" id="header-navbar" class="navbar navbar-default" id="navbar" style="display:none">
 
         <div class="navbar-container" id="navbar-container">
             <div class="navbar-header pull-left">
@@ -48,7 +49,7 @@
         <!-- /.container -->
     </div>
 
-    <div class="main-container" id="main-container">
+    <div class="main-container" id="main-container" style="display:none">
         <div class="main-container-inner">
 
 

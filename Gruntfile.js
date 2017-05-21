@@ -1,14 +1,11 @@
-var admin_dest = 'www';
+var admin_dest = 'www/admin';
 var admin_src = 'admin';
-var user_dest = 'user_www';
+var user_dest = 'www/user';
 var user_src = 'user';
 var ts_options = {
     module: 'amd',
     target: 'es5',
     removeComments: true,
-    // references: [
-    //     admin_src + "/js/typings/*.d.ts"
-    // ],
     sourceMap: false,
 };
 module.exports = function (grunt) {
@@ -43,11 +40,12 @@ module.exports = function (grunt) {
                 files: [
                     { expand: true, cwd: user_src, src: ['**/*.html', '**/*.js', '**/*.css'], dest: user_dest },
                     { expand: true, cwd: `${admin_dest}/mobile`, src: ['**/control.*', '*.js'], dest: `${user_dest}` },
+                    {
+                        expand: true, cwd: user_src, dest: user_dest,
+                        src: ['js/**/*.js', 'content/**/*.css', 'content/font/*.*', 'images/**/*.*', 'index.html'],
+                    },
                 ]
             }
-        },
-        less: {
-
         },
         stylus: {
             admin: {
@@ -78,18 +76,6 @@ module.exports = function (grunt) {
                     }
                 ]
             }
-            // bootstrap: {
-            //     files: [{
-            //         src: [admin_src + '/css/bootstrap-3.3.5/bootstrap.less'],
-            //         dest: admin_dest + '/css/bootstrap.css'
-            //     }]
-            // },
-            // chitu: {
-            //     files: [{
-            //         src: [admin_src + '/css/chitu.less'],
-            //         dest: admin_dest + '/css/chitu.css'
-            //     }]
-            // }
         },
         less: {
             admin: {
@@ -107,6 +93,25 @@ module.exports = function (grunt) {
                         dest: `${admin_dest}/content/css/bootstrap.css`
                     }
                 ]
+            },
+            user: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: user_src + `/modules`,
+                        src: ['**/*.less'],
+                        dest: `${user_src}/content/app`,
+                        ext: '.css'
+                    },
+                    {
+                        expand: true,
+                        cwd: user_src,
+                        src: [`*.less`],
+                        dest: `${user_src}/content/app`,
+                        ext: '.css'
+                    },
+                    { expand: false, src: `${user_src}/content/bootstrap-3.3.5/bootstrap.less`, dest: `${user_dest}/content/css/bootstrap.css` }
+                ]
             }
         }
     });
@@ -115,5 +120,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.registerTask('admin', ['shell:admin', 'copy:admin', 'stylus:admin', 'less:admin']);
-    grunt.registerTask('user', ['shell:user', 'copy:user']);
+    grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
+    grunt.registerTask('default', ['admin', 'user']);
 }

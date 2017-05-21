@@ -1,0 +1,47 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.user-favors section {
+  padding-top: 50px;
+}
+.user-favors.immersion section {
+  padding-top: 65px;
+}
+.user-favors .container {
+  padding-top: 10px;
+}
+.user-favors .item .name {
+  min-height: 60px;
+  padding-top: 6px;
+}
+.user-favors .item button {
+  position: relative;
+  bottom: 10px;
+  border: 1px solid #bf0705;
+  padding: 4px 12px 4px 12px;
+  border-radius: 4px;
+  color: #bf0705;
+  background-color: white;
+  transition: opacity 0.4s ease-in;
+  opacity: 1;
+}
+.user-favors .item label {
+  position: relative;
+  bottom: 4px;
+  transition: opacity 0.4s ease-in;
+  opacity: 0;
+}
+.user-favors hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

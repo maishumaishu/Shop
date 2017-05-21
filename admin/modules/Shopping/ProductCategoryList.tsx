@@ -1,5 +1,5 @@
 
-import site = require('Site');
+import { default as site } from 'Site';
 import ui = require('UI');
 import FormValidator = require('common/formValidator');
 import { default as shopping } from 'services/Shopping';
@@ -63,9 +63,7 @@ export default function (page: chitu.Page) {
                     }),
                     new wuzhui.BoundField({ dataField: 'ImagePath', headerText: '图片', headerStyle: { textAlign: 'center' } as CSSStyleDeclaration }),
                     new ui.CommandField({
-                        edit: (dataItem) => {
-                            this.edit(dataItem);
-                        },
+                        itemEditor: null,
                         headerText: '操作',
                         headerStyle: { textAlign: 'center', width: '120px' } as CSSStyleDeclaration,
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
@@ -83,16 +81,22 @@ export default function (page: chitu.Page) {
             if (!this.validator.validateForm()) {
                 return;
             }
+
+            let id = (this.dialogElement['Id'] as HTMLSelectElement).value;
             var dataItem = {
-                Id: (this.dialogElement['Id'] as HTMLSelectElement).value,
                 SortNumber: (this.dialogElement['SortNumber'] as HTMLSelectElement).value,
                 Name: (this.dialogElement['Name'] as HTMLInputElement).value,
                 Remark: (this.dialogElement['Remark'] as HTMLInputElement).value,
                 ImagePath: (this.dialogElement['ImagePath'] as HTMLInputElement).value,
                 Hidden: (this.dialogElement['Hidden'] as HTMLInputElement).checked,
             };
+
+            if (id) {
+                (dataItem as any).Id = id;
+            }
+
             let p: Promise<any>
-            if (dataItem.Id) {
+            if (id) {
                 p = this.dataSource.update(dataItem);
             }
             else {

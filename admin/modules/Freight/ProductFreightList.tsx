@@ -1,5 +1,4 @@
 ﻿import Service = require('services/Service');
-import freight = require('services/Freight');
 import { default as shopping, FreightSolution, ProductFreight } from 'services/Shopping';
 import * as ui from 'UI';
 

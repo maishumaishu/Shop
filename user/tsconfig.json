@@ -3,7 +3,8 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../user_www",
+        "outDir": "../www/user",
+        "experimentalDecorators": true,
         "jsx": "react"
     }
 }

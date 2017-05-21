@@ -5,8 +5,8 @@ import { default as Service } from 'services/Service';
 class ShopAdmin extends Service {
 
     logout() {
-        Service.set_token(undefined);
-        Service.set_userId(undefined);
+        Service.token = undefined;
+        Service.userId = undefined;
         return $.Deferred().resolve();
     }
     changePassword(password) {

@@ -1,4 +1,4 @@
-
+import { default as Service } from 'services/Service';
 import site = require('Site');
 import system = require('services/System');
 import validation = require('knockout.validation');
@@ -6,9 +6,9 @@ import validation = require('knockout.validation');
 let JData = window['JData'];
 
 function page_load(page: chitu.Page, args) {
-    var dataSource = new JData.WebDataSource(site.config.shopUrl + 'System/GetNotifyUrls',
-        site.config.shopUrl + 'System/AddNotifyUrl', null,
-        site.config.shopUrl + 'System/DeleteNotifyUrl');
+    var dataSource = new JData.WebDataSource(Service.config.shopUrl + 'System/GetNotifyUrls',
+        Service.config.shopUrl + 'System/AddNotifyUrl', null,
+        Service.config.shopUrl + 'System/DeleteNotifyUrl');
     var $gridView = (<any>$('<table>').appendTo(page.element)).gridView({
         dataSource: dataSource,
         columns: [

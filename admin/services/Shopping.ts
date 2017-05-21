@@ -11,7 +11,7 @@ export interface Product {
     BuyLimitedNumber: number;
     // ChildrenCount: number;
     Name: string;
-    Unit: string;
+    // Unit: string;
     OffShelve: boolean;
     OldPrice: string;
     Price: number;
@@ -60,6 +60,70 @@ export interface ProductFreight {
     SolutionName: string
 }
 
+export interface Order {
+    Id: string,
+    /** 订单日期 */
+    OrderDate: Date,
+    /** 付款人 */
+    Consignee: string,
+    /** 收货人地址 */
+    ReceiptAddress: string,
+    /** 状态 */
+    Status: string,
+    /** 状态文字 */
+    StatusText: string,
+    /** 序列号 */
+    Serial: string,
+    /** 运费 */
+    Freight: number,
+    /** 发票信息 */
+    Invoice: string,
+    /** 备注 */
+    Remark: string,
+    /** 合计金额 */
+    Sum: number,
+    OrderDetails: OrderDetail[]
+}
+
+export interface OrderDetail {
+    Id: string,
+    ProductName: string,
+    Price: number,
+    Unit: string,
+    Quantity: number
+}
+
+export interface Coupon {
+    Id: string,
+    Title: string,
+    Content: string,
+    Discount: number,
+    Amount: number,
+    ValidBegin: Date,
+    ValidEnd: Date,
+    ProductIds?: string,
+    CategoryIds?: string,
+    BrandIds?: string
+}
+
+export interface CouponCode {
+    Title: string,
+    Content: string,
+    UsedDateTime: Date,
+    ValidBegin: Date,
+    ValidEnd: Date,
+}
+
+export interface CityFreight {
+    Id: string,
+    /** 配送金额 */
+    SendAmount: number,
+    /** 运费 */
+    Freight: number,
+    /** 配送范围 */
+    SendRadius: number,
+}
+
 //===============================================
 
 class ShoppingService extends Service {
@@ -72,7 +136,9 @@ class ShoppingService extends Service {
         return this.ajax<Product>({ url, data }).then((data) => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
-            data.ImagePaths = ((data as any).ImagePath as string).split(',');
+            if (data.ImagePaths)
+                data.ImagePaths = ((data as any).ImagePath as string).split(',');
+
             return data;
         });
     }
@@ -106,7 +172,7 @@ class ShoppingService extends Service {
     commonProduct(product) {
         alert(product.Id());
     }
-    saveProduct(product: Product, parentId) {
+    saveProduct(product: Product, parentId): Promise<{ Id: string }> {
         debugger;
 
         var obj: any = Object.assign({}, product);// ko.mapping.toJS(product, { ignore: ['ExtProperties'] });
@@ -143,16 +209,28 @@ class ShoppingService extends Service {
             ImagePath?: string
         };
         return Service.get<Category[]>(url);
-        // .then(function (result) {
-        //     return result.DataItems;
-        // });
     }
-    brands() {
+    //==========================================
+    // 品牌
+    brands(args?: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Product/GetBrands');
-        return Service.get<wuzhui.DataSourceSelectResult<Brand>>(url).then(o => {
+        return Service.get<wuzhui.DataSourceSelectResult<Brand>>(url, args).then(o => {
             return o.dataItems;
         });
     }
+    addBrand(brand: Brand) {
+        let url = this.url('Product/AddBrand');
+        return Service.postByJson(url, { model: brand });
+    }
+    updateBrand(brand: Brand) {
+        let url = this.url('Product/UpdateBrand');
+        return Service.postByJson(url, { model: brand });
+    }
+    deleteBrand(brand: Brand) {
+        let url = this.url('Product/DeleteBrand');
+        return Service.delete(url, { id: brand.Id });
+    }
+    //==========================================
     setStock(productId, quantity) {
         let url = this.url('Product/SetStock');
         return Service.postByJson<any>(url, { productId: productId, quantity: quantity });
@@ -174,6 +252,45 @@ class ShoppingService extends Service {
         Service.config.shopUrl + 'Coupon/UpdateCoupon',
         Service.config.shopUrl + 'ShoppingData/Delete?source=Coupons');
 
+    //===================================================
+    // 优惠劵
+    coupons() {
+        let url = this.url('Coupon/GetCoupons');
+        return Service.get<Coupon[]>(url);
+    }
+    addCoupon(coupon: Coupon) {
+        let url = this.url('Coupon/AddCoupon');
+        return Service.postByJson(url, coupon).then(data => {
+            Object.assign(coupon, data);
+            return data;
+        });
+    }
+    updateCoupon(coupon: Coupon) {
+        let url = this.url('Coupon/UpdateCoupon');
+        return Service.putByJson(url, coupon);
+    }
+    deleteCoupon(coupon: Coupon) {
+        let url = this.url('Coupon/DeleteCoupon');
+        return Service.delete(url, { id: coupon.Id });
+    }
+    couponCodes(args: wuzhui.DataSourceSelectArguments) {
+        let url = this.url('Coupon/GetCouponCodes');
+        return Service.get<wuzhui.DataSourceSelectResult<any>>(url, args).then(result => {
+            result.dataItems.forEach(o => {
+                if (o.UsedDateTime)
+                    o.UsedDateTime = new Date(o.UsedDateTime);
+
+                o.ValidBegin = new Date(o.ValidBegin);
+                o.ValidEnd = new Date(o.ValidEnd);
+            })
+            return result;
+        });
+    }
+    generateCouponCode(couponId: string, count: number) {
+        let url = this.url('Coupon/GenerateCouponCode');
+        return Service.postByJson(url, { couponId, count });
+    }
+    //===================================================
     getDefineProperties(defineId) {
         return Service.callMethod('Product/GetDefineProperties', { defineId: defineId });
     }
@@ -204,10 +321,49 @@ class ShoppingService extends Service {
         return Service.get<wuzhui.DataSourceSelectResult<ProductFreight>>(url, args);
     }
     addProductFreight(productId: string, solutionId: string) {
-        debugger;
         let url = this.url('Freight/AddProductFreight');
         return Service.post(url, { productId, solutionId });
     }
+    cityFreight() {
+        let url = this.url('Freight/GetCityFreight');
+        return Service.get<CityFreight>(url);
+    }
+    updateCityFreight(item: CityFreight) {
+        let url = this.url('Freight/UpdateCityFreight');
+        return Service.putByJson(url, { model: item });
+    }
+    //================================================================
+    // 订单
+    private orderStatusText(value: string) {
+        switch (value) {
+            case 'Confirmed':
+                return 'confirm_text';
+            case 'Send':
+                return 'send_text';
+            case 'WaitingForPayment':
+                return '待付款';
+            case 'Canceled':
+                return '已取消';
+            case 'Paid':
+                return '已付款';
+            case 'Received':
+                return '已收货';
+        }
+        return value;
+    }
+    orders(args: wuzhui.DataSourceSelectArguments) {
+        let url = this.url('Order/GetOrders');
+        return Service.get<wuzhui.DataSourceSelectResult<Order>>(url, args).then(result => {
+            result.dataItems.forEach(c => c.StatusText = this.orderStatusText(c.Status));
+            return result;
+        });
+    }
+    // orderDetails(orderId: string) {
+    //     let url = this.url('Order/GetOrderDetails');
+    //     debugger;
+    //     return Service.get<OrderDetail[]>(url, { orderId });
+    // }
+    //================================================================
 }
 
 

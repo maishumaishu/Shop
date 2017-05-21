@@ -1,5 +1,4 @@
-
-import site = require('Site');
+import { default as site } from 'Site';
 import app = require('Application');
 import { PageData, StationService } from 'services/Station';
 import { Button } from 'common/controls';
@@ -7,8 +6,6 @@ import { RouteValue } from 'modules/Station/Page';
 
 export default function (page: chitu.Page) {
     ReactDOM.render(<Page />, page.element);
-
-
 }
 
 let station = new StationService();
@@ -42,8 +39,23 @@ class Page extends React.Component<{}, { pageDatas: PageData[] }>{
             <div>
                 <div className="tabbable">
                     <ul className="nav nav-tabs">
+                        <div className="pull-right">
+                            <div className="dropdown" style={{ marginLeft: 4, }}>
+                                <button className="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    访问店铺
+                                </button>
+                                <div className="dropdown-menu dropdown-menu-right" style={{ padding: 20 }}>
+                                    <div style={{ width: '100%', textAlign: 'center' }}>手机扫码访问</div>
+                                    <img src="https://h5.youzan.com/v2/common/url/create?type=homepage&kdt_id=764664" style={{ width: 180, height: 180 }} />
+                                    <div style={{ width: '100%' }}>
+                                        <div className="pull-left">复制页面链接</div>
+                                        <div className="pull-right">电脑访问</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <li className="pull-right">
-                            <button onClick={(e) => this.showPage()} className="btn btn-sm btn-primary">添加</button>
+                            <button onClick={(e) => this.showPage()} className="btn btn-sm btn-primary">新建页面</button>
                         </li>
                     </ul>
                 </div>

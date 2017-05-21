@@ -1,0 +1,19 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.user-receiptList section {
+  padding-top: 50px;
+}
+.user-receiptList.immersion section {
+  padding-top: 65px;
+}

@@ -1,4 +1,4 @@
-import site = require('Site');
+import { default as site } from 'Site';
 import weixin = require('services/WeiXin');
 import validation = require('knockout.validation');
 

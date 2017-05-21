@@ -1,5 +1,14 @@
 import { default as Service } from 'services/Service';
 
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
 
 interface RegisterModel {
     user: { mobile: string, password: string },
@@ -9,21 +18,39 @@ interface RegisterModel {
 
 class UserService {
     login(username, password) {
-        let url = `http://${Service.config.serviceHost}/user/login`;
-        return Service.get<{ token: string, userId: string }>(url, { username, password }).then((o) => {
-            Service.set_token(o.token);
-            Service.set_userId(o.userId);
+        let url = `http://${Service.config.serviceHost}/admin/login`;
+        return Service.get<{ token: string, userId: string, appToken: string }>(url, { username, password }).then((o) => {
+            Service.token = o.token;
+            Service.userId = o.userId;
             Service.username.value = username;
+            Service.appToken = o.appToken;
         })
     }
-    register(model: RegisterModel) {
-        (model.user as any).group = 'seller';
-        let url = `http://${Service.config.serviceHost}/user/register`;
-        return Service.postByJson<{ token: string, userId: string }>(url, model)
+    async register(model: RegisterModel) {
+        (model.user as any).group = 'owner';
+        let url = `http://${Service.config.serviceHost}/admin/register`;
+        return Service.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
             .then((result) => {
-                Service.set_token(result.token);
-                Service.set_userId(result.userId);
+                Service.appToken = result.appToken;
+                Service.token = result.token;
+                Service.userId = result.userId;
             });
+    }
+    private createApplication() {
+        let url = `http://${Service.config.serviceHost}/application/add`;
+        return Service.postByJson<{ token: string }>(url, { name: guid() });
+    }
+    isMobileRegister(mobile: string) {
+        let url = `http://${Service.config.serviceHost}/admin/isMobileRegister`;
+        return Service.get<boolean>(url, { mobile });
+    }
+    sendVerifyCode(mobile: string) {
+        let url = `http://${Service.config.serviceHost}/sms/sendVerifyCode`;
+        let oldAppToken = Service.appToken
+        Service.appToken = undefined;
+        return Service.putByJson<{ smsId: string }>(url, { mobile, type: 'register' })
+            .then(() => Service.appToken = oldAppToken)
+            .catch(() => Service.appToken = oldAppToken);
     }
 }
 

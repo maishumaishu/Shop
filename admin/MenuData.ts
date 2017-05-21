@@ -1,81 +1,137 @@
-let menuData = [
+export interface MenuNode {
+    Title: string,
+    Icon?: string,
+    Url?: string,
+    Children?: MenuNode[],
+    Parent?: MenuNode,
+    Visible?: boolean
+};
+
+let menuData: MenuNode[] = [
+    { Title: '首页', Icon: 'icon-dashboard', Url: 'Home/Index' },
     {
-        "Title": "微店管理",
-        "Icon": "icon-home",
-        "Children": [
-            // { "Url": "#Station/AdvertItemList", "Title": "首页广告" },
+        Title: "微店",
+        Icon: "icon-home",
+        Children: [
+            { Title: '店铺概况', Url: 'Station/Index' },
             {
                 Title: '页面管理',
                 Icon: "icon-bullhorn",
-                Url: '#Station/PageList'
-            },
-            {
-                "Url": "javascript:",
-                "Title": "运费管理",
-                "Children": [
-                    { "Url": "#Freight/SolutionList", "Title": "运费模板" },
-                    { "Url": "#Freight/ProductFreightList", "Title": "产品运费" }
+                Url: 'Station/PageList',
+                Children: [
+                    { Title: '页面', Url: 'Station/Page', Visible: false }
                 ]
             },
-            { "Url": "#Shopping/OrderList", "Title": "订单管理" },
             {
-                "Url": "javascript:",
-                "Title": "优惠券管理",
-                "Children": [
-                    { "Url": "#Coupon/CouponList", "Title": "优惠券" },
-                    { "Url": "#Coupon/CouponCodeList", "Title": "优惠码" },
-                    { "Url": "#Coupon/CouponSetting", "Title": "设置" }
-                ]
+                Title: '会员主页',
+                Url: 'Station/StoreMember'
             },
-            { "Url": "#Shopping/OutletList", "Title": "门店管理", "Visible": false }
-        ]
-    },
-    {
-        "Title": "商品管理",
-        "Icon": "icon-bullhorn",
-        "Children": [
-            { "Url": "#Shopping/ProductCategoryList", "Title": "商品类别" },
-            { "Url": "#Shopping/BrandList", "Title": "品牌管理" },
-            { "Url": "#Shopping/ProductList", "Title": "商品列表" }
-        ]
-    },
-    {
-        "Title": "促销活动",
-        "Icon": "icon-bullhorn",
-        "Url": "#Shopping/Promotion/Activities",
-        "Children": [
             {
-                "Url": "#Shopping/Promotion/ActivityEdit",
-                "Title": "编辑活动",
-                "Visible": false,
-                "Children": [
-                    { "Url": "#Shopping/Promotion/ProductGiven", "Title": "产品：买就送" }
-                ]
+                Title: '店铺导航',
+                Url: 'Station/StoreMenu'
+            },
+            {
+                Title: '店铺风格',
+                Url: 'Station/StoreStyle'
             }
         ]
     },
     {
-        "Title": "会员管理",
-        "Icon": "icon-group",
-        "Children": [
-            { "Url": "#Member/MemberList", "Title": "会员列表" }
-        ]
-    },
-    {
-        "Title": "密码修改",
-        "Icon": "icon-key",
-        "Url": "#User/ChangePassword"
-    },
-    {
-        "Title": "系统管理",
-        "Icon": "icon-hdd",
-        "Children": [
-            { "Url": "#Member/OperatorList", "Title": "操作人员", "Visible": false },
-            { "Url": "#WeiXin/Setting", "Title": "微信设置" },
-            { "Url": "#System/EventCallback", "Title": "事件回调" },
-            { "Url": "#WeiXin/MessageTemplates", "Title": "消息模版" }
-        ]
+        Title: "商品",
+        Icon: "icon-gift",
+        Children: [
+            { Url: "Shopping/ProductList", Title: "商品列表" },
+            { Url: "Shopping/ProductCategoryList", Title: "商品类别" },
+            { Url: "Shopping/BrandList", Title: "品牌管理" },
 
+        ]
+    },
+    {
+        Title: "订单",
+        Icon: "icon-list",
+        Children: [
+            { Title: '订单列表', Url: "Shopping/OrderList", }
+        ]
+    },
+    {
+        Title: '营销',
+        Icon: "icon-bullhorn",
+        Children: [
+            {
+                Title: "促销活动",
+                Icon: "icon-bullhorn",
+                Url: "Shopping/Promotion/Activities",
+            },
+            {
+                Icon: "icon-bullhorn",
+                Title: "优惠券",
+                Children: [
+                    {
+                        Url: "Coupon/CouponList", Title: "优惠券",
+                        Children: [
+                            { Url: "Coupon/CouponEdit", Title: "优惠券编辑", Visible: false },
+                        ]
+                    },
+                    { Url: "Coupon/CouponCodeList", Title: "优惠码" },
+                    { Url: "Coupon/CouponSetting", Title: "赠劵规则" }
+                ]
+            },
+        ]
+    },
+    {
+        Title: "会员",
+        Icon: "icon-group",
+        Children: [
+            { Url: "Member/MemberList", Title: "会员列表" },
+        ]
+    },
+    {
+        Title: '财务',
+        Icon: 'icon-money',
+        Children: [
+            { Title: '我的收入', Url: 'Finance/Income', },
+            { Title: '储值资金', Url: 'Finance/RechargeAmount' },
+        ]
+    },
+    {
+        Title: "设置",
+        Icon: " icon-cog",
+        Children: [
+            { Title: "修改密码", Url: 'User/ChangePassword' },
+            {
+                Title: "运费设置",
+                Children: [
+                    {
+                        Url: "Freight/SolutionList", Title: "快递发货",
+                        Children: [{ Title: '运费设置', Url: 'Freight/FreightList' }]
+                    },
+                    // { Url: "Freight/ProductFreightList", Title: "产品运费" },
+                    { Url: 'Freight/InCitySend', Title: '同城配送' }
+                ]
+            },
+        ]
+    },
+    {
+        Title: '其它',
+        Children: [
+            { Url: "User/Login", Title: '登录' }
+        ],
+        Visible: false
     }
 ];
-export = menuData;
+
+let stack = new Array<MenuNode>();
+for (let i = 0; i < menuData.length; i++) {
+    stack.push(menuData[i]);
+}
+while (stack.length > 0) {
+    let node = stack.pop();
+    let children = node.Children || [];
+    children.forEach((c) => {
+        c.Parent = node;
+        stack.push(c);
+    })
+}
+
+
+export default menuData;

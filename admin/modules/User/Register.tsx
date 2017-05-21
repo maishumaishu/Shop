@@ -1,37 +1,25 @@
-import Validation = require('common/validate');
+import FormValidator = require('common/formValidator');
 import smsService = require('services/SMS');
 import userService = require('services/User');
+import * as ui from 'UI';
+import app = require('Application');
 
 var $ctrls = $('#sidebar, #breadcrumbs, #navbar-container > [role="navigation"]');
 $ctrls.hide();
 
 export default function (page: chitu.Page) {
-    // let style = {
-    //     label: {
-    //         float: 'left',
-    //         width: 100
-    //     } as React.CSSProperties,
-    //     input: {
-    //         marginLeft: 110
-    //     } as React.CSSProperties,
-    //     form: {
-    //         width: 400,
-    //         marginLeft: -220,
-    //         left: '50%',
-    //         position: 'absolute'
-    //     } as React.CSSProperties
-    // }
 
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
     class RegisterPage extends React.Component<{}, { buttonText: string, buttonEnable: boolean }>{
         private formElement: HTMLFormElement;
-        private registerValidation: Validation;
-        private verifyCodeValidation: Validation;
+        private registerValidation: FormValidator;
+        private verifyCodeValidation: FormValidator;
         private intervalId: number;
         private mobileInput: HTMLInputElement;
         private passwordInput: HTMLInputElement;
         private verifyCodeInput: HTMLInputElement;
+        private mobileError: HTMLElement;
 
         private smsId: string;
 
@@ -41,26 +29,21 @@ export default function (page: chitu.Page) {
         }
 
         componentDidMount() {
-            this.registerValidation =
-                new Validation(this.formElement, [
-                    { name: 'mobile', rules: ['required', 'callback_mobile'] },
-                    { name: 'verifyCode', rules: ['required'] },
-                    { name: 'password', rules: ['required'] },
-                    { name: 'confirmPassword', rules: ['required', 'matches[password]'] }
-                ]).registerCallback('mobile', function (value) {
-                    value = value || '';
-                    return value.length == 11 && /^1[34578]\d{9}$/.test(value);
-                }).setMessages([
-                    { rule: 'mobile', message: '手机号码不正确' },
-                    { rule: 'matches', message: '两次输入的密码不正确', elementName: 'confirmPassword' }
-                ])
+            this.registerValidation = new FormValidator(this.formElement, {
+                mobile: { rules: ['required', 'mobile'] },
+                verifyCode: { rules: ['required'] },
+                password: { rules: ['required'] },
+                confirmPassword: { rules: ['required', { name: 'matches', params: ['password'] }] }
+            });
 
-            this.verifyCodeValidation = new Validation(this.formElement, [
-                { name: 'mobile', rules: ['required', 'callback_mobile'] }
-            ]).registerCallback('mobile', function (value) {
-                value = value || '';
-                return value.length == 11 && /^1[34578]\d{9}$/.test(value);
-            }).setMessage('mobile', '手机号码不正确');
+            this.registerValidation.messages['mobile'] = '手机号码不正确';
+            this.registerValidation.messages['matches'] = '两次输入的密码不正确';
+
+            this.verifyCodeValidation = new FormValidator(this.formElement, {
+                mobile: { rules: ['required', 'mobile'] }
+            });
+
+            this.verifyCodeValidation.messages['mobile'] = '手机号码不正确';
         }
 
         register() {
@@ -76,8 +59,9 @@ export default function (page: chitu.Page) {
             };
 
             let verifyCode = this.verifyCodeInput.value;
-            userService.register({ smsId: this.smsId, user, verifyCode }).then((result) => {
-
+            return userService.register({ smsId: this.smsId, user, verifyCode }).then(data => {
+                app.redirect('Home/Index');
+                return data;
             });
         }
         async sendVerifyCode() {
@@ -87,6 +71,12 @@ export default function (page: chitu.Page) {
                 return;
             }
 
+            let isMobileRegister = await userService.isMobileRegister(this.mobileInput.value);
+            if (isMobileRegister) {
+                this.mobileError.innerText = '手机号码已被注册';
+                this.mobileError.style.display = 'block';
+                return;
+            }
             smsService.sendVerifyCode(this.mobileInput.value).then((result) => {
                 this.smsId = result.smsId;
             });
@@ -121,6 +111,8 @@ export default function (page: chitu.Page) {
                             <label className="col-sm-2 control-label">手机号码</label>
                             <div className="col-sm-10">
                                 <input ref={(o: HTMLInputElement) => this.mobileInput = o} name="mobile" type="text" className="form-control" />
+                                <span className="mobile validationMessage" style={{ display: 'none' }}
+                                    ref={(e: HTMLElement) => this.mobileError = e || this.mobileError}></span>
                             </div>
                         </div>
                         <div className="form-group">
@@ -151,7 +143,11 @@ export default function (page: chitu.Page) {
                         </div>
                         <div className="form-group">
                             <div className="col-sm-offset-2 col-sm-10">
-                                <button onClick={() => this.register()} className="btn btn-primary btn-block">
+                                <button onClick={() => this.register()} className="btn btn-primary btn-block"
+                                    ref={(e: HTMLButtonElement) => {
+                                        if (!e) return;
+                                        e.onclick = ui.buttonOnClick(() => this.register(), { toast: '注册成功' })
+                                    }}>
                                     <i className="icon-key"></i>
                                     立即注册
                             </button>

@@ -100,6 +100,7 @@ var wuzhui;
             return this.executeInsert(item).then((data) => {
                 $.extend(item, data);
                 wuzhui.fireCallback(this.inserted, this, { item });
+                return data;
             });
         }
         delete(item) {
@@ -107,8 +108,9 @@ var wuzhui;
                 throw wuzhui.Errors.dataSourceCanntDelete();
             this.checkPrimaryKeys(item);
             wuzhui.fireCallback(this.deleting, this, { item });
-            return this.executeDelete(item).then(() => {
+            return this.executeDelete(item).then((data) => {
                 wuzhui.fireCallback(this.deleted, this, { item });
+                return data;
             });
         }
         update(item) {
@@ -119,6 +121,7 @@ var wuzhui;
             return this.executeUpdate(item).then((data) => {
                 $.extend(item, data);
                 wuzhui.fireCallback(this.updated, this, { item });
+                return data;
             });
         }
         isSameItem(theItem, otherItem) {
@@ -160,6 +163,7 @@ var wuzhui;
                     throw new Error('Type of the query result is expected as Array or DataSourceSelectResult.');
                 }
                 wuzhui.fireCallback(this.selected, this, { selectArguments: args, items: data_items });
+                return data;
             });
         }
         //===============================================
@@ -466,6 +470,8 @@ var wuzhui;
                 this.appendChild(this._header);
                 this.appendHeaderRow();
             }
+            this.emptyDataHTML = params.emptyDataHTML || this.emptyDataHTML;
+            this.initDataHTML = params.initDataHTML || this.initDataHTML;
             this._body = new wuzhui.Control(document.createElement('tbody'));
             this.appendChild(this._body);
             this.appendEmptyRow();
@@ -1012,7 +1018,7 @@ var wuzhui;
             super();
             this._valueElement = document.createElement('span');
             this.element.appendChild(this._valueElement);
-            this.nullText = '' || params.nullText;
+            this.nullText = params.nullText != null ? params.nullText : '';
             this.dataFormatString = params.dataFormatString;
             this._dataField = params.dataField;
             this.render = params.render || ((element, value) => {

@@ -68,14 +68,10 @@ let JData = window['JData'];
             options.traditional = true
             var result = $.Deferred();
             _ajax(options)
-                // .then(function (data) {
-                //     if (data.Type == 'ErrorObject' && data.Code != 'Success') {
-                //         services.error.fire(data);
-                //     }
-                //     return data;
-                // })
                 .done(function (data) {
-                    data = data || {};
+                    if (data == null)
+                        data = {};
+
                     if (data.Type == 'ErrorObject') {
                         if (data.Code == 'Success') {
                             result.resolve(data);
@@ -141,10 +137,19 @@ let JData = window['JData'];
                     var date = new Date(num);
                     item[key] = date;
                 }
+                else if (typeof value == 'string' && value.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)) {
+                    item[key] = new Date(value);
+                }
             }
         }
         return result;
     };
+
+    function isDateFormat(value: string) {
+        var regex = new RegExp('\d4')
+    }
+
+
     //=================================================================
     //对 JData 框架的扩展
     (function () {
@@ -160,7 +165,7 @@ let JData = window['JData'];
             get_cssClass: function () {
                 return 'table table-striped table-bordered table-hover';
             },
-            get_emptyDataRowStyle:function(){
+            get_emptyDataRowStyle: function () {
                 let style = new JData.TableItemStyle();
                 style.set_height('300px');
                 style.set_textAlign('center');

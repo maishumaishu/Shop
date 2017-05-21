@@ -394,7 +394,7 @@ declare module React {
 
         color?: string;
         columnCount?: number;
-
+        cursor?: 'crosshair' | 'help' | 'wait' | 'pointer',
 
         lineClamp?: number;
         lineHeight?: number | string;
@@ -422,11 +422,13 @@ declare module React {
         height?: number | string;
         left?: number | string;
         listStyle?: string,
+
         margin?: number | string;
         marginBottom?: number | string;
         marginLeft?: number | string;
         marginRight?: number | string;
         marginTop?: number | string;
+        maxWidth?: number | string;
         minHeight?: number | string;
 
         padding?: number | string;

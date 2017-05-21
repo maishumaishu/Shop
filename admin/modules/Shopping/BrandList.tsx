@@ -1,16 +1,13 @@
-import site = require('Site');
-import { CommandField, buttonOnClick, createGridView } from 'UI';
+import { default as site } from 'Site';
+import { CommandField, buttonOnClick, createGridView, GridViewItemPopupEditor } from 'UI';
 import FormValidator = require('common/formValidator');
-
+import { default as shopping, Brand } from 'services/Shopping'
+import { default as activity } from 'services/Activity'
 export default function (page: chitu.Page) {
 
-    class Page extends React.Component<{}, {}>{
-        private dialogElement: HTMLElement;
-        private nameElement: HTMLInputElement;
-        private imageElement: HTMLInputElement;
-        private validator: FormValidator;
-        private dataItem: any;
+    class BrandListPage extends React.Component<{}, {}>{
         private dataSource: wuzhui.DataSource<any>;
+        private itemEditor: GridViewItemPopupEditor;
 
         componentDidMount() {
 
@@ -20,12 +17,12 @@ export default function (page: chitu.Page) {
             var tableElement = document.createElement('table');
             tableElement.className = 'table table-striped table-bordered table-hover';
             page.element.appendChild(tableElement);
-            var dataSource = this.dataSource = new wuzhui.WebDataSource({
+            var dataSource = this.dataSource = new wuzhui.WebDataSource<Brand>({
                 primaryKeys: ['Id'],
-                select: baseUrl + 'Select?source=Brands&selection=Id,Name,Image,Recommend',
-                update: baseUrl + 'Update?source=Brands',
-                insert: baseUrl + 'Insert?source=Brands',
-                delete: baseUrl + 'Delete?source=Brands'
+                select: (args) => shopping.brands(args),
+                update: (dataItem) => shopping.updateBrand(dataItem),
+                insert: (dataItem) => shopping.addBrand(dataItem),
+                delete: (dataItem) => shopping.deleteBrand(dataItem)
             });
 
             var gridView = createGridView({
@@ -43,40 +40,12 @@ export default function (page: chitu.Page) {
                         headerText: '操作',
                         headerStyle: { textAlign: 'center', width: '100px' } as CSSStyleDeclaration,
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
-                        edit(dataItem) {
-                            self.openDialog(dataItem)
-                        }
+                        itemEditor: this.itemEditor
                     })
                 ]
             });
+        }
 
-            this.validator = new FormValidator(this.dialogElement, {
-                'name': { rules: ['required'], display: '名称' },
-            })
-        }
-        private openDialog(dataItem?: any) {
-            this.validator.clearErrors();
-            dataItem = dataItem || { Name: '', Image: '' };
-            $(this.dialogElement).modal();
-            this.nameElement.value = dataItem.Name;
-            this.imageElement.value = dataItem.Image;
-            this.dataItem = dataItem;
-        }
-        private save() {
-            this.dataItem = this.dataItem || {};
-            this.dataItem.Name = this.nameElement.value;
-            this.dataItem.Image = this.imageElement.value;
-            var p = this.dataItem.Id ? this.dataSource.update(this.dataItem) : this.dataSource.insert(this.dataItem);
-            p.then(() => {
-                $(this.dialogElement).modal('hide');
-            });
-
-            return p;
-        }
-        private add() {
-            this.dataItem = null;
-            this.openDialog();
-        }
         render() {
             return (
                 <div>
@@ -84,58 +53,47 @@ export default function (page: chitu.Page) {
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
                                 <button href="#Shopping/BrandEdit" className="btn btn-sm btn-primary"
-                                    onClick={() => this.add()}
+                                    onClick={() => this.itemEditor.show()}
                                 >添加</button>
                             </li>
                         </ul>
                     </div>
-                    <div ref={(o: HTMLElement) => this.dialogElement = o || this.dialogElement} className="modal fade">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <button type="button" className="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
-                                    </button>
-                                    <h4 className="modal-title">&nbsp;</h4>
-                                </div>
-                                <div className="modal-body form-horizontal">
-                                    <div className="form-group">
-                                        <label className="col-sm-2">名称</label>
-                                        <div className="col-sm-10">
-                                            <input name="name" type="text" className="form-control"
-                                                ref={(o: HTMLInputElement) => this.nameElement = o || this.nameElement} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="col-sm-2">图片</label>
-                                        <div className="col-sm-10">
-                                            <input type="text" className="form-control"
-                                                ref={(o: HTMLInputElement) => this.imageElement = o || this.imageElement} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
-                                    <button type="button" className="btn btn-primary"
-                                        ref={(o: HTMLButtonElement) => {
-                                            if (!o) return;
-                                            o.onclick = buttonOnClick(() => {
-                                                if (!this.validator.validateForm())
-                                                    return Promise.reject(new Error());
+                    <GridViewItemPopupEditor
+                        name="品牌"
+                        ref={(e) => {
+                            if (!e) return;
+                            this.itemEditor = e;
+                            e.validator = new FormValidator(e.element, {
+                                Name: { rules: ['required'] }
+                            })
+                        }}
+                        saveDataItem={(dataItem) => {
+                            if (dataItem.Id == null)
+                                return this.dataSource.insert(dataItem);
+                            else
+                                return this.dataSource.update(dataItem);
+                        }} >
 
-                                                return this.save();
-                                            })
-                                        }}>确认</button>
-                                </div>
+
+                        <div className="form-group">
+                            <label className="col-sm-2">名称</label>
+                            <div className="col-sm-10">
+                                <input name="Name" type="text" className="form-control" />
                             </div>
                         </div>
-                    </div>
+                        <div className="form-group">
+                            <label className="col-sm-2">图片</label>
+                            <div className="col-sm-10">
+                                <input name="Image" type="text" className="form-control" />
+                            </div>
+                        </div>
+
+                    </GridViewItemPopupEditor>
                 </div >
             );
         }
     }
 
-    ReactDOM.render(<Page />, page.element);
-
+    ReactDOM.render(<BrandListPage />, page.element);
 }
 

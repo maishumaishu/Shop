@@ -1,7 +1,7 @@
 
 import val = require('knockout.validation');
 import app = require('Application');
-import site = require('Site');
+import { default as site } from 'Site';
 
 class PageModel {
     private validation: KnockoutValidationErrors;
