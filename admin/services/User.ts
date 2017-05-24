@@ -16,14 +16,24 @@ interface RegisterModel {
     verifyCode: string
 }
 
+export interface Application {
+    _id: string,
+    name: string,
+    token: string,
+}
+
 class UserService {
+    private url(path: string) {
+        let url = `http://${Service.config.serviceHost}/${path}`;
+        return url;
+    }
     login(username, password) {
         let url = `http://${Service.config.serviceHost}/admin/login`;
         return Service.get<{ token: string, userId: string, appToken: string }>(url, { username, password }).then((o) => {
             Service.token = o.token;
             Service.userId = o.userId;
             Service.username.value = username;
-            Service.appToken = o.appToken;
+            // Service.appToken = o.appToken;
         })
     }
     async register(model: RegisterModel) {
@@ -31,7 +41,7 @@ class UserService {
         let url = `http://${Service.config.serviceHost}/admin/register`;
         return Service.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
             .then((result) => {
-                Service.appToken = result.appToken;
+                // Service.appToken = result.appToken;
                 Service.token = result.token;
                 Service.userId = result.userId;
             });
@@ -46,12 +56,27 @@ class UserService {
     }
     sendVerifyCode(mobile: string) {
         let url = `http://${Service.config.serviceHost}/sms/sendVerifyCode`;
-        let oldAppToken = Service.appToken
-        Service.appToken = undefined;
-        return Service.putByJson<{ smsId: string }>(url, { mobile, type: 'register' })
-            .then(() => Service.appToken = oldAppToken)
-            .catch(() => Service.appToken = oldAppToken);
+        return Service.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
+    }
+    applications(): Promise<Array<Application>> {
+        let url = this.url(`application/list`);
+        return Service.get<Application[]>(url);
+    }
+    addApplication(app: Application) {
+        let url = this.url('application/add');
+        return Service.postByJson(url, { app }).then(data => {
+            Object.assign(app, data);
+            return data;
+        });
+    }
+    updateApplication(app: Application) {
+        let url = this.url('application/update');
+        return Service.putByJson(url, { app });
+    }
+    deleteApplication(app: Application) {
+        let url = this.url('application/delete');
+        return Service.delete(url, { id: app._id });
     }
 }
 
-export = new UserService();
+export default new UserService();

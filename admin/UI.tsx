@@ -260,7 +260,10 @@ export function buttonOnClick(callback: (event: MouseEvent) => Promise<any>,
 
     args = args || {};
     let execute = async (event) => {
-        let button = (event.target as HTMLButtonElement);
+        let button = (event.target as HTMLElement);
+        if (button.hasAttribute('disabled'))
+            return;
+
         button.setAttribute('disabled', '');
         try {
             await callback(event);

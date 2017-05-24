@@ -26,15 +26,27 @@ function ajax<T>(settings: JQueryAjaxSettings) {
     return new Promise<T>((resolve, reject) => {
         $.ajax(settings)
             .then(data => {
+                if (data.Type == 'ErrorObject' && data.Code != 'Success') {
+                    Service.error.fire(data);
+                    reject(data);
+                    return;
+                }
+                else if (data.name !== undefined && data.message !== undefined && data.stack !== undefined) {
+                    let err = { Code: data.name, Message: data.message };
+                    Service.error.fire(err);
+                    reject(err);
+                    return;
+                }
                 if (data.Type == 'DataSourceSelectResult') {
                     var selectResult = {} as wuzhui.DataSourceSelectResult<any>;
                     selectResult.dataItems = data['DataItems'];
                     selectResult.totalRowCount = data['TotalRowCount'];
-                    return selectResult;
+                    resolve(selectResult as any);
+                    return;
                 }
-                return data;
+                resolve(data);
             })
-            .done((o) => resolve(o))
+            // .done((o) => resolve(o))
             .fail((o) => reject(o))
     });
 }
@@ -180,14 +192,15 @@ export class Service {
     }
 
     static get appToken() {
-        return localStorage['appToken']
+        let search = window.location.search || '';
+        return search.substr(1);
     }
-    static set appToken(value: string) {
-        if (value === undefined)
-            localStorage.removeItem('appToken');
+    // static set appToken(value: string) {
+    //     if (value === undefined)
+    //         localStorage.removeItem('appToken');
 
-        localStorage.setItem('appToken', value);
-    }
+    //     localStorage.setItem('appToken', value);
+    // }
 
     static get storeId() {
         return Service.userId;

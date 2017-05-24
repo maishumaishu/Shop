@@ -1,0 +1,101 @@
+$app_item_width: 280px
+$app_item_height: 250px
+$app_body_height: 150px
+$label_width: 80px
+$add_icon_size: 120px
+.User-MyStores
+    ul
+        margin: 0
+        li
+            float: left
+            list-style: none
+            width: $app_item_width
+            height: $app_item_height
+            border: 1px solid
+            margin: 4px
+            padding: 4px
+            .header
+                margin-top: 4px
+                margin-bottom: 10px
+                p 
+                    font-size: 18px
+                    padding: 0px
+                    text-align: center
+                    margin: 0px
+                    i
+                        margin: 4px 6px 0px 0px
+                        cursor: pointer
+            .body
+                height: $app_body_height
+                .pull-left
+                    width: $label_width
+                    padding-left: 14px
+            .footer
+                .col-xs-6
+                    padding: 0px
+            .add 
+                text-align: center
+                padding-top: (($app_body_height + 40px - $add_icon_size) / 2)
+
+                i 
+                    font-size: $add_icon_size
+                
+            
+
+
+    //             ul.apps {
+    //     padding: 0px;
+    //     margin:  0px;
+
+    //     li {
+    //         float: left;
+    //         list-style-type: none;
+    //         width: app_item_width;
+    //         height: app_item_height;
+    //         border: solid 1px;
+    //         margin: 4px;
+    //         padding: 4px;
+    //         p {
+    //             text-align: center;
+    //             font-size: 18px;
+    //             padding-top: 4px;
+    //             padding-bottom: 4px;
+    //         }
+    //         .pull-left {
+    //             width: label_width;
+    //             padding-left: 14px;
+    //         }
+    //         .text {
+    //             width: app_item_width - label_width - 10px;
+    //         }
+    //         .header {
+    //             margin-top: 4px; 
+    //             margin-bottom: 10px;
+    //             p {
+    //                 font-size:18px;
+    //                 padding:0px;
+    //                 text-align: center;
+    //                 margin: 0px;
+    //             }
+    //         }
+    //         .body {
+    //             height: app_body_height;
+    //             > div {
+    //                 clear: both;
+    //             }
+    //         }
+    //         .footer {
+    //             .col-xs-6 {
+    //                 padding: 0px;
+    //             }
+    //         }
+    //         .add {
+    //             text-align: center;
+    //             padding-top: ((app_body_height + 40px - add_icon_size) / 2);// 40px 约为 footer 高度
+
+    //             i {
+    //                 font-size: add_icon_size
+    //             }
+    //         }
+    //     }
+    // }  

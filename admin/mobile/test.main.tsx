@@ -67,10 +67,11 @@ requirejs.config({
         services: '../services'
     }
 });
-var references = ['react', 'react-dom', 'custom'];
+var references = ['react', 'react-dom'];
 requirejs(references, function (React, ReactDOM) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
-    requirejs(['test'], function () { });
+    requirejs(['test'], function () {
+     });
 });
 

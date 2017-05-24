@@ -1,4 +1,6 @@
 import { default as CarouselEditoir } from 'components/carousel/editor';
+import { default as NoticeHeaderEditor } from 'components/noticeHeader/editor'
+import { default as SummaryHeaderEditor } from 'components/summaryHeader/editor'
 import { default as station } from 'services/Station';
 
 export function guid() {
@@ -12,9 +14,19 @@ export function guid() {
 }
 
 station.getPageId('首页').then(pageId => {
+    // let controlElement: HTMLElement = document.getElementById('control');
+    // let editorElement: HTMLElement = document.getElementById('editor');
+    // let controlId: string = guid();
+    // let component = <CarouselEditoir controlElement={controlElement} controlId={controlId} pageId={pageId} />;
+    // ReactDOM.render(component, editorElement);
+
+
     let controlElement: HTMLElement = document.getElementById('control');
     let editorElement: HTMLElement = document.getElementById('editor');
     let controlId: string = guid();
-    let component = <CarouselEditoir controlElement={controlElement} controlId={controlId} pageId={pageId} />;
+    let component = <SummaryHeaderEditor controlElement={controlElement} controlId={controlId} pageId={pageId} />
     ReactDOM.render(component, editorElement);
+
 })
+
+// debugger;

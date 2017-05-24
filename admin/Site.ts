@@ -45,7 +45,7 @@ class Site {
         weixinUrl: Service.config.weixinUrl,
         siteUrl: Service.config.siteUrl,
         memberUrl: Service.config.memberUrl,
-        startUrl: 'Home/Index'
+        // startUrl: 'Home/Index'
     }
     style = {
         tableClassName: 'table table-striped table-bordered table-hover'

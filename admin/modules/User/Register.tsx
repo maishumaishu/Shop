@@ -1,6 +1,5 @@
 import FormValidator = require('common/formValidator');
-import smsService = require('services/SMS');
-import userService = require('services/User');
+import { default as userService } from 'services/User';
 import * as ui from 'UI';
 import app = require('Application');
 
@@ -10,7 +9,6 @@ $ctrls.hide();
 export default function (page: chitu.Page) {
 
     requirejs([`css!${page.routeData.actionPath}.css`]);
-
     class RegisterPage extends React.Component<{}, { buttonText: string, buttonEnable: boolean }>{
         private formElement: HTMLFormElement;
         private registerValidation: FormValidator;
@@ -77,7 +75,7 @@ export default function (page: chitu.Page) {
                 this.mobileError.style.display = 'block';
                 return;
             }
-            smsService.sendVerifyCode(this.mobileInput.value).then((result) => {
+            userService.sendVerifyCode(this.mobileInput.value).then((result) => {
                 this.smsId = result.smsId;
             });
 

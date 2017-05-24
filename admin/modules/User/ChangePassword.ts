@@ -6,7 +6,7 @@
 
 // });
 
-import adminService = require('services/ShopAdmin');
+// import adminService = require('services/ShopAdmin');
 
 class PageModel {
     private validation: KnockoutValidationErrors;
@@ -36,7 +36,7 @@ class PageModel {
             return;
         }
 
-        return adminService.changePassword(model.password());
+        // return adminService.changePassword(model.password());
     }
 }
 

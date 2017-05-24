@@ -114,7 +114,9 @@ let menuData: MenuNode[] = [
     {
         Title: 'Others',
         Children: [
-            { Url: "User/Login", Title: '登录' }
+            { Url: "User/Login", Title: '登录' },
+            { Url: 'User/Register', Title: '注册' },
+            { Url: 'User/MyStores', Title: '我的店铺' }
         ],
         Visible: false
     }

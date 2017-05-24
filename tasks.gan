@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2017-05-21" view-index="0" gantt-divider-location="427" resource-divider-location="300" version="2.8.4" locale="zh_CN">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="名称" width="224" order="0"/>
+        <field id="tpd3" name="名称" width="225" order="0"/>
         <field id="tpd4" name="开始日期" width="99" order="1"/>
-        <field id="tpd5" name="结束日期" width="98" order="2"/>
+        <field id="tpd5" name="结束日期" width="99" order="2"/>
     </view>
     <view id="resource-table">
-        <field id="0" name="名称" width="209" order="0"/>
-        <field id="1" name="默认角色" width="85" order="1"/>
+        <field id="0" name="名称" width="210" order="0"/>
+        <field id="1" name="默认角色" width="86" order="1"/>
     </view>
     <!-- -->
     <calendars>

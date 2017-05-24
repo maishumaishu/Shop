@@ -1,7 +1,7 @@
 ﻿import app = require('Application');
-import shopAdmin = require('services/ShopAdmin');
+// import shopAdmin = require('services/ShopAdmin');
 
 export default function (page: chitu.Page) {
-    shopAdmin.logout();
-    app.redirect('User/Login');
+    // shopAdmin.logout();
+    // app.redirect('User/Login');
 }

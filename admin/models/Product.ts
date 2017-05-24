@@ -63,7 +63,7 @@ class Product {
     CategoryName = ko.observable();
     PropertyDefineId = ko.observable();
 
-    // Arguments:{ key:string,value:string }[] = [];
+    // Argumenort = Product;ts:{ key:string,value:string }[] = [];
     // Fields: { key:string,value:string }[] = [];
     Arguments = ko.observableArray<{ key: string, value: string }>();
     Fields = ko.observableArray<{ key: string, value: string }>();
@@ -77,4 +77,4 @@ class Product {
 }
 
 
-export = Product;
+// export = Product;
