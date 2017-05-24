@@ -6,6 +6,16 @@ type GridViewItemPopupEditorProps = React.Props<GridViewItemPopupEditor> & {
     saveDataItem: (dataItem: any) => Promise<any>,
     name: string
 };
+
+
+type CommandFieldParams = {
+    itemEditor?: GridViewItemPopupEditor,
+    headerText?: string,
+    headerStyle?: CSSStyleDeclaration,
+    itemStyle?: CSSStyleDeclaration,
+    leftButtons?: (dataItem) => Array<JSX.Element>
+}
+
 export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEditorProps, { title: string }> {
     element: HTMLElement;
     private dataItem: any;
@@ -110,13 +120,7 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
 }
 
 export class CommandField extends wuzhui.CustomField {
-    constructor(params: {
-        itemEditor?: GridViewItemPopupEditor,
-        headerText?: string,
-        headerStyle?: CSSStyleDeclaration,
-        itemStyle?: CSSStyleDeclaration,
-        leftButtons?: (dataItem) => Array<JSX.Element>
-    }) {
+    constructor(params: CommandFieldParams) {
 
         let createItemCell = (dataItem) => {
             var cell: wuzhui.GridViewCell = new wuzhui.GridViewCell();
@@ -245,6 +249,14 @@ export function boundField(params: wuzhui.BoundFieldParams) {
     return new BoundField(params)
 }
 
+export function commandField(params: CommandFieldParams) {
+    return new CommandField(params);
+}
+
+export function customField(params: wuzhui.CustomFieldParams) {
+    return new CustomField(params);
+}
+
 let confirmDialogElment = document.createElement('div');
 confirmDialogElment.className = 'modal fade';
 confirmDialogElment.style.marginTop = '20px'
@@ -301,7 +313,7 @@ export function buttonOnClick(callback: (event: MouseEvent) => Promise<any>,
                                     ref={(o: HTMLButtonElement) => {
                                         if (!o) return;
                                         o.onclick = () => {
-                                            reject();
+                                            reject(new Error('操作取消'));
                                         }
                                     }} >取消</button>
                                 <button type="button" className="btn btn-primary"
