@@ -13,16 +13,6 @@ function ajax<T>(settings: JQueryAjaxSettings) {
         options.headers['user-token'] = Service.token;
     }
 
-    if (settings.method != 'get') {
-        if ((options.url as string).indexOf('?') < 0)
-            options.url = options.url + `?storeId=${Service.storeId}`;
-        else
-            options.url = options.url + `&storeId=${Service.storeId}`;
-    }
-    else {
-        options.data.storeId = Service.storeId;
-    }
-
     return new Promise<T>((resolve, reject) => {
         $.ajax(settings)
             .then(data => {
