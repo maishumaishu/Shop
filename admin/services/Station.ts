@@ -11,7 +11,8 @@ export interface PageData {
     _id: string,
     name: string,
     remark: string,
-    controls: Array<ControlData>
+    controls: Array<ControlData>,
+    isDefault: boolean,
 }
 
 export class StationService extends Service {
@@ -61,6 +62,10 @@ export class StationService extends Service {
         return Service.get<PageData[]>(url).then(o => {
             return o || [];
         });
+    }
+    setDefaultPage(pageId: string) {
+        let url = this.url('Page/SetDefaultPage');
+        return Service.putByJson(url, { pageId });
     }
     saveImage(pageId: string, name: string, image: string) {
         let url = `${Service.config.siteUrl}Page/SaveImage`;
