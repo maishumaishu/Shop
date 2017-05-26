@@ -4,3 +4,5 @@
 /.git
 /.tscache
 .baseDir.*
+.sass-cache
+nohup.out
