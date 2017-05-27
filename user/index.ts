@@ -83,6 +83,7 @@ requirejs.config({
         'chitu.mobile': 'core/chitu.mobile',
         carousel: 'core/carousel',
         modules: modulesPath,
+        services: 'userServices'
         // ui: 'ui'
     }
 });

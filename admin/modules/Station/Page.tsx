@@ -360,7 +360,7 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let pageId = page.routeData.values.id;
+    let pageId = page.routeData.values.pageId;
     let pageData = {} as PageData;// PageData();// 
     if (pageId)
         pageData = await station.getPageData(pageId);

@@ -34,15 +34,10 @@ let config = {
 
 let tokens = {
     get appToken() {
-        //appToken:591307e86791ff01cfaa72fc
-        let hash = (location.hash || '');
-        let searchStartIndex = hash.indexOf('?') + 1;
-        if (!searchStartIndex)
-            return '';
-
-        let search = hash.substr(searchStartIndex);
-        let params = pareeUrlQuery(search);
-        return params.appToken;
+        let search = location.search;
+        console.assert(search != null, 'search cannt null.');
+        let value = search.substr(1);
+        return value;
     },
     get userToken() {
         return userData.userToken.value;
@@ -521,12 +516,20 @@ export class ShoppingService extends Service {
         let url = this.url('Product/GetProductIntroduce');
         return this.get<{ Introduce: string }>(url, { productId }).then(o => o.Introduce);
     }
-    products(categoryId: string, pageIndex: number) {
+    products(pageIndex: number);
+    products(categoryId: string, pageIndex: number);
+    products(categoryId: any, pageIndex?: any) {
+        if (typeof categoryId == 'number') {
+            pageIndex = categoryId;
+            categoryId = null;
+        }
+
         let url = this.url('Product/GetProducts');
-        return this.get<{ Products: Array<Product> }>(url, {
-            filter: `ProductCategoryId=Guid.Parse('${categoryId}')`,
-            startRowIndex: pageIndex * 20
-        }).then(o => {
+        var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;
+        if(categoryId!=null){
+            args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
+        }
+        return this.get<{ Products: Array<Product> }>(url, args).then(o => {
             o.Products.forEach(o => {
                 o.ImageUrl = imageUrl(o.ImageUrl);
             });

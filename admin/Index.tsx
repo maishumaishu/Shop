@@ -80,7 +80,8 @@ requirejs.config({
         //app: 'App',
         ueditor: 'scripts/ueditor',
         'ue': 'scripts/ueditor',
-        'wuzhui': 'scripts/wuzhui'
+        'wuzhui': 'scripts/wuzhui',
+        userServices: 'services/userServices'
     }
 });
 var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];

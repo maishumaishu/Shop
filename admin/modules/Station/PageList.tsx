@@ -92,7 +92,7 @@ class Page extends React.Component<{}, { pageDatas: PageData[] }>{
                                     页面链接
                                         </button>
                                 <button className="btn btn-minier btn-info" style={{ marginLeft: 4 }}
-                                    onClick={e => this.showPage(o._id)}>
+                                    onClick={e => self.showPage(o._id)}>
                                     <i className="icon-pencil"></i>
                                 </button>
                                 <Button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
