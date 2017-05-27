@@ -1,5 +1,5 @@
 import { Control, ControlArguments } from 'mobile/common';
-
+import * as services from 'services';
 type Product = {
     id: string,
     name: string,

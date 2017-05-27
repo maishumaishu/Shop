@@ -12,7 +12,7 @@ export interface PageData {
     name: string,
     remark: string,
     controls: Array<ControlData>,
-    isDefault: boolean,
+    isDefault?: boolean,
 }
 
 export class StationService extends Service {

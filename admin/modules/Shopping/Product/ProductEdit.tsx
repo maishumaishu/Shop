@@ -102,9 +102,10 @@ class PageModel {
     }
 
     back() {
-        app.back().catch(() => {
-            location.href = '#Shopping/ProductList';
-        })
+        app.back();
+        // .catch(() => {
+        //     location.href = '#Shopping/ProductList';
+        // })
     }
 
     product = new Product();

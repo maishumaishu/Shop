@@ -22,6 +22,13 @@ export interface Application {
     token: string,
 }
 
+export interface UserInfo {
+    Id: string,
+    Balance: number,
+    Gender: string,
+    UserId: string,
+}
+
 class UserService {
     private url(path: string) {
         let url = `http://${Service.config.serviceHost}/${path}`;
@@ -76,6 +83,30 @@ class UserService {
     deleteApplication(app: Application) {
         let url = this.url('application/delete');
         return Service.delete(url, { id: app._id });
+    }
+    recharge(userId: string, amount: number) {
+        let url = Service.config.accountUrl + 'Account/Recharge';
+        return Service.put(url, { userId, amount });
+    }
+    async members(args: wuzhui.DataSourceSelectArguments) {
+
+        let membersResult = await Service.get<wuzhui.DataSourceSelectResult<UserInfo>>(
+            Service.config.memberUrl + 'Member/List',
+            args
+        );
+
+        let members = membersResult.dataItems;
+        let ids = members.map(o => o.Id);
+        let memberBalances = await Service.get<Array<{ MemberId: string, Balance: number }>>(
+            Service.config.accountUrl + 'Account/GetAccountBalances',
+            { userIds: ids.concat(',') }
+        );
+
+        for (let i = 0; i < members.length; i++) {
+            members[i].Balance = (memberBalances.filter(o => o.MemberId == members[i].Id)[0] || { Balance: 0 } as UserInfo).Balance;
+        }
+
+        return members;
     }
 }
 

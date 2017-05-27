@@ -11,9 +11,10 @@ class PageModel {
     }
     back() {
         //location.href = 'Index.html#Station/AdvertItemList';
-        app.back({}).catch(function () {
-            app.redirect('Station/AdvertItemList');
-        });
+        app.back({});
+        // .catch(function () {
+        //     app.redirect('Station/AdvertItemList');
+        // });
     }
     advertItem = {
         id: ko.observable(),

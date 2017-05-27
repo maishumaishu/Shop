@@ -12,13 +12,13 @@ module.exports = function (grunt) {
     grunt.initConfig({
         shell: {
             admin: {
-                command: `tsc -p ${admin_src}`,
+                command: `tsc -p ./`,
                 options: {
                     failOnError: false
                 }
             },
             user: {
-                command: `tsc -p ${user_src}`,
+                command: `tsc -p ./`,
                 options: {
                     failOnError: false
                 }
@@ -34,6 +34,7 @@ module.exports = function (grunt) {
                     { expand: true, cwd: admin_src, src: ['fonts/**/*.*'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['assets/font/*.*'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['scripts/ueditor/**/*.*'], dest: admin_dest },
+                    { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${admin_dest}/scripts` }
                 ]
             },
             user: {
@@ -150,7 +151,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.registerTask('admin', ['shell:admin', 'copy:admin', 'sass:admin', 'less:admin']);
+    grunt.registerTask('admin', ['shell:admin', 'copy:admin', 'sass:admin', 'less:admin', 'stylus:admin']);
     grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
     grunt.registerTask('default', ['admin', 'user']);
 }

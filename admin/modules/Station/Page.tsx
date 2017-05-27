@@ -276,11 +276,10 @@ export default async function (page: chitu.Page) {
                                         <i className="icon-ok-sign icon-2x text-success" />
                                         <span style={{ marginLeft: 10 }}>保存页面成功</span>
                                     </h5>}>保存</Button>
-                                <Button className="btn btn-primary btn-sm"
+                                <button className="btn btn-primary btn-sm"
                                     onClick={() => {
-                                        debugger;
                                         return app.back();
-                                    }} >返回</Button>
+                                    }} >返回</button>
                             </li>
                         </ul>
                     </div>

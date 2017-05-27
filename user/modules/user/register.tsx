@@ -46,7 +46,7 @@ export default function (page: Page) {
 
             this.state.letfSeconds = 60;
             this.setState(this.state);
-            let intervalId = setInterval(() => {
+            let intervalId = window.setInterval(() => {
                 this.state.letfSeconds = this.state.letfSeconds - 1;
                 this.setState(this.state);
 
@@ -60,7 +60,7 @@ export default function (page: Page) {
                 .then((data) => {
                     this.smsId = data.smsId;
                 })
-                .catch(()=>{
+                .catch(() => {
                     this.state.letfSeconds = 0;
                     this.setState(this.state);
                 });
