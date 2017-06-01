@@ -503,9 +503,10 @@ export class ShoppingService extends Service {
             .then(o => this.processProduct(o));
     }
     private processProduct(product: Product): Product {
-        if (!product.ImageUrls && product.ImageUrl != null)
+        if (!product.ImageUrls && product.ImageUrl != null) {
             product.ImageUrls = product.ImageUrl.split(',').map(o => imageUrl(o));
-
+        }
+        product.ImageUrls = product.ImageUrls || [];
         product.ImageUrl = product.ImageUrls[0];
         product.Arguments = product.Arguments || [];
         product.Fields = product.Fields || [];
@@ -516,9 +517,9 @@ export class ShoppingService extends Service {
         let url = this.url('Product/GetProductIntroduce');
         return this.get<{ Introduce: string }>(url, { productId }).then(o => o.Introduce);
     }
-    products(pageIndex: number);
-    products(categoryId: string, pageIndex: number);
-    products(categoryId: any, pageIndex?: any) {
+    products(pageIndex: number): Promise<Product[]>;
+    products(categoryId: string, pageIndex: number): Promise<Product[]>;
+    products(categoryId: any, pageIndex?: any): Promise<Product[]> {
         if (typeof categoryId == 'number') {
             pageIndex = categoryId;
             categoryId = null;
@@ -526,7 +527,7 @@ export class ShoppingService extends Service {
 
         let url = this.url('Product/GetProducts');
         var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;
-        if(categoryId!=null){
+        if (categoryId != null) {
             args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
         }
         return this.get<{ Products: Array<Product> }>(url, args).then(o => {
