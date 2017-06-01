@@ -1,4 +1,4 @@
-import bootbox = require('bootbox');
+// import bootbox = require('bootbox');
 import FormValidator = require('common/formValidator');
 
 
@@ -257,103 +257,131 @@ export function customField(params: wuzhui.CustomFieldParams) {
     return new CustomField(params);
 }
 
-let confirmDialogElment = document.createElement('div');
-confirmDialogElment.className = 'modal fade';
-confirmDialogElment.style.marginTop = '20px'
-document.body.appendChild(confirmDialogElment);
+/** 对按钮的点击事件进行封装 */
+export let buttonOnClick = (function () {
+    let confirmDialogElment = document.createElement('div');
+    confirmDialogElment.className = 'modal fade';
+    confirmDialogElment.style.marginTop = '20px'
+    document.body.appendChild(confirmDialogElment);
 
-let toastDialogElement = document.createElement('div');
-toastDialogElement.className = 'modal fade';
-toastDialogElement.style.marginTop = '20px';
-document.body.appendChild(toastDialogElement);
+    let toastDialogElement = document.createElement('div');
+    toastDialogElement.className = 'modal fade';
+    toastDialogElement.style.marginTop = '20px';
+    document.body.appendChild(toastDialogElement);
 
-export function buttonOnClick(callback: (event: MouseEvent) => Promise<any>,
-    args?: { confirm?: string, toast?: string }) {
-
-    args = args || {};
-    let execute = async (event) => {
-        let button = (event.target as HTMLElement);
-        if (button.hasAttribute('disabled'))
-            return;
-
-        button.setAttribute('disabled', '');
-        try {
-            await callback(event);
-        }
-        catch (exc) {
-            console.error(exc);
-            throw exc;
-        }
-        finally {
-            button.removeAttribute('disabled')
-        }
-    }
-
-    return function (event) {
-        let confirmPromise: Promise<any>;
-        if (!args.confirm) {
-            confirmPromise = Promise.resolve();
-        }
-        else {
-            confirmPromise = new Promise((reslove, reject) => {
-                ReactDOM.render(
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            {/*<div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
-                                </button>
-                                <h4 className="modal-title">&nbsp;</h4>
-                            </div>*/}
-                            <div className="modal-body form-horizontal">
-                                <h5>{args.confirm}</h5>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal"
-                                    ref={(o: HTMLButtonElement) => {
-                                        if (!o) return;
-                                        o.onclick = () => {
-                                            reject(new Error('操作取消'));
-                                        }
-                                    }} >取消</button>
-                                <button type="button" className="btn btn-primary"
-                                    ref={(o: HTMLButtonElement) => {
-                                        if (!o) return;
-                                        o.onclick = () => {
-                                            reslove();
-                                            $(confirmDialogElment).modal('hide');
-                                        };
-                                    }}>确认</button>
-                            </div>
-                        </div>
-                    </div>,
-                    confirmDialogElment);
-                $(confirmDialogElment).modal();
-            });
-        }
-
-        confirmPromise.then(() => execute(event).then(() => {
-            if (args.toast) {
-                ReactDOM.render(
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-body form-horizontal">
-                                <h5>{args.toast}</h5>
-                            </div>
-                        </div>
-                    </div>,
-                    toastDialogElement);
-                // $(toastDialogElement).modal();
-                toastDialogElement.style.display = 'block';
-                toastDialogElement.className = 'modal fade in';
-                setTimeout(() => {
-                    toastDialogElement.className = 'modal fade out';
-                    setTimeout(() => {
-                        toastDialogElement.className = 'modal fade';
-                        toastDialogElement.style.removeProperty('display');
-                    }, 500);
-                }, 1500);
+    type Callback = (event: MouseEvent) => Promise<any>;
+    type Arguments = { confirm?: string, toast?: string | JSX.Element };
+    return (callback: Callback, args?: Arguments) => {
+        args = args || {};
+        let execute = async (event) => {
+            let button = (event.target as HTMLButtonElement);
+            button.setAttribute('disabled', '');
+            try {
+                await callback(event);
             }
-        }));
+            catch (exc) {
+                console.error(exc);
+                throw exc;
+            }
+            finally {
+                button.removeAttribute('disabled')
+            }
+        }
+
+        return function (event) {
+            let confirmPromise: Promise<any>;
+            if (!args.confirm) {
+                confirmPromise = Promise.resolve();
+            }
+            else {
+                confirmPromise = new Promise((reslove, reject) => {
+                    ReactDOM.render(
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
+                                    </button>
+                                    <h4 className="modal-title">请确认</h4>
+                                </div>
+                                <div className="modal-body form-horizontal">
+                                    <h5>{args.confirm}</h5>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-default" data-dismiss="modal"
+                                        ref={(o: HTMLButtonElement) => {
+                                            if (!o) return;
+                                            o.onclick = () => {
+                                                reject();
+                                            }
+                                        }} >取消</button>
+                                    <button type="button" className="btn btn-primary"
+                                        ref={(o: HTMLButtonElement) => {
+                                            if (!o) return;
+                                            o.onclick = () => {
+                                                reslove();
+                                            };
+                                        }}>确认</button>
+                                </div>
+                            </div>
+                        </div>,
+                        confirmDialogElment);
+                    $(confirmDialogElment).modal();
+                    $(confirmDialogElment).on('hidden.bs.modal', () => {
+                        //=================================================
+                        // 因为有动画效果，要延时
+                        window.setTimeout(() => $(confirmDialogElment).remove(), 1000);
+                    })
+                });
+            }
+
+            confirmPromise.then(() => execute(event).then(() => {
+                $(confirmDialogElment).modal('hide');
+                if (args.toast) {
+                    ReactDOM.render(
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-body form-horizontal">
+                                    {typeof args.toast == 'string' ?
+                                        <h5>{args.toast}</h5> :
+                                        args.toast
+                                    }
+                                </div>
+                            </div>
+                        </div>,
+                        toastDialogElement);
+                    toastDialogElement.style.display = 'block';
+                    toastDialogElement.className = 'modal fade in';
+                    setTimeout(() => {
+                        toastDialogElement.className = 'modal fade out';
+                        setTimeout(() => {
+                            toastDialogElement.className = 'modal fade';
+                            toastDialogElement.style.removeProperty('display');
+                        }, 500);
+                    }, 1500);
+                }
+            }));
+        }
     }
-}
+
+})();
+
+export let alert = (function () {
+    return function (msg: string) {
+        let element = document.createElement('div');
+        ReactDOM.render(
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-body">
+                        <h5>{msg}</h5>
+                    </div>
+                </div>
+            </div>,
+            element
+        );
+        $(element).modal();
+        $(element).on('hidden.bs.moda', () => {
+            $(element).remove();
+        });
+    }
+})();
