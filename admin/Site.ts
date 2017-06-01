@@ -52,7 +52,8 @@ class Site {
     }
     startUrl: 'Home/Index';
     get userClientUrl() {
-        let url = `http://192.168.1.9/shop/user/#home/index?appToken=${Service.appToken}`;
+        let url = `../user/?${Service.appToken}#home_index`;
+        // let url = `http://192.168.1.9/shop/user/#home/index?appToken=${Service.appToken}`;
         return url;
     }
 
