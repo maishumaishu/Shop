@@ -53,7 +53,7 @@ export default function (page: chitu.Page) {
                 columns: [
                     new ui.BoundField({ dataField: 'Name' })
                 ],
-                dataSource: new wuzhui.ArrayDataSource([]),
+                dataSource: new wuzhui.DataSource({ select: () => Promise.resolve([]) }),
                 showHeader: false,
                 pageSize: 0,
                 emptyDataHTML: '尚未添加可以使用该优惠卷的商品，默认所有商品可以使用'
@@ -63,7 +63,7 @@ export default function (page: chitu.Page) {
                 columns: [
                     new ui.BoundField({ dataField: 'Name' })
                 ],
-                dataSource: new wuzhui.ArrayDataSource([]),
+                dataSource: new wuzhui.DataSource({ select: () => Promise.resolve([]) }),
                 showHeader: false,
                 pageSize: 0,
                 emptyDataHTML: '尚未添加可以使用该优惠卷的品类，默认所有品类的商品可以使用'
@@ -73,7 +73,7 @@ export default function (page: chitu.Page) {
                 columns: [
                     new ui.BoundField({ dataField: 'Name' })
                 ],
-                dataSource: new wuzhui.ArrayDataSource([]),
+                dataSource: new wuzhui.DataSource({ select: () => Promise.resolve([]) }),
                 showHeader: false,
                 pageSize: 0,
                 emptyDataHTML: '尚未添加可以使用该优惠卷的品牌，默认所有品牌的商品可以使用'
