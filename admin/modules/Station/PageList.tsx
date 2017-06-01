@@ -1,30 +1,35 @@
 import { default as site } from 'Site';
 import app = require('Application');
-import { PageData, StationService } from 'services/Station';
+import { PageData, StationService, TemplatePageData } from 'services/Station';
 import { Button } from 'common/controls';
 import { RouteValue } from 'modules/Station/Page';
 import * as ui from 'UI';
 
 export default function (page: chitu.Page) {
+    requirejs([`css!${page.routeData.actionPath}.css`]);
     ReactDOM.render(<Page />, page.element);
 }
 
 let station = new StationService();
 
-class Page extends React.Component<{}, { pageDatas: PageData[] }>{
+class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     private pagesElement: HTMLTableElement;
     private dataSource: wuzhui.WebDataSource<PageData>;
-
+    private templateDialogElement: HTMLElement;
     constructor(props) {
         super(props);
-        this.state = { pageDatas: null };
+        this.state = { templates: null };
         this.dataSource = new wuzhui.WebDataSource<PageData>({
             primaryKeys: ['_id'],
             select: (args) => station.getPageDatas()
         });
+        station.pageTemplates().then(templates => {
+            this.state.templates = templates;
+            this.setState(this.state);
+        })
     }
     private showPage(pageId?: string) {
-        var routeValue: RouteValue = { id: pageId, onSave: this.pageSave.bind(this) };
+        var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
         var url = 'Station/Page';
         if (pageId)
             url = url + '?pageId=' + pageId;
@@ -32,6 +37,14 @@ class Page extends React.Component<{}, { pageDatas: PageData[] }>{
         app.redirect(url, routeValue)
     }
     private pageSave(pageData: PageData) {
+    }
+    private showCreatePageDialog() {
+        $(this.templateDialogElement).modal();
+    }
+    private selecteTemplate(template: TemplatePageData) {
+        var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
+        let url = 'Station/Page?templateId=' + template._id;
+        app.redirect(url, routeValue)
     }
     componentDidMount() {
         let self = this;
@@ -42,41 +55,8 @@ class Page extends React.Component<{}, { pageDatas: PageData[] }>{
                 ui.boundField({ dataField: 'remark', headerText: '备注' }),
                 ui.customField({
                     createItemCell(o: PageData) {
-                        let cell = new wuzhui.GridViewDataCell({
-                            dataItem: o, dataField: 'isDefault',
-                            render(element: HTMLElement, value: boolean) {
-                                ReactDOM.render(
-                                    <div>
-                                        {value ?
-                                            <span>店铺主页</span> :
-                                            <button className="btn btn-minier btn-primary" title="将页面设为店铺首页"
-                                                ref={(e: HTMLButtonElement) => {
-                                                    if (!e) return;
-                                                    e.onclick = ui.buttonOnClick(() => {
-                                                        return station.setDefaultPage(o._id).then(() => {
-                                                            var rowElements = self.pagesElement.querySelectorAll('tbody > tr');
-                                                            for (let i = 0; i < rowElements.length; i++) {
-                                                                let row = wuzhui.Control.getControlByElement(rowElements[i] as HTMLElement);
-                                                                if (row instanceof wuzhui.GridViewDataRow) {
-                                                                    (row.dataItem as PageData).isDefault = false;
-                                                                    self.dataSource.updated.fire(self.dataSource, { item: row.dataItem });
-                                                                }
-                                                            }
-                                                            o.isDefault = true;
-                                                            self.dataSource.updated.fire(self.dataSource, { item: o });
-                                                        });
-                                                    }, { confirm: `是否将页面'${o.name}'设为店铺首页?` })
-                                                }}>
-                                                设为首页
-                                            </button>
-                                        }
-
-                                    </div>,
-                                    element
-                                );
-                            }
-                        });
-
+                        let cell = new wuzhui.GridViewCell()
+                        ReactDOM.render(<HomePageCell pageData={o} />, cell.element);
                         return cell;
                     },
                     headerText: '主页',
@@ -86,24 +66,7 @@ class Page extends React.Component<{}, { pageDatas: PageData[] }>{
                 ui.customField({
                     createItemCell(o: PageData) {
                         let cell = new wuzhui.GridViewCell();
-                        ReactDOM.render(
-                            <div>
-                                <button className="btn btn-minier btn-success">
-                                    页面链接
-                                        </button>
-                                <button className="btn btn-minier btn-info" style={{ marginLeft: 4 }}
-                                    onClick={e => self.showPage(o._id)}>
-                                    <i className="icon-pencil"></i>
-                                </button>
-                                <Button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
-                                    confirm={() => {
-                                        return `确定要删除页面”${o.name}“吗？`;
-                                    }}>
-                                    <i className="icon-trash"></i>
-                                </Button>
-                            </div>,
-                            cell.element
-                        );
+                        ReactDOM.render(<CommandCell pageData={o} />, cell.element);
                         return cell;
                     },
                     headerText: '操作',
@@ -113,14 +76,11 @@ class Page extends React.Component<{}, { pageDatas: PageData[] }>{
             ],
             dataSource: this.dataSource
         })
-        station.getPageDatas().then(o => {
-            this.state.pageDatas = o;
-            this.setState(this.state);
-        });
+
     }
     render() {
         console.assert(this.state != null);
-        let pageData = this.state.pageDatas;
+        let templates = this.state.templates;
         return (
             <div>
                 <div className="tabbable">
@@ -141,13 +101,124 @@ class Page extends React.Component<{}, { pageDatas: PageData[] }>{
                             </div>
                         </div>
                         <li className="pull-right">
-                            <button onClick={(e) => this.showPage()} className="btn btn-sm btn-primary">新建页面</button>
+                            <button onClick={(e) => this.showCreatePageDialog()} className="btn btn-sm btn-primary">新建页面</button>
                         </li>
                     </ul>
                 </div>
-                <table ref={(e: HTMLTableElement) => this.pagesElement = e || this.pagesElement}>
+                <table ref={(e: HTMLTableElement) => {
+                    if (!e) return;
+                    this.pagesElement = e || this.pagesElement;
+
+                }}>
                 </table>
+                <div className="modal fade templates-dialog" ref={(e: HTMLElement) => this.templateDialogElement = e || this.templateDialogElement}>
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
+                                </button>
+                                <h4 className="modal-title">请选择模板</h4>
+                            </div>
+                            <div className="modal-body row">
+                                {templates ?
+                                    templates.map(o =>
+                                        <div key={o._id} className="col-md-4 template-item"
+                                            onClick={() => this.selecteTemplate(o)}>
+                                            <img src={o.image} className="img-responsive" />
+                                            <div className="name">{o.name}</div>
+                                        </div>
+                                    ) :
+                                    <div>
+                                        数据正在加载中...
+                                    </div>
+                                }
+                                <div className="clear-fix">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
+    }
+}
+
+class CommandCell extends React.Component<{ pageData: PageData }, {}>{
+    showPage() {
+        let pageId = this.props.pageData._id;
+        var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
+        var url = 'Station/Page';
+        if (pageId)
+            url = url + '?pageId=' + pageId;
+
+        app.redirect(url, routeValue)
+    }
+    private pageSave(pageData: PageData) {
+    }
+    render() {
+        let pageData = this.props.pageData;
+        return (
+            <div>
+                <button className="btn btn-minier btn-success">
+                    页面链接
+                                            </button>
+                <button className="btn btn-minier btn-info" style={{ marginLeft: 4 }}
+                    onClick={e => this.showPage()}>
+                    <i className="icon-pencil"></i>
+                </button>
+                <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
+                    ref={(e: HTMLButtonElement) => {
+                        if (!e) return;
+                        e.onclick = ui.buttonOnClick(() => Promise.resolve(),
+                            { confirm: `确定要删除页面”${pageData.name}“吗？` });
+                    }}>
+                    <i className="icon-trash"></i>
+                </button>
+            </div>
+        );
+    }
+}
+
+class HomePageCell extends React.Component<{ pageData: PageData }, { isDefault: boolean }>{
+    static homePageChanged = wuzhui.callbacks<HomePageCell, { item: PageData }>();
+    constructor(props) {
+        super(props);
+        this.state = { isDefault: this.props.pageData.isDefault };
+        HomePageCell.homePageChanged.add((sender, args) => {
+            if (this.props.pageData._id == args.item._id) {
+                this.state.isDefault = true;
+            }
+            else {
+                this.state.isDefault = false;
+            }
+            this.setState(this.state);
+        });
+    }
+    /** 设为主页面 */
+    setAsDefaultPage() {
+        let pageData = this.props.pageData;
+        return station.setDefaultPage(pageData._id).then(() => {
+            HomePageCell.homePageChanged.fire(this, { item: pageData });
+        });
+    }
+    render() {
+        let isDefault = this.state.isDefault;
+        let pageData = this.props.pageData;
+        return (<div>
+            {isDefault ?
+                <span>店铺主页</span> :
+                <button className="btn btn-minier btn-primary" title="将页面设为店铺首页"
+                    ref={(e: HTMLButtonElement) => {
+                        if (!e) return;
+                        e.onclick = ui.buttonOnClick(() => {
+                            return station.setDefaultPage(pageData._id).then(() => this.setAsDefaultPage());
+                        }, { confirm: `是否将页面'${pageData.name}'设为店铺首页?` })
+                    }}>
+                    设为首页
+                    </button>
+            }
+
+        </div>)
     }
 }
