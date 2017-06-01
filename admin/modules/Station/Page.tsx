@@ -5,6 +5,7 @@ import { default as station, PageData, ControlData } from 'services/Station';
 import { Button } from 'common/controls';
 import app = require('Application');
 import FormValidator = require('common/formValidator');
+import * as ui from 'UI';
 
 let controlsPath = 'mobile/controls'
 let modules = [];
@@ -84,14 +85,6 @@ export default async function (page: chitu.Page) {
                 }
                 return data;
             });
-            // return station.savePageControls(this.pageId, controls, this.state.pageName, this.state.pageRemark)
-            //     .then((data) => {
-            //         // if(routeValue.onSave){
-            //         //     let pageData:PageData = {};
-            //         // routeValue.onSave()                    
-            //         // }
-            //         return data;
-            //     });
         }
 
         getControlData(controlId: string): Object {
@@ -211,12 +204,6 @@ export default async function (page: chitu.Page) {
         activeControl(controlName: string) {
             this.clearTowPanels();
             $(`.all li[data-controlName=${controlName}]`).addClass('active');
-            // console.assert(icon != null);
-            // $(this.allContainer).find('li').removeClass('active');
-            // $(icon).addClass('active');
-
-            // $(page.element).find('.all .editor').removeClass('active');
-            // $(page.element).find(`.all .editor[data-controlName=${controlName}]`).addClass('active');
         }
 
         showComponentIntroduce(componentElement: HTMLElement) {
@@ -269,6 +256,14 @@ export default async function (page: chitu.Page) {
             this.clearMobilePanel();
         }
 
+        preview() {
+            let pageId = this.props.pageData._id;
+            if (!pageId) {
+                ui.alert(`页面必须保存`);
+            }
+            open(`#Station/PreView?pageId=${pageId}`, ':blank');
+        }
+
         render() {
             let selectedComponents = this.state.componentInstances || [];
             return (
@@ -279,12 +274,21 @@ export default async function (page: chitu.Page) {
                                 <h4>页面装修</h4>
                             </li>
                             <li className="pull-right">
-                                <Button className="btn btn-primary btn-sm"
-                                    onClick={() => this.save()}
-                                    toast={<h5>
-                                        <i className="icon-ok-sign icon-2x text-success" />
-                                        <span style={{ marginLeft: 10 }}>保存页面成功</span>
-                                    </h5>}>保存</Button>
+                                <button className="btn btn-primary btn-sm"
+                                    onClick={() => this.preview()} >预览</button>
+                                <button className="btn btn-primary btn-sm"
+                                    ref={(e: HTMLButtonElement) => {
+                                        if (!e) return;
+                                        e.onclick = ui.buttonOnClick(() => this.save(),
+                                            {
+                                                toast:
+                                                <h5>
+                                                    <i className="icon-ok-sign icon-2x text-success" />
+                                                    <span style={{ marginLeft: 10 }}>保存页面成功</span>
+                                                </h5>
+                                            })
+                                    }}
+                                >保存</button>
                                 <button className="btn btn-primary btn-sm"
                                     onClick={() => {
                                         return app.back();
