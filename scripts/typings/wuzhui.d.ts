@@ -16,50 +16,51 @@ declare namespace wuzhui {
         totalRowCount: number;
         dataItems: Array<T>;
     }
-    abstract class DataSource<T> {
+    class DataSource<T> {
         private _currentSelectArguments;
-        protected primaryKeys: string[];
+        private args;
+        private primaryKeys;
         inserting: Callback<DataSource<T>, {
-            item: any;
+            item: T;
         }>;
         inserted: Callback<DataSource<T>, {
-            item: any;
-            index?: number;
+            item: T;
+            index: number;
         }>;
         deleting: Callback<DataSource<T>, {
-            item: any;
+            item: T;
         }>;
         deleted: Callback<DataSource<T>, {
-            item: any;
+            item: T;
         }>;
         updating: Callback<DataSource<T>, {
-            item: any;
+            item: T;
         }>;
         updated: Callback<DataSource<T>, {
-            item: any;
+            item: T;
         }>;
         selecting: Callback<DataSource<T>, {
             selectArguments: DataSourceSelectArguments;
         }>;
         selected: Callback<DataSource<T>, {
             selectArguments: DataSourceSelectArguments;
-            items: any[];
+            items: T[];
         }>;
-        constructor(primaryKeys: string[]);
-         selectArguments: DataSourceSelectArguments;
+        constructor(args: DataSourceArguments<T>);
+         canDelete: boolean;
+         canInsert: boolean;
+         canUpdate: boolean;
         protected executeInsert(item: T): Promise<any>;
         protected executeDelete(item: T): Promise<any>;
         protected executeUpdate(item: T): Promise<any>;
         protected executeSelect(args: DataSourceSelectArguments): Promise<Array<T> | DataSourceSelectResult<T>>;
+         selectArguments: DataSourceSelectArguments;
         insert(item: T): Promise<any>;
         delete(item: T): Promise<any>;
         update(item: T): Promise<any>;
         isSameItem(theItem: T, otherItem: T): boolean;
         private checkPrimaryKeys(item);
-        select(): Promise<void>;
-         canDelete: boolean;
-         canInsert: boolean;
-         canUpdate: boolean;
+        select(): Promise<T[] | DataSourceSelectResult<T>>;
     }
     class DataSourceSelectArguments {
         startRowIndex: number;
@@ -69,43 +70,16 @@ declare namespace wuzhui {
         filter: string;
         constructor();
     }
-    type WebDataSourceArguments<T> = {
+    type DataSourceArguments<T> = {
         primaryKeys?: string[];
-        select: string | ((args: DataSourceSelectArguments) => Promise<any>);
-        insert?: string | ((item: T) => Promise<T>);
-        update?: string | ((item: T) => Promise<T>);
-        delete?: string | ((item: T) => Promise<T>);
+        select: ((args: DataSourceSelectArguments) => Promise<any>);
+        insert?: ((item: T) => Promise<T>);
+        update?: ((item: T) => Promise<T>);
+        delete?: ((item: T) => Promise<T>);
     };
     class WebDataSource<T> extends DataSource<T> {
-        private args;
-        ajaxMethods: {
-            select: string;
-            update: string;
-            insert: string;
-            delete: string;
-        };
-        constructor(args: WebDataSourceArguments<T>);
-         canDelete: boolean;
-         canInsert: boolean;
-         canUpdate: boolean;
-        protected executeInsert(item: T): Promise<any>;
-        protected executeDelete(item: T): Promise<any>;
-        protected executeUpdate(item: T): Promise<any>;
-        protected executeSelect(args: DataSourceSelectArguments): Promise<Array<T> | DataSourceSelectResult<T>>;
-        private formatData(data);
     }
     class ArrayDataSource<T> extends DataSource<T> {
-        private source;
-        constructor(items: Array<T>, primaryKeys?: string[]);
-        protected executeInsert(item: T): Promise<any>;
-        protected executeDelete(item: T): Promise<any>;
-        protected executeUpdate(item: T): Promise<any>;
-        protected executeSelect(args: any): Promise<Array<T> | DataSourceSelectResult<T>>;
-         canDelete: boolean;
-         canInsert: boolean;
-         canUpdate: boolean;
-        private getPrimaryKeyValues(item);
-        private findItem(pkValues);
     }
 }
 declare namespace wuzhui {
@@ -279,8 +253,6 @@ declare namespace wuzhui {
         method: 'get' | 'post';
         constructor(method: any);
     }
-    var ajaxTimeout: number;
-    function ajax<T>(url: string, options: FetchOptions): Promise<T>;
     function applyStyle(element: HTMLElement, value: CSSStyleDeclaration | string): void;
     class Callback<S, A> {
         private funcs;

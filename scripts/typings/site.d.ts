@@ -14,4 +14,8 @@ declare module 'services' {
     import * as services from 'user/userServices';
     export = services;
 }
+declare module 'mobileControls' {
+   import * as mobileControls from 'user/mobileControls';
+   export = mobileControls;
+}
 declare function BezierEasing(x1, y1, x2, y2); 
