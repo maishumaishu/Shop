@@ -124,6 +124,12 @@ export interface CityFreight {
     SendRadius: number,
 }
 
+export type Category = {
+    Id: string, Name: string, ParentId?: string,
+    SortNumber?: number, Remark?: string, Hidden?: boolean,
+    ImagePath?: string
+};
+
 //===============================================
 
 class ShoppingService extends Service {
@@ -144,7 +150,11 @@ class ShoppingService extends Service {
     }
     getProducts(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
-        return Service.get<any>(url, args);
+        return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
+    }
+    deleteProduct(id: string) {
+        var url = this.url('Product/DeleteProduct');
+        return Service.delete(url, { id });
     }
     getProductList(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
 
@@ -203,12 +213,20 @@ class ShoppingService extends Service {
     }
     categories() {
         let url = this.url('Product/GetProductCategories');
-        type Category = {
-            Id: string, Name: string, ParentId?: string,
-            SortNumber?: number, Remark?: string, Hidden?: boolean,
-            ImagePath?: string
-        };
+
         return Service.get<Category[]>(url);
+    }
+    addCategory(item: Category) {
+        let url = this.url('Product/AddProductCategory');
+        return Service.postByJson(url, { model: item })
+    }
+    updateCategory(item: Category) {
+        let url = this.url('Product/UpdateProductCategory');
+        return Service.putByJson(url, { model: item })
+    }
+    deleteCategory(id) {
+        let url = this.url('Product/DeleteProductCategory');
+        return Service.delete(url, { id });
     }
     //==========================================
     // 品牌
