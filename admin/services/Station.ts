@@ -15,6 +15,12 @@ export interface PageData {
     isDefault?: boolean,
 }
 
+export interface TemplatePageData {
+    _id: string;
+    name: string;
+    image: string;
+}
+
 export class StationService extends Service {
     private _homeProduct: JData.WebDataSource;
     private url(path: string) {
@@ -40,9 +46,14 @@ export class StationService extends Service {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
         return Service.postByJson(url, pageData);
     }
-    getPageData(pageId: string) {
+    pageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let data = { pageId };
+        return Service.get<PageData>(url, data);
+    }
+    pageDataByTemplate(templateId: string) {
+        let url = `${Service.config.siteUrl}Page/GetPageDataByTemplate`;
+        let data = { templateId };
         return Service.get<PageData>(url, data);
     }
     /** 通过页面名称获取页面 id 
@@ -54,7 +65,7 @@ export class StationService extends Service {
     }
     getPageDataByName(name: string) {
         return this.getPageId(name).then(o => {
-            return this.getPageData(o);
+            return this.pageData(o);
         })
     }
     getPageDatas() {
@@ -66,6 +77,10 @@ export class StationService extends Service {
     setDefaultPage(pageId: string) {
         let url = this.url('Page/SetDefaultPage');
         return Service.putByJson(url, { pageId });
+    }
+    pageTemplates() {
+        let url = this.url('Page/GetTemplatePageDatas');
+        return Service.get<TemplatePageData[]>(url);
     }
     saveImage(pageId: string, name: string, image: string) {
         let url = `${Service.config.siteUrl}Page/SaveImage`;
