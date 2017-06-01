@@ -1,8 +1,8 @@
 .Station-Page {
-    width = 375px;
-    margin = 25px;
+    @width: 375px;
+    @margin: 25px;
     .all {
-        margin-left: width + margin;
+        margin-left: @width + @margin;
         
         ul {
             margin: 0px;
@@ -34,7 +34,7 @@
     .selected {
        > ul {
             margin: 0px;
-            width: width;
+            width: @width;
             height: 667px;
             border: 1px solid #ccc;
             overflow-y: scroll;
