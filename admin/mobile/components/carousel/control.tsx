@@ -1,4 +1,4 @@
-import { ControlArguments, componentsDir } from 'mobile/common'
+import { componentsDir } from 'mobile/common'
 // import { ImageBox } from 'mobile/controls';
 let { ImageBox } = controls;
 
