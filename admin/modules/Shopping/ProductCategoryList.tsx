@@ -2,7 +2,7 @@
 import { default as site } from 'Site';
 import ui = require('UI');
 import FormValidator = require('common/formValidator');
-import { default as shopping } from 'services/Shopping';
+import { default as shopping, Category } from 'services/Shopping';
 
 export default function (page: chitu.Page) {
     class Page extends React.Component<{}, { rows?: Array<any> }>{
@@ -19,7 +19,14 @@ export default function (page: chitu.Page) {
             let insert = shopping.url('Product/AddProductCategory');
             let update = shopping.url('Product/UpdateProductCategory');
             let deleteUrl = shopping.url('Product/DeleteProductCategory');
-            this.dataSource = new wuzhui.WebDataSource({ select, insert, update, delete: deleteUrl, primaryKeys: ['Id'] });
+            this.dataSource = new wuzhui.WebDataSource<Category>({
+                primaryKeys: ['Id'],
+                select: () => shopping.categories(),
+                insert: (item) => shopping.addCategory(item),
+                update: (item) => shopping.updateCategory(item),
+                delete: (item) => shopping.deleteCategory(item.Id)
+                // insert, update, delete: deleteUrl, primaryKeys: ['Id']
+            });
             this.dataSource.selected.add((sender, args) => {
                 this.state.rows = args.items;
                 this.setState(this.state);
