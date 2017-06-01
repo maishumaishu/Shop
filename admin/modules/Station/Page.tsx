@@ -6,6 +6,16 @@ import { Button } from 'common/controls';
 import app = require('Application');
 import FormValidator = require('common/formValidator');
 
+let controlsPath = 'mobile/controls'
+let modules = [];
+modules.push(
+    'scripts/hammer', 'scripts/bezier-easing', `${controlsPath}/common`,
+    `${controlsPath}/button`, `${controlsPath}/dataList`, `${controlsPath}/dialog`, `${controlsPath}/htmlView`,
+    `${controlsPath}/imageBox`, `${controlsPath}/indicators`, `${controlsPath}/page`, `${controlsPath}/panel`,
+    `${controlsPath}/tabs`
+);
+requirejs(modules);
+
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -18,7 +28,6 @@ function guid() {
 
 export interface RouteValue {
     onSave(pageData: PageData);
-    id: string;
 }
 
 export default async function (page: chitu.Page) {
@@ -307,10 +316,13 @@ export default async function (page: chitu.Page) {
                                     <label className="control-label pull-left" style={{ paddingTop: 8 }}>名称</label>
                                     <div style={{ paddingLeft: 40 }}>
                                         <input name="name" className="form-control" placeholder="请输入页面名称（选填）"
-                                            value={this.state.pageName}
-                                            onChange={(e) => {
-                                                this.state.pageName = (e.target as HTMLInputElement).value;
-                                                this.setState(this.state);
+                                            ref={(e: HTMLInputElement) => {
+                                                if (!e) return;
+                                                e.value = this.state.pageName || '';
+                                                e.onchange = () => {
+                                                    this.state.pageName = e.value;
+                                                    this.setState(this.state);
+                                                }
                                             }} />
                                     </div>
                                 </div>
@@ -318,10 +330,13 @@ export default async function (page: chitu.Page) {
                                     <label className="control-label pull-left" style={{ paddingTop: 8 }}>备注</label>
                                     <div style={{ paddingLeft: 40 }}>
                                         <input name="remark" className="form-control pull-left" placeholder="请输入页面备注（必填）"
-                                            value={this.state.pageRemark || ''}
-                                            onChange={(e) => {
-                                                this.state.pageRemark = (e.target as HTMLInputElement).value;
-                                                this.setState(this.state);
+                                            ref={(e: HTMLInputElement) => {
+                                                if (!e) return;
+                                                e.value = this.state.pageRemark || '';
+                                                e.onchange = () => {
+                                                    this.state.pageRemark = e.value;
+                                                    this.setState(this.state);
+                                                }
                                             }} />
                                     </div>
                                 </div>
@@ -360,10 +375,12 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let pageId = page.routeData.values.pageId;
+    let { pageId, templateId } = page.routeData.values;
     let pageData = {} as PageData;// PageData();// 
     if (pageId)
-        pageData = await station.getPageData(pageId);
+        pageData = await station.pageData(pageId);
+    else if (templateId)
+        pageData = await station.pageDataByTemplate(templateId);
 
     ReactDOM.render(<Page pageData={pageData} />, page.element);
 }
