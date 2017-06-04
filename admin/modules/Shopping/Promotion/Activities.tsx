@@ -3,12 +3,13 @@ import { default as activity } from 'services/Activity';
 import site = require('Site');
 import FormValidator = require('common/formValidator');
 import * as ui from 'UI';
+import { GridViewItemPopupEditor } from 'myWuZhui';
 let JData = window['JData'];
 
 export default function (page: chitu.Page) {
     class ActivitiesPage extends React.Component<{}, {}>{
         private dataSource: wuzhui.DataSource<any>;
-        private itemEditor: ui.GridViewItemPopupEditor;
+        private itemEditor: GridViewItemPopupEditor;
 
         componentDidMount() {
             let dataSource = this.dataSource = new wuzhui.WebDataSource({

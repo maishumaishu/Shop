@@ -1,7 +1,7 @@
 
 import { default as shopping, Coupon } from 'services/Shopping';
 import site = require('Site');
-import * as ui from 'UI';
+import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {
     class CouponListPage extends React.Component<{}, {}>{

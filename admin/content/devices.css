@@ -8,14 +8,17 @@
     width: 100%;
     position: relative;
     height: 100%;
-    color: white;
+    /*color: white;*/
+    background: white;
     z-index: 2;
     text-align: center;
     display: block;
     -webkit-border-radius: 1px;
     border-radius: 1px;
     -webkit-box-shadow: 0 0 0 3px #111;
-    box-shadow: 0 0 0 3px #111
+    box-shadow: 0 0 0 3px #111;
+    overflow-y: auto;
+    overflow-x: none;
 }
 
 .marvel-device .top-bar,.marvel-device .bottom-bar {
@@ -61,7 +64,7 @@
 .marvel-device.iphone6:after {
     width: calc(100% - 16px);
     height: calc(100% - 16px);
-    /*position: absolute;*/
+    position: absolute;
     top: 8px;
     content: '';
     left: 8px;

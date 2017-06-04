@@ -99,3 +99,23 @@ export let buttonOnClick = (function () {
     }
 
 })();
+
+export let alert = (function () {
+    return function (msg: string) {
+        let element = document.createElement('div');
+        ReactDOM.render(
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-body">
+                        <h5>{msg}</h5>
+                    </div>
+                </div>
+            </div>,
+            element
+        );
+        $(element).modal();
+        $(element).on('hidden.bs.moda', () => {
+            $(element).remove();
+        });
+    }
+})();

@@ -1,4 +1,4 @@
-import { ControlArguments, componentsDir } from 'mobile/common'
+import { componentsDir } from 'mobile/common'
 
 export interface EditorProps {
     controlElement: HTMLElement,

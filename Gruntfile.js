@@ -2,6 +2,7 @@ var admin_dest = 'www/admin';
 var admin_src = 'admin';
 var user_dest = 'www/user';
 var user_src = 'user';
+var dest = 'www';
 var ts_options = {
     module: 'amd',
     target: 'es5',
@@ -35,7 +36,11 @@ module.exports = function (grunt) {
                     { expand: true, cwd: admin_src, src: ['assets/font/*.*'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['scripts/ueditor/**/*.*'], dest: admin_dest },
                     { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${admin_dest}/scripts` },
-                    { expand: true, cwd: user_dest, src: ['userServices.js'], dest: `${admin_dest}/services` },
+
+                    { expand: true, cwd: user_dest, src: ['userServices.js', 'controls/*.js'], dest: `${admin_dest}/mobile` },
+                    { expand: true, cwd: `${dest}/common`, src: ['*.js'], dest: `${admin_dest}` },
+                    { expand: true, cwd: `${dest}/mobileComponents`, src: ['**/*.*'], dest: `${admin_dest}/mobileComponents` },
+                    // { expand: true, cwd: `mobileComponents`, src: ['*.html'], dest: `${admin_dest}/mobileComponents` }
                 ]
             },
             user: {
@@ -120,10 +125,24 @@ module.exports = function (grunt) {
                         ext: '.css'
                     },
                     {
+                        expand: true,
+                        cwd: `${admin_src}/modules`,
+                        src: ['**/*.less'],
+                        dest: `${admin_dest}/modules`,
+                        ext: '.css'
+                    },
+                    {
                         expand: false,
                         src: `${admin_src}/mobile/content/bootstrap-3.3.5/bootstrap.less`,
                         dest: `${admin_dest}/content/css/bootstrap.css`
-                    }
+                    },
+                    {
+                        expand: true,
+                        cwd: `mobileComponents`,
+                        src: ['**/*.less'],
+                        dest: `${dest}/mobileComponents`,
+                        ext: '.css'
+                    },
                 ]
             },
             user: {
@@ -152,7 +171,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.registerTask('admin', ['shell:admin', 'copy:admin', 'sass:admin', 'less:admin', 'stylus:admin']);
+    grunt.registerTask('admin', ['shell:admin', 'sass:admin', 'less:admin', 'stylus:admin', 'copy:admin']);
     grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
     grunt.registerTask('default', ['admin', 'user']);
 }

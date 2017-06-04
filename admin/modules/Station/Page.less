@@ -32,13 +32,14 @@
     } 
 
     .selected {
+        width: 100%;
+        min-height: 100%;
        > ul {
             margin: 0px;
-            width: @width;
-            height: 667px;
-            border: 1px solid #ccc;
-            overflow-y: scroll;
-
+            // border: 1px solid #ccc;
+            overflow: none;
+            background: white;
+            height: 100%;
            > li {
                 min-height: 50px;
                 border-left: none;

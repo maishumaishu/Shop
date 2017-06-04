@@ -36,10 +36,10 @@
         <task id="0" name="客户端 Header 控件" color="#8cb6ce" meeting="false" start="2017-05-22" duration="1" complete="0" expand="true">
             <depend id="2" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="2" name="商品 List 控件" color="#8cb6ce" meeting="false" start="2017-05-23" duration="1" complete="0" expand="true">
+        <task id="2" name="商品 List 控件" color="#8cb6ce" meeting="false" start="2017-05-23" duration="1" complete="100" expand="true">
             <depend id="7" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="7" name="模版DEOM" color="#8cb6ce" meeting="false" start="2017-05-24" duration="1" complete="0" expand="true">
+        <task id="7" name="模版DEOM" color="#8cb6ce" meeting="false" start="2017-05-24" duration="1" complete="100" expand="true">
             <depend id="8" type="2" difference="0" hardness="Strong"/>
             <depend id="26" type="2" difference="0" hardness="Strong"/>
         </task>

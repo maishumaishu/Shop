@@ -1,11 +1,15 @@
 import components = require('mobile/components/componentDefines');
 import bootbox = require('bootbox');
-import { Editor, EditorProps, EditorState } from 'mobile/components/editor'
+import { Editor, EditorProps } from 'mobileComponents/editor';
+import { componentsDir } from 'mobileComponents/common';
 import { default as station, PageData, ControlData } from 'services/Station';
 import { Button } from 'common/controls';
 import app = require('Application');
 import FormValidator = require('common/formValidator');
 import * as ui from 'UI';
+import { alert } from 'ui';
+
+requirejs(['css!content/devices.css']);
 
 let controlsPath = 'mobile/controls'
 let modules = [];
@@ -36,16 +40,16 @@ export default async function (page: chitu.Page) {
 
     var routeValue: RouteValue = page.routeData.values || {};
     let editorTypes: { [propName: string]: React.ComponentClass<any> } = {};
+    let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
     type State = {
         componentInstances: ControlData[],
         pageName: string,
         pageRemark: string,
-
     }
     class Page extends React.Component<{ pageData: PageData }, State>{
         private selectedContainer: HTMLElement;
         private allContainer: HTMLElement;
-        private editors: Editor<EditorState<any>>[];
+        private editors: Editor<any, any, React.Component<any, any>, any>[];
         private pageId: string;
         private validator: FormValidator;
 
@@ -88,11 +92,12 @@ export default async function (page: chitu.Page) {
         }
 
         getControlData(controlId: string): Object {
-            for (let i = 0; i < this.editors.length; i++) {
-                if (this.editors[i].props.controlId == controlId) {
-                    return this.editors[i].state.controlData;
-                }
-            }
+            //TODO:
+            // for (let i = 0; i < this.editors.length; i++) {
+            //     if (this.editors[i].props.controlId == controlId) {
+            //         return this.editors[i].state.controlData;
+            //     }
+            // }
             return {};
         }
 
@@ -166,22 +171,45 @@ export default async function (page: chitu.Page) {
             }
         }
 
-        async loadControlInstance(controlId: string, controlName: string, element: HTMLElement, controlData?: any) {
-            let editorElement = document.createElement('div');
+        async loadControlInstance(controlId: string, controlName: string, controlHTMLElement: HTMLElement, controlData?: any) {
 
-            element.setAttribute('data-controlName', controlName);
-            element.setAttribute('data-controlId', controlId);
-            editorElement.className = 'editor';
-            editorElement.setAttribute('data-controlName', controlName);
-            editorElement.setAttribute('data-controlId', controlId);
+            controlHTMLElement.setAttribute('data-controlName', controlName);
+            controlHTMLElement.setAttribute('data-controlId', controlId);
 
-            $(page.element).find('.editors').append(editorElement);
+            let editorHTMLElement = document.createElement('div');
+            editorHTMLElement.className = 'editor';
+            editorHTMLElement.setAttribute('data-controlName', controlName);
+            editorHTMLElement.setAttribute('data-controlId', controlId);
+            page.element.querySelector('.editors').appendChild(editorHTMLElement);
+
+            let controlType = await this.getControlType(controlName);
+            let controlReactElement = React.createElement(controlType, controlData);
+            let control: React.Component<any, any> = ReactDOM.render(controlReactElement, controlHTMLElement);
+
             let editorType = await this.getEditorType(controlName);
+            let editorReactElement = React.createElement(editorType, { control } as EditorProps<any, any, React.Component<any, any>>);
+            // let editorElement = 
+            // let props: EditorProps<any, any, React.Component<any, any>> = { controlElement: element, controlId, controlData, pageId: this.pageId };
+            // let reactElement = React.createElement(editorType, props);
+            // let editor = ReactDOM.render(reactElement, editorElement) as Editor<any>;
+            // this.editors.push(editor);
+        }
 
-            let props: EditorProps = { controlElement: element, controlId, controlData, pageId: this.pageId };
-            let reactElement = React.createElement(editorType, props);
-            let editor = ReactDOM.render(reactElement, editorElement) as Editor<any>;
-            this.editors.push(editor);
+        getControlType(controlName: string): Promise<React.ComponentClass<any>> {
+            if (controlTypes[controlName] != null) {
+                return Promise.resolve(controlTypes[controlName]);
+            }
+
+            return new Promise((reslove, reject) => {
+                let path = `${componentsDir}/${controlName}/control`; //Editor.path(controlName);
+                let self = this;
+                requirejs([path], function (obj: any) {
+                    let controlType = (obj || {}).default as React.ComponentClass<any>;
+                    console.assert(controlType != null);
+                    controlTypes[controlName] = controlType;
+                    reslove(controlType);
+                })
+            })
         }
 
         getEditorType(controlName: string): Promise<React.ComponentClass<any>> {
@@ -259,7 +287,7 @@ export default async function (page: chitu.Page) {
         preview() {
             let pageId = this.props.pageData._id;
             if (!pageId) {
-                ui.alert(`页面必须保存`);
+                alert(`页面必须保存`);
             }
             open(`#Station/PreView?pageId=${pageId}`, ':blank');
         }
@@ -297,22 +325,35 @@ export default async function (page: chitu.Page) {
                         </ul>
                     </div>
                     <div className="view">
-                        <div className="pull-left selected">
-                            <ul ref={(o: HTMLElement) => this.selectedContainer = o}>
-                                {selectedComponents.map((o, i) => (
-                                    <li key={o.controlId} data-controlId={o.controlId}
-                                        ref={(e: HTMLElement) => {
-                                            if (e == null) {
-                                                return;
-                                            }
+                        <div className="marvel-device iphone5c blue pull-left">
+                            <div className="top-bar"></div>
+                            <div className="sleep"></div>
+                            <div className="volume"></div>
+                            <div className="camera"></div>
+                            <div className="sensor"></div>
+                            <div className="speaker"></div>
+                            <div className="screen">
+                                <div className="selected">
+                                    <ul ref={(o: HTMLElement) => this.selectedContainer = o}>
+                                        {selectedComponents.map((o, i) => (
+                                            <li key={o.controlId} data-controlId={o.controlId}
+                                                ref={(e: HTMLElement) => {
+                                                    if (e == null) {
+                                                        return;
+                                                    }
 
-                                            this.loadControlInstance(o.controlId, o.controlName, e, o.data);
-                                            this.attachClickEvent(e);
-                                        }}>
-                                    </li>
-                                ))}
-                            </ul>
+                                                    this.loadControlInstance(o.controlId, o.controlName, e, o.data);
+                                                    this.attachClickEvent(e);
+                                                }}>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="home"></div>
+                            <div className="bottom-bar"></div>
                         </div>
+
                         <div className="all">
                             <h5>页面信息</h5>
                             <form className="row" style={{ height: 40 }}>

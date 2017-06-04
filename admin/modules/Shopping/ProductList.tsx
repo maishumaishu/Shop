@@ -126,7 +126,7 @@ class Page extends React.Component<{}, PageState>{
         let dataSource = this.dataSource = new wuzhui.WebDataSource<Product>({
             primaryKeys: ['Id'],
             select: (args) => shopping.getProducts(args),
-            delete: (item) => shopping.deleteProduct(item.Id) //shopping.url('Product/DeleteProduct'),
+            delete: (item) => shopping.deleteProduct(item.Id)
         });
         // dataSource.ajaxMethods.delete = 'delete';
         dataSource.selected.add((sender, args) => {

@@ -1,5 +1,5 @@
-import { Editor, EditorProps } from 'mobileComponents/editor';
-import { Props as ControlProps, State as ControlState, default as Control } from 'mobile/components/noticeHeader/control'
+import { Editor } from 'mobileComponents/editor';
+import { Props as ControlProps, State as ControlState, default as Control } from 'mobileComponents/summaryHeader/control'
 
 interface EditorState {
 

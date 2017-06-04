@@ -805,6 +805,7 @@ declare module React {
         forEach(children: ReactNode, fn: (child: ReactChild) => any): void;
         count(children: ReactNode): number;
         only(children: ReactNode): ReactChild;
+        toArray(children: ReactNode): Array<React.ReactElement<any>>;
     }
 
     //

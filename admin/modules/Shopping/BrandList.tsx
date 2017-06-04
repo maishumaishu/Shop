@@ -1,5 +1,5 @@
 import { default as site } from 'Site';
-import { CommandField, buttonOnClick, createGridView, GridViewItemPopupEditor } from 'UI';
+import { CommandField, createGridView, GridViewItemPopupEditor } from 'myWuZhui';
 import FormValidator = require('common/formValidator');
 import { default as shopping, Brand } from 'services/Shopping'
 import { default as activity } from 'services/Activity'

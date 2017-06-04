@@ -1,11 +1,17 @@
-import { ControlArguments, componentsDir } from 'mobile/common';
-import * as common from 'mobile/common'
-export class Data {
+import { ControlArguments, componentsDir } from 'mobileComponents/common';
+import * as common from 'mobileComponents/common'
+
+
+export interface Props {
+
+}
+
+export interface State {
 
 }
 
 requirejs([`css!${componentsDir}/noticeHeader/control`]);
-export default class Control extends React.Component<{}, {}>{
+export default class Control extends React.Component<Props, State>{
     render() {
         let url = '';
         return (

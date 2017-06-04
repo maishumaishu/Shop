@@ -1,8 +1,9 @@
 
 import { default as site } from 'Site';
-import ui = require('UI');
+import { customField } from 'myWuZhui';
 import FormValidator = require('common/formValidator');
 import { default as shopping, Category } from 'services/Shopping';
+import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
     class Page extends React.Component<{}, { rows?: Array<any> }>{
@@ -25,7 +26,6 @@ export default function (page: chitu.Page) {
                 insert: (item) => shopping.addCategory(item),
                 update: (item) => shopping.updateCategory(item),
                 delete: (item) => shopping.deleteCategory(item.Id)
-                // insert, update, delete: deleteUrl, primaryKeys: ['Id']
             });
             this.dataSource.selected.add((sender, args) => {
                 this.state.rows = args.items;
@@ -69,11 +69,16 @@ export default function (page: chitu.Page) {
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
                     }),
                     new wuzhui.BoundField({ dataField: 'ImagePath', headerText: '图片', headerStyle: { textAlign: 'center' } as CSSStyleDeclaration }),
-                    new ui.CommandField({
-                        itemEditor: null,
+                    customField({
+                        // itemEditor: null,
                         headerText: '操作',
                         headerStyle: { textAlign: 'center', width: '120px' } as CSSStyleDeclaration,
-                        itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
+                        itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
+                        createItemCell(dataItem) {
+                            let cell = new wuzhui.GridViewCell();
+                            ReactDOM.render(<CommandCell category={dataItem} dataSource={gridView.dataSource} />, cell.element);
+                            return cell;
+                        }
                     })
                 ]
             });
@@ -224,4 +229,26 @@ export default function (page: chitu.Page) {
     }
 
     ReactDOM.render(<Page />, page.element);
+}
+
+
+class CommandCell extends React.Component<{ category: Category, dataSource: wuzhui.DataSource<Category> }, {}>{
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div>
+                <button className="btn btn-minier btn-danger"
+                    ref={(e: HTMLButtonElement) => {
+                        if (!e) return;
+                        e.onclick = ui.buttonOnClick(() => {
+                            return this.props.dataSource.delete(this.props.category);
+                        }, { confirm: `确定要删除品类'${this.props.category.Name}'吗` })
+                    }} >
+                    <i className="icon-trash" />
+                </button>
+            </div>
+        );
+    }
 }

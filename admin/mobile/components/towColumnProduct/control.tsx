@@ -1,5 +1,5 @@
 import { Control, ControlArguments, componentsDir } from 'mobile/common';
-import { ImageBox } from 'controls';
+let { ImageBox } = controls;
 
 requirejs([`css!${componentsDir}/towColumnProduct/control`]);
 

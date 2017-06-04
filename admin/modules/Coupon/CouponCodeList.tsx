@@ -1,4 +1,5 @@
-import * as ui from 'UI';
+import * as ui from 'myWuZhui';
+import { buttonOnClick } from 'ui';
 import { default as shopping, CouponCode, Coupon } from 'services/Shopping';
 import FormValidator = require('common/formValidator');
 
@@ -79,7 +80,7 @@ export default function (page: chitu.Page) {
             }
             let couponId = (this.dialogElement['coupon'] as HTMLSelectElement).value;
             let count = Number.parseInt((this.dialogElement['count'] as HTMLInputElement).value);
-            return shopping.generateCouponCode(couponId,count).then(() => {
+            return shopping.generateCouponCode(couponId, count).then(() => {
                 $(this.dialogElement).modal('hide');
                 return this.dataSource.select();
             });
@@ -198,7 +199,7 @@ export default function (page: chitu.Page) {
                                     <button type="button" className="btn btn-primary"
                                         ref={(o: HTMLButtonElement) => {
                                             if (!o) return;
-                                            o.onclick = ui.buttonOnClick(() => this.generateCouponCode());
+                                            o.onclick = buttonOnClick(() => this.generateCouponCode());
                                         }}>确认</button>
                                 </div>
                             </div>

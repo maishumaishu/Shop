@@ -3,8 +3,8 @@ import site = require('Site');
 import { default as shopping, Coupon } from 'services/Shopping';
 import UE = require('common/ue.ext');
 import FormValidator = require('common/formValidator');
-import * as ui from 'UI';
-
+import * as ui from 'myWuZhui';
+import { buttonOnClick } from 'ui';
 export default function (page: chitu.Page) {
 
     // requirejs([`css!${page.routeData.actionPath}.css`], function () { });
@@ -102,7 +102,7 @@ export default function (page: chitu.Page) {
                                 <button className="btn btn-sm btn-primary"
                                     ref={(o: HTMLButtonElement) => {
                                         if (!o) return;
-                                        o.onclick = ui.buttonOnClick(
+                                        o.onclick = buttonOnClick(
                                             () => this.save(),
                                             { toast: '保存优惠劵成功' })
                                     }}>保存</button>
