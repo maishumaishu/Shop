@@ -2,7 +2,6 @@ import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'mobileComponents/menu/control';
 requirejs(['css!mobileComponents/menu/editor.css']);
 interface EditorState {
-    // controlData:{menuNodes:Menu}
 }
 export default class MenuEditor extends Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>
     private appendDialogELement: HTMLElement;
@@ -73,6 +72,7 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
                                     onClick={() => {
                                         this.state.menuNodes.push({ name: this.nameInput.value } as MenuNode);
                                         this.setState(this.state);
+                                        $(this.appendDialogELement).modal('hide');
                                     }}>保存</button>
                             </div>
                         </div>

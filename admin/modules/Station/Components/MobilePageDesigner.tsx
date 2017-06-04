@@ -5,9 +5,6 @@ export interface Props extends React.Props<MobilePage> {
 
 }
 
-export class MobilePageDesignerItem {
-
-}
 
 export class MobilePageDesigner extends React.Component<any, { editors: React.ReactElement<any>[] }> {
     private controls: Array<{ control: Control<any>, name: string }>;
@@ -42,7 +39,7 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
         return (
             <div>
                 <div style={{ position: 'absolute' }}>
-                    <MobilePage >
+                    <MobilePage mode={'design'}>
                         {children.map(o =>
                             <div key={o.key} ref={(e: HTMLElement) => {
                                 let c = ReactDOM.render(o, e);

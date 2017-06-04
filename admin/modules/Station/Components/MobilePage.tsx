@@ -3,7 +3,7 @@ requirejs(['css!content/devices.css']);
 
 interface Props extends React.Props<MobilePage> {
     pageData?: PageData,
-    mode?: 'design' | 'preview'
+    mode: 'design' | 'preview'
 }
 
 export class MobilePage extends React.Component<Props, {}>{
@@ -12,6 +12,9 @@ export class MobilePage extends React.Component<Props, {}>{
     }
 
     componentDidMount() {
+        if (this.props.mode == 'design') {
+            //TODO:移除控件的点击事件
+        }
     }
 
     async createControlInstance(controlId: string, controlName: string, element: HTMLElement, controlData?: any) {
