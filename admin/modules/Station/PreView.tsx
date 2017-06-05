@@ -24,7 +24,7 @@ export default async function (page: chitu.Page) {
 
     ReactDOM.render(
         <div className="mobile">
-            <Page pageData={pageData} />
+            <Page pageData={pageData} mode="preview"/>
         </div>,
         page.element
     );
