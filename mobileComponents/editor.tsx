@@ -9,11 +9,8 @@ export abstract class Editor<ControlProp, ControlState, State, ControlType exten
     extends React.Component<EditorProps<ControlProp, ControlState, ControlType>, ControlState> {//<S extends EditorState<any>> extends React.Component<EditorProps, S>
     private controlType: React.ComponentClass<any>;
 
-    constructor(props: EditorProps<ControlProp, ControlState, ControlType>) {//, controlType: React.ComponentClass<any>, controlDataType: { new () }
+    constructor(props: EditorProps<ControlProp, ControlState, ControlType>) {
         super(props);
-
-        // this.state = { controlData: (props.controlData || new controlDataType()) } as S;
-        // this.controlType = controlType;
 
     }
 

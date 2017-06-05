@@ -33,8 +33,8 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
         }
     }
     render() {
-        let children = (React.Children.toArray(this.props.children) || [])
-            .filter(o => typeof o.type != 'string');
+        let children = (React.Children.toArray(this.props.children) || []);
+        // .filter(o => typeof o.type != 'string');
 
         return (
             <div>
@@ -44,11 +44,15 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
                             <div key={o.key} ref={(e: HTMLElement) => {
                                 let c = ReactDOM.render(o, e);
                                 let controlTypeName = (o.type as React.ComponentClass<any>).name;
+                                if (!controlTypeName) {
+                                    return;
+                                }
                                 let controlName = controlTypeName[0].toLowerCase() + controlTypeName.substr(1) || '';
                                 if (controlName.endsWith('Control')) {
                                     controlName = controlName.substr(0, controlName.length - 'Control'.length);
                                 }
                                 this.controls.push({ control: c, name: controlName });
+                                e.className = controlTypeName;
                             }} />
                         )}
                     </MobilePage>

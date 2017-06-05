@@ -46,18 +46,21 @@ export class MobilePage extends React.Component<Props, {}>{
                 <div className="sensor"></div>
                 <div className="speaker"></div>
                 <div className="screen">
-                    {controls.map((o, i) => (
-                        <div key={i}
-                            ref={(e: HTMLElement) => {
-                                if (e == null) {
-                                    return;
-                                }
+                    <div className="user-mobile">
+                        {controls.map((o, i) => (
+                            <div key={i}
+                                ref={(e: HTMLElement) => {
+                                    if (e == null) {
+                                        return;
+                                    }
 
-                                this.createControlInstance(o.controlId, o.controlName, e, o.data);
-                            }}>
-                        </div>
-                    ))}
-                    {children ? children : null}
+                                    this.createControlInstance(o.controlId, o.controlName, e, o.data);
+                                }}>
+                            </div>
+                        ))}
+                        {children ? children : null}
+                    </div>
+
                 </div>
                 <div className="home"></div>
                 <div className="bottom-bar"></div>
