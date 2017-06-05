@@ -157,7 +157,7 @@ class Page extends React.Component<any, {
 
         return (
             <div className={nodeClassName}>
-                <div className="first">
+                <div className="first admin-pc">
                     <ul className="list-group" style={{ margin: 0 }}>
                         {firstLevelNodes.map((o, i) =>
                             <li key={i} className={o == firstLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}
@@ -168,7 +168,7 @@ class Page extends React.Component<any, {
                         )}
                     </ul>
                 </div>
-                <div className="second">
+                <div className="second admin-pc">
                     <ul className="list-group" style={{ margin: 0 }}>
                         {secondLevelNodes.map((o, i) =>
                             <li key={i} className={o == secondLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}

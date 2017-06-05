@@ -5,7 +5,7 @@ import * as ui from 'UI';
 
 export default function (page: chitu.Page) {
 
-
+page.element.className = 'admin-pc';
     class Page extends React.Component<any, any>{
         private gridViewElement: HTMLTableElement;
         private dialogElement: HTMLElement;

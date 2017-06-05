@@ -3016,12 +3016,12 @@ button.btn:active {
 }
 
 .btn, .btn-default, .btn:focus, .btn-default:focus {
-    background-color: #abbac3 !important;
+    background-color: #abbac3;
     border-color: #abbac3;
 }
 
     .btn:hover, .btn-default:hover, .open .btn.dropdown-toggle, .open .btn-default.dropdown-toggle {
-        background-color: #8b9aa3 !important;
+        background-color: #8b9aa3;
         border-color: #abbac3;
     }
 
@@ -3030,31 +3030,31 @@ button.btn:active {
     }
 
     .btn.no-hover:hover, .btn-default.no-hover:hover {
-        background-color: #abbac3 !important;
+        background-color: #abbac3;
     }
 
     .btn.active, .btn-default.active {
-        background-color: #9baab3 !important;
+        background-color: #9baab3;
         border-color: #8799a4;
     }
 
     .btn.no-border.active, .btn-default.no-border.active {
-        background-color: #92a3ac !important;
+        background-color: #92a3ac;
         border-color: #92a3ac;
     }
 
     .btn.disabled, .btn-default.disabled, .btn[disabled], .btn-default[disabled], fieldset[disabled] .btn, fieldset[disabled] .btn-default, .btn.disabled:hover, .btn-default.disabled:hover, .btn[disabled]:hover, .btn-default[disabled]:hover, fieldset[disabled] .btn:hover, fieldset[disabled] .btn-default:hover, .btn.disabled:focus, .btn-default.disabled:focus, .btn[disabled]:focus, .btn-default[disabled]:focus, fieldset[disabled] .btn:focus, fieldset[disabled] .btn-default:focus, .btn.disabled:active, .btn-default.disabled:active, .btn[disabled]:active, .btn-default[disabled]:active, fieldset[disabled] .btn:active, fieldset[disabled] .btn-default:active, .btn.disabled.active, .btn-default.disabled.active, .btn[disabled].active, .btn-default[disabled].active, fieldset[disabled] .btn.active, fieldset[disabled] .btn-default.active {
-        background-color: #abbac3 !important;
+        background-color: #abbac3;
         border-color: #abbac3;
     }
 
 .btn-primary, .btn-primary:focus {
-    background-color: #428bca !important;
+    background-color: #428bca;
     border-color: #428bca;
 }
 
     .btn-primary:hover, .open .btn-primary.dropdown-toggle {
-        background-color: #1b6aaa !important;
+        background-color: #1b6aaa;
         border-color: #428bca;
     }
 
@@ -3063,7 +3063,7 @@ button.btn:active {
     }
 
     .btn-primary.no-hover:hover {
-        background-color: #428bca !important;
+        background-color: #428bca;
     }
 
     .btn-primary.active {

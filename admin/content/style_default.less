@@ -1,0 +1,234 @@
+@import "content/bootstrap-3.3.7/less/variables.less";
+@import "content/bootstrap-3.3.7/less/mixins.less";
+@import "content/bootstrap-3.3.7/less/scaffolding.less";
+
+// Reset and dependencies
+@import "content/bootstrap-3.3.7/less/normalize.less";
+@import "content/bootstrap-3.3.7/less/print.less";
+@import "content/bootstrap-3.3.7/less/glyphicons.less";
+
+// Utility classes
+@import "content/bootstrap-3.3.7/less/utilities.less";
+@import "content/bootstrap-3.3.7/less/responsive-utilities.less";
+
+// Core CSS
+@import "content/bootstrap-3.3.7/less/grid.less";
+
+// Components 
+.admin-pc {
+
+    // Core CSS
+    @import "content/bootstrap-3.3.7/less/type.less";
+    @import "content/bootstrap-3.3.7/less/code.less";
+    @import "content/bootstrap-3.3.7/less/buttons.less";
+    @import "content/bootstrap-3.3.7/less/tables.less";
+    @import "content/bootstrap-3.3.7/less/forms.less";
+
+    
+    @import "content/bootstrap-3.3.7/less/component-animations.less";
+    @import "content/bootstrap-3.3.7/less/dropdowns.less";
+    @import "content/bootstrap-3.3.7/less/button-groups.less";
+    @import "content/bootstrap-3.3.7/less/input-groups.less";
+    @import "content/bootstrap-3.3.7/less/navs.less";
+    @import "content/bootstrap-3.3.7/less/navbar.less";
+    @import "content/bootstrap-3.3.7/less/breadcrumbs.less";
+    @import "content/bootstrap-3.3.7/less/pagination.less";
+    @import "content/bootstrap-3.3.7/less/pager.less";
+    @import "content/bootstrap-3.3.7/less/labels.less";
+    @import "content/bootstrap-3.3.7/less/badges.less";
+    @import "content/bootstrap-3.3.7/less/jumbotron.less";
+    @import "content/bootstrap-3.3.7/less/thumbnails.less";
+    @import "content/bootstrap-3.3.7/less/alerts.less";
+    @import "content/bootstrap-3.3.7/less/progress-bars.less";
+    @import "content/bootstrap-3.3.7/less/media.less";
+    @import "content/bootstrap-3.3.7/less/list-group.less";
+    @import "content/bootstrap-3.3.7/less/panels.less";
+    @import "content/bootstrap-3.3.7/less/responsive-embed.less";
+    @import "content/bootstrap-3.3.7/less/wells.less";
+    @import "content/bootstrap-3.3.7/less/close.less";
+
+    // Components w/ JavaScript
+    @import "content/bootstrap-3.3.7/less/modals.less";
+    @import "content/bootstrap-3.3.7/less/tooltip.less";
+    @import "content/bootstrap-3.3.7/less/popovers.less";
+    @import "content/bootstrap-3.3.7/less/carousel.less";
+
+    .btn-minier {
+        padding: 0 4px;
+        line-height: 18px;
+        border-width: 2px;
+        font-size: 12px;
+    }
+    .btn-purple, .btn-purple:focus {
+        background-color: #9585bf;
+        border-color: #9585bf;
+        color: white;
+    }
+
+    th, td, .table-bordered {
+        border-radius: 0;
+    }
+
+    .table {
+        thead tr {
+            color: #707070;
+            font-weight: normal;
+            background: #f2f2f2;
+            background-image: -webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec));
+            background-image: -webkit-linear-gradient(top,#f8f8f8,0%,#ececec,100%);
+            background-image: -moz-linear-gradient(top,#f8f8f8 0,#ececec 100%);
+            background-image: linear-gradient(to bottom,#f8f8f8 0,#ececec 100%);
+            background-repeat: repeat-x;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff8f8f8',endColorstr='#ffececec',GradientType=0);
+            th {
+                border-color: #ddd;
+                font-weight: bold;
+            }
+            
+        }
+        tbody tr {
+            &.empty td {
+                height: 300px;
+                text-align: center;
+                padding-top: 120px;
+            }
+        }
+
+        
+    }
+
+
+//         .table thead tr th [class*="icon-"]:first-child {
+//             margin-right: 2px;
+//         }
+
+//         .table thead tr th:first-child {
+//             border-left-color: #f1f1f1;
+//         }
+
+//         .table thead tr th:left-child {
+//             border-right-color: #f1f1f1;
+//         }
+
+// .table.table-bordered thead tr th {
+//     vertical-align: middle;
+// }
+
+//     .table.table-bordered thead tr th:first-child {
+//         border-left-color: #ddd;
+//     }
+
+// th.center, td.center {
+//     text-align: center;
+// }
+
+// th .lbl, td .lbl {
+//     margin-bottom: 0;
+// }
+
+//     th .lbl:only-child, td .lbl:only-child {
+//         vertical-align: top;
+//     }
+
+
+}
+
+@border-radius-base: 0px;
+@border-radius-large: 0px;
+@border-radius-small: 0px;
+@icon-font-path: "font/";
+
+
+
+.main {
+    .navbar {
+        margin: 0;
+        border: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        border-radius: 0;
+        margin: 0;
+        padding-left: 0;
+        padding-right: 0;
+        min-height: 45px;
+        position: relative;
+        background: #438eb9;
+
+        > li {
+            float: left;
+            > a {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+        }
+        
+        ul {
+            list-style: none;
+            li {
+                position: relative;
+                display: block;
+                float: left;
+                > a {
+                    color: #555;
+                    background: #e7e7e7;
+                    // display: block;
+                    padding: 10px 15px;
+                }
+            }
+        }
+    }
+
+    .nav-tabs {
+        border-color: #c5d0dc;
+        margin-bottom: 0;
+        margin-left: 0;
+        position: relative;
+        top: 1px;
+    }
+
+    .nav-tabs > li > a {
+        padding: 8px 12px;
+    }
+
+        .nav-tabs > li > a, .nav-tabs > li > a:focus {
+            border-radius: 0 !important;
+            background-color: #f9f9f9;
+            color: #999;
+            margin-right: -1px;
+            line-height: 16px;
+            position: relative;
+            z-index: 11;
+            border-color: #c5d0dc;
+        }
+
+            .nav-tabs > li > a:hover {
+                background-color: #FFF;
+                color: #4c8fbd;
+                border-color: #c5d0dc;
+            }
+
+            .nav-tabs > li > a:active, .nav-tabs > li > a:focus {
+                outline: none !important;
+            }
+
+    .nav-tabs > li:first-child > a {
+        margin-left: 0;
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+        color: #576373;
+        border-color: #c5d0dc;
+        border-top: 2px solid #4c8fbd;
+        border-bottom-color: transparent;
+        background-color: #FFF;
+        z-index: 12;
+        line-height: 16px;
+        margin-top: -1px;
+        box-shadow: 0 -2px 3px 0 rgba(0,0,0,0.15);
+    }
+
+}
+
+
+
+

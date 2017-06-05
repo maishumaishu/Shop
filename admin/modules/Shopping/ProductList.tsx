@@ -331,7 +331,7 @@ class Page extends React.Component<{}, PageState>{
         let productStock = this.state.productStock;
         let tab = this.state.tab;
         return (
-            <div>
+            <div className="admin-pc">
                 <div name="tabs" className="tabbable">
                     <ul className="nav nav-tabs">
                         <li className={tab == 'all' ? "active" : ''}

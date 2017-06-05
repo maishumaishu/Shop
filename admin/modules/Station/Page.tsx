@@ -1,4 +1,4 @@
-import components = require('mobile/components/componentDefines');
+import components = require('mobileComponents/componentDefines');
 import bootbox = require('bootbox');
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { componentsDir } from 'mobileComponents/common';

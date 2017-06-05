@@ -44,6 +44,11 @@ module.exports = function (grunt) {
                     // { expand: true, cwd: `mobileComponents`, src: ['*.html'], dest: `${admin_dest}/mobileComponents` }
                 ]
             },
+            admin_bt: {
+                files: [
+                    { expand: true, cwd: `${admin_src}/content/bootstrap-3.3.7/fonts`, src: ['*.*'], dest: `${admin_dest}/content/font` },
+                ]
+            },
             user: {
                 files: [
                     { expand: true, cwd: user_src, src: ['**/*.html', '**/*.js', '**/*.css'], dest: user_dest },
@@ -120,28 +125,16 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: `${admin_src}/mobile/components`,
-                        src: ['**/*.less'],
-                        dest: `${admin_dest}/mobile/components`,
-                        ext: '.css'
-                    },
-                    {
-                        expand: true,
                         cwd: `${admin_src}/modules`,
                         src: ['**/*.less'],
                         dest: `${admin_dest}/modules`,
                         ext: '.css'
                     },
                     {
-                        expand: false,
-                        src: `${admin_src}/mobile/content/bootstrap-3.3.5/bootstrap.less`,
-                        dest: `${admin_dest}/content/css/bootstrap.css`
-                    },
-                    {
                         expand: true,
-                        cwd: `mobileComponents`,
+                        cwd: `${admin_src}/content`,
                         src: ['**/*.less'],
-                        dest: `${dest}/mobileComponents`,
+                        dest: `${admin_dest}/content`,
                         ext: '.css'
                     },
                 ]
@@ -161,8 +154,28 @@ module.exports = function (grunt) {
                         src: [`*.less`],
                         dest: `${user_src}/content/app`,
                         ext: '.css'
+                    }
+                ]
+            },
+            mobileComponents:{
+                files:[
+                    {
+                        expand: true,
+                        cwd: `mobileComponents`,
+                        src: ['**/*.less'],
+                        dest: `${dest}/mobileComponents`,
+                        ext: '.css'
                     },
-                    { expand: false, src: `${user_src}/content/bootstrap-3.3.5/bootstrap.less`, dest: `${user_dest}/content/css/bootstrap.css` }
+                ]
+            },
+            user_bt: {
+                files: [
+                    { expand: false, src: `${user_src}/content/bootstrap_red.less`, dest: `${user_dest}/content/bootstrap_red.css` }
+                ]
+            },
+            admin_bt: {
+                files: [
+                    { expand: false, src: `${admin_src}/content/bootstrap_blue.less`, dest: `${admin_dest}/content/bootstrap_bule.css` }
                 ]
             }
         }
@@ -175,4 +188,5 @@ module.exports = function (grunt) {
     grunt.registerTask('admin', ['shell:admin', 'sass:admin', 'less:admin', 'stylus:admin', 'copy:admin']);
     grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
     grunt.registerTask('default', ['admin', 'user']);
+    grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
 }

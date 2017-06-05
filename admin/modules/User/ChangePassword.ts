@@ -48,6 +48,7 @@ export default function (page: chitu.Page) {
 }
 
 function page_load(page: chitu.Page, args) {
+    page.element.className = 'admin-pc';
     var model = new PageModel();
     ko.applyBindings(model, page.element);
 }

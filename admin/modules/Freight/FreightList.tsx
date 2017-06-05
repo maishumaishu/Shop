@@ -5,7 +5,7 @@ import { default as shopping, RegionFreight } from 'services/Shopping';
 import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {
-
+page.element.className = 'admin-pc';
     let tabbable = document.createElement('div');
     tabbable.className = 'tabbable';
     page.element.appendChild(tabbable);

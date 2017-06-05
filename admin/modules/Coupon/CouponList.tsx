@@ -4,6 +4,7 @@ import site = require('Site');
 import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {
+    page.element.className = 'admin-pc';
     class CouponListPage extends React.Component<{}, {}>{
         private couponsTable: HTMLTableElement;
         private itemEditor: ui.GridViewItemPopupEditor;

@@ -4,7 +4,7 @@ import { default as shopping, CouponCode, Coupon } from 'services/Shopping';
 import FormValidator = require('common/formValidator');
 
 export default function (page: chitu.Page) {
-
+    page.element.className = 'admin-pc';
     type Status = 'all' | 'used' | 'canUse' | 'expired';
     interface PageState {
         coupons: Array<Coupon>

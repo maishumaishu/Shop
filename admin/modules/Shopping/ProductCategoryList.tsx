@@ -228,6 +228,7 @@ export default function (page: chitu.Page) {
         }
     }
 
+    page.element.className = "admin-pc";
     ReactDOM.render(<Page />, page.element);
 }
 

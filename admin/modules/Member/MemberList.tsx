@@ -4,6 +4,7 @@ import * as ui from 'UI';
 import FormValidator = require('common/formValidator');
 
 export default function (page: chitu.Page) {
+    page.element.className = 'admin-pc';
     let account = page
     class MemberListPage extends React.Component<{}, {}>{
         private membersTable: HTMLTableElement;

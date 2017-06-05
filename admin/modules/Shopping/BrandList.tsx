@@ -94,6 +94,7 @@ export default function (page: chitu.Page) {
         }
     }
 
+    page.element.className = "admin-pc";
     ReactDOM.render(<BrandListPage />, page.element);
 }
 

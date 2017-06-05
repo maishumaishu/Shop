@@ -2,7 +2,7 @@ import * as ui from 'UI';
 import { default as shopping, Order, OrderDetail } from 'services/Shopping';
 
 export default function (page: chitu.Page) {
-
+    page.element.className = 'admin-pc';
     let tabbable = document.createElement('div');
     page.element.appendChild(tabbable);
     renderTabs();

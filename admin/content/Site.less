@@ -133,24 +133,18 @@ ul.nav-tabs  li  button {
     color: red;
 }
 
-.table .empty td {
-    height: 300px;
-    text-align: center;
-    padding-top: 120px;
-}
-
 body {
     background: white;
 }
 
-firstPanelWidth = 110px;
-secondPanelWidth = 120px;
+@firstPanelWidth: 110px;
+@secondPanelWidth: 120px;
 
 .first {
     background-color: #777676;
     position: absolute;
     height: 100%;
-    width: firstPanelWidth;
+    width: @firstPanelWidth;
 }
 .first .list-group-item {
     background-color: #777676;
@@ -164,11 +158,11 @@ secondPanelWidth = 120px;
 }
 
 .second {
-    width: secondPanelWidth; 
+    width: @secondPanelWidth; 
     background-color: #e7e7e7;
     position: absolute;
     height: 100%;
-    margin-left: firstPanelWidth;
+    margin-left: @firstPanelWidth;
 }
 .second .list-group-item {
     background-color: #e7e7e7;
@@ -186,7 +180,7 @@ secondPanelWidth = 120px;
 }
 
 .main {
-    margin-left: firstPanelWidth + secondPanelWidth;
+    margin-left: @firstPanelWidth + @secondPanelWidth;
 }
 
 .hideFirst {
@@ -206,7 +200,7 @@ secondPanelWidth = 120px;
         display: none;
     }
     .main {
-        margin-left: firstPanelWidth;
+        margin-left: @firstPanelWidth;
     }
 }
 
