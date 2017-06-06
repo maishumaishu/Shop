@@ -185,6 +185,75 @@
 
 }
 
+@firstPanelWidth: 110px;
+@secondPanelWidth: 120px;
+
+.first {
+    background-color: #777676;
+    position: absolute;
+    height: 100%;
+    width: @firstPanelWidth;
+}
+.first .list-group-item {
+    background-color: #777676;
+    border-color: #777676;
+    color: white;
+}
+.first .list-group-item.active{
+    background-color: #e7e7e7;
+    border-color: #e7e7e7;
+    color: black;
+}
+
+.second {
+    width: @secondPanelWidth; 
+    background-color: #e7e7e7;
+    position: absolute;
+    height: 100%;
+    margin-left: @firstPanelWidth;
+}
+.second .list-group-item {
+    background-color: #e7e7e7;
+    border-color: #e7e7e7;
+    color: black;
+}
+
+.second .list-group-item.active, 
+.second .list-group-item.active:hover {
+    background-color: #e7e7e7;
+    border-color: #e7e7e7;
+    color: inherit;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+//===============================================================
+// 页面框架样式
+.main {
+    margin-left: @firstPanelWidth + @secondPanelWidth;
+}
+
+.hideFirst {
+    .first {
+        display: none;
+    }
+    .second {
+        display: none;
+    }
+    .main {
+        margin-left: 0;
+    }
+}
+
+.hideSecond {
+    .second {
+        display: none;
+    }
+    .main {
+        margin-left: @firstPanelWidth;
+    }
+}
+//========//======================================================================================================================
 
 
 
