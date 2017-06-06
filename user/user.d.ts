@@ -1,4 +1,4 @@
-/// <reference path="../scripts/mobileControls.d.ts"/>
+/// <reference path="../lib/dest/mobile/mobileControls.d.ts"/>
 declare module 'mobileControls' {
     export = controls;
 }
@@ -7,6 +7,6 @@ declare module 'services'{
     export = userServices;
 }
 declare module "chitu.mobile"{
-    import * as cm from 'core/chitu.mobile';
+    import * as cm from 'lib/mobile/chitu.mobile';
     export = cm;
 }

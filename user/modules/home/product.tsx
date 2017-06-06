@@ -1,11 +1,6 @@
 import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'services';
 import { Page, config, app, subscribe } from 'site';
-import cm = require('chitu.mobile');
-import BezierEasing = require('bezier-easing');
-
-
-let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
-    PageComponent, PageHeader, PageFooter, PageView, Button } = controls;
+import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel, PageHeader, PageFooter, PageView, Button } from 'mobileControls';
 
 let productStore = new ValueStore<Product>();
 

@@ -39,7 +39,7 @@ module.exports = function (grunt) {
                     { expand: true, cwd: user_dest, src: ['userServices.js', 'controls/*.js'], dest: `${admin_dest}/mobile` },
                     { expand: true, cwd: `mobileComponents`, src: ['**/*.png'], dest: `${dest}/mobileComponents` },
                     { expand: true, cwd: `${dest}/common`, src: ['*.js'], dest: `${admin_dest}` },
-                    { expand: true, cwd: `${dest}/mobileComponents`, src: ['**/*.*'], dest: `${admin_dest}/mobileComponents` },
+                    { expand: true, cwd: `mobileComponents/dest/mobileComponents`, src: ['**/*.*'], dest: `${admin_dest}/mobileComponents` },
                     { expand: true, cwd: `lib/dest`, src: ['**/*.js'], dest: `${admin_dest}` },
                     // { expand: true, cwd: `mobileComponents`, src: ['*.html'], dest: `${admin_dest}/mobileComponents` }
                 ]
@@ -163,7 +163,7 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: `mobileComponents`,
                         src: ['**/*.less'],
-                        dest: `${admin_dest}/mobileComponents`,
+                        dest: `mobileComponents/dest/mobileComponents`,
                         ext: '.css'
                     },
                 ]
