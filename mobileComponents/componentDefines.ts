@@ -1,4 +1,4 @@
-interface ComponentDefine {
+export interface ComponentDefine {
     name: string, displayName: string, icon: string, introduce: string
 }
 // type T = { [propName:string]: Array<ComponentDefine> };
@@ -25,4 +25,4 @@ let componets: Array<ComponentDefine> = [
     }
 ];
 
-export = componets;
+export default componets;

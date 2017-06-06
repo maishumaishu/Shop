@@ -1,6 +1,6 @@
 import { Editor, EditorProps } from 'mobileComponents/editor'
 import { default as station, PageData } from 'services/Station';
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import { MobilePage as Page } from 'modules/Station/Components/MobilePage';
 let controlsPath = 'mobile/controls'
 let modules = [];

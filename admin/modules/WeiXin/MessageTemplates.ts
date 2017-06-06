@@ -1,5 +1,5 @@
-import { default as site } from 'Site';
-import weixin = require('services/WeiXin');
+import site from 'Site';
+import weixin from 'services/WeiXin';
 import validation = require('knockout.validation');
 
 let JData = window['JData'];

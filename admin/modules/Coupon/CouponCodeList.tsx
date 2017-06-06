@@ -1,7 +1,7 @@
 import * as ui from 'myWuZhui';
 import { buttonOnClick } from 'ui';
 import { default as shopping, CouponCode, Coupon } from 'services/Shopping';
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 
 export default function (page: chitu.Page) {
     page.element.className = 'admin-pc';

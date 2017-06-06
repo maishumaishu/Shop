@@ -23,7 +23,7 @@
 
 import { default as Service } from 'services/Service';
 
-class WebXinService extends Service {
+export class WebXinService extends Service {
     getSetting() {
         return $.ajax({
             url: Service.config.weixinUrl + 'WeiXin/GetSetting'
@@ -42,4 +42,4 @@ class WebXinService extends Service {
     }
 }
 
-export = new WebXinService();
+export default new WebXinService();

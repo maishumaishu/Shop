@@ -44,10 +44,15 @@ requirejs.config({
         },
         'Application': {
             deps: ['chitu']
+        },
+        'mobileControls': {
+            exports: 'controls',
+            deps: ['bezier-easing']
         }
     },
     paths: {
         ace: 'assets/js/uncompressed/ace',
+        'bezier-easing': 'scripts/bezier-easing',
         bootstrap: 'scripts/bootstrap',
         bootbox: 'scripts/bootbox',
         chitu: 'scripts/chitu',
@@ -66,6 +71,7 @@ requirejs.config({
         'ko.val': 'scripts/knockout.validation.cn',
         'knockout.validation': 'scripts/knockout.validation',
         'knockout.mapping': 'scripts/knockout.mapping',
+        'mobileControls': 'scripts/mobileControls',
         react: 'scripts/react',
         'react-dom': 'scripts/react-dom',
         move: 'scripts/move',

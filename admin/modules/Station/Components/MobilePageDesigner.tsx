@@ -57,7 +57,20 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
                         )}
                     </MobilePage>
                 </div>
-                <div style={{ paddingLeft: 390 }} ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
+
+                <div className="admin-pc" style={{ paddingLeft: 390 }} >
+                    <ul style={{ margin: 0 }}>
+                        <div className="pull-right">
+                            <button className="btn btn-primary" style={{ marginLeft: 4 }}>保存</button>
+                        </div>
+                        <div className="pull-right">
+                            <button className="btn btn-primary" style={{ marginLeft: 4 }}>预览</button>
+                        </div>
+                        <div className="clearfix">
+                        </div>
+                    </ul>
+                    <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
+                    </div>
                 </div>
                 <div className="clearfix">
                 </div>

@@ -1,8 +1,6 @@
 ﻿import { default as Service } from 'services/Service';
 
 
-// let JData = window['JData'];
-
 export interface ControlData {
     controlId: string, controlName: string, data: any
 }
@@ -22,26 +20,23 @@ export interface TemplatePageData {
 }
 
 export class StationService extends Service {
-    private _homeProduct: JData.WebDataSource;
+    // private _homeProduct: JData.WebDataSource;
     private url(path: string) {
         let url = `${Service.config.siteUrl}${path}`;
         return url;
     }
-    get homeProduct(): JData.WebDataSource {
-        if (!this._homeProduct) {
-            this._homeProduct = new JData.WebDataSource(
-                Service.config.siteUrl + 'MicroStationData/Select?source=HomeProducts',
-                Service.config.siteUrl + 'MicroStationData/Insert?source=HomeProducts',
-                Service.config.siteUrl + 'MicroStationData/Update?source=HomeProducts',
-                Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
-            );
-        }
-        return this._homeProduct;
-    }
-    // savePageControls(pageId: string, controls: any[], name: string, remark?: string) {
-    //     let url = `${Service.config.siteUrl}Page/SavePageControls`;
-    //     return Service.post(url, { pageId, controls: JSON.stringify(controls), name, remark });
+    // get homeProduct(): JData.WebDataSource {
+    //     if (!this._homeProduct) {
+    //         this._homeProduct = new JData.WebDataSource(
+    //             Service.config.siteUrl + 'MicroStationData/Select?source=HomeProducts',
+    //             Service.config.siteUrl + 'MicroStationData/Insert?source=HomeProducts',
+    //             Service.config.siteUrl + 'MicroStationData/Update?source=HomeProducts',
+    //             Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
+    //         );
+    //     }
+    //     return this._homeProduct;
     // }
+
     savePageData(pageData: PageData) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
         return Service.postByJson(url, pageData);

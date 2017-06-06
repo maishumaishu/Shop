@@ -132,7 +132,7 @@ export type Category = {
 
 //===============================================
 
-class ShoppingService extends Service {
+export class ShoppingService extends Service {
     url(path: string) {
         return `${Service.config.shopUrl}${path}`;
     }

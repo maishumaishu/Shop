@@ -1,7 +1,7 @@
 
 import { default as site } from 'Site';
 import { customField } from 'myWuZhui';
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import { default as shopping, Category } from 'services/Shopping';
 import * as ui from 'ui';
 

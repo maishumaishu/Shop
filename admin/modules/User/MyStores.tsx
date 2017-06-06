@@ -1,5 +1,5 @@
 import { default as userService, Application } from 'services/User';
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 // import { Page, app } from 'Application';
 import * as ui from 'UI';
 export default async function (page: chitu.Page) {

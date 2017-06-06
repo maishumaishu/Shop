@@ -7,7 +7,6 @@ export default function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
     ReactDOM.render(<StoreMenuPage />, page.element);
 }
-
 class StoreMenuPage extends React.Component<{}, {}>{
     private editorElement: HTMLElement;
     private menuControl: MenuControl;
@@ -32,19 +31,6 @@ class StoreMenuPage extends React.Component<{}, {}>{
         } as PageData;
         return (
             <div>
-                {/*<div style={{ position: 'absolute' }}>
-                    <MobilePage pageData={pageData} >
-                        <MenuControl menuNodes={menuNodes}
-                            ref={o => this.menuControl = o || this.menuControl} />
-                    </MobilePage>
-                </div>
-                <div className="main">
-                    <div ref={(e: HTMLElement) => this.editorElement = e || this.editorElement}>
-                    </div>
-
-                </div>
-                <div className="clearfix">
-                </div>*/}
                 <MobilePageDesigner>
                     <MenuControl menuNodes={menuNodes}
                         ref={o => this.menuControl = o || this.menuControl} />

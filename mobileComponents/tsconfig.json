@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": false,
+        "outDir": "dest",
+        "jsx": "react",
+        "baseUrl": "./",
+        "paths": {
+            "services/*": [
+                "../admin/services/*"
+            ],
+            "*": [
+                "../lib/*",
+                "../user/*"
+            ]
+        },
+        "declaration": true
+    },
+    "exclude": [
+        "dest"
+    ],
+    "include": [
+        "../scripts/typings",
+        "../lib/dest/mobile/mobileControls.d.ts",
+        "*.ts",
+        "*.tsx",
+        "**/*.tsx"
+    ]
+}

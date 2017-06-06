@@ -1,7 +1,7 @@
 import { Editor } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control } from 'mobileComponents/summaryHeader/control'
 
-interface EditorState {
+export interface EditorState {
 
 }
 export default class MyEditor extends Editor<ControlProps, ControlState, EditorState, Control> {

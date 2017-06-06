@@ -1,6 +1,13 @@
 import { Control, ControlArguments, componentsDir } from 'mobileComponents/common';
-import { Product, ShoppingService, ShoppingCartService } from 'userServices';
+import { ShoppingCartService, ShoppingService, Product } from 'userServices';
 import * as ui from 'ui';
+
+// export interface Product {
+//     Id: string,
+//     ImageUrl: string,
+//     Name: string,
+//     Price: number
+// }
 
 let { ImageBox } = controls;
 requirejs([`css!${componentsDir}/singleColumnProduct/control`]);

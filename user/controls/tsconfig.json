@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": false,
+        "outFile": "../../scripts/mobileControls.js",
+        "jsx": "react",
+        "declaration": true
+    },
+    "exclude": [
+        "mobileControls.d.ts"
+    ]
+}

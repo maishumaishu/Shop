@@ -1,5 +1,5 @@
 /** 同城配送 页面*/
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import { default as shopping, CityFreight, } from 'services/Shopping';
 import * as ui from 'UI';
 

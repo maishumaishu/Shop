@@ -1,8 +1,9 @@
 import { ControlArguments, componentsDir } from 'mobileComponents/common';
 import * as common from 'mobileComponents/common'
-
+// import { ImageBox } from 'mobileControls';
 requirejs([`css!${componentsDir}/member/control`]);
-
+// let ImageBox = controls.ImageBox;
+import * as ui from 'ui';
 export interface Props {
 
 }
@@ -12,13 +13,21 @@ export interface State {
 }
 
 export default class MemberControl extends React.Component<Props, State>{
+
     render() {
         return (
             <div className="memberControl">
                 <div className="mobile-user-info">
                     <a href="#user_userInfo" className="pull-left" style={{ margin: '-8px 20px 0px 0px' }}>
-                        {/*<ImageBox src={userInfo.HeadImageUrl} className="img-circle img-full"
+                        {/*<ImageBox src={'userInfo.HeadImageUrl'} className="img-circle img-full"
                             text="上传头像" />*/}
+                        <img className="img-circle img-full" title="上传头像"
+                            src={'userInfo.HeadImageUrl'}
+                            ref={(e: HTMLImageElement) => {
+                                if (!e) return;
+
+                                ui.loadImage(e);
+                            }} />
                     </a>
 
                     <div>

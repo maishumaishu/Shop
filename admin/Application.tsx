@@ -9,6 +9,15 @@ class Application extends chitu.Application {
 
     constructor() {
         super();
+
+        this.pageCreated.add((app, page) => {
+            page.load.add((sender, args) => {
+                let element = sender.element.querySelector('admin-pc');
+                if (element == null) {
+                    sender.element.className = (sender.element.className || '') + ' admin-pc';
+                }
+            });
+        })
     }
 
     protected createPageElement(routeData: chitu.RouteData): HTMLElement {

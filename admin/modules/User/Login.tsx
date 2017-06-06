@@ -1,7 +1,7 @@
 ﻿import { default as userService } from 'services/User';
 import app = require('Application');
 import { default as site } from 'Site';
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import * as ui from 'UI';
 export default async function (page: chitu.Page) {
     class LoginPage extends React.Component<{}, {}>{

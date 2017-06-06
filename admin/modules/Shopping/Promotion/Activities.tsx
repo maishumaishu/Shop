@@ -1,7 +1,7 @@
 
 import { default as activity } from 'services/Activity';
 import site = require('Site');
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import * as ui from 'UI';
 import { GridViewItemPopupEditor } from 'myWuZhui';
 let JData = window['JData'];

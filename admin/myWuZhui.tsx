@@ -1,4 +1,4 @@
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import * as ui from 'ui';
 
 type GridViewItemPopupEditorProps = React.Props<GridViewItemPopupEditor> & {

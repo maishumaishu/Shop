@@ -1,6 +1,6 @@
 import { default as Service } from 'services/Service';
 import site = require('Site');
-import system = require('services/System');
+import { default as system } from 'services/System';
 import validation = require('knockout.validation');
 
 let JData = window['JData'];

@@ -28,10 +28,10 @@
 import { default as Service } from 'services/Service';
 
 
-class SystemService {
+export class SystemService {
     getNotifyTypes() {
         return Service.callMethod('System/GetNotifyTypes');
     }
 }
 
-export = new SystemService();
+export default new SystemService();

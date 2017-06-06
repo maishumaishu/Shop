@@ -1,4 +1,4 @@
-declare module 'services/Station' {
-    import * as station from 'admin/services/Station';
-    export = station;
-}
+// declare module 'a' {
+//     import * as station from '../admin/services/Station';
+//     export = station;
+// }

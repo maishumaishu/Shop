@@ -1,4 +1,4 @@
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import { default as userService } from 'services/User';
 import * as ui from 'UI';
 import app = require('Application');

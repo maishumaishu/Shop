@@ -1,7 +1,7 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'mobileComponents/menu/control';
 requirejs(['css!mobileComponents/menu/editor.css']);
-interface EditorState {
+export interface EditorState {
 }
 export default class MenuEditor extends Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>
     private appendDialogELement: HTMLElement;
@@ -15,13 +15,7 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
         let menuNodes = this.state.menuNodes || [];
         return (
             <div className="menuEditor">
-                <div className="tabbable">
-                    <ul className="nav nav-tabs">
-                        <div className="pull-right">
-                            <button className="btn btn-primary">保存</button>
-                        </div>
-                    </ul>
-                </div>
+                
                 <div className="menu-apply">
                     <div className="title">将菜单应用到以下页面：</div>
                     <div>

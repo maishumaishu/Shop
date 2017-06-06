@@ -1,11 +1,11 @@
-import components = require('mobileComponents/componentDefines');
+import components from 'mobileComponents/componentDefines';
 import bootbox = require('bootbox');
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { componentsDir } from 'mobileComponents/common';
 import { default as station, PageData, ControlData } from 'services/Station';
-import { Button } from 'common/controls';
+// import { Button } from 'common/controls';
 import app = require('Application');
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 import * as ui from 'UI';
 import { alert } from 'ui';
 

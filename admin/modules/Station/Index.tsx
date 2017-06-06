@@ -1,7 +1,8 @@
 /** 店铺概况　页面 */
-import { Button, ImageBox } from 'common/controls';
+// import { Button, ImageBox } from 'common/controls';
 import { default as site } from 'Site'
 export default function (page: chitu.Page) {
+    page.element.className = 'admin-pc';
     requirejs([`css!${page.routeData.actionPath}.css`]);
     class StationIndexPage extends React.Component<{}, {}>{
         userClientUrl() {

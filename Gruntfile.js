@@ -13,13 +13,13 @@ module.exports = function (grunt) {
     grunt.initConfig({
         shell: {
             admin: {
-                command: `tsc -p ./`,
+                command: `tsc -p admin`,
                 options: {
                     failOnError: false
                 }
             },
             user: {
-                command: `tsc -p ./`,
+                command: `tsc -p user`,
                 options: {
                     failOnError: false
                 }
@@ -28,12 +28,11 @@ module.exports = function (grunt) {
         copy: {
             admin: {
                 files: [
-                    { expand: true, cwd: admin_src, src: ['**/*.html'], dest: admin_dest },
-                    { expand: true, cwd: admin_src, src: ['data/*.json'], dest: admin_dest },
-                    { expand: true, cwd: admin_src, src: ['**/*.js'], dest: admin_dest },
-                    { expand: true, cwd: admin_src, src: ['**/*.css'], dest: admin_dest },
-                    { expand: true, cwd: admin_src, src: ['fonts/**/*.*'], dest: admin_dest },
-                    { expand: true, cwd: admin_src, src: ['assets/font/*.*'], dest: admin_dest },
+                    // { expand: true, cwd: admin_src, src: ['**/*.html'], dest: admin_dest },
+                    // { expand: true, cwd: admin_src, src: ['**/*.js'], dest: admin_dest },
+                    { expand: true, cwd: admin_src, src: ['**/*.css', '**/*.html', 'content/font/*.*'], dest: admin_dest },
+                    // { expand: true, cwd: admin_src, src: ['fonts/**/*.*'], dest: admin_dest },
+                    // { expand: true, cwd: admin_src, src: ['assets/font/*.*'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['scripts/ueditor/**/*.*'], dest: admin_dest },
                     { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${admin_dest}/scripts` },
 
@@ -41,6 +40,7 @@ module.exports = function (grunt) {
                     { expand: true, cwd: `mobileComponents`, src: ['**/*.png'], dest: `${dest}/mobileComponents` },
                     { expand: true, cwd: `${dest}/common`, src: ['*.js'], dest: `${admin_dest}` },
                     { expand: true, cwd: `${dest}/mobileComponents`, src: ['**/*.*'], dest: `${admin_dest}/mobileComponents` },
+                    { expand: true, cwd: `lib/dest`, src: ['**/*.js'], dest: `${admin_dest}` },
                     // { expand: true, cwd: `mobileComponents`, src: ['*.html'], dest: `${admin_dest}/mobileComponents` }
                 ]
             },
@@ -157,13 +157,13 @@ module.exports = function (grunt) {
                     }
                 ]
             },
-            mobileComponents:{
-                files:[
+            mobileComponents: {
+                files: [
                     {
                         expand: true,
                         cwd: `mobileComponents`,
                         src: ['**/*.less'],
-                        dest: `${dest}/mobileComponents`,
+                        dest: `${admin_dest}/mobileComponents`,
                         ext: '.css'
                     },
                 ]
@@ -185,7 +185,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.registerTask('admin', ['shell:admin', 'sass:admin', 'less:admin', 'stylus:admin', 'copy:admin']);
+    grunt.registerTask('admin', ['shell:admin', 'sass:admin', 'less:admin', 'less:mobileComponents', 'stylus:admin', 'copy:admin']);
     grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
     grunt.registerTask('default', ['admin', 'user']);
     grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);

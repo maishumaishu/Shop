@@ -4,7 +4,7 @@ interface FetchOptions {
     body?: any,
 }
 
-interface Response {
+interface FetchResponse {
     json(): any;
     text(): string | Promise<string>;
     status: number;
@@ -12,7 +12,7 @@ interface Response {
 
 }
 
-declare function fetch(url: string, options: FetchOptions): Promise<Response>
+declare function fetch(url: string, options: FetchOptions): Promise<FetchResponse>
 
 
 declare module "fetch" {

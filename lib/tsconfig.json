@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": false,
+        "outDir": "dest",
+        "jsx": "react",
+        "declaration": true
+    },
+    "exclude": [
+        "dest",
+        "mobile/controls"
+    ]
+}

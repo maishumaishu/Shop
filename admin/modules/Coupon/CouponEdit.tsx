@@ -1,8 +1,8 @@
 import app = require('Application');
 import site = require('Site');
 import { default as shopping, Coupon } from 'services/Shopping';
-import UE = require('common/ue.ext');
-import FormValidator = require('common/formValidator');
+import UE = require('ue.ext');
+import FormValidator from 'formValidator';
 import * as ui from 'myWuZhui';
 import { buttonOnClick } from 'ui';
 export default function (page: chitu.Page) {

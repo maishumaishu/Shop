@@ -1,7 +1,7 @@
 import { Editor } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control, StyleType } from 'mobileComponents/style/control'
 requirejs(['css!mobileComponents/style/editor.css']);
-interface EditorState {
+export interface EditorState {
 
 }
 

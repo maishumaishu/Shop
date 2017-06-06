@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": false,
+        "outDir": "../www/user",
+        "jsx": "react"
+    },
+    "exclude": [
+        // "**/*.d.ts",
+        "user",
+        // "../scripts",
+        "components",
+        "controls"
+    ],
+    "include": [
+        "../scripts",
+        "*.tsx",
+        "**/*.tsx",
+        "*.ts",
+        "**/*.ts"
+    ]
+}

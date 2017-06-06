@@ -10,7 +10,7 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
-interface RegisterModel {
+export interface RegisterModel {
     user: { mobile: string, password: string },
     smsId: string,
     verifyCode: string
@@ -29,7 +29,7 @@ export interface UserInfo {
     UserId: string,
 }
 
-class UserService {
+export class UserService {
     private url(path: string) {
         let url = `http://${Service.config.serviceHost}/${path}`;
         return url;

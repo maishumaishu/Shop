@@ -1,7 +1,7 @@
 ﻿import { default as memberService, UserInfo } from 'services/User';
 import * as ui from 'UI';
 
-import FormValidator = require('common/formValidator');
+import FormValidator from 'formValidator';
 
 export default function (page: chitu.Page) {
     page.element.className = 'admin-pc';

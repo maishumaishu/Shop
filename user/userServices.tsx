@@ -1064,7 +1064,7 @@ export class ValueStore<T> {
 }
 
 /** 与用户相关的数据 */
-class UserData {
+export class UserData {
     private _productsCount = new ValueStore<number>();
     private _toEvaluateCount = new ValueStore<number>();
     private _sendCount = new ValueStore<number>();

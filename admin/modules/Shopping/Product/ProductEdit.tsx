@@ -2,11 +2,11 @@
 import { default as shopping, Product as ShoppingProduct, Brand } from 'services/Shopping';
 import { Service, ValueStore } from 'services/Service';
 
-import UE = require('common/ue.ext');
-import { ImageBox } from 'common/controls';
+import UE = require('ue.ext');
+// import { ImageBox } from 'common/controls';
 import { PropertiesComponent } from 'modules/Shopping/Product/Properties';
-import FormValidator = require('common/formValidator');
-import * as ui from 'UI';
+import FormValidator from 'formValidator';
+import * as ui from 'ui';
 
 class Product {
     Id = ko.observable()
@@ -155,8 +155,8 @@ export default function (page: chitu.Page) {
     //     ko.applyBindings(model, page.element);
     //     page_load(page, model, page.routeData.values);
     // });
-    requirejs(['css!content/Shopping/ProductEdit.css'], function (html) { });
-
+    //requirejs(['css!content/Shopping/ProductEdit.css'], function (html) { });
+    requirejs([`css!${page.routeData.actionPath}.css`]);
 
     type PageState = {
         categories: Array<{ Id: string, Name: string }>,
@@ -336,7 +336,8 @@ export default function (page: chitu.Page) {
                     <div className="row form-group">
                         {(product.ImagePaths || []).map((o, i) =>
                             <div key={i} className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: 114, height: 114 }}>
-                                <ImageBox key={i} style={{ width: 112, height: 112 }} src={o} />
+                                {/*<ImageBox key={i} style={{ width: 112, height: 112 }} src={o} />*/}
+                                <img key={i} src={o} style={{ width: 112, height: 112 }} ref={(e: HTMLImageElement) => ui.loadImage(e)} />
                                 <div style={{ position: 'relative', bottom: 18, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
                                     <a data-bind="click:$root.remove" href="javascript:" style={{ color: 'white' }}>
                                         删除

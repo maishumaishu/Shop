@@ -1147,7 +1147,7 @@ interface JQueryStatic {
 /**
  * The jQuery instance members
  */
-interface JQuery extends JDataStatic {
+interface JQuery {
     /**
      * Register a handler to be called when Ajax requests complete. This is an AjaxEvent.
      *

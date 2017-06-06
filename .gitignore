@@ -6,3 +6,5 @@
 .baseDir.*
 .sass-cache
 nohup.out
+dest
+temp

@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": false,
+        "outDir": "../www",
+        "jsx": "react",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "../lib/dest/*"
+            ]
+        }
+    },
+    "exclude": [
+        "mobileControls",
+        "node_modules"
+        // "**/*.d.ts",
+        // "user"
+    ],
+    "include": [
+        "../scripts",
+        // "../user/mobileComponents",
+        "*.tsx",
+        "**/*.tsx",
+        "*.ts",
+        "**/*.ts"
+        // "../lib"
+    ]
+}
