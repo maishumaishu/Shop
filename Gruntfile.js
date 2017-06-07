@@ -51,12 +51,12 @@ module.exports = function (grunt) {
             },
             user: {
                 files: [
-                    { expand: true, cwd: user_src, src: ['**/*.html', '**/*.js', '**/*.css'], dest: user_dest },
-                    { expand: true, cwd: `${admin_dest}/mobile`, src: ['**/control.*', '*.js'], dest: `${user_dest}` },
-                    {
-                        expand: true, cwd: user_src, dest: user_dest,
-                        src: ['js/**/*.js', 'content/**/*.css', 'content/font/*.*', 'images/**/*.*', 'index.html'],
-                    },
+                    { expand: true, cwd: user_src, src: ['**/*.html', '**/*.js', '**/*.css', '**/*.png'], dest: user_dest },
+                    // { expand: true, cwd: `${admin_dest}/mobile`, src: ['**/control.*', '*.js'], dest: `${user_dest}` },
+                    // {
+                    //     expand: true, cwd: user_src, dest: user_dest,
+                    //     src: ['js/**/*.js', 'content/**/*.css', 'content/font/*.*', 'images/**/*.*', 'index.html'],
+                    // },
                 ]
             }
         },
@@ -141,18 +141,18 @@ module.exports = function (grunt) {
             },
             user: {
                 files: [
-                    {
-                        expand: true,
-                        cwd: user_src + `/modules`,
-                        src: ['**/*.less'],
-                        dest: `${user_src}/content/app`,
-                        ext: '.css'
-                    },
+                    // {
+                    //     expand: true,
+                    //     cwd: user_src + `/modules`,
+                    //     src: ['**/*.less'],
+                    //     dest: `${user_src}/content/app`,
+                    //     ext: '.css'
+                    // },
                     {
                         expand: true,
                         cwd: user_src,
-                        src: [`*.less`],
-                        dest: `${user_src}/content/app`,
+                        src: [`**/*.less`],
+                        dest: `${user_dest}`,
                         ext: '.css'
                     }
                 ]

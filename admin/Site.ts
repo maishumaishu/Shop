@@ -2,38 +2,6 @@
 
 let bootbox = window['bootbox'];
 
-// class SiteCookies {
-//     private site: Site;
-
-//     constructor(site: Site) {
-//         this.site = site;
-//     }
-//     name(name) {
-//         return 'CookiePrefix' + "_" + name;
-//     }
-//     value(name, value?) {
-//         var cookie_name = this.name(name);
-//         if (value === undefined)
-//             return $.cookie(cookie_name);
-
-//         $.cookie(cookie_name, value);
-//     }
-//     appToken() {
-//         return "E26297B41339791C2F79EA9F5D66CC090C47F8265F984EA7239322642C0B333D65E49B0DDC581C3C";//this.value('appToken');
-//     }
-//     shopUrl() {
-//         return this.value('shopUrl');
-//     }
-//     siteUrl() {
-//         return this.value('siteUrl');
-//     }
-//     weixinUrl() {
-//         return this.value('weixinUrl');
-//     }
-//     memberUrl() {
-//         return this.value('memberUrl');
-//     }
-// }
 class Site {
     constructor() {
     }

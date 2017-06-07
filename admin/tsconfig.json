@@ -5,22 +5,18 @@
         "sourceMap": false,
         "outDir": "../www",
         "jsx": "react",
-        "baseUrl": ".",
+        "baseUrl": "../",
         "paths": {
             "*": [
-                "../lib/dest/*"
+                "lib/*"
+            ],
+            "mobileComponents/*":[
+                "user/pageComponents/*"
             ]
         }
     },
-    "exclude": [
-        "mobileControls",
-        "node_modules"
-        // "**/*.d.ts",
-        // "user"
-    ],
     "include": [
         "../scripts",
-        // "../user/mobileComponents",
         "*.tsx",
         "**/*.tsx",
         "*.ts",

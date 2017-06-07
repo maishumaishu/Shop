@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": false,
+        "outDir": "../../www",
+        "jsx": "react",
+        "baseUrl": "../../",
+        "paths": {
+            "*": [
+                "lib/*",
+                "user/*"
+            ],
+            "services/*": [
+                "admin/services/*"
+            ],
+            "mobileComponents/*": [
+                "user/pageComponents/*"
+            ]
+        },
+        "declaration": true
+    },
+    "exclude": [
+        "dest"
+    ],
+    "include": [
+        "../../scripts/typings",
+        "../../lib/dest/mobile/mobileControls.d.ts",
+        "*.ts",
+        "*.tsx",
+        "**/*.tsx"
+    ]
+}

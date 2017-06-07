@@ -1,6 +1,6 @@
 import { Page, defaultNavBar, app } from 'site';
 import { ReceiptInfo, ShoppingService } from 'services';
-import FormValidator = require('core/formValidator');
+import FormValidator from 'formValidator';
 import { RegionsPageRouteValues } from 'modules/user/regions';
 import * as ui from 'ui';
 

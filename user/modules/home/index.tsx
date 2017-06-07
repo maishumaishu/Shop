@@ -1,7 +1,7 @@
 import { Page, Menu, app } from 'site';
 import { StationService, HomeProduct } from 'services';
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList, createHammerManager } = controls;
-import Carousel = require('core/carousel');
+import Carousel = require('carousel');
 import Hammer = require('hammer');
 
 export default function (page: Page) {

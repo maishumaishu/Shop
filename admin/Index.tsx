@@ -88,7 +88,7 @@ requirejs.config({
         'ue': 'scripts/ueditor',
         'wuzhui': 'scripts/wuzhui',
         userServices: 'mobile/userServices',
-        // mobileComponents:'mobile/components'
+        mobileComponents:'../user/pageComponents'
     }
 });
 var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];

@@ -3,15 +3,20 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../www/user",
-        "jsx": "react"
+        "outDir": "../www",
+        "jsx": "react",
+        "baseUrl": "../",
+        "paths": {
+            "*": [
+                "lib/dest/*"
+            ]
+        }
     },
     "exclude": [
-        // "**/*.d.ts",
         "user",
-        // "../scripts",
         "components",
-        "controls"
+        "controls",
+        "pageComponents"
     ],
     "include": [
         "../scripts",
