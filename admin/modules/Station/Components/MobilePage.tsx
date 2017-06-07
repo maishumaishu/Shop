@@ -46,7 +46,7 @@ export class MobilePage extends React.Component<Props, {}>{
                 <div className="sensor"></div>
                 <div className="speaker"></div>
                 <div className="screen">
-                    <div className="user-mobile">
+                    <div>
                         {controls.map((o, i) => (
                             <div key={i}
                                 ref={(e: HTMLElement) => {
@@ -58,9 +58,8 @@ export class MobilePage extends React.Component<Props, {}>{
                                 }}>
                             </div>
                         ))}
-                        {children ? children : null}
                     </div>
-
+                    {children ? children : null}
                 </div>
                 <div className="home"></div>
                 <div className="bottom-bar"></div>

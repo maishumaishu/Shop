@@ -153,8 +153,8 @@ export let loadImage = (function () {
             img_height = new Number(arr[2]).valueOf();
         }
 
-        element.setAttribute('width', img_width + 'px');
-        element.setAttribute('height', img_height + 'px');
+        // element.setAttribute('width', img_width + 'px');
+        // element.setAttribute('height', img_height + 'px');
 
         function getPreviewImage(imageText: string, img_width: number, img_height: number) {
 

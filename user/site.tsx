@@ -256,7 +256,7 @@ export class Application extends BaseApplication {
     }
 }
 
-export let app = window['app'] = new Application();
+export let app = new Application();
 app.backFail.add(() => {
     app.redirect(config.defaultUrl);
 });

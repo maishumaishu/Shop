@@ -1,8 +1,4 @@
 
-// declare module 'mobileControls' {
-//     export = controls;
-// }
-// declare module 'mobileComponents' {
-//     export * from 'pageComponents'
-// }
-
+declare module 'mobileControls' {
+    export = controls;
+}

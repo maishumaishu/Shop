@@ -14,7 +14,7 @@ export default class StyleControl extends React.Component<Props, State>{
 
     render() {
         let style = this.state.style;
-        let path = `${componentsDir}/style/style_${style}.css`;
+        let path = `../user/pageComponents/style/style_${style}.css`;
         return <link rel="stylesheet" href={path}></link>
     }
 } 

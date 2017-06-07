@@ -1,0 +1,157 @@
+@import "../../../content/bootstrap-3.3.7/less/variables.less";
+@immersion-height: 50px;
+
+/* 页面样式 开始*/
+.mobile-page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background-color: #fff;
+  box-shadow: -10px 0px 10px 0px rgba(0, 0, 0, 0.2);
+
+  section {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-user-drag:none;
+    // -webkit-user-select: none;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .loading {
+      width: 100%;
+      font-size: 120px;
+      text-align: center;  
+      padding-top: 80px;
+      color: #bbb;
+      background-color: @body-bg;
+  }
+  .error {
+      background-color: @body-bg;
+  }
+
+    header {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        width: 100%;
+        position: absolute;
+        // background-color: @brand-primary; 
+        z-index: @zindex-navbar-fixed;
+        top: 0px;
+
+        button {
+            border: none;
+            background-color: unset;
+            color: #fff;
+            padding: 0px;
+            text-align: center;
+            
+            &:focus {
+                outline:none;
+            }
+        }
+
+        @nav-padding-top:8px;
+        nav {
+            height: @navbar-height; 
+            width: 100%;
+            position: absolute;
+            z-index: 200;
+
+            .right-button,
+            .rightButton {
+                border-radius: 15px;            
+                font-size: 18px;
+                float: right;
+                margin: 12px 10px 0px 0px;
+                height: 30px;
+                width: 30px;
+            }
+
+            .left-button,
+            .leftButton {
+                border-radius: 15px;
+                font-size: 18px;
+                float: left;
+                margin: 12px 0px 0px 10px;
+                height: 30px;
+                width: 30px;
+
+            }
+
+            h4 {
+                color: @body-bg;
+                font-size: 18px;
+                height: @navbar-height; 
+                padding: @navbar-padding-horizontal 0 0 0;
+                text-align: center;
+            }
+        }
+    }
+
+    .immersion {
+        header {
+            nav {
+                height: @navbar-height + @immersion-height;
+                padding-top: @immersion-height; 
+            }
+        }
+        .tabs {
+            top: @navbar-height + @immersion-height;
+        }
+    }
+
+    footer {
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+        z-index: @zindex-navbar-fixed;
+    }
+  
+}
+
+
+
+ul.tabs {
+    opacity: 0.9;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: @navbar-height;
+    width: 100%;
+    z-index: 100;
+
+    li {
+        float: left;
+        text-align: center;
+        background-color: #fff;
+        font-size: 16px;
+        display: block;
+        border: 1px solid @gray-lighter;
+        border-left: none;
+        padding: 8px;
+        color: #999;
+        cursor: pointer;
+        // width: 33.33%;
+
+        &:first-child {
+            border-left: 1px solid #e5e5e5;
+        }
+
+        //a {
+        text-decoration: none;
+
+        &.active {
+            color: @brand-primary;
+            font-weight: bold;
+        }
+    }
+    
+}
+
+

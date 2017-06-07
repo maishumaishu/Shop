@@ -1,4 +1,3 @@
-/// <reference path="../lib/dest/mobile/mobileControls.d.ts"/>
 declare module 'mobileControls' {
     export = controls;
 }

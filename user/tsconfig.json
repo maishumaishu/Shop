@@ -20,6 +20,7 @@
     ],
     "include": [
         "../scripts",
+         "../lib/dest/mobile/mobileControls.d.ts",
         "*.tsx",
         "**/*.tsx",
         "*.ts",

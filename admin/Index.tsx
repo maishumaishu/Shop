@@ -47,7 +47,7 @@ requirejs.config({
         },
         'mobileControls': {
             exports: 'controls',
-            deps: ['bezier-easing']
+            deps: ['hammer', 'bezier-easing']
         }
     },
     paths: {
@@ -71,7 +71,6 @@ requirejs.config({
         'ko.val': 'scripts/knockout.validation.cn',
         'knockout.validation': 'scripts/knockout.validation',
         'knockout.mapping': 'scripts/knockout.mapping',
-        'mobileControls': 'scripts/mobileControls',
         react: 'scripts/react',
         'react-dom': 'scripts/react-dom',
         move: 'scripts/move',
@@ -88,7 +87,8 @@ requirejs.config({
         'ue': 'scripts/ueditor',
         'wuzhui': 'scripts/wuzhui',
         userServices: 'mobile/userServices',
-        mobileComponents:'../user/pageComponents'
+        mobileComponents: '../user/pageComponents',
+        mobileControls: 'mobileControls'
     }
 });
 var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];
