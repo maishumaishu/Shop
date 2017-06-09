@@ -1,5 +1,3 @@
-
-
 /** 实现数据的存储，以及数据修改的通知 */
 export class ValueStore<T> {
     private funcs = new Array<(args: T) => void>();
@@ -78,19 +76,73 @@ export class ValueStoreContainer<T> {
 
 
 export const componentsDir = 'mobileComponents';
+export const pageClassName = 'mobile-page';
 
 //==============================================================
-// Control
-export interface ControlArguments<T> {
-    element: HTMLElement,
-    data: T
+export type Mode = 'design' | 'preview';
+export interface ControlProp<T> extends React.Props<T> {
+    onClick?: (event: React.MouseEvent, control: T) => void,
+    mode?: Mode
 }
-interface ControlConstructor<T> {
-    new (args: ControlArguments<T>): Control<T>;
-}
-export abstract class Control<T> {
-    constructor(args: ControlArguments<T>) {
+export abstract class Control<P extends ControlProp<any>, S> extends React.Component<P, S> {
+    protected element: HTMLElement;
+    constructor(props) {
+        super(props)
     }
+    abstract renderChildren(h): JSX.Element;
+    render() {
+        let isDesignMode = this.props.mode == 'design';
+        let h = isDesignMode ? Control.createDesignElement : Control.createStandElement;
+        return (
+            <div onClick={(e) => {
+                if (this.props.onClick) {
+                    this.props.onClick(e, this);
+                }
+            }} ref={(e: HTMLElement) => this.element = e || this.element}>
+                {this.renderChildren(h)}
+            </div>
+        )
+    }
+
+    static createDesignElement(type, props: ControlProp<any>, ...children) {
+        props = props || {};
+        props.onClick = () => { };
+        props.mode = 'design';
+        if ((props as any).href) {
+            (props as any).href = 'javascript:';
+        }
+        let args = [type, props];
+        for (let i = 2; i < arguments.length; i++) {
+            args[i] = arguments[i];
+        }
+        return React.createElement.apply(React, args);
+    }
+    static createStandElement(type, props: ControlProp<any>, ...children) {
+        let args = [type, props];
+        for (let i = 2; i < arguments.length; i++) {
+            args[i] = arguments[i];
+        }
+        return React.createElement.apply(React, args);
+    }
+
+    private get isDesignMode() {
+        let screenElement = this.findScreenElement(this.element);
+        return screenElement != null;
+    }
+
+    private findScreenElement(element: HTMLElement): HTMLElement {
+        let screenElement: HTMLElement;
+        let p = element;
+        while (p != null) {
+            if (p.className.indexOf('screen') >= 0) {
+                screenElement = p;
+                break;
+            }
+            p = p.parentElement;
+        }
+        return screenElement;
+    }
+
 }
 //==============================================================
 // AJAX

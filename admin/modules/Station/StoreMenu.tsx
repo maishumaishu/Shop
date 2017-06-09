@@ -3,6 +3,8 @@ import { MobilePage } from 'modules/Station/Components/MobilePage';
 import { MobilePageDesigner } from 'modules/Station/Components/MobilePageDesigner';
 import { default as MenuControl, MenuNode, Props as MenuProps } from 'mobileComponents/menu/control';
 import { default as MenuEditor } from 'mobileComponents/menu/editor';
+import { default as StyleControl } from 'mobileComponents/style/control';
+import { PageComponent, PageView, PageFooter } from 'mobileControls';
 export default function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
     ReactDOM.render(<StoreMenuPage />, page.element);
@@ -11,7 +13,6 @@ class StoreMenuPage extends React.Component<{}, {}>{
     private editorElement: HTMLElement;
     private menuControl: MenuControl;
     componentDidMount() {
-        // ReactDOM.render(<MenuEditor control={this.menuControl} />, this.editorElement);
     }
     render() {
         let menuPros: MenuProps = {
@@ -30,12 +31,14 @@ class StoreMenuPage extends React.Component<{}, {}>{
             ]
         } as PageData;
         return (
-            <div>
-                <MobilePageDesigner>
-                    <MenuControl menuNodes={menuNodes}
-                        ref={o => this.menuControl = o || this.menuControl} />
-                </MobilePageDesigner>
-            </div>
+            <MobilePageDesigner>
+                <PageComponent>
+                    <PageFooter>
+                        <MenuControl menuNodes={menuNodes}
+                            ref={o => this.menuControl = o || this.menuControl} />
+                    </PageFooter>
+                </PageComponent>
+            </MobilePageDesigner>
         );
     }
 }

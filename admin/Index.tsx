@@ -87,8 +87,7 @@ requirejs.config({
         'ue': 'scripts/ueditor',
         'wuzhui': 'scripts/wuzhui',
         userServices: 'mobile/userServices',
-        mobileComponents: '../user/pageComponents',
-        mobileControls: 'mobileControls'
+        mobileComponents: '../user/pageComponents'
     }
 });
 var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];
@@ -97,7 +96,7 @@ requirejs(references, function (ReactClass, ReactDOMClass, ko, mapping, app) {
     window['ReactDOM'] = ReactDOMClass;
     window['ko'] = ko;
     window['ko'].mapping = mapping;
-
+    window['h'] = React.createElement;
 
 
     app.run()

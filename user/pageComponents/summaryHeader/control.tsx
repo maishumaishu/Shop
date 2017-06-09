@@ -1,5 +1,5 @@
 import * as common from 'mobileComponents/common'
-
+let h = React.createElement;
 requirejs([`css!${common.componentsDir}/summaryHeader/control`]);
 
 export class Data {

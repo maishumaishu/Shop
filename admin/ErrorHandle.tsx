@@ -3,9 +3,13 @@ import app = require('Application');
 import bootbox = require('bootbox');
 
 
+let container = document.createElement('div');
+container.className = 'admin-pc';
+document.body.appendChild(container);
+
 let alertElement = document.createElement('div');
 alertElement.className = 'modal fade';
-document.body.appendChild(alertElement);
+container.appendChild(alertElement);
 
 function alert(error: { title: string, message: string }) {
     ReactDOM.render(

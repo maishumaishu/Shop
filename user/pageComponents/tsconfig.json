@@ -2,13 +2,15 @@
     "compilerOptions": {
         "target": "es6",
         "module": "amd",
-        "sourceMap": false,
-        "outDir": "../../www",
+        "sourceMap": true,
+        "outDir": "../../www/user",
         "jsx": "react",
+        "jsxFactory": "h",
         "baseUrl": "../../",
+        "inlineSourceMap": false,
         "paths": {
             "*": [
-                "lib/*",
+                "lib/dest/*",
                 "user/*"
             ],
             "services/*": [

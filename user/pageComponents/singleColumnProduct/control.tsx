@@ -1,7 +1,7 @@
-import { Control, ControlArguments, componentsDir } from 'mobileComponents/common';
+import { Control, componentsDir } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, Product } from 'userServices';
 import * as ui from 'ui';
-
+// let h = React.createElement;
 // export interface Product {
 //     Id: string,
 //     ImageUrl: string,
@@ -33,8 +33,8 @@ export interface State {
     products: (Product & { Count: number })[]
 }
 
-export default class MyControl extends React.Component<Props, State> {
-    constructor(args: ControlArguments<Data>) {
+export default class MyControl extends Control<Props, State> {
+    constructor(args) {
         super(args);
         this.state = { products: [] };
         Promise.all([shopping.products(0), shoppingCart.items()]).then(data => {
@@ -70,7 +70,7 @@ export default class MyControl extends React.Component<Props, State> {
         });
     }
 
-    render() {
+    renderChildren(h) {
         return (
             <div className="singleColumnProduct">
                 {this.state.products.map(o =>

@@ -1,18 +1,21 @@
-import { Control, ControlArguments, componentsDir } from 'mobileComponents/common';
+import { componentsDir, Control } from 'mobileComponents/common';
+import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'userServices';
+import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel, PageHeader, PageFooter, PageView, Button } from 'mobileControls';
 import * as ui from 'ui';
 requirejs(['css!mobileComponents/product/control.css']);
+
 export interface Props {
 
 }
 export interface State {
 
 }
-export default class ProductControl extends React.Component<Props, State>{
+export default class ProductControl extends Control<Props, State>{
     constructor(props) {
         super(props);
 
     }
-    render() {
+    renderChildren(h) {
         let shopping = new ShoppingService();
         let shoppingCart = new ShoppingCartService();
         let product = {
@@ -21,14 +24,11 @@ export default class ProductControl extends React.Component<Props, State>{
             CustomProperties: []
         } as Product;
         return (
-            <ProductPage shop={shopping} shoppingCart={shoppingCart} product={product} />
+            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} />
         );
     }
 }
 
-import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'userServices';
-// import { Page, config, app, subscribe } from 'site';
-import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel, PageHeader, PageFooter, PageView, Button } from 'mobileControls';
 
 let productStore = new ValueStore<Product>();
 
@@ -44,7 +44,7 @@ interface ProductPageState {
 }
 
 
-class ProductPanel extends React.Component<{ product: Product, parent: ProductPage, shop: ShoppingService } & React.Props<ProductPanel>,
+class ProductPanel extends Control<{ product: Product, parent: ProductView, shop: ShoppingService } & React.Props<ProductPanel>,
     { product: Product, count: number }> {
 
     private panel: controls.Panel;
@@ -100,7 +100,7 @@ class ProductPanel extends React.Component<{ product: Product, parent: ProductPa
     show() {
         this.panel.show('right');
     }
-    render() {
+    renderChildren(h) {
         let p = this.state.product;
         return (
             <Panel ref={(o) => this.panel = o}
@@ -175,7 +175,7 @@ class ProductPanel extends React.Component<{ product: Product, parent: ProductPa
     }
 }
 
-class ProductPage extends React.Component<{ product: Product, shop: ShoppingService, shoppingCart: ShoppingCartService }, ProductPageState>{
+class ProductView extends Control<{ product: Product, shop: ShoppingService, shoppingCart: ShoppingCartService }, ProductPageState>{
 
     private productView: controls.PageView;
     private header: controls.PageHeader;
@@ -214,6 +214,7 @@ class ProductPage extends React.Component<{ product: Product, shop: ShoppingServ
 
     private showPanel() {
         this.productPanel.show();
+        return Promise.resolve();
     }
     private productSelectedText(product: Product) {
         var str = '';
@@ -302,7 +303,7 @@ class ProductPage extends React.Component<{ product: Product, shop: ShoppingServ
         this.setState(this.state);
     }
 
-    render() {
+    renderChildren(h) {
         let p = this.state.product;
         let { productsCount, couponsCount } = this.state;
         return (
@@ -353,7 +354,7 @@ class ProductPage extends React.Component<{ product: Product, shop: ShoppingServ
                             </p>
                         </div>
 
-                        <div onClick={() => this.showPanel()} className="col-xs-12 box">
+                        <div className="col-xs-12 box test" onClick={() => this.showPanel()}>
                             <div className="pull-left">
                                 <span>已选：</span>
                                 <span>{this.state.productSelectedText}</span>
@@ -401,6 +402,19 @@ class ProductPage extends React.Component<{ product: Product, shop: ShoppingServ
                     </div>
                     <hr />
                 </PageView>
+                <PageFooter>
+                    <nav>
+                        <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
+                            <i className="icon-shopping-cart"></i>
+                            {this.state.productsCount ?
+                                <span className="badge bg-primary">{productsCount}</span>
+                                : null
+                            }
+                        </a>
+                        <Button onClick={() => this.addToShoppingCart()} className="btn btn-primary pull-right" >加入购物车</Button>
+                    </nav>
+                </PageFooter>
+                <ProductPanel ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.props.shop} />
             </PageComponent>
 
 
@@ -408,7 +422,7 @@ class ProductPage extends React.Component<{ product: Product, shop: ShoppingServ
     }
 }
 
-class PromotionComponent extends React.Component<
+class PromotionComponent extends Control<
     { promotion: Promotion, key: any },
     { status: 'collapse' | 'expand' }>{
 
@@ -427,7 +441,7 @@ class PromotionComponent extends React.Component<
         this.setState(this.state);
     }
 
-    render() {
+    renderChildren(h) {
         let type = this.props.promotion.Type;
         let contents = this.props.promotion.Contents;
         let status = this.state.status;

@@ -1,6 +1,6 @@
 import { Editor } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control'
-
+let h = React.createElement;
 export interface EditorState {
 
 }

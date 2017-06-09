@@ -123,18 +123,18 @@ module.exports = function (grunt) {
         less: {
             admin: {
                 files: [
+                    // {
+                    //     expand: true,
+                    //     cwd: `${admin_src}/modules`,
+                    //     src: ['**/*.less'],
+                    //     dest: `${admin_dest}/modules`,
+                    //     ext: '.css'
+                    // },
                     {
                         expand: true,
-                        cwd: `${admin_src}/modules`,
+                        cwd: `${admin_src}`,
                         src: ['**/*.less'],
-                        dest: `${admin_dest}/modules`,
-                        ext: '.css'
-                    },
-                    {
-                        expand: true,
-                        cwd: `${admin_src}/content`,
-                        src: ['**/*.less'],
-                        dest: `${admin_dest}/content`,
+                        dest: `${admin_dest}`,
                         ext: '.css'
                     },
                 ]

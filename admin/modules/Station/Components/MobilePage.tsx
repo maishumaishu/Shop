@@ -1,20 +1,24 @@
 import { default as station, PageData, ControlData } from 'services/Station';
+import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
+import { Control, ControlProp, Mode } from 'mobileComponents/common';
+import { default as StyleControl } from 'mobileComponents/style/control';
 requirejs(['css!content/devices.css']);
 
-interface Props extends React.Props<MobilePage> {
+
+interface Props extends ControlProp<MobilePage> {
     pageData?: PageData,
-    mode: 'design' | 'preview'
+    controlSelected?: (component: React.Component<any, any>) => void,
+    mode: Mode
 }
 
-export class MobilePage extends React.Component<Props, {}>{
+export class MobilePage extends Control<Props, {}>{
+    private screenElement: HTMLElement;
     constructor(props) {
         super(props);
     }
 
-    componentDidMount() {
-        if (this.props.mode == 'design') {
-            //TODO:移除控件的点击事件
-        }
+    static getInstanceByElement(element: HTMLElement): MobilePage {
+        return (element as any).mobilePage;
     }
 
     async createControlInstance(controlId: string, controlName: string, element: HTMLElement, controlData?: any) {
@@ -31,12 +35,21 @@ export class MobilePage extends React.Component<Props, {}>{
         })
     }
 
-    render() {
+    controlCreated(component, type) {
+        if (type == PageView) {
+            let c = component as PageView;
+        }
+        else if (type == PageFooter) {
+            let c = component as PageFooter;
+        }
+    }
+
+    renderChildren() {
         let controls: ControlData[] = [];
         if (this.props.pageData)
             controls = this.props.pageData.controls || [];
 
-        let children = this.props.children;
+        let children = React.Children.toArray(this.props.children) || [];
         return (
             <div className="marvel-device iphone5c blue">
                 <div className="top-bar"></div>
@@ -45,25 +58,21 @@ export class MobilePage extends React.Component<Props, {}>{
                 <div className="camera"></div>
                 <div className="sensor"></div>
                 <div className="speaker"></div>
-                <div className="screen">
-                    <div>
-                        {controls.map((o, i) => (
-                            <div key={i}
-                                ref={(e: HTMLElement) => {
-                                    if (e == null) {
-                                        return;
-                                    }
-
-                                    this.createControlInstance(o.controlId, o.controlName, e, o.data);
-                                }}>
-                            </div>
-                        ))}
-                    </div>
-                    {children ? children : null}
+                <div className="screen"
+                    ref={(e: HTMLElement) => {
+                        if (!e) return;
+                        this.screenElement = e;
+                        e.setAttribute('mode', this.props.mode);
+                        (e as any).mobilePage = this;
+                    }}>
+                    {children}
+                    <StyleControl />
                 </div>
                 <div className="home"></div>
                 <div className="bottom-bar"></div>
             </div>
         );
     }
+
+
 }

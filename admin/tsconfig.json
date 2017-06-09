@@ -5,13 +5,14 @@
         "sourceMap": false,
         "outDir": "../www",
         "jsx": "react",
+        "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
             "*": [
                 "lib/*"
             ],
             "mobileComponents/*":[
-                "user/pageComponents/*"
+                "www/user/pageComponents/*"
             ]
         }
     },

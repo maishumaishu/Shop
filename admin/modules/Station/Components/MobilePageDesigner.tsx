@@ -7,7 +7,7 @@ export interface Props extends React.Props<MobilePage> {
 
 
 export class MobilePageDesigner extends React.Component<any, { editors: React.ReactElement<any>[] }> {
-    private controls: Array<{ control: Control<any>, name: string }>;
+    private controls: Array<{ control: Control<any, any>, name: string }>;
     private editorsElement: HTMLElement;
     constructor(props) {
         super(props);
@@ -15,7 +15,7 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
         this.controls = [];
     }
 
-    loadEditor(controlName: string, control: Control<any>, editorElement: HTMLElement) {
+    loadEditor(controlName: string, control: Control<any, any>, editorElement: HTMLElement) {
         let editorPathName = Editor.path(controlName);
         requirejs([editorPathName], (exports) => {
             let editorType = exports.default;
@@ -29,32 +29,17 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
         for (let i = 0; i < this.controls.length; i++) {
             let editorElement = document.createElement('div');
             this.editorsElement.appendChild(editorElement);
-            this.loadEditor(this.controls[i].name, this.controls[i].control, editorElement);
         }
     }
     render() {
+        let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
-        // .filter(o => typeof o.type != 'string');
-
         return (
             <div>
                 <div style={{ position: 'absolute' }}>
                     <MobilePage mode={'design'}>
-                        {children.map(o =>
-                            <div key={o.key} ref={(e: HTMLElement) => {
-                                let c = ReactDOM.render(o, e);
-                                let controlTypeName = (o.type as React.ComponentClass<any>).name;
-                                if (!controlTypeName) {
-                                    return;
-                                }
-                                let controlName = controlTypeName[0].toLowerCase() + controlTypeName.substr(1) || '';
-                                if (controlName.endsWith('Control')) {
-                                    controlName = controlName.substr(0, controlName.length - 'Control'.length);
-                                }
-                                this.controls.push({ control: c, name: controlName });
-                                e.className = controlTypeName;
-                            }} />
-                        )}
+                        {children}
+                        
                     </MobilePage>
                 </div>
 
@@ -78,3 +63,21 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
         );
     }
 }
+/*
+                    <MobilePage mode={'design'}>
+                        {children.map(o =>
+                            <div key={o.key} ref={(e: HTMLElement) => {
+                                let c = ReactDOM.render(o, e);
+                                let controlTypeName = (o.type as React.ComponentClass<any>).name;
+                                if (!controlTypeName) {
+                                    return;
+                                }
+                                let controlName = controlTypeName[0].toLowerCase() + controlTypeName.substr(1) || '';
+                                if (controlName.endsWith('Control')) {
+                                    controlName = controlName.substr(0, controlName.length - 'Control'.length);
+                                }
+                                this.controls.push({ control: c, name: controlName });
+                                e.className = controlTypeName;
+                            }} />
+                        )}
+                    </MobilePage>*/
