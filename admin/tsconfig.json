@@ -12,9 +12,13 @@
                 "lib/*"
             ],
             "mobileComponents/*":[
-                "www/user/pageComponents/*"
+                "user/pageComponents/*"
+            ],
+            "componentDesigner/*":[
+                "user/componentDesigner/*"
             ]
-        }
+        },
+        "experimentalDecorators": true
     },
     "include": [
         "../scripts",

@@ -1,17 +1,11 @@
 import { default as station, PageData, ControlData } from 'services/Station';
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
-import { Control, ControlProp, Mode } from 'mobileComponents/common';
+import { Component as Control, ComponentProp as ControlProp } from 'mobileComponents/common';
 import { default as StyleControl } from 'mobileComponents/style/control';
 requirejs(['css!content/devices.css']);
 
 
-interface Props extends ControlProp<MobilePage> {
-    pageData?: PageData,
-    controlSelected?: (component: React.Component<any, any>) => void,
-    mode: Mode
-}
-
-export class MobilePage extends Control<Props, {}>{
+export class MobilePage extends React.Component<React.Props<MobilePage>, {}>{
     private screenElement: HTMLElement;
     constructor(props) {
         super(props);
@@ -44,11 +38,7 @@ export class MobilePage extends Control<Props, {}>{
         }
     }
 
-    renderChildren() {
-        let controls: ControlData[] = [];
-        if (this.props.pageData)
-            controls = this.props.pageData.controls || [];
-
+    render() {
         let children = React.Children.toArray(this.props.children) || [];
         return (
             <div className="marvel-device iphone5c blue">
@@ -62,11 +52,9 @@ export class MobilePage extends Control<Props, {}>{
                     ref={(e: HTMLElement) => {
                         if (!e) return;
                         this.screenElement = e;
-                        e.setAttribute('mode', this.props.mode);
                         (e as any).mobilePage = this;
                     }}>
                     {children}
-                    <StyleControl />
                 </div>
                 <div className="home"></div>
                 <div className="bottom-bar"></div>

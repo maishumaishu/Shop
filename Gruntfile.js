@@ -52,6 +52,7 @@ module.exports = function (grunt) {
             user: {
                 files: [
                     { expand: true, cwd: user_src, src: ['**/*.html', '**/*.js', '**/*.css', '**/*.png'], dest: user_dest },
+                    { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${user_dest}/scripts` },
                     // { expand: true, cwd: `${admin_dest}/mobile`, src: ['**/control.*', '*.js'], dest: `${user_dest}` },
                     // {
                     //     expand: true, cwd: user_src, dest: user_dest,

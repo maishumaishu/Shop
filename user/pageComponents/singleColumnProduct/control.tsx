@@ -1,4 +1,4 @@
-import { Control, componentsDir } from 'mobileComponents/common';
+import { Component, componentsDir } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, Product } from 'userServices';
 import * as ui from 'ui';
 // let h = React.createElement;
@@ -33,7 +33,7 @@ export interface State {
     products: (Product & { Count: number })[]
 }
 
-export default class MyControl extends Control<Props, State> {
+export default class SingleColumnProductControl extends React.Component<Props, State> {
     constructor(args) {
         super(args);
         this.state = { products: [] };
@@ -70,49 +70,51 @@ export default class MyControl extends Control<Props, State> {
         });
     }
 
-    renderChildren(h) {
+    render() {
         return (
             <div className="singleColumnProduct">
-                {this.state.products.map(o =>
-                    <div key={o.Id} className="product">
-                        <ImageBox className="image" src={o.ImageUrl} text="高州风味" />
-                        <div className="content">
-                            <div className="title">
-                                {o.Name}
-                            </div>
-                            <div>
-                                <div className="price">
-                                    ￥{o.Price.toFixed(2)}
+                {
+                    this.state.products.map(o =>
+                        <div key={o.Id} className="product">
+                            <ImageBox className="image" src={o.ImageUrl} text="高州风味" />
+                            <div className="content">
+                                <div className="title">
+                                    {o.Name}
+                                </div>
+                                <div>
+                                    <div className="price">
+                                        ￥{o.Price.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="input-group buttonBar">
+                                        <span className="input-group-addon"
+                                            ref={(e: HTMLElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => this.removeProduct(o));
+                                            }}>
+                                            <i className="icon-minus"></i>
+                                        </span>
+                                        <input type="text" className="form-control" style={{ textAlign: 'center' }}
+                                            ref={(e: HTMLInputElement) => {
+                                                if (!e) return;
+                                                e.value = (o.Count == null ? 0 : o.Count) as any;
+                                            }} />
+                                        <span className="input-group-addon" style={{ cursor: 'pointer' }}
+                                            ref={(e: HTMLElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => this.addProduct(o));
+                                            }}>
+                                            <i className="icon-plus"></i>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <div className="input-group buttonBar">
-                                    <span className="input-group-addon"
-                                        ref={(e: HTMLElement) => {
-                                            if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.removeProduct(o));
-                                        }}>
-                                        <i className="icon-minus"></i>
-                                    </span>
-                                    <input type="text" className="form-control" style={{ textAlign: 'center' }}
-                                        ref={(e: HTMLInputElement) => {
-                                            if (!e) return;
-                                            e.value = (o.Count == null ? 0 : o.Count) as any;
-                                        }} />
-                                    <span className="input-group-addon" style={{ cursor: 'pointer' }}
-                                        ref={(e: HTMLElement) => {
-                                            if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.addProduct(o));
-                                        }}>
-                                        <i className="icon-plus"></i>
-                                    </span>
-                                </div>
-                            </div>
+                            <div className="clearfix"></div>
+                            <hr />
                         </div>
-                        <div className="clearfix"></div>
-                        <hr />
-                    </div>
-                )}
+                    )
+                }
             </div>
 
         );

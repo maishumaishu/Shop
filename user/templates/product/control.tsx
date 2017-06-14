@@ -12,7 +12,7 @@ export interface State {
 }
 
 @component("product")
-export default class ProductControl extends React.Component<Props, State>{
+export default class ProductControl extends Component<Props, State>{
     private productView: ProductView;
     constructor(props) {
         super(props);
@@ -21,16 +21,16 @@ export default class ProductControl extends React.Component<Props, State>{
     get element() {
         return this.productView.element;
     }
-    render() {
+    _render(h) {
         let shopping = new ShoppingService();
         let shoppingCart = new ShoppingCartService();
         let product = {
-            Id: 'abc', Name: "Product", ImageUrl: "ABC_200_200", ImageUrls: ["ABC_200_200"],
+            Id: 'abc', Name: "Product", ImageUrl: "ABC_200_200", ImageUrls: ["ABC_200_200"],//, "ABC_200_200"
             Price: 100, MemberPrice: 100, Promotions: [], Arguments: [],
             CustomProperties: []
         } as Product;
         return (
-            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} />
+            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} ref={(e) => this.productView = e || this.productView} />
         );
     }
 }
@@ -54,6 +54,7 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
     { product: Product, count: number }> {
 
     private panel: controls.Panel;
+
     constructor(props) {
         super(props);
         this.state = { product: this.props.product, count: this.props.parent.state.count };
@@ -104,14 +105,14 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
     }
     show() {
         this.panel.show('right');
-    } ProductView
+    }
+    get element() {
+        return this.panel.element;
+    }
     _render(h) {
         let p = this.state.product;
         return (
-            <Panel ref={(o) => {
-                if (!o) return;
-                this.panel = o, this.element = o.element
-            }}
+            <Panel ref={(o) => this.panel = o}
                 header={
                     <div>
                         <nav>
@@ -183,7 +184,7 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
     }
 }
 
-class ProductView extends Component<{ product: Product, shop: ShoppingService, shoppingCart: ShoppingCartService }, ProductPageState>{
+class ProductView extends React.Component<React.Props<ProductView> & { product: Product, shop: ShoppingService, shoppingCart: ShoppingCartService }, ProductPageState>{
 
     private productView: controls.PageView;
     private header: controls.PageHeader;
@@ -191,7 +192,6 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
     private productPanel: ProductPanel;
     private isShowIntroduceView = false;
     private isShowProductView = false;
-    private pageComponent: PageComponent;
 
     constructor(props) {
         super(props);
@@ -253,7 +253,7 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
         this.introduceView.slide('origin');
     }
 
-    _componentDidMount() {
+    protected componentDidMount() {
         let buttons = this.header.element.querySelectorAll('nav button');
         let title = this.header.element.querySelector('nav.bg-primary') as HTMLElement;
 
@@ -312,29 +312,23 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
         this.setState(this.state);
     }
 
-    get element(): HTMLElement {
-        console.assert(this.pageComponent != null);
-        return this.pageComponent.element;
-    }
+
+
     _render(h) {
         let p = this.state.product;
         let { productsCount, couponsCount } = this.state;
         return (
-            <PageComponent className="mobile-page product-control" ref={(e) => this.pageComponent = e || this.pageComponent}>
+            <PageComponent className="mobile-page product-control">
                 <PageHeader ref={(o) => this.header = o}>
                     <nav className="bg-primary"></nav>
                     <nav>
                         <button className="leftButton">
                             <i className="icon-chevron-left"></i>
                         </button>
-                        <button className="rightButton"
-                            ref={(e: HTMLButtonElement) => {
-                                if (!e) return;
-                                e.onclick = ui.buttonOnClick(() => this.favor());
-                            }}>
+                        <Button className="rightButton" onClick={() => this.favor()}>
                             <i className="icon-heart-empty" style={{ fontWeight: `800`, fontSize: `20px`, display: !this.state.isFavored ? 'block' : 'none' }} ></i>
                             <i className="icon-heart" style={{ display: this.state.isFavored ? 'block' : 'none' }}></i>
-                        </button>
+                        </Button>
                     </nav>
                 </PageHeader>
                 <PageView ref={(o) => this.productView = o}>
@@ -351,17 +345,17 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
                             ))}
                         </div>
                     </div>
-                    <ul className="list-group">
-                        <li name="productName" className="list-group-item">
-                            <h4 className="text-left" style={{ fontWeight: 'bold' }}>{p.Name}</h4>
-                        </li>
+                    <div className="container">
+                        <div name="productName" className="pull-left" style={{ width: '100%', marginLeft: '-20px' }}>
+                            <h4 className="text-left" style={{ fontWeight: 'bold', paddingLeft: '20px' }}>{p.Name}</h4>
+                        </div>
 
-                        <li className="list-group-item">
+                        <div className="col-xs-12 box">
                             <span>类别：</span>
                             <a href="">{p.ProductCategoryName}</a>
-                        </li>
+                        </div>
 
-                        <li className="list-group-item">
+                        <div className="col-xs-12 box">
                             <span className="pull-left">价格：<strong className="price">￥{p.Price.toFixed(2)}</strong></span>
                             <span className="pull-left" style={{ display: p.Score == null ? 'none' : 'block' }}>积分：<strong className="price">{this.props.product.Score}</strong></span>
                             <span className="pull-right">{p.Unit}</span>
@@ -369,27 +363,28 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
                             <p className="oldprice" style={{ display: p.MemberPrice != null && p.MemberPrice != p.Price ? 'block' : 'none' }}>
                                 促销价：<span className="price">￥{p.MemberPrice.toFixed(2)}</span>
                             </p>
-                        </li>
+                        </div>
 
-                        <li className="list-group-item" onClick={() => this.showPanel()}>
-                            <span>
-                                已选：{this.state.productSelectedText}
-                            </span>
-                            <span className="badge">
+                        <div className="col-xs-12 box test" onClick={() => this.showPanel()}>
+                            <div className="pull-left">
+                                <span>已选：</span>
+                                <span>{this.state.productSelectedText}</span>
+                            </div>
+                            <div className="pull-right">
                                 <i className="icon-chevron-right"></i>
-                            </span>
-                        </li>
+                            </div>
+                        </div>
 
                         {p.Promotions.length > 0 ?
-                            <li className="list-group-item" style={{ padding: '10px 0px 10px 0px' }}>
+                            <div className="col-xs-12 box" style={{ padding: '10px 0px 10px 0px' }}>
                                 {p.Promotions.map((o, i) => (
                                     <PromotionComponent key={i} promotion={o}></PromotionComponent>
                                 ))}
-                            </li> : null
+                            </div> : null
                         }
 
                         {couponsCount ?
-                            <li className="list-group-item" style={{ padding: '0px 0px 10px 0px' }} onClick={() => location.hash = '#shopping_storeCoupons'}>
+                            <a className="col-xs-12" style={{ padding: '0px 0px 10px 0px' }} href="#shopping_storeCoupons">
                                 <div className="pull-left">
                                     店铺优惠劵
                                 </div>
@@ -397,8 +392,8 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
                                     <span className="badge bg-primary" style={{ marginRight: 10 }}>{couponsCount}</span>
                                     <i className="icon-chevron-right"></i>
                                 </div>
-                            </li> : null}
-                    </ul>
+                            </a> : null}
+                    </div>
                     <hr />
                     <div className="container">
                         <h4 style={{ fontWeight: 'bold', width: '100%' }}>商品信息</h4>
@@ -438,10 +433,9 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
     }
 }
 
-class PromotionComponent extends React.Component<
+class PromotionComponent extends Component<
     { promotion: Promotion, key: any },
     { status: 'collapse' | 'expand' }>{
-
 
     constructor(props) {
         super(props);
@@ -458,7 +452,7 @@ class PromotionComponent extends React.Component<
         this.setState(this.state);
     }
 
-    render() {
+    _render(h) {
         let type = this.props.promotion.Type;
         let contents = this.props.promotion.Contents;
         let status = this.state.status;

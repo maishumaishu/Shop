@@ -1,4 +1,4 @@
-import { componentsDir,Control } from 'mobileComponents/common';
+import { componentsDir, Component } from 'mobileComponents/common';
 export interface MenuNode {
     name: string,
     children?: MenuNode[]
@@ -10,14 +10,15 @@ export interface State {
     menuNodes: MenuNode[]
 }
 requirejs(['css!mobileComponents/menu/control.css']);
-export default class MenuControl extends Control<Props, State>{
+export default class MenuControl extends React.Component<Props, State>{
+    private element: HTMLElement;
     constructor(props) {
         super(props);
         this.state = { menuNodes: this.props.menuNodes };
     }
-    renderChildren(h) {
+    render() {
         return (
-            <div className="menuControl">
+            <div className="menuControl" ref={(e: HTMLElement) => this.element = e || this.element}>
                 {this.props.menuNodes.length <= 0 ?
                     <ul className="menu"></ul> :
                     <ul className="menu">

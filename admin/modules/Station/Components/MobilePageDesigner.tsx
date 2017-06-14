@@ -1,18 +1,34 @@
+import components from 'mobileComponents/componentDefines';
+import StyleControl from 'mobileComponents/style/control';
 import { MobilePage } from 'modules/Station/Components/MobilePage';
-import { Control, componentsDir } from 'mobileComponents/common';
+import { Component as Control, componentsDir } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
-export interface Props extends React.Props<MobilePage> {
-
+import { PageData, ControlData, guid } from 'services/Station';
+import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
+export interface Props extends React.Props<MobilePageDesigner> {
+    pageData?: PageData | string,
+    showComponentPanel?: boolean
 }
 
+export interface State {
+    pageData?: PageData | string,
+    editors: React.ReactElement<any>[]
+}
 
-export class MobilePageDesigner extends React.Component<any, { editors: React.ReactElement<any>[] }> {
-    private controls: Array<{ control: Control<any, any>, name: string }>;
+export class MobilePageDesigner extends React.Component<Props, State> {
     private editorsElement: HTMLElement;
-    constructor(props) {
+    private currentEditor: HTMLElement;
+    private allContainer: HTMLElement;
+    private _element: HTMLElement;
+    private selectedContainer: HTMLElement;
+
+    constructor(props: Props) {
         super(props);
-        this.state = { editors: [] };
-        this.controls = [];
+        this.state = { pageData: props.pageData, editors: [] };
+    }
+
+    get element() {
+        return this._element;
     }
 
     loadEditor(controlName: string, control: Control<any, any>, editorElement: HTMLElement) {
@@ -25,21 +41,211 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
         })
     }
 
-    componentDidMount() {
-        for (let i = 0; i < this.controls.length; i++) {
-            let editorElement = document.createElement('div');
-            this.editorsElement.appendChild(editorElement);
-        }
+    getControlType(controlName: string): Promise<React.ComponentClass<any>> {
+        return new Promise((resolve, reject) => {
+            requirejs([`mobileComponents/${controlName}/control`], function (exports) {
+                resolve(exports.default);
+            })
+        })
     }
+
+    async createControlInstance(controlData: ControlData, element: HTMLElement) {
+        let { controlId, controlName, data, selected } = controlData;
+        let controlType = await this.getControlType(controlName);
+        let reactElement = React.createElement(controlType, data);
+        let control = ReactDOM.render(reactElement, element);
+        control.id = controlId;
+        return { control, controlType };
+    }
+
+    componentDidMount() {
+        // let pageData = this.state.pageData;
+        // if (typeof pageData != 'string') {
+        //     type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
+        //     $(this.selectedContainer).sortable({
+        //         axis: "y",
+        //         receive: (event: Event, ui: UI) => {
+        //             let element = ui.helper[0] as HTMLElement;
+        //             element.removeAttribute('style');
+        //             debugger;
+        //             let controlName = ui.item.attr('data-controlName');
+        //             console.assert(controlName != null);
+        //             // ui.item.remove();
+        //             ui.helper.remove();
+
+        //             // pageData.controls.push({ controlId: this.guid(), controlName, data: {} });
+        //             this.setState(this.state);
+        //         }
+        //     })
+        // }
+
+        //        ref={(element) => {
+        //     if (!element) return;
+        //     console.assert(this.selectedContainer != null, 'selectedContainer is null');
+        //     $(element).draggable({
+        //         connectToSortable: $(this.selectedContainer),
+        //         helper: "clone",
+        //         revert: "invalid"
+        //     });
+        // }}
+
+        $(this.allContainer).find('li').draggable({
+            connectToSortable: $(this.element).find(PageView.tagName),
+            helper: "clone",
+            revert: "invalid"
+        });
+
+    }
+
+    private guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    };
+
+    selecteControl(control: React.Component<any, any> & { id?: string }, controlType: React.ComponentClass<any>) {
+        if (!control.id)
+            control.id = this.guid();
+
+        let controlName = controlType.name;
+        if (controlName.endsWith('Control')) {
+            controlName = controlName[0].toLowerCase() + controlName.substr(1, controlName.length - 'Control'.length - 1);
+        }
+        let editorPathName = Editor.path(controlName);
+        let editorId = `editor-${control.id}`;
+        let editorElement = this.editorsElement.querySelector(`[id='${editorId}']`) as HTMLElement;
+
+        if (this.currentEditor == editorElement && editorElement != null) {
+            return;
+        }
+
+        if (this.currentEditor)
+            this.currentEditor.style.display = 'none';
+
+        if (editorElement != null) {
+            editorElement.style.display = 'block';
+            this.currentEditor = editorElement;
+            return;
+        }
+
+        editorElement = document.createElement('div');
+        editorElement.className = controlName;
+        editorElement.id = editorId;
+        this.editorsElement.appendChild(editorElement);
+
+        if (this.currentEditor)
+            this.currentEditor.style.display = 'none';
+
+        this.currentEditor = editorElement;
+        requirejs([editorPathName], (exports) => {
+            let editorType = exports.default;
+            console.assert(editorType != null, 'editor type is null');
+            let editorReactElement = React.createElement(editorType, { control });
+            ReactDOM.render(editorReactElement, editorElement);
+        })
+    }
+
+    renderControls(controls: ControlData[]) {
+        controls = controls || [];
+        return controls.map((o, i) =>
+            <div key={o.controlId}
+                ref={(e: HTMLElement) => {
+                    if (!e) return;
+                    this.createControlInstance(o, e)
+                        .then(data => {
+                            if (o.selected != 'disabled') {
+                                e.onclick = (event) => {
+                                    for (let i = 0; i < controls.length; i++) {
+                                        controls[i].selected = controls[i].controlId == o.controlId;
+                                    }
+                                    this.setState(this.state);
+                                }
+                            }
+
+                            if (o.selected == true) {
+                                this.selecteControl(data.control, data.controlType);
+                            }
+                        });
+
+
+                }} />
+        );
+    }
+
+    renderHeader(pageData: PageData): JSX.Element {
+        if (!pageData.header)
+            return null;
+
+        return (
+            <PageHeader>
+                {this.renderControls(pageData.controls)}
+            </PageHeader>
+        )
+    }
+
+    renderFooter(pageData: PageData): JSX.Element {
+        if (!pageData.footer)
+            return null;
+
+        return (
+            <PageFooter>
+                {this.renderControls(pageData.footer.controls)}
+            </PageFooter>
+        )
+    }
+
+
+    renderViews(pageData: PageData) {
+
+        let sortableElement = (element: HTMLElement, viewIndex: number) => {
+            type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
+            $(element).sortable({
+                axis: "y",
+                receive: (event: Event, ui: UI) => {
+                    let element = ui.helper[0] as HTMLElement;
+                    element.removeAttribute('style');
+                    debugger;
+                    let controlName = ui.item.attr('data-controlName');
+                    console.assert(controlName != null);
+                    ui.helper.remove();
+                    pageData.views[viewIndex].controls.push({ controlId: this.guid(), controlName, data: {} });
+                    this.setState(this.state);
+                }
+            })
+        }
+
+        return (pageData.views || []).map((o, i) => (
+            <section key={i} ref={(e: HTMLElement) => e != null ? sortableElement(e, i) : null}>
+                {this.renderControls(o.controls)}
+            </section>
+        ));
+    }
+
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
+        let pageData = this.state.pageData;// || { controls: [] } as PageData;
+        let { showComponentPanel } = this.props;
         return (
-            <div>
+            <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
-                    <MobilePage mode={'design'}>
+                    <MobilePage >
+                        {typeof pageData == 'string' ?
+                            <div ref={(e: HTMLElement) => {
+                                this.createControlInstance({ controlId: guid(), controlName: pageData as string, data: {} }, e)
+                            }}>
+                            </div> :
+                            <PageComponent ref={(e) => { this.selectedContainer = e != null ? e.element : this.selectedContainer }}>
+                                {this.renderHeader(pageData)}
+                                {this.renderViews(pageData)}
+                                {this.renderFooter(pageData)}
+                            </PageComponent>
+                        }
                         {children}
-                        
                     </MobilePage>
                 </div>
 
@@ -54,6 +260,25 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
                         <div className="clearfix">
                         </div>
                     </ul>
+                    <hr style={{ margin: 0 }} />
+                    <h5 style={{ display: showComponentPanel == true ? 'block' : 'none' }}>页面组件</h5>
+                    <ul ref={(e: HTMLElement) => this.allContainer = e || this.allContainer}
+                        style={{
+                            padding: 0, listStyle: 'none',
+                            display: showComponentPanel == true ? 'block' : 'none'
+                        }}>
+                        {components.map((c, i) => (
+                            <li key={c.name} data-controlName={c.name}
+                                style={{
+                                    float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
+                                    textAlign: 'center', paddingTop: 20, backgroundColor: 'white', zIndex: 100
+                                }} >
+                                <img src={c.icon} />
+                                {c.displayName}
+                            </li>
+                        ))}
+                        <li className="clearfix"></li>
+                    </ul>
                     <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
                     </div>
                 </div>
@@ -63,21 +288,3 @@ export class MobilePageDesigner extends React.Component<any, { editors: React.Re
         );
     }
 }
-/*
-                    <MobilePage mode={'design'}>
-                        {children.map(o =>
-                            <div key={o.key} ref={(e: HTMLElement) => {
-                                let c = ReactDOM.render(o, e);
-                                let controlTypeName = (o.type as React.ComponentClass<any>).name;
-                                if (!controlTypeName) {
-                                    return;
-                                }
-                                let controlName = controlTypeName[0].toLowerCase() + controlTypeName.substr(1) || '';
-                                if (controlName.endsWith('Control')) {
-                                    controlName = controlName.substr(0, controlName.length - 'Control'.length);
-                                }
-                                this.controls.push({ control: c, name: controlName });
-                                e.className = controlTypeName;
-                            }} />
-                        )}
-                    </MobilePage>*/

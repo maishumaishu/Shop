@@ -11,15 +11,15 @@ import { alert } from 'ui';
 
 requirejs(['css!content/devices.css']);
 
-let controlsPath = 'mobile/controls'
-let modules = [];
-modules.push(
-    'scripts/hammer', 'scripts/bezier-easing', `${controlsPath}/common`,
-    `${controlsPath}/button`, `${controlsPath}/dataList`, `${controlsPath}/dialog`, `${controlsPath}/htmlView`,
-    `${controlsPath}/imageBox`, `${controlsPath}/indicators`, `${controlsPath}/page`, `${controlsPath}/panel`,
-    `${controlsPath}/tabs`
-);
-requirejs(modules);
+// let controlsPath = 'mobile/controls'
+// let modules = [];
+// modules.push(
+//     'scripts/hammer', 'scripts/bezier-easing', `${controlsPath}/common`,
+//     `${controlsPath}/button`, `${controlsPath}/dataList`, `${controlsPath}/dialog`, `${controlsPath}/htmlView`,
+//     `${controlsPath}/imageBox`, `${controlsPath}/indicators`, `${controlsPath}/page`, `${controlsPath}/panel`,
+//     `${controlsPath}/tabs`
+// );
+// requirejs(modules);
 
 function guid() {
     function s4() {
@@ -388,7 +388,7 @@ export default async function (page: chitu.Page) {
                             </form>
                             <hr />
                             <h5>页面组件</h5>
-                            <ul ref={(e: HTMLElement) => this.allContainer = e}>
+                            <ul className="components-panel" ref={(e: HTMLElement) => this.allContainer = e}>
                                 {components.map((c, i) => (
                                     <li key={c.name} data-controlName={c.name}
                                         ref={(element) => {

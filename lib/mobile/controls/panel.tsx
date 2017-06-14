@@ -19,6 +19,9 @@ namespace controls {
         constructor(props) {
             super(props);
         }
+        get element(): HTMLElement {
+            return this.panel;
+        }
         show(from: 'left' | 'right' | 'top' | 'bottom') {
             let header = this.header; //this.refs['header'] as HTMLElement;
             let body = this.body; //this.refs['body'] as HTMLElement;
@@ -60,7 +63,7 @@ namespace controls {
             panel.addEventListener('touchstart', (event) => {
                 let dialogRect = modalDialog.getBoundingClientRect();
                 for (let i = 0; i < event.touches.length; i++) {
-                    let {clientX} = event.touches[i];
+                    let { clientX } = event.touches[i];
                     if (clientX < dialogRect.left) {
                         this.hide();
                         return;
@@ -80,7 +83,7 @@ namespace controls {
             }
         }
         render() {
-            return <div ref={(o: HTMLElement) => this.panel = o} className="product-panel">
+            return <div ref={(o: HTMLElement) => this.panel = o || this.panel} className="product-panel">
                 <div ref={(o: HTMLElement) => this.modal = o} className="modal">
                     <div ref={(o: HTMLElement) => this.modalDialog = o} className="modal-dialog">
                         <div className="modal-content">

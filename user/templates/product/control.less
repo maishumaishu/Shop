@@ -1,5 +1,5 @@
 @import "../../content/common.less";
-.mobile-page.product-control {
+.product-control {
     .padding-bottom();
  
     .price();
@@ -30,23 +30,22 @@
             display: block;
         }
 
-        // .badge {
-        //     position: relative;
-        //     top: -40px;
-        //     left: 20px;
-        // }
+        .badge {
+            position: relative;
+            top: -40px;
+            left: 20px;
+        }
     }
 
-    // .badge {
-    //     background-color: @sub-num;
-    // }
+    .badge {
+        background-color: @sub-num;
+    }
 
     
 
     hr {
         border-top-width: 20px;
         margin: 0;
-        border-top-color:whitesmoke;
     }
 
     .comments {
@@ -77,6 +76,7 @@
         }
         button{
             opacity: 0.5;
+            background-color:@brand-primary;
         }
         .icon-heart {
             margin-top: 2px;
@@ -190,19 +190,4 @@
             }
         }
     }
-
-    .list-group {
-        margin: 0;
-    }
-    .list-group-item {
-        border-right: 0;
-        border-left: 0;
-        &:first-child {
-            border-top: 0;
-        }
-        &:last-child {
-            border-bottom: 0;
-        }
-    }
-
 }

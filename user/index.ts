@@ -63,73 +63,76 @@ requirejs.config({
         },
         'controls/scrollView': {
             deps: ['hammer', 'bezier-easing']
+        },
+        application: {
+            deps: ['chitu']
+        },
+        mobileControls: {
+            exports: 'controls',
+            deps: ['bezier-easing']
         }
     },
     paths: {
-        'bezier-easing': 'js/bezier-easing',
-        chitu: 'js/chitu',
-        css: 'js/css',
-        fetch: 'js/fetch',
-        hammer: 'js/hammer',
-        react: 'js/react',
-        'react-dom': 'js/react-dom',
-        text: 'js/text',
+        'bezier-easing': 'scripts/bezier-easing',
+        chitu: 'scripts/chitu',
+        css: 'scripts/css',
+        fetch: 'scripts/fetch',
+        hammer: 'scripts/hammer',
+        react: 'scripts/react',
+        'react-dom': 'scripts/react-dom',
+        text: 'scripts/text',
         // controls: 'controls',
-        // core: modulesPath + '/core',
-        // device: modulesPath + '/device',
-        // services: modulesPath + '/services',
-        // site: modulesPath + '/site',
-        // validate: modulesPath + '/core/validate',
-        'chitu.mobile': 'core/chitu.mobile',
-        carousel: 'core/carousel',
+        'chitu.mobile': 'scripts/chitu.mobile',
+        carousel: 'scripts/carousel',
         modules: modulesPath,
-        services: 'userServices'
+        services: 'userServices',
+        mobileComponents: 'pageComponents'
         // ui: 'ui'
     }
 });
 
-var modules = [
-    'site'
-];
+// var modules = [
+//     'site'
+// ];
 
-if (isUglify) {
-    modules.push('controls');
-}
-else {
-    let controlsPath = 'controls'
-    modules.push(
-        'hammer', 'bezier-easing', `${controlsPath}/common`,
-        `${controlsPath}/button`, `${controlsPath}/dataList`, `${controlsPath}/dialog`, `${controlsPath}/htmlView`,
-        `${controlsPath}/imageBox`, `${controlsPath}/indicators`, `${controlsPath}/page`, `${controlsPath}/panel`,
-        `${controlsPath}/tabs`
-    );
-}
+// if (isUglify) {
+//     modules.push('controls');
+// }
+// else {
+//     let controlsPath = 'controls'
+//     modules.push(
+//         'hammer', 'bezier-easing', `${controlsPath}/common`,
+//         `${controlsPath}/button`, `${controlsPath}/dataList`, `${controlsPath}/dialog`, `${controlsPath}/htmlView`,
+//         `${controlsPath}/imageBox`, `${controlsPath}/indicators`, `${controlsPath}/page`, `${controlsPath}/panel`,
+//         `${controlsPath}/tabs`
+//     );
+// }
 
-if (isCordovaApp) {
-    modules.push('cordova');
-    modules.push('device');
-}
+// if (isCordovaApp) {
+//     modules.push('cordova');
+//     modules.push('device');
+// }
 
 
-if (isBabelES5) {
-    requirejs(['js/polyfill'], load)
-}
-else {
-    load();
-}
+// if (isBabelES5) {
+//     requirejs(['scripts/polyfill'], load)
+// }
+// else {
+//     load();
+// }
 
-function load() {
-    requirejs(['react', 'react-dom'], function (React, ReactDOM) {
-        window['React'] = React;
-        window['ReactDOM'] = ReactDOM;
+// function load() {
+requirejs(['react', 'react-dom', 'application'], function (React, ReactDOM, app) {
+    window['React'] = React;
+    window['ReactDOM'] = ReactDOM;
+    app.run();
+    // requirejs(modules, function (site) {
+    //     site.app.run();
+    //     controls.imageBoxConfig.imageDisaplyText = '零食觅密';
+    // });
+})
 
-        requirejs(modules, function (site) {
-            site.app.run();
-            controls.imageBoxConfig.imageDisaplyText = '零食觅密';
-        });
-    })
-
-}
+// }
 
 
 

@@ -22,23 +22,24 @@
   &:empty {
     display: none;
   }
+}
 
-  // Quick fix for badges in buttons
-  .btn & {
+// Quick fix for badges in buttons
+  .btn .badge {
     position: relative;
     top: -1px;
   }
 
-  .btn-xs &,
-  .btn-group-xs > .btn & {
+  .btn-xs .badge,
+  .btn-group-xs > .btn .badge {
     top: 0;
     padding: 1px 5px;
   }
 
   // Hover state, but only for links
-  a& {
-    &:hover,
-    &:focus {
+  a.badge {
+    .badge:hover,
+    .badge:focus {
       color: @badge-link-hover-color;
       text-decoration: none;
       cursor: pointer;
@@ -46,21 +47,20 @@
   }
 
   // Account for badges in navs
-  .list-group-item.active > &,
-  .nav-pills > .active > a > & {
+  .list-group-item.active > .badge,
+  .nav-pills > .active > a > .badge {
     color: @badge-active-color;
     background-color: @badge-active-bg;
   }
 
-  .list-group-item > & {
+  .list-group-item > .badge {
     float: right;
   }
 
-  .list-group-item > & + & {
+  .list-group-item > .badge + .badge {
     margin-right: 5px;
   }
 
-  .nav-pills > li > a > & {
+  .nav-pills > li > a > .badge {
     margin-left: 3px;
   }
-}

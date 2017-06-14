@@ -22,9 +22,10 @@ export default async function (page: chitu.Page) {
     else if (templateId)
         pageData = await station.pageDataByTemplate(templateId);
 
+    let h = React.createElement;
     ReactDOM.render(
         <div className="mobile">
-            <Page pageData={pageData} mode="preview"/>
+            <Page />
         </div>,
         page.element
     );

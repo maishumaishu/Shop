@@ -2,15 +2,15 @@
     "compilerOptions": {
         "target": "es6",
         "module": "amd",
-        "sourceMap": true,
-        "outDir": "../../www/user",
+        "sourceMap": false,
+        "outDir": "../../www",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../../",
         "inlineSourceMap": false,
         "paths": {
             "*": [
-                "lib/dest/*",
+                "lib/*",
                 "user/*"
             ],
             "services/*": [
@@ -20,7 +20,8 @@
                 "user/pageComponents/*"
             ]
         },
-        "declaration": true
+        "declaration": true,
+        "experimentalDecorators": true
     },
     "exclude": [
         "dest"

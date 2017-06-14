@@ -3176,6 +3176,12 @@ interface JQuery {
         backdrop?: boolean | 'static', keyboard?: boolean,
         show?: boolean
     } | 'toggle' | 'show' | 'hide' | 'handleUpdate'): JQuery;
+
+    /** JQuery UI */
+    droppable(options?: {
+        accept?: string,
+        drop?: Function
+    }): JQuery;
 }
 declare module "jquery" {
     export = $;

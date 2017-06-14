@@ -1,5 +1,4 @@
-﻿
-import $ = require('jquery');
+﻿import $ = require('jquery');
 
 function ajax<T>(settings: JQueryAjaxSettings) {
     settings.headers = settings.headers || {};
@@ -41,29 +40,6 @@ function ajax<T>(settings: JQueryAjaxSettings) {
     });
 }
 
-// wuzhui.ajax = function (url: string, options: FetchOptions) {
-//     options = options || {};
-//     var q: Promise<any>;
-//     if (!options.method || options.method == 'get')
-//         q = ajax({ url, data: options.body });
-//     else
-//         q = ajax({ url, method: options.method, data: options.body });
-
-//     q.then((data: any) => {
-//         if (data.DataItems) {
-//             data.dataItems = data.DataItems;
-//             data.totalRowCount = data.TotalRowCount;
-//         }
-//         return data;
-//     });
-
-//     return q;
-// }
-
-
-window['ObjectId'] = function (value) {
-    return value;
-}
 
 /** 实现数据的存储，以及数据修改的通知 */
 export class ValueStore<T> {

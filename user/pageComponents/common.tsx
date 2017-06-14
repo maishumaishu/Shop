@@ -1,123 +1,92 @@
-/** 实现数据的存储，以及数据修改的通知 */
-export class ValueStore<T> {
-    private funcs = new Array<(args: T) => void>();
-    private _value: T;
-
-    constructor() {
-    }
-    add(func: (value: T) => any): (args: T) => any {
-        this.funcs.push(func);
-        return func;
-    }
-    remove(func: (value: T) => any) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    fire(value: T) {
-        this.funcs.forEach(o => o(value));
-    }
-    get value(): T {
-        return this._value;
-    }
-    set value(value: T) {
-        if (this._value == value)
-            return;
-
-        this._value = value;
-        this.fire(value);
-    }
-}
-
-
-interface DataContructor<T> {
-    new (): ValueStoreContainer<T>
-}
-export class ValueStoreContainer<T> {
-    private funcs = new Array<(name: string, value: any) => void>();
-    private defaultValues: T;
-
-    constructor(valueType: { new (): T }) {
-        this.defaultValues = new valueType();
-        let names = Object.getOwnPropertyNames(this.defaultValues);
-        for (let i = 0; i < names.length; i++) {
-            this.createProperty(names[i], this.defaultValues[names[i]]);
-        }
-    }
-
-    add(func: (name: string, value: any) => any): (name: string, args: any) => any {
-        this.funcs.push(func);
-        return func;
-    }
-    remove(func: (name: string, value: any) => any) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    private fire(name: string, value: any) {
-        this.funcs.forEach(o => o(name, value));
-    }
-    private createProperty<T>(name: string, value: T) {
-        if (this[name] != null)
-            throw new Error(`Property named '${name}' is exists.`);
-
-        let valueStore = new ValueStore<T>();
-        valueStore.value = value;
-        valueStore.add((value) => {
-            this.fire(name, value);
-        })
-        this[name] = valueStore;
-    }
-    values(): T {
-        let obj = {};
-        let names = Object.getOwnPropertyNames(this);
-        for (let i = 0; i < names.length; i++) {
-            obj[names[i]] = (this[names[i]] as ValueStore<any>).value;
-        }
-        return obj as T;
-    }
-}
-
-
 export const componentsDir = 'mobileComponents';
 export const pageClassName = 'mobile-page';
 
-//==============================================================
-export type Mode = 'design' | 'preview';
-export interface ControlProp<T> extends React.Props<T> {
-    onClick?: (event: React.MouseEvent, control: T) => void,
-    mode?: Mode
+export interface IMobilePageDesigner {
+    selecteControl(control: Component<any, any>, controlType: React.ComponentClass<any>);
 }
-export abstract class Control<P extends ControlProp<any>, S> extends React.Component<P, S> {
-    protected element: HTMLElement;
+
+//==============================================================    
+// const ENABLE_CLICK = "enableClick";
+// export type Mode = 'design' | 'preview';
+export interface ComponentProp<T> extends React.Props<T> {
+    onClick?: (event: MouseEvent, control: T) => void,
+    // mode?: Mode,
+    createElement?: (type, props, ...children) => JSX.Element
+}
+export abstract class Component<P extends ComponentProp<any>, S> extends React.Component<P, S> {
+    private _element: HTMLElement;
+    static contextTypes = { designer: React.PropTypes.object };
+    context: { designer: IMobilePageDesigner };
+    id: string;
     constructor(props) {
-        super(props)
+        super(props);
+        this.id = this.guid();
     }
-    abstract renderChildren(h): JSX.Element;
+    abstract _render(h): JSX.Element;
+    get element(): HTMLElement {
+        return this._element;
+    }
+    set element(value: HTMLElement) {
+        console.assert(value != null, 'value can not null.');
+        this._element = value;
+        if (this.props.onClick != null) {
+            this._element.onclick = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.props.onClick(event, this);
+            }
+        }
+    }
     render() {
-        let isDesignMode = this.props.mode == 'design';
-        let h = isDesignMode ? Control.createDesignElement : Control.createStandElement;
-        return (
-            <div onClick={(e) => {
-                if (this.props.onClick) {
-                    this.props.onClick(e, this);
-                }
-            }} ref={(e: HTMLElement) => this.element = e || this.element}>
-                {this.renderChildren(h)}
-            </div>
-        )
+        return this._render(h);
     }
 
-    static createDesignElement(type, props: ControlProp<any>, ...children) {
+    private guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    };
+
+    static controlSelected: (control: Component<any, any>, type: React.ComponentClass<any>) => void;
+
+    static createDesignElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
         props = props || {};
-        props.onClick = () => { };
-        props.mode = 'design';
-        if ((props as any).href) {
+        if (typeof type == 'string')
+            props.onClick = () => { };
+        else if (typeof type != 'string') {
+            props.onClick = (event, control: Component<any, any>) => {
+                if (control.context != null) {
+                    control.context.designer.selecteControl(control, type);
+                }
+            }
+        }
+        if (type == 'a' && (props as any).href) {
             (props as any).href = 'javascript:';
         }
+
+        // props.mode = 'design';
         let args = [type, props];
         for (let i = 2; i < arguments.length; i++) {
             args[i] = arguments[i];
         }
         return React.createElement.apply(React, args);
     }
-    static createStandElement(type, props: ControlProp<any>, ...children) {
+
+    static loadEditor(controlName: string, control: Component<any, any>, editorElement: HTMLElement) {
+        let editorPathName = `pageComponent/${controlName}/editor`; //Editor.path(controlName);
+        requirejs([editorPathName], (exports) => {
+            let editorType = exports.default;
+            console.assert(editorType != null, 'editor type is null');
+            let editorReactElement = React.createElement(editorType, { control });
+            ReactDOM.render(editorReactElement, editorElement);
+        })
+    }
+
+    static createStandElement(type, props: ComponentProp<any>, ...children) {
         let args = [type, props];
         for (let i = 2; i < arguments.length; i++) {
             args[i] = arguments[i];
@@ -248,4 +217,12 @@ function isError(responseData: any): Error {
     }
 
     return null;
+}
+
+export let h = Component.createDesignElement;
+export let components: { [key: string]: React.ComponentClass<any> } = {};
+export function component(name: string) {
+    return function (constructor: React.ComponentClass<any>) {
+        components[name] = constructor;
+    }
 }

@@ -1,9 +1,9 @@
-import { default as station, PageData, ControlData } from 'services/Station';
-import { MobilePage } from 'modules/Station/Components/MobilePage';
+import { default as station, PageData, ControlData, guid } from 'services/Station';
 import { MobilePageDesigner } from 'modules/Station/Components/MobilePageDesigner';
 import { default as MenuControl, MenuNode, Props as MenuProps } from 'mobileComponents/menu/control';
 import { default as MenuEditor } from 'mobileComponents/menu/editor';
 import { default as StyleControl } from 'mobileComponents/style/control';
+import { Component, h } from 'mobileComponents/common';
 import { PageComponent, PageView, PageFooter } from 'mobileControls';
 export default function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
@@ -12,8 +12,8 @@ export default function (page: chitu.Page) {
 class StoreMenuPage extends React.Component<{}, {}>{
     private editorElement: HTMLElement;
     private menuControl: MenuControl;
-    componentDidMount() {
-    }
+    private designer: MobilePageDesigner;
+
     render() {
         let menuPros: MenuProps = {
             menuNodes: [
@@ -26,18 +26,16 @@ class StoreMenuPage extends React.Component<{}, {}>{
             { name: '个人中心' }
         ];
         let pageData = {
-            controls: [
-                // { controlName: 'menu', data: menuPros }
-            ]
+            footer: {
+                controls: [
+                    { controlId: guid(), controlName: 'menu', data: { menuNodes }, selected: true },
+                    { controlId: guid(), controlName: 'style' }
+                ]
+            }
         } as PageData;
+
         return (
-            <MobilePageDesigner>
-                <PageComponent>
-                    <PageFooter>
-                        <MenuControl menuNodes={menuNodes}
-                            ref={o => this.menuControl = o || this.menuControl} />
-                    </PageFooter>
-                </PageComponent>
+            <MobilePageDesigner pageData={pageData}>
             </MobilePageDesigner>
         );
     }

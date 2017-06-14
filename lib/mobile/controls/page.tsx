@@ -11,10 +11,14 @@ namespace controls {
         return children;
     }
 
-    export class PageComponent extends React.Component<{ className?: string }, {}>{
+    export class PageComponent extends React.Component<React.Props<PageComponent> & { className?: string }, {}>{
         private static defaultClassName: string = "mobile-page";
+        private _element: HTMLElement;
         constructor(props) {
             super(props);
+        }
+        get element() {
+            return this._element;
         }
         render() {
             let className = this.props.className || PageComponent.defaultClassName;
@@ -24,7 +28,7 @@ namespace controls {
             let bodies = children.filter(o => !(o instanceof PageHeader) && !(o instanceof PageFooter));
             let views = children.filter(o => o instanceof PageView);
             return (
-                <div className={className}>
+                <div className={className} ref={(e: HTMLElement) => this._element = e || this._element}>
                     {header != null ? (header) : null}
                     {bodies.map(o => (o))}
                     {footer != null ? (footer) : null}

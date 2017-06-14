@@ -1,6 +1,6 @@
 ﻿import React = require('react');
 import ReactDOM = require('react-dom');
-import { default as menuData, MenuNode } from 'MenuData';
+import { menuData, MenuNode } from 'MenuData';
 
 import { default as service } from 'services/Service';
 

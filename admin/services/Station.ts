@@ -2,21 +2,35 @@
 
 
 export interface ControlData {
-    controlId: string, controlName: string, data: any
+    controlId: string, controlName: string, data?: any,
+    selected?: boolean | 'disabled'
 }
 
 export interface PageData {
     _id: string,
     name: string,
     remark: string,
-    controls: Array<ControlData>,
+    controls?: Array<ControlData>,
     isDefault?: boolean,
+    header?: { controls: ControlData[] },
+    footer?: { controls: ControlData[] },
+    views?: { controls: ControlData[] }[]
 }
 
 export interface TemplatePageData {
     _id: string;
     name: string;
     image: string;
+}
+
+export function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
 }
 
 export class StationService extends Service {
@@ -36,7 +50,12 @@ export class StationService extends Service {
     //     }
     //     return this._homeProduct;
     // }
-
+    private translatePageData(pageData: PageData): PageData {
+        if (pageData.views == null && pageData.controls != null) {
+            pageData.views = [{ controls: pageData.controls }];
+        }
+        return pageData;
+    }
     savePageData(pageData: PageData) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
         return Service.postByJson(url, pageData);
@@ -44,12 +63,15 @@ export class StationService extends Service {
     pageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let data = { pageId };
-        return Service.get<PageData>(url, data);
+        return Service.get<PageData>(url, data).then(o => {
+            this.translatePageData(o);
+            return o;
+        });
     }
     pageDataByTemplate(templateId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageDataByTemplate`;
         let data = { templateId };
-        return Service.get<PageData>(url, data);
+        return Service.get<PageData>(url, data).then(o => this.translatePageData(o));
     }
     /** 通过页面名称获取页面 id 
      * @param name 页面名称

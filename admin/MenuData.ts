@@ -7,7 +7,7 @@ export interface MenuNode {
     Visible?: boolean
 };
 
-let menuData: MenuNode[] = [
+export　let menuData: MenuNode[] = [
     { Title: '首页', Icon: 'icon-dashboard', Url: 'Home/Index' },
     {
         Title: "微店",
@@ -19,7 +19,8 @@ let menuData: MenuNode[] = [
                 Icon: "icon-bullhorn",
                 Url: 'Station/PageList',
                 Children: [
-                    { Title: '页面', Url: 'Station/Page', Visible: false }
+                    { Title: '页面', Url: 'Station/Page', Visible: false },
+                    { Title: '页面', Url: 'Station/Page1', Visible: false }
                 ]
             },
             {
@@ -135,5 +136,4 @@ while (stack.length > 0) {
     })
 }
 
-
-export default menuData;
+// export default menuData;

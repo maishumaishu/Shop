@@ -1,6 +1,6 @@
 import { Editor } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control, StyleType } from 'mobileComponents/style/control'
-let h = React.createElement;
+let h = React.createElement;                                                                                                                                                                
 requirejs(['css!mobileComponents/style/editor.css']);
 export interface EditorState {
 

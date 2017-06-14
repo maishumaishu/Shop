@@ -1,9 +1,11 @@
 export interface ComponentDefine {
-    name: string, displayName: string, icon: string, introduce: string
+    name: string, displayName: string, icon: string, introduce: string,
 }
 // type T = { [propName:string]: Array<ComponentDefine> };
 // let a: T;
 // let b = a['a']
+
+
 let componets: Array<ComponentDefine> = [
     {
         name: 'carousel',
@@ -24,5 +26,12 @@ let componets: Array<ComponentDefine> = [
         introduce: ""
     }
 ];
+
+function controlPath(name: string) {
+    return `pageComponents/${name}/control`;
+}
+function editorPath(name: string) {
+    return `pageComponents/${name}/control`;
+}
 
 export default componets;

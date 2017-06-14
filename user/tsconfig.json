@@ -9,8 +9,12 @@
         "paths": {
             "*": [
                 "lib/dest/*"
+            ],
+            "mobileComponents/*": [
+                "user/pageComponents/*"
             ]
-        }
+        },
+        "experimentalDecorators": true
     },
     "exclude": [
         "user",
@@ -20,7 +24,7 @@
     ],
     "include": [
         "../scripts",
-         "../lib/dest/mobile/mobileControls.d.ts",
+        "../lib/dest/mobile/mobileControls.d.ts",
         "*.tsx",
         "**/*.tsx",
         "*.ts",
