@@ -58,11 +58,22 @@ export class StationService extends Service {
     }
     savePageData(pageData: PageData) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
-        return Service.postByJson(url, pageData);
+        return Service.postByJson(url, { pageData }).then((data) => {
+            Object.assign(pageData, data);
+            return data;
+        });
     }
     pageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let data = { pageId };
+        return Service.get<PageData>(url, data).then(o => {
+            this.translatePageData(o);
+            return o;
+        });
+    }
+    pageDataByName(pageName: string) {
+        let url = `${Service.config.siteUrl}Page/GetPageDataByName`;
+        let data = { pageName };
         return Service.get<PageData>(url, data).then(o => {
             this.translatePageData(o);
             return o;
@@ -73,7 +84,7 @@ export class StationService extends Service {
         let data = { templateId };
         return Service.get<PageData>(url, data).then(o => this.translatePageData(o));
     }
-    /** 通过页面名称获取页面 id 
+    /** 通过页面名称获取页面 iddata 
      * @param name 页面名称
      */
     getPageId(name: string): Promise<string> {
@@ -81,9 +92,8 @@ export class StationService extends Service {
         return Service.get<{ "_id": string }>(url, { name }).then(o => o._id);
     }
     getPageDataByName(name: string) {
-        return this.getPageId(name).then(o => {
-            return this.pageData(o);
-        })
+        let url = this.url('Page/GetPageDataByName');
+        return Service.get<PageData>(url, { name });
     }
     getPageDatas() {
         let url = this.url('Page/GetPageDatas');
@@ -124,6 +134,50 @@ export class StationService extends Service {
             urlParams[decode(match[1])] = decode(match[2]);
         return urlParams;
     }
+    //============================================================
+
+    async storeStylePageData(): Promise<PageData> {
+        let pageData = await this.getPageDataByName(pageNames.storeStyle);
+        if (pageData == null) {
+            pageData = defaultPageDatas.storeStyle;
+        }
+        return pageData;
+    }
+
+    async storeMenuPageData(): Promise<PageData> {
+        let pageData = await this.getPageDataByName(pageNames.storeMenu);
+        if (pageData == null) {
+            pageData = defaultPageDatas.storeMenu;
+        }
+        return pageData;
+    }
+}
+
+let pageNames = {
+    storeStyle: 'storeStyle',
+    storeMenu: 'storeMenu'
+}
+let defaultPageDatas = {
+    storeStyle: {
+        name: pageNames.storeStyle,
+        views: [
+            {
+                controls: [
+                    { controlId: guid(), controlName: 'product', selected: 'disabled' },
+                    { controlId: guid(), controlName: 'style', selected: true }
+                ]
+            }
+        ]
+    } as PageData,
+    storeMenu: {
+        name: pageNames.storeMenu,
+        footer: {
+            controls: [
+                { controlId: guid(), controlName: 'menu', data: { menuNodes: [{ name: '首页' }, { name: '个人中心' }] }, selected: true },
+                { controlId: guid(), controlName: 'style' }
+            ]
+        }
+    } as PageData
 }
 
 export default new StationService();

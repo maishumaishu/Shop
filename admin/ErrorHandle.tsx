@@ -1,6 +1,5 @@
 import { default as services } from 'services/Service';
 import app = require('Application');
-import bootbox = require('bootbox');
 
 
 let container = document.createElement('div');

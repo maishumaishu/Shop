@@ -3,8 +3,12 @@ import StyleControl from 'mobileComponents/style/control';
 import { MobilePage } from 'modules/Station/Components/MobilePage';
 import { Component as Control, componentsDir } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
-import { PageData, ControlData, guid } from 'services/Station';
+import { PageData, ControlData, guid, StationService } from 'services/Station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
+import * as ui from 'ui';
+
+let station = new StationService();
+
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData | string,
     showComponentPanel?: boolean
@@ -21,10 +25,15 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private allContainer: HTMLElement;
     private _element: HTMLElement;
     private selectedContainer: HTMLElement;
+    private controls: [string, React.Component<any, any>][];
+
+    saved: chitu.Callback<MobilePageDesigner, { pageData: PageData }>;
 
     constructor(props: Props) {
         super(props);
         this.state = { pageData: props.pageData, editors: [] };
+        this.controls = [];
+        this.saved = chitu.Callbacks();
     }
 
     get element() {
@@ -55,61 +64,46 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         let reactElement = React.createElement(controlType, data);
         let control = ReactDOM.render(reactElement, element);
         control.id = controlId;
+        this.controls.push([control.id, control]);
         return { control, controlType };
     }
 
     componentDidMount() {
-        // let pageData = this.state.pageData;
-        // if (typeof pageData != 'string') {
-        //     type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
-        //     $(this.selectedContainer).sortable({
-        //         axis: "y",
-        //         receive: (event: Event, ui: UI) => {
-        //             let element = ui.helper[0] as HTMLElement;
-        //             element.removeAttribute('style');
-        //             debugger;
-        //             let controlName = ui.item.attr('data-controlName');
-        //             console.assert(controlName != null);
-        //             // ui.item.remove();
-        //             ui.helper.remove();
-
-        //             // pageData.controls.push({ controlId: this.guid(), controlName, data: {} });
-        //             this.setState(this.state);
-        //         }
-        //     })
-        // }
-
-        //        ref={(element) => {
-        //     if (!element) return;
-        //     console.assert(this.selectedContainer != null, 'selectedContainer is null');
-        //     $(element).draggable({
-        //         connectToSortable: $(this.selectedContainer),
-        //         helper: "clone",
-        //         revert: "invalid"
-        //     });
-        // }}
-
         $(this.allContainer).find('li').draggable({
             connectToSortable: $(this.element).find(PageView.tagName),
             helper: "clone",
             revert: "invalid"
         });
-
     }
 
-    private guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-    };
+    save() {
+        if (typeof this.state.pageData == 'string')
+            return Promise.resolve();
+
+        let pageData = this.state.pageData;
+        let controlDatas = new Array<ControlData>();
+        (pageData.views || []).forEach(view => controlDatas.push(...view.controls || []));
+        if (pageData.header)
+            controlDatas.push(...pageData.header.controls || []);
+
+        if (pageData.footer)
+            controlDatas.push(...pageData.footer.controls || [])
+
+        controlDatas.forEach(o => {
+            let control = this.controls.filter(c => c[0] == o.controlId)[0];
+            console.assert(control != null);
+            o.data = control[1].state;
+        });
+
+        return station.savePageData(this.state.pageData).then(data => {
+            this.saved.fire(this, { pageData })
+            return data;
+        });
+    }
 
     selecteControl(control: React.Component<any, any> & { id?: string }, controlType: React.ComponentClass<any>) {
         if (!control.id)
-            control.id = this.guid();
+            control.id = guid();
 
         let controlName = controlType.name;
         if (controlName.endsWith('Control')) {
@@ -212,7 +206,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                     let controlName = ui.item.attr('data-controlName');
                     console.assert(controlName != null);
                     ui.helper.remove();
-                    pageData.views[viewIndex].controls.push({ controlId: this.guid(), controlName, data: {} });
+                    pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
                     this.setState(this.state);
                 }
             })
@@ -228,7 +222,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
-        let pageData = this.state.pageData;// || { controls: [] } as PageData;
+        let pageData = this.state.pageData;
         let { showComponentPanel } = this.props;
         return (
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
@@ -252,7 +246,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                 <div className="admin-pc" style={{ paddingLeft: 390 }} >
                     <ul style={{ margin: 0 }}>
                         <div className="pull-right">
-                            <button className="btn btn-primary" style={{ marginLeft: 4 }}>保存</button>
+                            <button className="btn btn-primary" style={{ marginLeft: 4 }}
+                                ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.save()) : null}>保存</button>
                         </div>
                         <div className="pull-right">
                             <button className="btn btn-primary" style={{ marginLeft: 4 }}>预览</button>

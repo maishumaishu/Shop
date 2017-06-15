@@ -3,17 +3,8 @@ import { Component } from 'mobileComponents/common';
 import { default as station, PageData, ControlData, guid } from 'services/Station';
 import { default as StyleControl } from 'mobileComponents/style/control';
 import { default as ProductControl } from 'mobileComponents/product/control';
-export default function (page: chitu.Page) {
-    let pageData = {
-        views: [
-            {
-                controls: [
-                    { controlId: guid(), controlName: 'product', selected: 'disabled' },
-                    { controlId: guid(), controlName: 'style', selected: true }
-                ]
-            }
-        ]
-    } as PageData;
+export default async function (page: chitu.Page) {
+    let pageData = await station.storeStylePageData();
     let h = Component.createDesignElement;
     let styleControl: StyleControl;
     let designer: MobilePageDesigner;

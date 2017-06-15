@@ -15,6 +15,11 @@ function ajax<T>(settings: JQueryAjaxSettings) {
     return new Promise<T>((resolve, reject) => {
         $.ajax(settings)
             .then(data => {
+                if (data == null) {
+                    resolve(data);
+                    return;
+                }
+
                 if (data.Type == 'ErrorObject' && data.Code != 'Success') {
                     Service.error.fire(data);
                     reject(data);
