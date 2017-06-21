@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "none",
+        "sourceMap": false,
+        "declaration": true,
+        "outFile": "../dest/ui.js"
+    },
+    "include": [
+        "../../scripts",
+        "*.ts"
+    ]
+}
