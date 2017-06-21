@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "none",
+        "sourceMap": false,
+        "declaration": true,
+        "outFile": "../../www/user/userServices.js"
+    },
+    "include": [
+        "../../scripts",
+        "*.ts"
+    ]
+}
