@@ -1,4 +1,4 @@
-import * as ui from 'UI';
+import * as ui from 'ui';
 
 interface KeyValue {
     key: string,

@@ -3,7 +3,8 @@ import app = require('Application');
 import { PageData, StationService, TemplatePageData } from 'services/Station';
 // import { Button } from 'common/controls';
 import { RouteValue } from 'modules/Station/Page';
-import * as ui from 'UI';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
@@ -22,7 +23,8 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
         this.state = { templates: null };
         this.dataSource = new wuzhui.WebDataSource<PageData>({
             primaryKeys: ['_id'],
-            select: (args) => station.getPageDatas()
+            select: (args) => station.getPageDatas(),
+            delete: (item) => station.deletePageData(item._id)
         });
         station.pageTemplates().then(templates => {
             this.state.templates = templates;
@@ -49,12 +51,12 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     }
     componentDidMount() {
         let self = this;
-        ui.createGridView({
+        wz.createGridView({
             element: this.pagesElement,
             columns: [
-                ui.boundField({ dataField: 'name', headerText: '名称' }),
-                ui.boundField({ dataField: 'remark', headerText: '备注' }),
-                ui.customField({
+                wz.boundField({ dataField: 'name', headerText: '名称' }),
+                wz.boundField({ dataField: 'remark', headerText: '备注' }),
+                wz.customField({
                     createItemCell(o: PageData) {
                         let cell = new wuzhui.GridViewCell()
                         ReactDOM.render(<HomePageCell pageData={o} />, cell.element);
@@ -64,10 +66,10 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
                     headerStyle: { width: '80px' } as CSSStyleDeclaration,
                     itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
                 }),
-                ui.customField({
+                wz.customField({
                     createItemCell(o: PageData) {
                         let cell = new wuzhui.GridViewCell();
-                        ReactDOM.render(<CommandCell pageData={o} />, cell.element);
+                        ReactDOM.render(<CommandCell pageData={o} dataSource={self.dataSource} />, cell.element);
                         return cell;
                     },
                     headerText: '操作',
@@ -143,7 +145,7 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     }
 }
 
-class CommandCell extends React.Component<{ pageData: PageData }, {}>{
+class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzhui.DataSource<PageData> }, {}>{
     showPage() {
         let pageId = this.props.pageData._id;
         var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
@@ -154,6 +156,9 @@ class CommandCell extends React.Component<{ pageData: PageData }, {}>{
         app.redirect(url, routeValue)
     }
     private pageSave(pageData: PageData) {
+    }
+    private deletePage(pageData: PageData) {
+        return this.props.dataSource.delete(pageData);
     }
     render() {
         let pageData = this.props.pageData;
@@ -169,7 +174,7 @@ class CommandCell extends React.Component<{ pageData: PageData }, {}>{
                 <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
                     ref={(e: HTMLButtonElement) => {
                         if (!e) return;
-                        e.onclick = ui.buttonOnClick(() => Promise.resolve(),
+                        e.onclick = ui.buttonOnClick(() => this.deletePage(pageData),
                             { confirm: `确定要删除页面”${pageData.name}“吗？` });
                     }}>
                     <i className="icon-trash"></i>

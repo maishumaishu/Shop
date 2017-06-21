@@ -3,7 +3,8 @@ import station from 'services/Station';
 import app = require('Application');
 import bootbox = require('bootbox');
 import { default as site } from 'Site';
-import ui = require('UI');
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
 type ProductStock = { unlimit: boolean, stock: number, productId: string, productName: string };
@@ -408,11 +409,13 @@ class Page extends React.Component<{}, PageState>{
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
                                         <button type="button" className="btn btn-primary"
-                                            onClick={ui.buttonOnClick((e) => {
-                                                return this.setBuyLimited(restriction).then(() => {
-                                                    $(this.restrictionDialog).modal('hide');
+                                            ref={(e: HTMLButtonElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => {
+                                                    return this.setBuyLimited(restriction);
                                                 })
-                                            })}>确认</button>
+                                            }}
+                                        >确认</button>
                                     </div>
                                 </div>
                             </div>
@@ -485,3 +488,8 @@ export default function (page: chitu.Page) {
     ReactDOM.render(<Page />, element);
 }
 
+// onClick={ui.buttonOnClick((e) => {
+//                                                 return this.setBuyLimited(restriction).then(() => {
+//                                                     $(this.restrictionDialog).modal('hide');
+//                                                 })
+//                                             })}

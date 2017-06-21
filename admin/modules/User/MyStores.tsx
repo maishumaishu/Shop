@@ -1,7 +1,7 @@
 import { default as userService, Application } from 'services/User';
 import FormValidator from 'formValidator';
 // import { Page, app } from 'Application';
-import * as ui from 'UI';
+import * as ui from 'ui';
 export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
     let apps = await userService.applications();

@@ -1,7 +1,8 @@
 
 import { default as shopping } from 'services/Shopping';
 import site = require('Site');
-import * as ui from 'UI';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
 
@@ -21,17 +22,17 @@ page.element.className = 'admin-pc';
                 update: (dataItem) => shopping.updateFreightSolution(dataItem),
                 primaryKeys: ['Id']
             });
-            let gridView = ui.createGridView({
+            let gridView = wz.createGridView({
                 element: this.gridViewElement,
                 columns: [
-                    new ui.BoundField({
+                    new wz.BoundField({
                         dataField: 'Id', headerText: '编号',
                         headerStyle: { width: '300px' } as CSSStyleDeclaration
                     }),
-                    new ui.BoundField({
+                    new wz.BoundField({
                         dataField: 'Name', headerText: '名称',
                     }),
-                    new ui.CustomField({
+                    new wz.CustomField({
                         createItemCell(dataItem) {
                             let cell = new wuzhui.GridViewCell();
                             ReactDOM.render(

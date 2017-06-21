@@ -1,6 +1,6 @@
 import FormValidator from 'formValidator';
 import { default as userService } from 'services/User';
-import * as ui from 'UI';
+import * as ui from 'ui';
 import app = require('Application');
 
 var $ctrls = $('#sidebar, #breadcrumbs, #navbar-container > [role="navigation"]');

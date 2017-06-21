@@ -2,7 +2,8 @@
 import { default as activity } from 'services/Activity';
 import site = require('Site');
 import FormValidator from 'formValidator';
-import * as ui from 'UI';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 import { GridViewItemPopupEditor } from 'myWuZhui';
 let JData = window['JData'];
 
@@ -19,13 +20,13 @@ export default function (page: chitu.Page) {
                 insert: (dataItem) => activity.addActivity(dataItem),
                 delete: (dataItem) => activity.deleteActivity(dataItem),
             })
-            ui.appendGridView(page.element, {
+            wz.appendGridView(page.element, {
                 dataSource,
                 columns: [
-                    new ui.BoundField({ dataField: 'Name', headerText: '活动名称' }),
-                    new ui.BoundField({ dataField: 'BeginDate', headerText: '开始日期', dataFormatString: '{0:d}' }),
-                    new ui.BoundField({ dataField: 'EndDate', headerText: '结束日期', dataFormatString: '{0:d}' }),
-                    new ui.CommandField({
+                    new wz.BoundField({ dataField: 'Name', headerText: '活动名称' }),
+                    new wz.BoundField({ dataField: 'BeginDate', headerText: '开始日期', dataFormatString: '{0:d}' }),
+                    new wz.BoundField({ dataField: 'EndDate', headerText: '结束日期', dataFormatString: '{0:d}' }),
+                    new wz.CommandField({
                         leftButtons(dataItem) {
                             return [
                                 <a className="btn btn-minier btn-info" href={`#Shopping/Promotion/ActivityEdit?id=${dataItem.Id}`}>
@@ -55,7 +56,7 @@ export default function (page: chitu.Page) {
                             </li>
                         </ul>
                     </div>
-                    <ui.GridViewItemPopupEditor name="活动"
+                    <wz.GridViewItemPopupEditor name="活动"
                         ref={(e) => {
                             if (!e) return;
                             this.itemEditor = e;
@@ -88,7 +89,7 @@ export default function (page: chitu.Page) {
                                 <input name="EndDate" className="form-control" autoFocus={true} placeholder="请输入活动的结束日期" />
                             </div>
                         </div>
-                    </ui.GridViewItemPopupEditor>
+                    </wz.GridViewItemPopupEditor>
                 </div>
             );
         }

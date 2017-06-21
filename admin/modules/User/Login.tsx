@@ -2,7 +2,9 @@
 import app = require('Application');
 import { default as site } from 'Site';
 import FormValidator from 'formValidator';
-import * as ui from 'UI';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
+
 export default async function (page: chitu.Page) {
     class LoginPage extends React.Component<{}, {}>{
         validator: FormValidator;

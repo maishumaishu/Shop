@@ -1,6 +1,6 @@
 ﻿import { default as memberService, UserInfo } from 'services/User';
-import * as ui from 'UI';
-
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 import FormValidator from 'formValidator';
 
 export default function (page: chitu.Page) {
@@ -29,13 +29,13 @@ export default function (page: chitu.Page) {
         componentDidMount() {
             let self = this;
             let dataSource = new wuzhui.WebDataSource({ select: (args) => memberService.members(args) })
-            let gridView = ui.appendGridView(page.element, {
+            let gridView = wz.appendGridView(page.element, {
                 dataSource,
                 columns: [
-                    new ui.BoundField({ dataField: 'Id', headerText: '编号' }),
-                    new ui.BoundField({ dataField: 'Mobile', headerText: '手机' }),
-                    new ui.BoundField({ dataField: 'NickName', headerText: '昵称' }),
-                    new ui.CustomField({
+                    new wz.BoundField({ dataField: 'Id', headerText: '编号' }),
+                    new wz.BoundField({ dataField: 'Mobile', headerText: '手机' }),
+                    new wz.BoundField({ dataField: 'NickName', headerText: '昵称' }),
+                    new wz.CustomField({
                         headerText: '性别', createItemCell(dataItem: UserInfo) {
                             let cell = new wuzhui.GridViewCell();
                             cell.element.innerText = dataItem.Gender == 'Male' ? '男' : '女';
@@ -43,12 +43,12 @@ export default function (page: chitu.Page) {
                         },
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
                     }),
-                    new ui.BoundField({
+                    new wz.BoundField({
                         dataField: 'Balance', headerText: '余额',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
                         dataFormatString: '￥{0:C2}'
                     }),
-                    new ui.CustomField({
+                    new wz.CustomField({
                         headerText: '操作',
                         itemStyle: { textAlign: 'center', width: '120px' } as CSSStyleDeclaration,
                         createItemCell(dataItem: UserInfo) {

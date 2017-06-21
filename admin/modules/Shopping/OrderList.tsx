@@ -1,4 +1,5 @@
-import * as ui from 'UI';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 import { default as shopping, Order, OrderDetail } from 'services/Shopping';
 
 export default function (page: chitu.Page) {
@@ -10,34 +11,34 @@ export default function (page: chitu.Page) {
     let dataSource = new wuzhui.WebDataSource({
         select: (args) => shopping.orders(args)
     });
-    ui.appendGridView(page.element, {
+    wz.appendGridView(page.element, {
         dataSource,
         columns: [
-            new ui.BoundField({
+            new wz.BoundField({
                 dataField: 'OrderDate', headerText: '订单日期', dataFormatString: '{0:G}',
                 headerStyle: { width: '100px' } as CSSStyleDeclaration,
                 sortExpression: 'OrderDate'
             }),
-            new ui.BoundField({
+            new wz.BoundField({
                 dataField: 'Serial', headerText: '订单号', sortExpression: 'Serial',
                 headerStyle: { width: '120px' } as CSSStyleDeclaration
             }),
-            new ui.BoundField({
+            new wz.BoundField({
                 dataField: 'Consignee', headerText: '收款人',
                 headerStyle: { width: '100px' } as CSSStyleDeclaration
             }),
-            new ui.BoundField({
+            new wz.BoundField({
                 dataField: 'ReceiptAddress', headerText: '收货地址'
             }),
-            new ui.BoundField({
+            new wz.BoundField({
                 dataField: 'StatusText', headerText: '状态',
                 itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
             }),
-            new ui.BoundField({
+            new wz.BoundField({
                 dataField: 'Amount', headerText: '金额', dataFormatString: '￥{0:C2}',
                 itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
             }),
-            new ui.CustomField({
+            new wz.CustomField({
                 createItemCell: createCommandCell,
                 headerText: '操作',
                 headerStyle: { width: '110px' } as CSSStyleDeclaration,

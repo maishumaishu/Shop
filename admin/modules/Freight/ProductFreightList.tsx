@@ -1,6 +1,7 @@
 ﻿import Service = require('services/Service');
 import { default as shopping, FreightSolution, ProductFreight } from 'services/Shopping';
-import * as ui from 'UI';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
 
@@ -24,13 +25,13 @@ export default function (page: chitu.Page) {
         insert: (dataItem: ProductFreight) => shopping.addProductFreight(dataItem.ObjectId, dataItem.SolutionId),
         primaryKeys: ['Id']
     });
-    ui.appendGridView(page.element, {
+    wz.appendGridView(page.element, {
         dataSource,
         columns: [
-            new ui.BoundField({ dataField: 'ObjectId', headerText: '产品编号' }),
-            new ui.BoundField({ dataField: 'Name', headerText: '名称' }),
-            new ui.BoundField({ dataField: 'SolutionName', headerText: '方案' }),
-            new ui.CustomField({
+            new wz.BoundField({ dataField: 'ObjectId', headerText: '产品编号' }),
+            new wz.BoundField({ dataField: 'Name', headerText: '名称' }),
+            new wz.BoundField({ dataField: 'SolutionName', headerText: '方案' }),
+            new wz.CustomField({
                 createItemCell(dataItem) {
                     let cell = new wuzhui.GridViewCell();
                     ReactDOM.render(
