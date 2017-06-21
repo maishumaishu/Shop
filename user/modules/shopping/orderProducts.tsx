@@ -1,5 +1,5 @@
 import { Page, defaultNavBar, app } from 'site';
-import { ShoppingService, ShoppingCartService, AccountService, Order, userData } from 'services';
+import { ShoppingService, ShoppingCartService, AccountService, Order, userData } from 'userServices';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
 
 export default async function (page: Page) {

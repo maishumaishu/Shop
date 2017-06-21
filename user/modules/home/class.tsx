@@ -1,8 +1,7 @@
 import { Page, defaultNavBar, Menu } from 'site';
-import { ShoppingService, StationService, ProductCategory } from 'services';
-// import { ImageBox } from 'controls/imageBox';
-// import { PageComponent, PageHeader, PageFooter } from 'controls/page';
-let { PageComponent, PageHeader, PageFooter, PageView, ImageBox } = controls;
+import { ShoppingService, StationService, ProductCategory } from 'userServices';
+import { PageComponent, PageHeader, PageFooter, PageView, ImageBox } from 'mobileControls';
+requirejs(['css!modules/home/class.css'])
 
 export default function (page: Page) {
     let shop = page.createService(ShoppingService);

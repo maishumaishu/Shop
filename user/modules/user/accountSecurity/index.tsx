@@ -1,6 +1,6 @@
 import { Page } from 'site';
 import { defaultNavBar, app } from 'site';
-import * as services from 'services';
+import * as services from 'userServices';
 import { MobileBindingPageArguments } from 'modules/user/accountSecurity/mobileBinding';
 
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;

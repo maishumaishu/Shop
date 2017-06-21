@@ -1,4 +1,4 @@
-import * as services from 'services';
+import * as services from 'userServices';
 
 let member = new services.MemberService();
 

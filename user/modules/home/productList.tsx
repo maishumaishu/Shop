@@ -1,5 +1,5 @@
 import { Page, defaultNavBar } from 'site';
-import { ShoppingService, Product } from 'services';
+import { ShoppingService, Product } from 'userServices';
 
 let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, DataList, Panel,
     PageComponent, PageHeader, PageFooter, PageView, Tabs } = controls;

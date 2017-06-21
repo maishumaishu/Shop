@@ -1,7 +1,7 @@
 import { Page, defaultNavBar, app, config } from 'site';
 let { PageComponent, PageHeader, PageFooter, PageView, Button, DataList } = controls;
 import FormValidator from 'formValidator';
-import * as services from 'services';
+import * as services from 'userServices';
 import * as ui from 'ui';
 
 export default function (page: Page) {

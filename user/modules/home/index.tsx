@@ -1,5 +1,5 @@
 import { Page, Menu, app } from 'site';
-import { StationService, HomeProduct } from 'services';
+import { StationService, HomeProduct } from 'userServices';
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList, createHammerManager } = controls;
 import Carousel = require('carousel');
 import Hammer = require('hammer');

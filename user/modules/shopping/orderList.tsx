@@ -1,5 +1,5 @@
 import { Page, defaultNavBar } from 'site';
-import { ShoppingService, Order } from 'services';
+import { ShoppingService, Order } from 'userServices';
 import { app } from 'site';
 
 let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs, Button } = controls;

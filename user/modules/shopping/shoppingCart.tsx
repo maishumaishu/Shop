@@ -1,8 +1,8 @@
 import { Page, Menu, defaultNavBar, app } from 'site';
-import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData } from 'services';
+import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData } from 'userServices';
 
-let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
-    PageComponent, PageHeader, PageFooter, PageView, Button, Dialog } = controls;
+import { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
+    PageComponent, PageHeader, PageFooter, PageView, Button, Dialog } from 'mobileControls';
 
 
 export default function (page: Page, hideMenu: boolean = false) {

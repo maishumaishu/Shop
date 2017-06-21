@@ -1,5 +1,5 @@
 import { Page, defaultNavBar } from 'site';
-import { ShoppingService } from 'services';
+import { ShoppingService } from 'userServices';
 let { PageComponent, PageHeader, PageFooter, PageView, Button, ImageFileSelector, ImageBox } = controls;
 
 export type RouteValues = { orderDetailId: string, productImageUrl: string };

@@ -1,5 +1,5 @@
 import { Page, Menu, defaultNavBar, app } from 'site';
-import { ShoppingCartService, ShoppingService, ProductComent } from 'services';
+import { ShoppingCartService, ShoppingService, ProductComent } from 'userServices';
 let {PageComponent, PageHeader, PageFooter, PageView, Button, Dialog, Tabs, DataList, ImageBox } = controls;
 
 export default function (page: Page) {

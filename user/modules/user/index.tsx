@@ -1,5 +1,5 @@
 import { Page, Menu, app } from 'site';
-import { MemberService, UserInfo, userData } from 'services';
+import { MemberService, UserInfo, userData } from 'userServices';
 let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } = controls;
 
 

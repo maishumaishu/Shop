@@ -1,5 +1,5 @@
 import { Page, defaultNavBar } from 'site';
-import { UserInfo, MemberService } from 'services';
+import { UserInfo, MemberService } from 'userServices';
 import * as ui from 'ui';
 import FormValidator from 'formValidator';
 import WizardComponent = require('modules/user/accountSecurity/wizard');

@@ -1,5 +1,5 @@
 import { Page, searchNavBar, app } from 'site';
-import { StationService } from 'services';
+import { StationService } from 'userServices';
 
 let { PageComponent, PageHeader, PageFooter, PageView, Button } = controls;
 

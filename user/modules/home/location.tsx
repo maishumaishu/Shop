@@ -1,5 +1,5 @@
 import { Page, defaultNavBar } from 'site';
-import { LocationService, Provinces, Cities } from 'services';
+import { LocationService, Provinces, Cities } from 'userServices';
 import AutoLocation from 'components/autoLocation'
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 

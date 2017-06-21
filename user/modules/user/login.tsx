@@ -1,6 +1,6 @@
 import { Page, defaultNavBar } from 'site';
 import * as ui from 'ui';
-import * as services from 'services';
+import * as services from 'userServices';
 import { app } from 'site';
 import FormValidator from 'formValidator';
 let { PageComponent, PageHeader, PageFooter, PageView, Button, DataList } = controls;

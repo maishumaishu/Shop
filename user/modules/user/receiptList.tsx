@@ -1,5 +1,5 @@
 import { Page, defaultNavBar, app } from 'site';
-import { ShoppingService, ReceiptInfo, Order } from 'services';
+import { ShoppingService, ReceiptInfo, Order } from 'userServices';
 import { ReceiptEditRouteValues } from 'modules/user/receiptEdit';
 let { PageComponent, PageHeader, PageView, PageFooter, Button } = controls;
 export type SetAddress = (address: string, order: Order) => void;
