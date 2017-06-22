@@ -2,16 +2,17 @@
 
 
 export interface ControlData {
-    controlId: string, controlName: string, data?: any,
+    controlId: string, controlName: string, data: any,
     selected?: boolean | 'disabled'
 }
 
 export interface PageData {
-    _id: string,
-    name: string,
-    remark: string,
-    controls?: Array<ControlData>,
+    _id?: string,
+    name?: string,
+    remark?: string,
+    // controls?: Array<ControlData>,
     isDefault?: boolean,
+    showMenu?: boolean,
     header?: { controls: ControlData[] },
     footer?: { controls: ControlData[] },
     views?: { controls: ControlData[] }[]
@@ -39,21 +40,17 @@ export class StationService extends Service {
         let url = `${Service.config.siteUrl}${path}`;
         return url;
     }
-    // get homeProduct(): JData.WebDataSource {
-    //     if (!this._homeProduct) {
-    //         this._homeProduct = new JData.WebDataSource(
-    //             Service.config.siteUrl + 'MicroStationData/Select?source=HomeProducts',
-    //             Service.config.siteUrl + 'MicroStationData/Insert?source=HomeProducts',
-    //             Service.config.siteUrl + 'MicroStationData/Update?source=HomeProducts',
-    //             Service.config.siteUrl + 'MicroStationData/Delete?source=HomeProducts'
-    //         );
-    //     }
-    //     return this._homeProduct;
-    // }
-    private translatePageData(pageData: PageData): PageData {
-        if (pageData.views == null && pageData.controls != null) {
-            pageData.views = [{ controls: pageData.controls }];
+    private fillPageData(pageData: PageData): PageData {
+        if (pageData.views == null && pageData['controls'] != null) {
+            pageData.views = [{ controls: pageData['controls'] }];
         }
+
+        pageData.views = pageData.views || [
+            { controls: [] }
+        ];
+
+        pageData.footer = pageData.footer || { controls: [] };
+        pageData.header = pageData.header || { controls: [] };
         return pageData;
     }
     savePageData(pageData: PageData) {
@@ -66,40 +63,38 @@ export class StationService extends Service {
     pageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let data = { pageId };
-        return Service.get<PageData>(url, data).then(o => {
-            this.translatePageData(o);
-            return o;
+        return Promise.all([Service.get<PageData>(url, data), this.menuControlData()]).then(data => {
+            console.assert(data[1] != null, 'Menu control data is null.');
+            this.fillPageData(data[0]);
+            if (data[0].showMenu == true) {
+                data[1].selected = false;
+                data[0].footer.controls.push(data[1]);
+            }
+            return data[0];
         });
     }
-    pageDataByName(pageName: string) {
+    pageDataByName(name: string) {
         let url = `${Service.config.siteUrl}Page/GetPageDataByName`;
-        let data = { pageName };
+        let data = { name };
         return Service.get<PageData>(url, data).then(o => {
-            this.translatePageData(o);
+            // this.fillPageData(o);
             return o;
         });
     }
     pageDataByTemplate(templateId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageDataByTemplate`;
         let data = { templateId };
-        return Service.get<PageData>(url, data).then(o => this.translatePageData(o));
-    }
-    /** 通过页面名称获取页面 iddata 
-     * @param name 页面名称
-     */
-    getPageId(name: string): Promise<string> {
-        let url = `${Service.config.siteUrl}Page/GetPageId`;
-        return Service.get<{ "_id": string }>(url, { name }).then(o => o._id);
-    }
-    getPageDataByName(name: string) {
-        let url = this.url('Page/GetPageDataByName');
-        return Service.get<PageData>(url, { name });
+        return Service.get<PageData>(url, data).then(o => this.fillPageData(o));
     }
     getPageDatas() {
         let url = this.url('Page/GetPageDatas');
         return Service.get<PageData[]>(url).then(o => {
             return o || [];
         });
+    }
+    deletePageData(pageId: string) {
+        let url = this.url('Page/DeletePage');
+        return Service.delete(url, { pageId });
     }
     setDefaultPage(pageId: string) {
         let url = this.url('Page/SetDefaultPage');
@@ -134,23 +129,33 @@ export class StationService extends Service {
             urlParams[decode(match[1])] = decode(match[2]);
         return urlParams;
     }
+
     //============================================================
-
-    async storeStylePageData(): Promise<PageData> {
-        let pageData = await this.getPageDataByName(pageNames.storeStyle);
-        if (pageData == null) {
-            pageData = defaultPageDatas.storeStyle;
-        }
-        return pageData;
+    controlData(name: string) {
+        let url = this.url('Page/GetControlDataByName');
+        return Service.get<ControlData>(url, { name });
     }
-
-    async storeMenuPageData(): Promise<PageData> {
-        let pageData = await this.getPageDataByName(pageNames.storeMenu);
-        if (pageData == null) {
-            pageData = defaultPageDatas.storeMenu;
-        }
-        return pageData;
+    saveControlData(data: ControlData) {
+        let url = this.url('Page/SaveControlData');
+        return Service.postByJson(url, { data }).then(result => {
+            Object.assign(data, result);
+        });
     }
+    async menuControlData() {
+        let menuData = await this.controlData('menu');
+        if (menuData == null) {
+            menuData = { controlId: guid(), controlName: 'menu', data: {} };
+        }
+        return menuData;
+    }
+    async styleControlData() {
+        let styleData = await this.controlData('style');
+        if (styleData == null) {
+            styleData = { controlId: guid(), controlName: 'style', data: {} };
+        }
+        return styleData;
+    }
+    //============================================================
 }
 
 let pageNames = {
@@ -163,8 +168,8 @@ let defaultPageDatas = {
         views: [
             {
                 controls: [
-                    { controlId: guid(), controlName: 'product', selected: 'disabled' },
-                    { controlId: guid(), controlName: 'style', selected: true }
+                    // { controlId: guid(), controlName: 'product:Control', selected: 'disabled' },
+                    // { controlId: guid(), controlName: 'style', selected: true }
                 ]
             }
         ]
@@ -174,7 +179,6 @@ let defaultPageDatas = {
         footer: {
             controls: [
                 { controlId: guid(), controlName: 'menu', data: { menuNodes: [{ name: '首页' }, { name: '个人中心' }] }, selected: true },
-                { controlId: guid(), controlName: 'style' }
             ]
         }
     } as PageData

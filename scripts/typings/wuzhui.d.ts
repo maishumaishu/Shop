@@ -73,9 +73,9 @@ declare namespace wuzhui {
     type DataSourceArguments<T> = {
         primaryKeys?: string[];
         select: ((args: DataSourceSelectArguments) => Promise<any>);
-        insert?: ((item: T) => Promise<T>);
-        update?: ((item: T) => Promise<T>);
-        delete?: ((item: T) => Promise<T>);
+        insert?: ((item: T) => Promise<any>);
+        update?: ((item: T) => Promise<any>);
+        delete?: ((item: T) => Promise<any>);
     };
     class WebDataSource<T> extends DataSource<T> {
     }

@@ -1,13 +1,6 @@
 import { Component, componentsDir } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, Product } from 'userServices';
 import * as ui from 'ui';
-// let h = React.createElement;
-// export interface Product {
-//     Id: string,
-//     ImageUrl: string,
-//     Name: string,
-//     Price: number
-// }
 
 let { ImageBox } = controls;
 requirejs([`css!${componentsDir}/singleColumnProduct/control`]);
@@ -33,7 +26,7 @@ export interface State {
     products: (Product & { Count: number })[]
 }
 
-export default class SingleColumnProductControl extends React.Component<Props, State> {
+export default class SingleColumnProductControl extends Component<Props, State> {
     constructor(args) {
         super(args);
         this.state = { products: [] };
@@ -70,7 +63,7 @@ export default class SingleColumnProductControl extends React.Component<Props, S
         });
     }
 
-    render() {
+    _render(h) {
         return (
             <div className="singleColumnProduct">
                 {

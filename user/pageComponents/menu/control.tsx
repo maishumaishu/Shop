@@ -1,4 +1,4 @@
-import { componentsDir, Component } from 'mobileComponents/common';
+import { componentsDir, Component, editor } from 'mobileComponents/common';
 export interface MenuNode {
     name: string,
     children?: MenuNode[]
@@ -10,20 +10,23 @@ export interface State {
     menuNodes: MenuNode[]
 }
 requirejs(['css!mobileComponents/menu/control.css']);
+
+// @editor('menu/editor')
 export default class MenuControl extends React.Component<Props, State>{
     private element: HTMLElement;
     constructor(props) {
         super(props);
-        this.state = { menuNodes: this.props.menuNodes };
+        this.state = { menuNodes: this.props.menuNodes || [] };
     }
     render() {
+        let menuNodes = this.state.menuNodes;
         return (
             <div className="menuControl" ref={(e: HTMLElement) => this.element = e || this.element}>
-                {this.props.menuNodes.length <= 0 ?
+                {menuNodes.length <= 0 ?
                     <ul className="menu"></ul> :
                     <ul className="menu">
-                        {this.props.menuNodes.map((o, i) => {
-                            let itemWidth = 100 / this.props.menuNodes.length;
+                        {menuNodes.map((o, i) => {
+                            let itemWidth = 100 / menuNodes.length;
                             return <li key={i} style={{ width: `${itemWidth}%` }}>{o.name}</li>;
                         })}
                     </ul>

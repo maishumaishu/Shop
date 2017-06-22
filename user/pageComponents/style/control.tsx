@@ -9,10 +9,10 @@ export interface State {
 export default class StyleControl extends React.Component<Props, State>{
     constructor(props) {
         super(props);
-        this.state = { style: this.props.style || 'default' };
+        // this.state = { style: this.props.style };
     }
     render() {
-        let style = this.state.style;
+        let style = (this.state || { style: 'default' }).style;
         let path = `../user/pageComponents/style/style_${style}.css`;
         return <link rel="stylesheet" href={path}></link>
     }

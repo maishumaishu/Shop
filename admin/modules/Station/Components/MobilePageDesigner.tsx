@@ -1,21 +1,22 @@
 import components from 'mobileComponents/componentDefines';
 import StyleControl from 'mobileComponents/style/control';
-import { MobilePage } from 'modules/Station/Components/MobilePage';
+import { VirtualMobile } from 'modules/Station/Components/MobilePage';
+import { MobilePage } from 'mobileComponents/mobilePage';
 import { Component as Control, componentsDir } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
-import { PageData, ControlData, guid, StationService } from 'services/Station';
+import { PageData, ControlData, guid, default as station } from 'services/Station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 import * as ui from 'ui';
 
-let station = new StationService();
-
 export interface Props extends React.Props<MobilePageDesigner> {
-    pageData?: PageData | string,
-    showComponentPanel?: boolean
+    pageData?: PageData,
+    showComponentPanel?: boolean,
+    showPageEditor?: boolean,
+    save: (pageData: PageData) => Promise<any>
 }
 
 export interface State {
-    pageData?: PageData | string,
+    pageData?: PageData,
     editors: React.ReactElement<any>[]
 }
 
@@ -25,14 +26,14 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private allContainer: HTMLElement;
     private _element: HTMLElement;
     private selectedContainer: HTMLElement;
-    private controls: [string, React.Component<any, any>][];
+    // private controls: [string, React.Component<any, any>][];
 
     saved: chitu.Callback<MobilePageDesigner, { pageData: PageData }>;
 
     constructor(props: Props) {
         super(props);
         this.state = { pageData: props.pageData, editors: [] };
-        this.controls = [];
+        // this.controls = [];
         this.saved = chitu.Callbacks();
     }
 
@@ -48,24 +49,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             let editorReactElement = React.createElement(editorType, { control });
             ReactDOM.render(editorReactElement, editorElement);
         })
-    }
-
-    getControlType(controlName: string): Promise<React.ComponentClass<any>> {
-        return new Promise((resolve, reject) => {
-            requirejs([`mobileComponents/${controlName}/control`], function (exports) {
-                resolve(exports.default);
-            })
-        })
-    }
-
-    async createControlInstance(controlData: ControlData, element: HTMLElement) {
-        let { controlId, controlName, data, selected } = controlData;
-        let controlType = await this.getControlType(controlName);
-        let reactElement = React.createElement(controlType, data);
-        let control = ReactDOM.render(reactElement, element);
-        control.id = controlId;
-        this.controls.push([control.id, control]);
-        return { control, controlType };
     }
 
     componentDidMount() {
@@ -89,13 +72,14 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         if (pageData.footer)
             controlDatas.push(...pageData.footer.controls || [])
 
-        controlDatas.forEach(o => {
-            let control = this.controls.filter(c => c[0] == o.controlId)[0];
-            console.assert(control != null);
-            o.data = control[1].state;
-        });
+        // controlDatas.forEach(o => {
+        //     let control = this.controls.filter(c => c[0] == o.controlId)[0];
+        //     console.assert(control != null);
+        //     o.data = control[1].state;
+        // });
 
-        return station.savePageData(this.state.pageData).then(data => {
+        let save = this.props.save;
+        return save(this.state.pageData).then(data => {
             this.saved.fire(this, { pageData })
             return data;
         });
@@ -143,80 +127,13 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         })
     }
 
-    renderControls(controls: ControlData[]) {
-        controls = controls || [];
-        return controls.map((o, i) =>
-            <div key={o.controlId}
-                ref={(e: HTMLElement) => {
-                    if (!e) return;
-                    this.createControlInstance(o, e)
-                        .then(data => {
-                            if (o.selected != 'disabled') {
-                                e.onclick = (event) => {
-                                    for (let i = 0; i < controls.length; i++) {
-                                        controls[i].selected = controls[i].controlId == o.controlId;
-                                    }
-                                    this.setState(this.state);
-                                }
-                            }
-
-                            if (o.selected == true) {
-                                this.selecteControl(data.control, data.controlType);
-                            }
-                        });
-
-
-                }} />
-        );
-    }
-
-    renderHeader(pageData: PageData): JSX.Element {
-        if (!pageData.header)
-            return null;
-
-        return (
-            <PageHeader>
-                {this.renderControls(pageData.controls)}
-            </PageHeader>
-        )
-    }
-
-    renderFooter(pageData: PageData): JSX.Element {
-        if (!pageData.footer)
-            return null;
-
-        return (
-            <PageFooter>
-                {this.renderControls(pageData.footer.controls)}
-            </PageFooter>
-        )
-    }
-
-
-    renderViews(pageData: PageData) {
-
-        let sortableElement = (element: HTMLElement, viewIndex: number) => {
-            type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
-            $(element).sortable({
-                axis: "y",
-                receive: (event: Event, ui: UI) => {
-                    let element = ui.helper[0] as HTMLElement;
-                    element.removeAttribute('style');
-                    debugger;
-                    let controlName = ui.item.attr('data-controlName');
-                    console.assert(controlName != null);
-                    ui.helper.remove();
-                    pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
-                    this.setState(this.state);
-                }
-            })
+    preview() {
+        let pageId = this.props.pageData._id;
+        if (!pageId) {
+            alert(`页面必须保存`);
+            return;
         }
-
-        return (pageData.views || []).map((o, i) => (
-            <section key={i} ref={(e: HTMLElement) => e != null ? sortableElement(e, i) : null}>
-                {this.renderControls(o.controls)}
-            </section>
-        ));
+        open(`#Station/PreView?pageId=${pageId}`, ':blank');
     }
 
     render() {
@@ -227,35 +144,80 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         return (
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
-                    <MobilePage >
-                        {typeof pageData == 'string' ?
-                            <div ref={(e: HTMLElement) => {
-                                this.createControlInstance({ controlId: guid(), controlName: pageData as string, data: {} }, e)
-                            }}>
-                            </div> :
-                            <PageComponent ref={(e) => { this.selectedContainer = e != null ? e.element : this.selectedContainer }}>
-                                {this.renderHeader(pageData)}
-                                {this.renderViews(pageData)}
-                                {this.renderFooter(pageData)}
-                            </PageComponent>
-                        }
+                    <VirtualMobile >
+                        <MobilePage pageData={pageData}
+                            designTime={{
+                                controlSelected: (a, b) => this.selecteControl(a, b)
+                            }} />
                         {children}
-                    </MobilePage>
+                    </VirtualMobile>
                 </div>
 
                 <div className="admin-pc" style={{ paddingLeft: 390 }} >
                     <ul style={{ margin: 0 }}>
                         <div className="pull-right">
                             <button className="btn btn-primary" style={{ marginLeft: 4 }}
-                                ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.save()) : null}>保存</button>
+                                ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存页面成功' }) : null}>保存</button>
                         </div>
                         <div className="pull-right">
-                            <button className="btn btn-primary" style={{ marginLeft: 4 }}>预览</button>
+                            <button className="btn btn-primary" style={{ marginLeft: 4 }}
+                                onClick={() => this.preview()}>预览</button>
                         </div>
                         <div className="clearfix">
                         </div>
                     </ul>
                     <hr style={{ margin: 0 }} />
+                    <h5 style={{ display: this.props.showPageEditor == true ? 'block' : 'none' }}>页面信息</h5>
+                    <form style={{ height: 40, display: this.props.showPageEditor == true ? 'block' : 'none' }}>
+                        <div className="row">
+                            <div className="col-sm-4">
+                                <label className="control-label pull-left" style={{ paddingTop: 8 }}>名称</label>
+                                <div style={{ paddingLeft: 40 }}>
+                                    <input name="name" className="form-control" placeholder="请输入页面名称（选填）"
+                                        ref={(e: HTMLInputElement) => {
+                                            if (!e) return;
+                                            e.value = pageData.name || '';
+                                            e.onchange = () => {
+                                                pageData.name = e.value;
+                                                this.setState(this.state);
+                                            }
+                                        }} />
+                                </div>
+                            </div>
+                            <div className="col-sm-8">
+                                <label className="control-label pull-left" style={{ paddingTop: 8 }}>备注</label>
+                                <div style={{ paddingLeft: 40 }}>
+                                    <input name="remark" className="form-control pull-left" placeholder="请输入页面备注（必填）"
+                                        ref={(e: HTMLInputElement) => {
+                                            if (!e) return;
+                                            e.value = pageData.remark || '';
+                                            e.onchange = () => {
+                                                pageData.remark = e.value;
+                                                this.setState(this.state);
+                                            }
+                                        }} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <div className="checkbox">
+                                    <label>
+                                        <input type="checkbox"
+                                            ref={(e: HTMLInputElement) => {
+                                                if (!e) return;
+                                                e.checked = pageData.showMenu;
+                                                e.onchange = async () => {
+                                                    pageData.showMenu = e.checked;
+                                                    this.setState(this.state);
+                                                }
+                                            }} /> 显示菜单
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr style={{ display: this.props.showPageEditor == true ? 'block' : 'none' }} />
                     <h5 style={{ display: showComponentPanel == true ? 'block' : 'none' }}>页面组件</h5>
                     <ul ref={(e: HTMLElement) => this.allContainer = e || this.allContainer}
                         style={{

@@ -10,13 +10,13 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
 
     constructor(props) {
         super(props);
-        this.state = { menuNodes: this.props.control.props.menuNodes };
+        this.state = { menuNodes: this.props.control.props.menuNodes || [] };
     }
     render() {
         let menuNodes = this.state.menuNodes || [];
         return (
             <div className="menuEditor">
-                
+
                 <div className="menu-apply">
                     <div className="title">将菜单应用到以下页面：</div>
                     <div>

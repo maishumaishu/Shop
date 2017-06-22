@@ -61,15 +61,15 @@ requirejs.config({
         controls: {
             deps: ['react-dom', 'react']
         },
-        'controls/scrollView': {
-            deps: ['hammer', 'bezier-easing']
-        },
         application: {
             deps: ['chitu']
         },
         mobileControls: {
             exports: 'controls',
-            deps: ['bezier-easing']
+            deps: ['hammer', 'bezier-easing']
+        },
+        userServices: {
+            exports: 'userServices'
         }
     },
     paths: {
@@ -91,48 +91,15 @@ requirejs.config({
     }
 });
 
-// var modules = [
-//     'site'
-// ];
-
-// if (isUglify) {
-//     modules.push('controls');
-// }
-// else {
-//     let controlsPath = 'controls'
-//     modules.push(
-//         'hammer', 'bezier-easing', `${controlsPath}/common`,
-//         `${controlsPath}/button`, `${controlsPath}/dataList`, `${controlsPath}/dialog`, `${controlsPath}/htmlView`,
-//         `${controlsPath}/imageBox`, `${controlsPath}/indicators`, `${controlsPath}/page`, `${controlsPath}/panel`,
-//         `${controlsPath}/tabs`
-//     );
-// }
-
-// if (isCordovaApp) {
-//     modules.push('cordova');
-//     modules.push('device');
-// }
-
-
-// if (isBabelES5) {
-//     requirejs(['scripts/polyfill'], load)
-// }
-// else {
-//     load();
-// }
-
-// function load() {
 requirejs(['react', 'react-dom', 'application'], function (React, ReactDOM, app) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
     app.run();
-    // requirejs(modules, function (site) {
-    //     site.app.run();
-    //     controls.imageBoxConfig.imageDisaplyText = '零食觅密';
-    // });
-})
+    window['h'] = React.createElement;
 
-// }
+    requirejs(['css!mobileComponents/style/style_default.css']);
+
+})
 
 
 

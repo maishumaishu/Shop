@@ -5,13 +5,13 @@ import { default as StyleControl } from 'mobileComponents/style/control';
 requirejs(['css!content/devices.css']);
 
 
-export class MobilePage extends React.Component<React.Props<MobilePage>, {}>{
+export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {}>{
     private screenElement: HTMLElement;
     constructor(props) {
         super(props);
     }
 
-    static getInstanceByElement(element: HTMLElement): MobilePage {
+    static getInstanceByElement(element: HTMLElement): VirtualMobile {
         return (element as any).mobilePage;
     }
 

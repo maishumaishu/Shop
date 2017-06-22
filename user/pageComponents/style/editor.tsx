@@ -1,6 +1,6 @@
 import { Editor } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control, StyleType } from 'mobileComponents/style/control'
-let h = React.createElement;                                                                                                                                                                
+let h = React.createElement;
 requirejs(['css!mobileComponents/style/editor.css']);
 export interface EditorState {
 
@@ -10,7 +10,7 @@ export default class StyleEditor extends Editor<ControlProps, ControlState, Edit
     constructor(props) {
         super(props);
 
-        this.state = { style: this.props.control.state.style };
+        // this.state = { style: this.props.control.state.style };
     }
     setCurrentStyle(name: StyleType) {
         this.state.style = name;
@@ -31,7 +31,7 @@ export default class StyleEditor extends Editor<ControlProps, ControlState, Edit
         )
     }
     styleItem(name: StyleType) {
-        let currentStyle = this.state.style;
+        let currentStyle = (this.state || { style: null }).style || 'default';
         return (
             <li className={currentStyle == name ? "active" : ''} onClick={() => this.setCurrentStyle(name)}>
                 <div className={name}></div>

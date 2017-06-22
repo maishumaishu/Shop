@@ -48,6 +48,9 @@ requirejs.config({
         'mobileControls': {
             exports: 'controls',
             deps: ['hammer', 'bezier-easing']
+        },
+        ui: {
+            exports: 'ui'
         }
     },
     paths: {
@@ -91,12 +94,10 @@ requirejs.config({
         componentDesigner: '../user/componentDesigner'
     }
 });
-var references = ['react', 'react-dom', 'knockout', 'ko.map', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];
-requirejs(references, function (ReactClass, ReactDOMClass, ko, mapping, app) {
+var references = ['react', 'react-dom', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];
+requirejs(references, function (ReactClass, ReactDOMClass, app, ui) {
     window['React'] = ReactClass;
     window['ReactDOM'] = ReactDOMClass;
-    window['ko'] = ko;
-    window['ko'].mapping = mapping;
     window['h'] = React.createElement;
 
 

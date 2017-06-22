@@ -10,8 +10,8 @@
         "inlineSourceMap": false,
         "paths": {
             "*": [
-                "lib/*",
-                "user/*"
+                "lib/dest/*",
+                "../services/*"
             ],
             "services/*": [
                 "admin/services/*"
@@ -28,9 +28,10 @@
     ],
     "include": [
         "../../scripts/typings",
-        "../../lib/dest/mobile/mobileControls.d.ts",
         "*.ts",
         "*.tsx",
-        "**/*.tsx"
+        "**/*.tsx",
+        "../../lib/dest/*.d.ts",
+        "../services/*"
     ]
 }

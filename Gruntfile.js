@@ -28,20 +28,10 @@ module.exports = function (grunt) {
         copy: {
             admin: {
                 files: [
-                    // { expand: true, cwd: admin_src, src: ['**/*.html'], dest: admin_dest },
-                    // { expand: true, cwd: admin_src, src: ['**/*.js'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['**/*.css', '**/*.html', 'content/font/*.*'], dest: admin_dest },
-                    // { expand: true, cwd: admin_src, src: ['fonts/**/*.*'], dest: admin_dest },
-                    // { expand: true, cwd: admin_src, src: ['assets/font/*.*'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['scripts/ueditor/**/*.*'], dest: admin_dest },
                     { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${admin_dest}/scripts` },
-
-                    { expand: true, cwd: user_dest, src: ['userServices.js', 'controls/*.js'], dest: `${admin_dest}/mobile` },
-                    { expand: true, cwd: `mobileComponents`, src: ['**/*.png'], dest: `${dest}/mobileComponents` },
-                    { expand: true, cwd: `${dest}/common`, src: ['*.js'], dest: `${admin_dest}` },
-                    { expand: true, cwd: `mobileComponents/dest/mobileComponents`, src: ['**/*.*'], dest: `${admin_dest}/mobileComponents` },
-                    { expand: true, cwd: `lib/dest`, src: ['**/*.js'], dest: `${admin_dest}` },
-                    // { expand: true, cwd: `mobileComponents`, src: ['*.html'], dest: `${admin_dest}/mobileComponents` }
+                    { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` }
                 ]
             },
             admin_bt: {
@@ -51,13 +41,9 @@ module.exports = function (grunt) {
             },
             user: {
                 files: [
-                    { expand: true, cwd: user_src, src: ['**/*.html', '**/*.js', '**/*.css', '**/*.png'], dest: user_dest },
+                    { expand: true, cwd: user_src, src: ['**/*.html', '**/*.css', '**/*.png'], dest: user_dest },
                     { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${user_dest}/scripts` },
-                    // { expand: true, cwd: `${admin_dest}/mobile`, src: ['**/control.*', '*.js'], dest: `${user_dest}` },
-                    // {
-                    //     expand: true, cwd: user_src, dest: user_dest,
-                    //     src: ['js/**/*.js', 'content/**/*.css', 'content/font/*.*', 'images/**/*.*', 'index.html'],
-                    // },
+                    { expand: true, cwd: `${user_src}/dest`, src: ['*.js'], dest: user_dest }
                 ]
             }
         },
@@ -124,13 +110,6 @@ module.exports = function (grunt) {
         less: {
             admin: {
                 files: [
-                    // {
-                    //     expand: true,
-                    //     cwd: `${admin_src}/modules`,
-                    //     src: ['**/*.less'],
-                    //     dest: `${admin_dest}/modules`,
-                    //     ext: '.css'
-                    // },
                     {
                         expand: true,
                         cwd: `${admin_src}`,
@@ -142,13 +121,6 @@ module.exports = function (grunt) {
             },
             user: {
                 files: [
-                    // {
-                    //     expand: true,
-                    //     cwd: user_src + `/modules`,
-                    //     src: ['**/*.less'],
-                    //     dest: `${user_src}/content/app`,
-                    //     ext: '.css'
-                    // },
                     {
                         expand: true,
                         cwd: user_src,

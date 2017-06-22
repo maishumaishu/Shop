@@ -37,6 +37,7 @@ export abstract class Component<P extends ComponentProp<any>, S> extends React.C
             }
         }
     }
+
     render() {
         return this._render(h);
     }
@@ -51,30 +52,8 @@ export abstract class Component<P extends ComponentProp<any>, S> extends React.C
             s4() + '-' + s4() + s4() + s4();
     };
 
-    static controlSelected: (control: Component<any, any>, type: React.ComponentClass<any>) => void;
+    // static controlSelected: (control: Component<any, any>, type: React.ComponentClass<any>) => void;
 
-    static createDesignElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
-        props = props || {};
-        if (typeof type == 'string')
-            props.onClick = () => { };
-        else if (typeof type != 'string') {
-            props.onClick = (event, control: Component<any, any>) => {
-                if (control.context != null) {
-                    control.context.designer.selecteControl(control, type);
-                }
-            }
-        }
-        if (type == 'a' && (props as any).href) {
-            (props as any).href = 'javascript:';
-        }
-
-        // props.mode = 'design';
-        let args = [type, props];
-        for (let i = 2; i < arguments.length; i++) {
-            args[i] = arguments[i];
-        }
-        return React.createElement.apply(React, args);
-    }
 
     static loadEditor(controlName: string, control: Component<any, any>, editorElement: HTMLElement) {
         let editorPathName = `pageComponent/${controlName}/editor`; //Editor.path(controlName);
@@ -219,10 +198,46 @@ function isError(responseData: any): Error {
     return null;
 }
 
-export let h = Component.createDesignElement;
+export function h(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
+    props = props || {};
+    if (typeof type == 'string')
+        props.onClick = () => { };
+    else if (typeof type != 'string') {
+        props.onClick = (event, control: Component<any, any>) => {
+            if (control.context != null) {
+                control.context.designer.selecteControl(control, type);
+            }
+        }
+    }
+    if (type == 'a' && (props as any).href) {
+        (props as any).href = 'javascript:';
+    }
+
+    // props.mode = 'design';
+    let args = [type, props];
+    for (let i = 2; i < arguments.length; i++) {
+        args[i] = arguments[i];
+    }
+    return React.createElement.apply(React, args);
+}
+
 export let components: { [key: string]: React.ComponentClass<any> } = {};
 export function component(name: string) {
     return function (constructor: React.ComponentClass<any>) {
         components[name] = constructor;
+    }
+}
+
+export interface ComponentClass<T> extends React.ComponentClass<T> {
+    attributes: { editorPath?: string, editorExport?: string }
+}
+
+type Attributes = { editorPath?: string, editorExport?: string }
+export function editor(pathName: string, exportName?: string) {
+    return function (constructor: React.ComponentClass<any>) {
+        let componentClass = constructor as ComponentClass<any>;
+        let attrs = componentClass.attributes = componentClass.attributes || {};
+        attrs.editorPath = pathName;
+        attrs.editorExport = exportName;
     }
 }

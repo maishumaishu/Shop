@@ -100,12 +100,6 @@ namespace userServices {
 
                 // try {
                 let response = await fetch(url, options);
-                if (response.status >= 300) {
-                    let err = new AjaxError(options.method);
-                    err.name = `${response.status}`;
-                    err.message = response.statusText;
-                    throw err
-                }
                 let responseText = response.text();
                 let p: Promise<string>;
                 if (typeof responseText == 'string') {
@@ -118,8 +112,22 @@ namespace userServices {
                 }
 
                 let text = await responseText;
-                let textObject = JSON.parse(text);
-                let err = isError(textObject);
+                let contentType = response.headers.get('Content-Type') || '';
+                let textObject: any;
+                if (contentType.indexOf('json') >= 0) {
+                    textObject = JSON.parse(text);
+                }
+                else {
+                    textObject = text;
+                }
+
+                let err = response.status >= 300 ? textObject : isError(textObject);
+                if (typeof err == 'string') {
+                    let ajaxError = new AjaxError(options.method);
+                    ajaxError.name = `${response.status}`;
+                    ajaxError.message = response.statusText;
+                    err = ajaxError;
+                }
                 if (err)
                     throw err;
 

@@ -1,24 +1,18 @@
-import * as services from 'services';
+import { PageData, ControlData, StationService, guid, Service } from 'userServices';
+import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
+import { Page } from 'site';
+import { MobilePage } from 'pageComponents/mobilePage';
 export default async function (page: chitu.Page) {
-    // var pageService = new services.PageService();
-    // //     pageService.pageData().then(pageData => {
-    // //         for (let i = 0; i < pageData.controls.length; i++) {
-    // //             let controlElement = document.createElement('div');
-    // //             page.element.appendChild(controlElement);
 
-    // //             let controlPath = `components/${pageData.controls[i].controlName}/control`;
-    // //             console.log(controlPath);
-    // //             requirejs([controlPath], o => {
-    // //                 var control = o.default;
-    // //                 console.assert(control != null);
-    // //                 let reactElement = React.createElement(control, pageData.controls[i].data);
-    // //                 ReactDOM.render(reactElement, controlElement, function () {
-    // //                 })
-    // //             });
-    // //         }
+    let { pageId } = page.routeData.values;
+    let station = Service.createService(StationService);
+    let pageData = await station.pageData(pageId);
 
-    // //     });
+    ReactDOM.render(<MobilePage pageData={pageData} />, page.element);
 
-    // let name = page.routeData.values.name;
-    // let pageData = await pageService.pageData();
 }
+
+interface Props extends React.Props<MobilePage> {
+    pageData: PageData
+}
+

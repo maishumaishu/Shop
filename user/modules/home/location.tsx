@@ -1,6 +1,6 @@
 import { Page, defaultNavBar } from 'site';
 import { LocationService, Provinces, Cities } from 'userServices';
-import AutoLocation from 'components/autoLocation'
+// import AutoLocation from 'components/autoLocation'
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 
 export default function (page: Page) {
@@ -20,16 +20,16 @@ export default function (page: Page) {
                 text: '',
                 status: false
             }
-            var autoLocation = new AutoLocation();
-            autoLocation.init().then((result) => {
-                this.state.text = result.regeocode.formattedAddress;
-                this.state.status = result.status;
-                this.setState(this.state)
-            }).catch((error) => {
-                this.state.text = "定位失败，请手动选择位置";
-                this.state.status = false;
-                this.setState(this.state)
-            });
+            // var autoLocation = new AutoLocation();
+            // autoLocation.init().then((result) => {
+            //     this.state.text = result.regeocode.formattedAddress;
+            //     this.state.status = result.status;
+            //     this.setState(this.state)
+            // }).catch((error) => {
+            //     this.state.text = "定位失败，请手动选择位置";
+            //     this.state.status = false;
+            //     this.setState(this.state)
+            // });
         }
         render() {
             return (

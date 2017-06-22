@@ -6,7 +6,8 @@ import { default as station, PageData, ControlData } from 'services/Station';
 // import { Button } from 'common/controls';
 import app = require('Application');
 import FormValidator from 'formValidator';
-import * as ui from 'UI';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 import { alert } from 'ui';
 
 requirejs(['css!content/devices.css']);
@@ -57,7 +58,7 @@ export default async function (page: chitu.Page) {
             super(props);
 
             this.state = {
-                componentInstances: this.props.pageData.controls,
+                componentInstances: this.props.pageData['controls'],
                 pageName: this.props.pageData.name,
                 pageRemark: this.props.pageData.remark
             };
@@ -82,7 +83,7 @@ export default async function (page: chitu.Page) {
             }
 
 
-            let pageData: PageData = { _id: this.pageId, controls, name: this.state.pageName, remark: this.state.pageRemark };
+            let pageData: PageData = { _id: this.pageId, views: [{ controls }], name: this.state.pageName, remark: this.state.pageRemark };
             return station.savePageData(pageData).then(data => {
                 if (routeValue.onSave) {
                     routeValue.onSave(pageData);
@@ -307,13 +308,15 @@ export default async function (page: chitu.Page) {
                                 <button className="btn btn-primary btn-sm"
                                     ref={(e: HTMLButtonElement) => {
                                         if (!e) return;
+                                        let element = document.createElement('div');
+                                        React.render(<h5>
+                                            <i className="icon-ok-sign icon-2x text-success" />
+                                            <span style={{ marginLeft: 10 }}>保存页面成功</span>
+                                        </h5>, element);
                                         e.onclick = ui.buttonOnClick(() => this.save(),
                                             {
-                                                toast:
-                                                <h5>
-                                                    <i className="icon-ok-sign icon-2x text-success" />
-                                                    <span style={{ marginLeft: 10 }}>保存页面成功</span>
-                                                </h5>
+                                                toast: element
+
                                             })
                                     }}
                                 >保存</button>

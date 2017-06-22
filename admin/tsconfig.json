@@ -9,12 +9,12 @@
         "baseUrl": "../",
         "paths": {
             "*": [
-                "lib/*"
+                "lib/dest/*"
             ],
-            "mobileComponents/*":[
+            "mobileComponents/*": [
                 "user/pageComponents/*"
             ],
-            "componentDesigner/*":[
+            "componentDesigner/*": [
                 "user/componentDesigner/*"
             ]
         },
@@ -25,7 +25,7 @@
         "*.tsx",
         "**/*.tsx",
         "*.ts",
-        "**/*.ts"
-        // "../lib"
+        "**/*.ts",
+        "../user/dest/*.d.ts"
     ]
 }

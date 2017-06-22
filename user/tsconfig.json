@@ -5,6 +5,7 @@
         "sourceMap": false,
         "outDir": "../www",
         "jsx": "react",
+        "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
             "*": [
@@ -20,7 +21,9 @@
         "user",
         "components",
         "controls",
-        "pageComponents"
+        "pageComponents",
+        "services",
+        "userServices.tsx"
     ],
     "include": [
         "../scripts",

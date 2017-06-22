@@ -41,7 +41,16 @@ function ajax<T>(settings: JQueryAjaxSettings) {
                 resolve(data);
             })
             // .done((o) => resolve(o))
-            .fail((o) => reject(o))
+            .fail((o) => {
+                reject(o);
+                if (o.status == 306) {
+                    let err = JSON.parse(o.responseText);
+                    Service.error.fire(err);
+                }
+                else {
+                    Service.error.fire(o);
+                }
+            })
     });
 }
 

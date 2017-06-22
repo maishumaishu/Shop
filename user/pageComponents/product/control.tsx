@@ -12,7 +12,7 @@ export interface State {
 }
 
 @component("product")
-export default class ProductControl extends React.Component<Props, State>{
+export default class ProductControl extends Component<Props, State>{
     private productView: ProductView;
     constructor(props) {
         super(props);
@@ -21,7 +21,7 @@ export default class ProductControl extends React.Component<Props, State>{
     get element() {
         return this.productView.element;
     }
-    render() {
+    _render(h) {
         let shopping = new ShoppingService();
         let shoppingCart = new ShoppingCartService();
         let product = {
@@ -123,7 +123,10 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
                         </nav>
                         <div style={{ paddingTop: "10px" }}>
                             <div className="pull-left" style={{ width: 80, height: 80, marginLeft: 10 }}>
-                                <ImageBox src={p.ImageUrl} className="img-responsive" />
+                                {/*<ImageBox src={p.ImageUrl} className="img-responsive" />*/}
+                                <img className="img-responsive" ref={(e: HTMLImageElement) => {
+                                    if (!e) return;
+                                }} />
                             </div>
                             <div style={{ marginLeft: 100, marginRight: 70 }}>
                                 <div>{p.Name}</div>
@@ -142,7 +145,9 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
                                 </div>
                                 {o.Options.map(c => (
                                     <div key={c.Name} style={{ marginLeft: 60 }}>
-                                        <Button onClick={() => this.onFieldSelected(o, c.Name)} className={c.Selected ? 'cust-prop selected' : 'cust-prop'}>{c.Name}</Button>
+                                        <button className={c.Selected ? 'cust-prop selected' : 'cust-prop'}
+                                            ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.onFieldSelected(o, c.Name)) : null}
+                                        >{c.Name}</button>
                                     </div>
                                 ))}
                             </div>
@@ -173,8 +178,14 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
                             </div>
                         </div>
                         <div className="clearfix"></div>
-                        <button onClick={() => { this.props.parent.addToShoppingCart(); this.panel.hide() }} className="btn btn-primary btn-block"
-                            data-dialog="toast:'成功添加到购物车'">
+                        <button className="btn btn-primary btn-block"
+                            ref={(e: HTMLButtonElement) => {
+                                if (!e) return;
+                                e.onclick = ui.buttonOnClick(() => {
+                                    this.panel.hide();
+                                    return this.props.parent.addToShoppingCart();
+                                }, { toast: '成功添加到购物车' })
+                            }}>
                             加入购物车
                         </button>
                     </div>
@@ -427,7 +438,7 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
                                 : null
                             }
                         </a>
-                        <Button onClick={() => this.addToShoppingCart()} className="btn btn-primary pull-right" >加入购物车</Button>
+                        <button ref={(e: HTMLButtonElement) => ui.buttonOnClick(() => this.addToShoppingCart())} className="btn btn-primary pull-right" >加入购物车</button>
                     </nav>
                 </PageFooter>
                 <ProductPanel ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.props.shop} />

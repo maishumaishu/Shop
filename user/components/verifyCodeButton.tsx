@@ -1,9 +1,9 @@
-import * as services from 'userServices';
+import { Service, MemberService, VerifyCodeType } from 'userServices';
 
-let member = new services.MemberService();
+let member = Service.createService(MemberService);
 
 class VerifyCodeButton extends React.Component<
-    React.Props<VerifyCodeButton> & { get_mobile: () => string, set_smsId: (value: string) => void, type: services.VerifyCodeType }, { letfSeconds: number }>{
+    React.Props<VerifyCodeButton> & { get_mobile: () => string, set_smsId: (value: string) => void, type: VerifyCodeType }, { letfSeconds: number }>{
 
     constructor(props) {
         super(props);

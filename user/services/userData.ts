@@ -93,7 +93,46 @@ namespace userServices {
         }
     }
 
-    export let userData = new UserData();;
+    export let userData = new UserData();
+    userData.userToken.add(() => {
+        let ShoppingCart = new ShoppingCartService();
+
+        ShoppingCart.items().then((value) => {
+            userData.shoppingCartItems.value = value;
+        })
+
+        let member = Service.createService(MemberService); //new MemberService();
+        member.userInfo().then((o: UserInfo) => {
+            // userData.toEvaluateCount.value = o.ToEvaluateCount;
+            // userData.sendCount.value = o.SendCount;
+            // userData.notPaidCount.value = o.NotPaidCount;
+            // userData.balance.value = 0;
+            userData.nickName.value = o.NickName;
+        })
+
+        let account = new AccountService();
+        account.account().then(o => {
+            userData.balance.value = o.Balance;
+        });
+
+        let shopping = new ShoppingService();
+        shopping.ordersSummary().then(data => {
+            userData.toEvaluateCount.value = data.ToEvaluateCount;
+            userData.sendCount.value = data.SendCount;
+            userData.notPaidCount.value = data.NotPaidCount;
+        });
+
+        userData.shoppingCartItems.add(value => {
+            //==============================================
+            // Price >0 的为山商品，<= 0 的为赠品，折扣
+            let sum = 0;
+            value.filter(o => o.Price > 0).forEach(o => sum = sum + o.Count);
+            userData.productsCount.value = sum;
+            //==============================================
+        })
+    });
+    
+    userData.userToken.value = localStorage.getItem('userToken');
 }
 
 

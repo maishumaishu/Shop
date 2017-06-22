@@ -3,6 +3,9 @@ import ReactDOM = require('react-dom');
 import { menuData, MenuNode } from 'MenuData';
 
 import { default as service } from 'services/Service';
+import * as ui from 'ui';
+
+ui.setDialogContainer(document.querySelector('.dialog-container') as HTMLElement);
 
 let viewContainer: HTMLElement;
 class Application extends chitu.Application {

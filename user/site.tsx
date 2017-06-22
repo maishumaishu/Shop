@@ -1,4 +1,4 @@
-import { Service, ShoppingCartService, AjaxError, userData, ValueStore } from 'services';
+import { Service, ShoppingCartService, AjaxError, userData, ValueStore } from 'userServices';
 import { Application as BaseApplication } from 'chitu.mobile';
 
 

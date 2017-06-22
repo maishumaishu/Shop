@@ -10,7 +10,7 @@ export interface EditorProps<ControlProp, ControlState, ControlType extends Reac
 }
 
 export abstract class Editor<ControlProp, ControlState, State, ControlType extends React.Component<ControlProp, ControlState>>
-    extends React.Component<EditorProps<ControlProp, ControlState, ControlType>, ControlState & State> {//<S extends EditorState<any>> extends React.Component<EditorProps, S>
+    extends React.Component<EditorProps<ControlProp, ControlState, ControlType>, ControlState & State> {
     private controlType: React.ComponentClass<any>;
 
     constructor(props: EditorProps<ControlProp, ControlState, ControlType>) {

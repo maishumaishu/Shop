@@ -94,9 +94,10 @@ namespace ui {
             throw new Error('Argument msg is null.');
 
         let toastDialogElement = document.createElement('div');
-        toastDialogElement.className = 'modal fade';
+        toastDialogElement.className = 'modal fade in';
         toastDialogElement.style.marginTop = '20px';
-        document.body.appendChild(toastDialogElement);
+        console.assert(dialogContainer != null, 'dialog container is null.');
+        dialogContainer.appendChild(toastDialogElement);
 
         toastDialogElement.innerHTML = `
                         <div class="modal-dialog">
@@ -112,9 +113,7 @@ namespace ui {
             modalBody.innerHTML = `<h5>${msg}</h5>`;
         else
             modalBody.appendChild(msg);
-
-        toastDialogElement.style.display = 'block';
-        toastDialogElement.className = 'modal fade in';
+            
         setTimeout(() => {
             toastDialogElement.className = 'modal fade out';
             $(toastDialogElement).modal('hide');

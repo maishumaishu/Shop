@@ -10,7 +10,7 @@ export default function (page: chitu.Page) {
 
 // product-control mobile-page
 
-// import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'services';
+// import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'userServices';
 // import { Page, config, app, subscribe } from 'site';
 // import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel, PageHeader, PageFooter, PageView, Button } from 'mobileControls';
 

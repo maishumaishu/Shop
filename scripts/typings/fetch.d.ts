@@ -9,7 +9,11 @@ interface FetchResponse {
     text(): string | Promise<string>;
     status: number;
     statusText: string;
+    headers: FetchHeader;
+}
 
+interface FetchHeader {
+    get(name: string): string
 }
 
 declare function fetch(url: string, options: FetchOptions): Promise<FetchResponse>

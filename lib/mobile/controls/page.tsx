@@ -11,7 +11,7 @@ namespace controls {
         return children;
     }
 
-    export class PageComponent extends React.Component<React.Props<PageComponent> & { className?: string }, {}>{
+    export class Page extends React.Component<React.Props<Page> & { className?: string }, {}>{
         private static defaultClassName: string = "mobile-page";
         private _element: HTMLElement;
         constructor(props) {
@@ -21,7 +21,7 @@ namespace controls {
             return this._element;
         }
         render() {
-            let className = this.props.className || PageComponent.defaultClassName;
+            let className = this.props.className || Page.defaultClassName;
             let children = getChildren(this.props);
             let header = children.filter(o => o instanceof PageHeader)[0];
             let footer = children.filter(o => o instanceof PageFooter)[0];
@@ -35,6 +35,10 @@ namespace controls {
                 </div>
             );
         }
+    }
+
+    export class PageComponent extends Page {
+
     }
 
     export class PageHeader extends React.Component<React.Props<PageHeader> & { style?: React.CSSProperties }, {}> {

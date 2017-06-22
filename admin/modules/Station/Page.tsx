@@ -22,7 +22,8 @@ export default async function (page: chitu.Page) {
             super(props);
         }
         componentDidMount() {
-            this.designer.saved.add((sender, args) => onSave(args.pageData));
+            if (onSave)
+                this.designer.saved.add((sender, args) => onSave(args.pageData));
         }
         async loadControlInstance(controlId: string, controlName: string, controlHTMLElement: HTMLElement, controlData?: any) {
 
@@ -51,7 +52,8 @@ export default async function (page: chitu.Page) {
         }
         render() {
             return (
-                <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true}>
+                <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
+                    save={(pageData) => station.savePageData(pageData)}>
                 </MobilePageDesigner>
             );
         }
@@ -65,9 +67,6 @@ export default async function (page: chitu.Page) {
     else {
         pageData = await station.pageDataByTemplate(templateId);
     }
-
-    console.assert(pageData.views.length > 0);
-    pageData.views[0].controls.push({ controlId: guid(), controlName: 'style' })
 
     ReactDOM.render(<Page pageData={pageData} />, page.element);
 }
