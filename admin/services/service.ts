@@ -127,6 +127,23 @@ export class Service {
         return ajax<T>({ url: url, data: data, method: 'get' });
     }
 
+    static getByJson<T>(url: string, data?) {
+        // let _url = url + '?' + JSON.stringify(data);
+        data = data || {};
+
+        let _data = {};
+        for (let key in data) {
+            _data[key] = JSON.stringify(data[key]);
+        }
+        return ajax<T>({
+            headers: {
+                'content-type': 'application/json'
+            },
+            url: url, method: 'get',
+            data: _data
+        });
+    }
+
     static putByJson<T>(url: string, data) {
         return ajax<T>({
             headers: {

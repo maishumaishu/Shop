@@ -1,6 +1,6 @@
-﻿import { default as userService } from 'services/User';
-import app = require('Application');
-import { default as site } from 'Site';
+﻿import { default as userService } from 'services/user';
+import app = require('application');
+import { default as site } from 'site';
 import FormValidator from 'formValidator';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';

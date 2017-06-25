@@ -1,5 +1,5 @@
 ﻿
-import { ValueStore } from 'services/Service';
+import { ValueStore } from 'service';
 
 (<any>window).UEDITOR_HOME_URL = 'scripts/ueditor/'
 var references = ['ue/ueditor.config', 'ue/ueditor.all', 'ue/third-party/zeroclipboard/ZeroClipboard'];

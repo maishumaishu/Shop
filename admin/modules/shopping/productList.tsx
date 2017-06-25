@@ -1,8 +1,8 @@
-import { default as shopping, Product } from 'services/Shopping';
-import station from 'services/Station';
-import app = require('Application');
+import { default as shopping, Product } from 'services/shopping';
+import station from 'services/station';
+import app = require('application');
 import bootbox = require('bootbox');
-import { default as site } from 'Site';
+import { default as site } from 'site';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 

@@ -1,8 +1,8 @@
 ﻿import React = require('react');
 import ReactDOM = require('react-dom');
-import { menuData, MenuNode } from 'MenuData';
+import { menuData, MenuNode } from 'menuData';
 
-import { default as service } from 'services/Service';
+import { default as service } from 'service';
 import * as ui from 'ui';
 
 ui.setDialogContainer(document.querySelector('.dialog-container') as HTMLElement);

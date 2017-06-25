@@ -1,4 +1,4 @@
-﻿import { default as Service } from 'services/Service';
+﻿import { default as Service } from 'service';
 
 
 export interface ControlData {
@@ -132,11 +132,12 @@ export class StationService extends Service {
 
     //============================================================
     controlData(name: string) {
-        let url = this.url('Page/GetControlDataByName');
-        return Service.get<ControlData>(url, { name });
+        let url = this.url('Page/GetControlData');
+        return Service.getByJson<ControlData>(url, { query: { controlName: name } });
     }
-    saveControlData(data: ControlData) {
+    saveControlData(data: ControlData, name: string) {
         let url = this.url('Page/SaveControlData');
+        (data as any).name = name;
         return Service.postByJson(url, { data }).then(result => {
             Object.assign(data, result);
         });

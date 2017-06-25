@@ -1,5 +1,5 @@
-import { MobilePageDesigner } from 'modules/Station/Components/MobilePageDesigner';
-import { default as station, PageData, ControlData, guid } from 'services/Station';
+import { MobilePageDesigner } from 'mobilePageDesigner';
+import { default as station, PageData, ControlData, guid } from 'services/station';
 import { componentsDir } from 'mobileComponents/common';
 
 let editorTypes: { [propName: string]: React.ComponentClass<any> } = {};

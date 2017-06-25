@@ -8,32 +8,32 @@ export interface MenuNode {
 };
 
 export　let menuData: MenuNode[] = [
-    { Title: '首页', Icon: 'icon-dashboard', Url: 'Home/Index' },
+    { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index' },
     {
         Title: "微店",
         Icon: "icon-home",
         Children: [
-            { Title: '店铺概况', Url: 'Station/Index' },
+            { Title: '店铺概况', Url: 'station/index' },
             {
                 Title: '页面管理',
                 Icon: "icon-bullhorn",
-                Url: 'Station/PageList',
+                Url: 'station/pageList',
                 Children: [
-                    { Title: '页面', Url: 'Station/Page', Visible: false },
-                    { Title: '页面', Url: 'Station/Page1', Visible: false }
+                    { Title: '页面', Url: 'station/page', Visible: false },
+                    { Title: '页面', Url: 'station/page1', Visible: false }
                 ]
             },
             {
                 Title: '会员主页',
-                Url: 'Station/StoreMember'
+                Url: 'station/storeMember'
             },
             {
                 Title: '店铺导航',
-                Url: 'Station/StoreMenu'
+                Url: 'station/storeMenu'
             },
             {
                 Title: '店铺风格',
-                Url: 'Station/StoreStyle'
+                Url: 'station/storeStyle'
             }
         ]
     },
@@ -41,9 +41,9 @@ export　let menuData: MenuNode[] = [
         Title: "商品",
         Icon: "icon-gift",
         Children: [
-            { Url: "Shopping/ProductList", Title: "商品列表" },
-            { Url: "Shopping/ProductCategoryList", Title: "商品类别" },
-            { Url: "Shopping/BrandList", Title: "品牌管理" },
+            { Url: "shopping/productList", Title: "商品列表" },
+            { Url: "shopping/productCategoryList", Title: "商品类别" },
+            { Url: "shopping/brandList", Title: "品牌管理" },
 
         ]
     },
@@ -51,7 +51,7 @@ export　let menuData: MenuNode[] = [
         Title: "订单",
         Icon: "icon-list",
         Children: [
-            { Title: '订单列表', Url: "Shopping/OrderList", }
+            { Title: '订单列表', Url: "shopping/orderList", }
         ]
     },
     {
@@ -61,20 +61,20 @@ export　let menuData: MenuNode[] = [
             {
                 Title: "促销活动",
                 Icon: "icon-bullhorn",
-                Url: "Shopping/Promotion/Activities",
+                Url: "shopping/promotion/activities",
             },
             {
                 Icon: "icon-bullhorn",
                 Title: "优惠券",
                 Children: [
                     {
-                        Url: "Coupon/CouponList", Title: "优惠券",
+                        Url: "coupon/couponList", Title: "优惠券",
                         Children: [
-                            { Url: "Coupon/CouponEdit", Title: "优惠券编辑", Visible: false },
+                            { Url: "coupon/couponEdit", Title: "优惠券编辑", Visible: false },
                         ]
                     },
-                    { Url: "Coupon/CouponCodeList", Title: "优惠码" },
-                    { Url: "Coupon/CouponSetting", Title: "赠劵规则" }
+                    { Url: "coupon/couponCodeList", Title: "优惠码" },
+                    { Url: "coupon/couponSetting", Title: "赠劵规则" }
                 ]
             },
         ]
@@ -83,31 +83,31 @@ export　let menuData: MenuNode[] = [
         Title: "会员",
         Icon: "icon-group",
         Children: [
-            { Url: "Member/MemberList", Title: "会员列表" },
+            { Url: "member/memberList", Title: "会员列表" },
         ]
     },
     {
         Title: '财务',
         Icon: 'icon-money',
         Children: [
-            { Title: '我的收入', Url: 'Finance/Income', },
-            { Title: '储值资金', Url: 'Finance/RechargeAmount' },
+            { Title: '我的收入', Url: 'finance/income', },
+            { Title: '储值资金', Url: 'finance/rechargeAmount' },
         ]
     },
     {
         Title: "设置",
         Icon: " icon-cog",
         Children: [
-            { Title: "修改密码", Url: 'User/ChangePassword' },
+            { Title: "修改密码", Url: 'user/changePassword' },
             {
                 Title: "运费设置",
                 Children: [
                     {
-                        Url: "Freight/SolutionList", Title: "快递发货",
+                        Url: "freight/solutionList", Title: "快递发货",
                         Children: [{ Title: '运费设置', Url: 'Freight/FreightList' }]
                     },
                     // { Url: "Freight/ProductFreightList", Title: "产品运费" },
-                    { Url: 'Freight/InCitySend', Title: '同城配送' }
+                    { Url: 'freight/inCitySend', Title: '同城配送' }
                 ]
             },
         ]
@@ -115,9 +115,9 @@ export　let menuData: MenuNode[] = [
     {
         Title: 'Others',
         Children: [
-            { Url: "User/Login", Title: '登录' },
-            { Url: 'User/Register', Title: '注册' },
-            { Url: 'User/MyStores', Title: '我的店铺' }
+            { Url: "user/login", Title: '登录' },
+            { Url: 'user/register', Title: '注册' },
+            { Url: 'user/myStores', Title: '我的店铺' }
         ],
         Visible: false
     }

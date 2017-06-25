@@ -1,6 +1,6 @@
 /** 店铺概况　页面 */
 // import { Button, ImageBox } from 'common/controls';
-import { default as site } from 'Site'
+import { default as site } from 'site'
 export default function (page: chitu.Page) {
     page.element.className = 'admin-pc';
     requirejs([`css!${page.routeData.actionPath}.css`]);

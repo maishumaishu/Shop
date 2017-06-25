@@ -1,8 +1,8 @@
 
-import { default as site } from 'Site';
+import { default as site } from 'site';
 import { customField } from 'myWuZhui';
 import FormValidator from 'formValidator';
-import { default as shopping, Category } from 'services/Shopping';
+import { default as shopping, Category } from 'services/shopping';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {

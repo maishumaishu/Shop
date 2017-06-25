@@ -1,9 +1,9 @@
 ﻿
 // import Product = require('models/Product');
-import { Service as Service } from 'services/Service';
-import mapping = require('knockout.mapping');
+import { Service as Service } from 'service';
+// import mapping = require('knockout.mapping');
 
-let JData = window['JData'];
+// let JData = window['JData'];
 
 
 export interface Product {
@@ -264,11 +264,11 @@ export class ShoppingService extends Service {
     buyLimited(productId, quantity) {
         return Service.postByJson('Product/SetBuyLimitedQuantity', { productId: productId, quantity: quantity });
     }
-    couponDataSource = new JData.WebDataSource(Service.config.shopUrl + 'ShoppingData/Select?source=Coupons&selection=Id,Title,Discount,Amount,ValidBegin,ValidEnd,ReceiveBegin,ReceiveEnd,\
-                                                                         Remark,Picture,BrandNames,CategoryNames,ProductNames',
-        Service.config.shopUrl + 'ShoppingData/Insert?source=Coupons',
-        Service.config.shopUrl + 'Coupon/UpdateCoupon',
-        Service.config.shopUrl + 'ShoppingData/Delete?source=Coupons');
+    // couponDataSource = new JData.WebDataSource(Service.config.shopUrl + 'ShoppingData/Select?source=Coupons&selection=Id,Title,Discount,Amount,ValidBegin,ValidEnd,ReceiveBegin,ReceiveEnd,\
+    //                                                                      Remark,Picture,BrandNames,CategoryNames,ProductNames',
+    //     Service.config.shopUrl + 'ShoppingData/Insert?source=Coupons',
+    //     Service.config.shopUrl + 'Coupon/UpdateCoupon',
+    //     Service.config.shopUrl + 'ShoppingData/Delete?source=Coupons');
 
     //===================================================
     // 优惠劵

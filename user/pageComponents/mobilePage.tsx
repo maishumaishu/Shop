@@ -118,19 +118,29 @@ export class MobilePage extends React.Component<Props, {}>{
     }
 
     renderFooter(pageData: PageData): JSX.Element {
-        if (!pageData.footer)
-            return null;
+        let footerControls = (pageData.footer || { controls: [] }).controls || [];
+        let headerControls = (pageData.header || { controls: [] }).controls || [];
+
+        let allControls = [...headerControls, ...footerControls];
+        let views = pageData.views || [];
+        for (let i = 0; i < views.length; i++) {
+            let controls = views[i].controls || [];
+            allControls.push(...controls);
+        }
 
         return (
             <PageFooter>
-                {this.renderControls(pageData.footer.controls)}
+                {this.renderControls(footerControls)}
+                {allControls.filter(o => o.controlName == 'style').length == 0 ?
+                    this.renderControls([{ controlId: guid(), controlName: 'style', data: {} }]) : null
+                }
             </PageFooter>
         )
     }
 
 
     renderViews(pageData: PageData) {
-        let designMode = this.props.designTime == null ? false : this.props.designTime;
+        let designMode = this.props.designTime;
         if (designMode) {
             return this.renderDesigntimeViews(pageData);
         }

@@ -1,6 +1,6 @@
-import app = require('Application');
-import site = require('Site');
-import { default as shopping, Coupon } from 'services/Shopping';
+import app = require('application');
+import site = require('site');
+import { default as shopping, Coupon } from 'services/shopping';
 import UE = require('ue.ext');
 import FormValidator from 'formValidator';
 import * as ui from 'myWuZhui';

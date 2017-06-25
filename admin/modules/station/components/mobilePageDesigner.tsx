@@ -1,10 +1,10 @@
 import components from 'mobileComponents/componentDefines';
 import StyleControl from 'mobileComponents/style/control';
-import { VirtualMobile } from 'modules/Station/Components/MobilePage';
+import { VirtualMobile } from 'mobilePage';
 import { MobilePage } from 'mobileComponents/mobilePage';
 import { Component as Control, componentsDir } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
-import { PageData, ControlData, guid, default as station } from 'services/Station';
+import { PageData, ControlData, guid, default as station } from 'services/station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 import * as ui from 'ui';
 

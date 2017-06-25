@@ -1,6 +1,6 @@
 
-import { default as shopping, Coupon } from 'services/Shopping';
-import site = require('Site');
+import { default as shopping, Coupon } from 'services/shopping';
+import site = require('site');
 import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {

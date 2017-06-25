@@ -1,6 +1,6 @@
 import { Page, Menu, app } from 'site';
 import { MemberService, UserInfo, userData } from 'userServices';
-let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } = controls;
+import { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } from 'mobileControls';
 
 
 export default async function (page: Page) {
@@ -181,9 +181,9 @@ export default async function (page: Page) {
                             </a>
                         </div>
                     </PageView>
-                    <PageFooter>
+                    {/*<PageFooter>
                         <Menu pageName={page.name} />
-                    </PageFooter>
+                    </PageFooter>*/}
                 </PageComponent>
             );
         }

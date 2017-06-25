@@ -4,7 +4,7 @@
 
 // })
 
-import weixin from 'services/WeiXin';
+import weixin from 'services/weixin';
 import bootbox = require('bootbox');
 
 function page_load(page: chitu.Page, args) {

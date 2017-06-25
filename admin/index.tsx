@@ -11,38 +11,16 @@ requirejs.config({
             deps: ['bootstrap']
         },
         chitu: {
-            deps: ['jquery', 'knockout', 'crossroads']
-        },
-        custom: {
-            deps: ['jquery', 'jquery-ui', 'jquery.cookie', 'JData']
-        },
-        crossroads: {
-            deps: ['jquery']
-        },
-        knockout: {
-            exports: 'ko'
-        },
-        'ko.ext/knockout.extentions': {
-            deps: ['jquery']
-        },
-        'ko.val': {
-            deps: ['knockout.validation'],
-            exports: 'ko.validation'
-        },
-        'ko.map': {
-            deps: ['knockout']
-        },
-        JData: {
-            deps: ['MicrosoftAjax.debug', 'jquery-ui']
+            exports: 'chitu'
         },
         'jquery.fileupload': {
             deps: ['scripts/jQuery.FileUpload/jquery.iframe-transport',
                 'css!scripts/jQuery.FileUpload/css/jquery.fileupload-ui.css']
         },
-        'Site': {
+        'site': {
             deps: ['jquery.cookie', 'bootbox']
         },
-        'Application': {
+        'application': {
             deps: ['chitu']
         },
         'mobileControls': {
@@ -89,12 +67,15 @@ requirejs.config({
         ueditor: 'scripts/ueditor',
         'ue': 'scripts/ueditor',
         'wuzhui': 'scripts/wuzhui',
+        service: 'services/service',
         userServices: 'mobile/userServices',
         mobileComponents: '../user/pageComponents',
-        componentDesigner: '../user/componentDesigner'
+        componentDesigner: 'modules/station/components/componentDesigner',
+        mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
+        mobilePage: 'modules/station/components/virtualMobile'
     }
 });
-var references = ['react', 'react-dom', 'Application', 'Site', 'ErrorHandle', 'custom', 'wuzhui', 'knockout.validation'];
+var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui'];
 requirejs(references, function (ReactClass, ReactDOMClass, app, ui) {
     window['React'] = ReactClass;
     window['ReactDOM'] = ReactDOMClass;

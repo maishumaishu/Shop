@@ -38,11 +38,11 @@ export interface ValidateField {
     id?: string,
     name?: string,
     //names?: string,
-    depends?: () => boolean | string,
+    depends?: () => Array<string | Rule> //() => boolean | string,
     display?: string,
     element?: HTMLInputElement,
     // type?: string,
-    rules: Array<string | Rule>,
+    rules?: Array<string | Rule>,
     value?: string | boolean,
     // checked?: boolean
     messages?: { [name: string]: string }
@@ -527,17 +527,17 @@ export class FormValidator {
              * if it passes the custom function
              */
             let error: ValidatorError;
-            if (field.depends && typeof field.depends === "function") {
-                if (field.depends.call(this, field)) {
-                    error = this._validateField(field);
-                }
-            } else if (field.depends && typeof field.depends === "string" && this.conditionals[<any>field.depends]) {
-                if (this.conditionals[field.depends as any].call(this, field)) {
-                    error = this._validateField(field);
-                }
-            } else {
-                error = this._validateField(field);
-            }
+            // if (field.depends && typeof field.depends === "function") {
+            //     if (field.depends.call(this, field)) {
+            //         error = this._validateField(field);
+            //     }
+            // } else if (field.depends && typeof field.depends === "string" && this.conditionals[<any>field.depends]) {
+            //     if (this.conditionals[field.depends as any].call(this, field)) {
+            //         error = this._validateField(field);
+            //     }
+            // } else {
+            error = this._validateField(field);
+            // }
 
             if (error)
                 errors.push(error);
@@ -564,13 +564,19 @@ export class FormValidator {
     private _validateField(field: ValidateField): ValidatorError {
         var rules = this.hooks;
         var rule = {} as Rule;
-        for (let i = 0; i < field.rules.length; i++) {
+        let dependsRules: Array<Rule | string>;
+        if (field.depends) {
+            dependsRules = field.depends();
+        }
+
+        let fieldRules = (field.rules || []).concat(dependsRules || []);
+        for (let i = 0; i < fieldRules.length; i++) {
             let rule: Rule;
-            if (typeof field.rules[i] == 'string') {
-                rule = { name: field.rules[i] as string, params: null };
+            if (typeof fieldRules[i] == 'string') {
+                rule = { name: fieldRules[i] as string, params: null };
             }
             else {
-                rule = field.rules[i] as Rule;
+                rule = fieldRules[i] as Rule;
             }
             let func = rules[rule.name];
             if (func == null)

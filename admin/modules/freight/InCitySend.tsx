@@ -1,6 +1,6 @@
 /** 同城配送 页面*/
 import FormValidator from 'formValidator';
-import { default as shopping, CityFreight, } from 'services/Shopping';
+import { default as shopping, CityFreight, } from 'services/shopping';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {

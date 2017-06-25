@@ -1,4 +1,4 @@
-// import { Service } from 'service'
+
 namespace userServices {
     export interface ControlData {
         controlId: string, controlName: string, data?: any,
@@ -111,8 +111,8 @@ namespace userServices {
 
         //============================================================
         getControlData(name: string) {
-            let url = this.url('Page/GetControlDataByName');
-            return this.get<ControlData>(url, { name });
+            let url = this.url('Page/GetControlData');
+            return this.get<ControlData>(url, { query: { controlName: name } });
         }
         saveControlData(data: ControlData) {
             let url = this.url('Page/SaveControlData');

@@ -1,6 +1,7 @@
 import { componentsDir, Component, editor } from 'mobileComponents/common';
 export interface MenuNode {
     name: string,
+    url: string,
     children?: MenuNode[]
 }
 export interface Props extends React.Props<MenuControl> {
@@ -27,7 +28,11 @@ export default class MenuControl extends React.Component<Props, State>{
                     <ul className="menu">
                         {menuNodes.map((o, i) => {
                             let itemWidth = 100 / menuNodes.length;
-                            return <li key={i} style={{ width: `${itemWidth}%` }}>{o.name}</li>;
+                            return (
+                                <li key={i} style={{ width: `${itemWidth}%` }}>
+                                    <a href={o.url}>{o.name}</a>
+                                </li>
+                            );
                         })}
                     </ul>
                 }

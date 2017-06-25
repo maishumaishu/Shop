@@ -1,6 +1,6 @@
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
-import { default as shopping, Order, OrderDetail } from 'services/Shopping';
+import { default as shopping, Order, OrderDetail } from 'services/shopping';
 
 export default function (page: chitu.Page) {
     page.element.className = 'admin-pc';
@@ -304,8 +304,8 @@ export default function (page: chitu.Page) {
 
 }
 
-// import site = require('Site');
-// import { default as Service } from 'services/Service';
+// import site = require('site');
+// import { default as Service } from 'service';
 // // import Utility = require('Utility');
 // let JData = window['JData'];
 

@@ -1,4 +1,4 @@
-import { default as userService, Application } from 'services/User';
+import { default as userService, Application } from 'services/user';
 import FormValidator from 'formValidator';
 // import { Page, app } from 'Application';
 import * as ui from 'ui';

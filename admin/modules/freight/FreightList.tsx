@@ -1,7 +1,7 @@
 
-import app = require('Application');
+import app = require('application');
 import val = require('knockout.validation');
-import { default as shopping, RegionFreight } from 'services/Shopping';
+import { default as shopping, RegionFreight } from 'services/shopping';
 import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {

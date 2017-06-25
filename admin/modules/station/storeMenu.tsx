@@ -1,5 +1,5 @@
-import { default as station, PageData, ControlData, guid } from 'services/Station';
-import { ComponentDesigner } from 'modules/Station/Components/ComponentDesigner';
+import { default as station, PageData, ControlData, guid } from 'services/station';
+import { ComponentDesigner } from 'componentDesigner';
 import { default as MenuControl, MenuNode, Props as MenuProps } from 'mobileComponents/menu/control';
 import { default as MenuEditor } from 'mobileComponents/menu/editor';
 import { default as StyleControl } from 'mobileComponents/style/control';

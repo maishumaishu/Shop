@@ -1,8 +1,8 @@
-import { default as site } from 'Site';
-import app = require('Application');
-import { PageData, StationService, TemplatePageData } from 'services/Station';
+import { default as site } from 'site';
+import app = require('application');
+import { PageData, StationService, TemplatePageData } from 'services/station';
 // import { Button } from 'common/controls';
-import { RouteValue } from 'modules/Station/Page';
+import { RouteValue } from 'modules/station/page';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 
@@ -149,7 +149,7 @@ class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzh
     showPage() {
         let pageId = this.props.pageData._id;
         var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
-        var url = 'Station/Page';
+        var url = 'station/page';
         if (pageId)
             url = url + '?pageId=' + pageId;
 

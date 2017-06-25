@@ -1,10 +1,10 @@
-﻿import app = require('Application');
-import { default as shopping, Product as ShoppingProduct, Brand } from 'services/Shopping';
-import { Service, ValueStore } from 'services/Service';
+﻿import app = require('application')
+import { default as shopping, Product as ShoppingProduct, Brand } from 'services/shopping';
+import { Service, ValueStore } from 'service';
 
 import UE = require('ue.ext');
 // import { ImageBox } from 'common/controls';
-import { PropertiesComponent } from 'modules/Shopping/Product/Properties';
+import { PropertiesComponent } from 'modules/shopping/Product/Properties';
 import FormValidator from 'formValidator';
 import * as ui from 'ui';
 

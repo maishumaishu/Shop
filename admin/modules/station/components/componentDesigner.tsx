@@ -1,5 +1,5 @@
-import { MobilePageDesigner } from 'modules/Station/Components/MobilePageDesigner';
-import { PageData, ControlData, guid, default as station } from 'services/Station'
+import { MobilePageDesigner } from 'mobilePageDesigner';
+import { PageData, ControlData, guid, default as station } from 'services/station'
 import { default as StyleControl } from 'mobileComponents/style/control';
 
 interface Props extends React.Props<ComponentDesigner> {
@@ -55,7 +55,7 @@ export class ComponentDesigner extends React.Component<Props, State>{
 
         let controlData = controlDatas.filter(o => o.controlName == controlName)[0];
 
-        return station.saveControlData(controlData);
+        return station.saveControlData(controlData, 'menu');
     }
     render() {
         let pageData = this.state.pageData;

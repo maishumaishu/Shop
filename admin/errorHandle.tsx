@@ -1,5 +1,5 @@
-import { default as services } from 'services/Service';
-import app = require('Application');
+import { default as services } from 'service';
+import app = require('application');
 
 
 let container = document.createElement('div');

@@ -207,7 +207,7 @@ export default function (page: Page, hideMenu: boolean = false) {
                         })}
                     </PageHeader>
                     <PageFooter>
-                        {this.state.items.length > 0 ?
+                        {/*{this.state.items.length > 0 ?
                             <div className="settlement" style={{ bottom: this.props.hideMenu ? 0 : null, paddingLeft: 0 }}>
                                 <div className="pull-right">
                                     {this.state.status == 'normal' ?
@@ -241,7 +241,7 @@ export default function (page: Page, hideMenu: boolean = false) {
                             </div>
                             : null
                         }
-                        {(!this.props.hideMenu ? <Menu pageName={this.props.pageName} /> : null)}
+                        {(!this.props.hideMenu ? <Menu pageName={this.props.pageName} /> : null)}*/}
                     </PageFooter>
                     <PageView className="main container">
                         {this.state.items.length > 0 ?
