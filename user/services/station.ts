@@ -103,6 +103,9 @@ namespace userServices {
                 pageData.views = [{ controls: pageData['controls'] }];
             }
 
+            pageData.footer = pageData.footer || { controls: [] };
+            pageData.footer.controls = pageData.footer.controls || [];
+
             let menuControlData = pageData.footer.controls.filter(o => o.controlName == 'menu')[0];
             if (!menuControlData && pageData.showMenu == true) {
                 menuControlData = await this.menuControlData();
@@ -129,6 +132,16 @@ namespace userServices {
             let url = this.url('Page/GetDefaultPageData');
             return this.get<PageData>(url).then(pageData => this.fillPageData(pageData));
         }
+        async memberPageData() {
+            let memberControlData = await this.memberControlData();
+            let pageData = {
+                showMenu: true,
+                views: [
+                    { controls: [memberControlData] }
+                ]
+            } as PageData;
+            return this.fillPageData(pageData);
+        }
         //============================================================
         controlData(name: string) {
             let url = this.url('Page/GetControlData');
@@ -153,6 +166,13 @@ namespace userServices {
                 styleData = { controlId: guid(), controlName: 'style', data: {} };
             }
             return styleData;
+        }
+        async memberControlData() {
+            let member = await this.controlData('member');
+            if (member == null) {
+                member = { controlId: guid(), controlName: 'member', data: {} };
+            }
+            return member;
         }
         //============================================================
     }

@@ -1,16 +1,15 @@
-import { PageData, ControlData, StationService, guid, Service } from 'userServices';
-import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
-import { Page } from 'site';
+import { Page, Menu, defaultNavBar, app } from 'site';
+import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'userServices';
+import { PageComponent, PageView, PageFooter } from 'mobileControls';
 import { MobilePage } from 'pageComponents/mobilePage';
-export default async function (page: chitu.Page) {
-
-    let { pageId } = page.routeData.values;
-    let station = Service.createService(StationService);
-    let pageData = await station.pageData(pageId);
-station.pageData
-    ReactDOM.render(<MobilePage pageData={pageData} />, page.element);
-
+export default async function (page: Page) {
+    let station = page.createService(StationService);
+    let pageData = await station.memberPageData();
+    ReactDOM.render(
+        <MobilePage pageData={pageData} />
+        , page.element);
 }
+
 // import { Page, Menu, app } from 'site';
 // import { MemberService, UserInfo, userData } from 'userServices';
 // import { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } from 'mobileControls';
