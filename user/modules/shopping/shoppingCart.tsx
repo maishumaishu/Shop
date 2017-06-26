@@ -249,11 +249,7 @@ export default function (page: Page, hideMenu: boolean = false) {
                             : null
                         }
                         {!this.props.hideMenu ?
-                            <div ref={async (e: HTMLElement) => {
-                                if (!e) return;
-                                let menuControlData = await station.menuControlData();
-                                let menuElement = MobilePage.createControlInstance(menuControlData, e);
-                            }}></div> :
+                            <Menu /> :
                             null
                         }
                     </PageFooter>

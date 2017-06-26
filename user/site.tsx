@@ -1,6 +1,6 @@
-import { Service, ShoppingCartService, AjaxError, userData, ValueStore } from 'userServices';
+import { Service, ShoppingCartService, AjaxError, userData, ValueStore, StationService } from 'userServices';
 import { Application as BaseApplication } from 'chitu.mobile';
-
+import { MobilePage } from 'pageComponents/mobilePage'
 
 import * as chitu from 'chitu';
 
@@ -22,67 +22,80 @@ export let config = {
     defaultUrl: 'home_index'
 }
 
-export class Menu extends React.Component<{ pageName: string }, { itemsCount: number }> {
-    private productsCountSubscribe: (value: number) => void;
+// export class Menu extends React.Component<{ pageName: string }, { itemsCount: number }> {
+//     private productsCountSubscribe: (value: number) => void;
 
-    constructor(props) {
-        super(props);
-        this.state = { itemsCount: userData.productsCount.value || 0 };
+//     constructor(props) {
+//         super(props);
+//         this.state = { itemsCount: userData.productsCount.value || 0 };
 
-        this.productsCountSubscribe = (value) => {
-            this.state.itemsCount = value;
-            this.setState(this.state);
-        };
-        userData.productsCount.add(this.productsCountSubscribe)
-    }
-    componentDidMount() {
-        let menuElement = this.refs['menu'] as HTMLElement;
-        var activeElement = menuElement.querySelector(`[name="${this.props.pageName}"]`) as HTMLElement;
-        if (activeElement) {
-            activeElement.className = 'active';
-        }
-    }
-    componentWillUnmount() {
-        userData.productsCount.remove(this.productsCountSubscribe);
-    }
+//         this.productsCountSubscribe = (value) => {
+//             this.state.itemsCount = value;
+//             this.setState(this.state);
+//         };
+//         userData.productsCount.add(this.productsCountSubscribe)
+//     }
+//     componentDidMount() {
+//         let menuElement = this.refs['menu'] as HTMLElement;
+//         var activeElement = menuElement.querySelector(`[name="${this.props.pageName}"]`) as HTMLElement;
+//         if (activeElement) {
+//             activeElement.className = 'active';
+//         }
+//     }
+//     componentWillUnmount() {
+//         userData.productsCount.remove(this.productsCountSubscribe);
+//     }
+//     render() {
+//         return (
+//             <ul ref="menu" className="menu" style={{ marginBottom: '0px' }}>
+//                 <li>
+//                     <a name="home.index" onClick={() => app.redirect('home_index')}>
+//                         <i className="icon-home"></i>
+//                         <span>首页</span>
+//                     </a>
+//                 </li>
+//                 <li>
+//                     <a name="home.class" onClick={() => app.redirect('home_class')}>
+//                         <i className="icon-th-large"></i>
+//                         <span>分类</span>
+//                     </a>
+//                 </li>
+//                 <li>
+//                     <a name="shopping.shoppingCart" onClick={() => app.redirect('shopping_shoppingCart')}>
+//                         <i className="icon-shopping-cart"></i>
+//                         <sub name="products-count" style={{ display: this.state.itemsCount <= 0 ? 'none' : 'block' }} className="sub">
+//                             {this.state.itemsCount}
+//                         </sub>
+//                         <span>购物车</span>
+//                     </a>
+
+//                 </li>
+//                 <li>
+//                     <a name="home.newsList" onClick={() => app.redirect('home_newsList')}>
+//                         <i className="icon-rss"></i>
+//                         <span>微资讯</span>
+//                     </a>
+//                 </li>
+//                 <li>
+//          { pageName: string }, { itemsCount: number }>{           <a name="user.index" onClick={() => app.redirect('user_index')}>
+//                         <i className="icon-user"></i>
+//                         <span>我</span>
+//                     </a>
+//                 </li>
+//             </ul>
+//         );
+//     }
+// }
+
+export class Menu extends React.Component<{ pageName?: string }, { itemsCount?: number }>{
     render() {
+        let station = Service.createService(StationService);
         return (
-            <ul ref="menu" className="menu" style={{ marginBottom: '0px' }}>
-                <li>
-                    <a name="home.index" onClick={() => app.redirect('home_index')}>
-                        <i className="icon-home"></i>
-                        <span>首页</span>
-                    </a>
-                </li>
-                <li>
-                    <a name="home.class" onClick={() => app.redirect('home_class')}>
-                        <i className="icon-th-large"></i>
-                        <span>分类</span>
-                    </a>
-                </li>
-                <li>
-                    <a name="shopping.shoppingCart" onClick={() => app.redirect('shopping_shoppingCart')}>
-                        <i className="icon-shopping-cart"></i>
-                        <sub name="products-count" style={{ display: this.state.itemsCount <= 0 ? 'none' : 'block' }} className="sub">
-                            {this.state.itemsCount}
-                        </sub>
-                        <span>购物车</span>
-                    </a>
-
-                </li>
-                <li>
-                    <a name="home.newsList" onClick={() => app.redirect('home_newsList')}>
-                        <i className="icon-rss"></i>
-                        <span>微资讯</span>
-                    </a>
-                </li>
-                <li>
-                    <a name="user.index" onClick={() => app.redirect('user_index')}>
-                        <i className="icon-user"></i>
-                        <span>我</span>
-                    </a>
-                </li>
-            </ul>
+            <div ref={async (e: HTMLElement) => {
+                if (!e) return;
+                let menuControlData = await station.menuControlData();
+                let menuElement = MobilePage.createControlInstance(menuControlData, e);
+            }}></div>
         );
     }
 }
