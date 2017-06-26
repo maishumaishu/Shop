@@ -290,7 +290,7 @@ export default async function (page: chitu.Page) {
             if (!pageId) {
                 alert(`页面必须保存`);
             }
-            open(`#Station/PreView?pageId=${pageId}`, ':blank');
+            open(`#station/preView?pageId=${pageId}`, ':blank');
         }
 
         render() {

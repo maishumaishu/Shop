@@ -133,7 +133,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             alert(`页面必须保存`);
             return;
         }
-        open(`#Station/PreView?pageId=${pageId}`, ':blank');
+        open(`#station/preView?pageId=${pageId}`, ':blank');
     }
 
     render() {

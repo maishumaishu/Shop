@@ -29,81 +29,21 @@ module.exports = function (grunt) {
             admin: {
                 files: [
                     { expand: true, cwd: admin_src, src: ['**/*.css', '**/*.html', 'content/font/*.*'], dest: admin_dest },
-                    { expand: true, cwd: admin_src, src: ['scripts/ueditor/**/*.*'], dest: admin_dest },
-                    { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${admin_dest}/scripts` },
+                    { expand: true, cwd: admin_src, src: ['lib/ueditor/**/*.*'], dest: admin_dest },
+                    { expand: true, cwd: 'lib', src: ['*.js'], dest: `${admin_dest}/scripts` },
                     { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` }
                 ]
             },
             admin_bt: {
                 files: [
-                    { expand: true, cwd: `${admin_src}/content/bootstrap-3.3.7/fonts`, src: ['*.*'], dest: `${admin_dest}/content/font` },
+                    { expand: true, cwd: `${admin_src}/lib/bootstrap-3.3.7/fonts`, src: ['*.*'], dest: `${admin_dest}/content/font` },
                 ]
             },
             user: {
                 files: [
                     { expand: true, cwd: user_src, src: ['**/*.html', '**/*.css', '**/*.png'], dest: user_dest },
-                    { expand: true, cwd: 'scripts', src: ['*.js'], dest: `${user_dest}/scripts` },
+                    { expand: true, cwd: 'lib', src: ['*.js'], dest: `${user_dest}/scripts` },
                     { expand: true, cwd: `${user_src}/dest`, src: ['*.js'], dest: user_dest }
-                ]
-            }
-        },
-        stylus: {
-            admin: {
-                options: {
-                    compress: false,
-                },
-                files: [
-                    {
-                        expand: true,
-                        cwd: admin_src + '/content',
-                        src: ['**/*.styl'],
-                        dest: admin_dest + '/content',
-                        ext: '.css'
-                    },
-                    {
-                        expand: true,
-                        cwd: admin_src + '/modules',
-                        src: ['**/*.styl'],
-                        dest: admin_dest + '/modules',
-                        ext: '.css'
-                    },
-                    {
-                        expand: true,
-                        cwd: admin_src + '/mobile',
-                        src: ['**/*.styl'],
-                        dest: admin_dest + '/mobile',
-                        ext: '.css'
-                    }
-                ]
-            }
-        },
-        sass: {
-            admin: {
-                options: {
-                    compress: false,
-                },
-                files: [
-                    {
-                        expand: true,
-                        cwd: admin_src + '/content',
-                        src: ['**/*.sass'],
-                        dest: admin_dest + '/content',
-                        ext: '.css'
-                    },
-                    {
-                        expand: true,
-                        cwd: admin_src + '/modules',
-                        src: ['**/*.sass'],
-                        dest: admin_dest + '/modules',
-                        ext: '.css'
-                    },
-                    {
-                        expand: true,
-                        cwd: admin_src + '/mobile',
-                        src: ['**/*.sass'],
-                        dest: admin_dest + '/mobile',
-                        ext: '.css'
-                    }
                 ]
             }
         },

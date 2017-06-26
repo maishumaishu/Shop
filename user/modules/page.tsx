@@ -12,7 +12,7 @@ export default async function (page: chitu.Page) {
 
 }
 
-interface Props extends React.Props<MobilePage> {
-    pageData: PageData
-}
+// interface Props extends React.Props<MobilePage> {
+//     pageData: PageData
+// }
 

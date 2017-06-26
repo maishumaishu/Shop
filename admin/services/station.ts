@@ -40,22 +40,51 @@ export class StationService extends Service {
         let url = `${Service.config.siteUrl}${path}`;
         return url;
     }
-    private fillPageData(pageData: PageData): PageData {
+    private async fillPageData(pageData: PageData): Promise<PageData> {
         if (pageData.views == null && pageData['controls'] != null) {
             pageData.views = [{ controls: pageData['controls'] }];
         }
 
-        pageData.views = pageData.views || [
-            { controls: [] }
-        ];
+        let menuControlData = pageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+        if (!menuControlData && pageData.showMenu == true) {
+            menuControlData = await this.menuControlData();
+            menuControlData.selected = 'disabled';
+            pageData.footer.controls.push(menuControlData);
+        }
 
-        pageData.footer = pageData.footer || { controls: [] };
-        pageData.header = pageData.header || { controls: [] };
+        let styleControlData = pageData.footer.controls.filter(o => o.controlName == 'style')[0];
+        if (!styleControlData) {
+            styleControlData = await this.styleControlData();
+            styleControlData.selected = 'disabled';
+            pageData.footer.controls.push(styleControlData);
+        }
         return pageData;
+    }
+    private trimPageData(pageData: PageData) {
+        
+        // 深复制 pageData
+        let pageDataCopy = JSON.parse(JSON.stringify(pageData)); 
+
+        let trimControls = (controls: ControlData[]) => {
+            return controls.filter(o => o.selected != 'disabled');
+        }
+        if (pageDataCopy.header) {
+            pageDataCopy.header.controls = trimControls(pageDataCopy.header.controls);
+        }
+        if (pageDataCopy.footer) {
+            pageDataCopy.footer.controls = trimControls(pageDataCopy.footer.controls);
+        }
+        if (pageDataCopy.views) {
+            for (let i = 0; i < pageDataCopy.views.length; i++) {
+                pageDataCopy.views[i].controls = trimControls(pageDataCopy.views[i].controls);
+            }
+        }
+        return pageDataCopy;
     }
     savePageData(pageData: PageData) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
-        return Service.postByJson(url, { pageData }).then((data) => {
+        let _pageData = this.trimPageData(pageData);
+        return Service.postByJson(url, { pageData: _pageData }).then((data) => {
             Object.assign(pageData, data);
             return data;
         });
@@ -63,15 +92,7 @@ export class StationService extends Service {
     pageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let data = { pageId };
-        return Promise.all([Service.get<PageData>(url, data), this.menuControlData()]).then(data => {
-            console.assert(data[1] != null, 'Menu control data is null.');
-            this.fillPageData(data[0]);
-            if (data[0].showMenu == true) {
-                data[1].selected = false;
-                data[0].footer.controls.push(data[1]);
-            }
-            return data[0];
-        });
+        return Service.get<PageData>(url, { pageId }).then(pageData => this.fillPageData(pageData));
     }
     pageDataByName(name: string) {
         let url = `${Service.config.siteUrl}Page/GetPageDataByName`;
@@ -86,7 +107,7 @@ export class StationService extends Service {
         let data = { templateId };
         return Service.get<PageData>(url, data).then(o => this.fillPageData(o));
     }
-    getPageDatas() {
+    pageDatas() {
         let url = this.url('Page/GetPageDatas');
         return Service.get<PageData[]>(url).then(o => {
             return o || [];

@@ -98,19 +98,35 @@ namespace userServices {
             pageData.header = pageData.header || { controls: [] };
             return pageData;
         }
+        private async fillPageData(pageData: PageData): Promise<PageData> {
+            if (pageData.views == null && pageData['controls'] != null) {
+                pageData.views = [{ controls: pageData['controls'] }];
+            }
 
+            let menuControlData = pageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+            if (!menuControlData && pageData.showMenu == true) {
+                menuControlData = await this.menuControlData();
+                menuControlData.selected = 'disabled';
+                pageData.footer.controls.push(menuControlData);
+            }
+
+            let styleControlData = pageData.footer.controls.filter(o => o.controlName == 'style')[0];
+            if (!styleControlData) {
+                styleControlData = await this.styleControlData();
+                styleControlData.selected = 'disabled';
+                pageData.footer.controls.push(styleControlData);
+            }
+            return pageData;
+        }
         pageData(pageId: string) {
             let url = this.url('Page/GetPageData');
             let data = { pageId };
-            return Promise.all([this.get<PageData>(url, data), this.menuControlData()]).then(data => {
-                this.translatePageData(data[0]);
-                data[0].footer.controls.push(data[1]);
-                return data[0];
-            });
+            return this.get<PageData>(url, { pageId }).then(pageData => this.fillPageData(pageData));
         }
 
+
         //============================================================
-        getControlData(name: string) {
+        controlData(name: string) {
             let url = this.url('Page/GetControlData');
             return this.get<ControlData>(url, { query: { controlName: name } });
         }
@@ -121,11 +137,18 @@ namespace userServices {
             });
         }
         async menuControlData() {
-            let menuData = await this.getControlData('menu');
+            let menuData = await this.controlData('menu');
             if (menuData == null) {
                 menuData = { controlId: guid(), controlName: 'menu' };
             }
             return menuData;
+        }
+        async styleControlData() {
+            let styleData = await this.controlData('style');
+            if (styleData == null) {
+                styleData = { controlId: guid(), controlName: 'style', data: {} };
+            }
+            return styleData;
         }
         //============================================================
     }

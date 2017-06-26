@@ -32,11 +32,16 @@ export interface PageData {
     }[];
 }
 
-export class MobilePage extends React.Component<Props, {}>{
+export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     private screenElement: HTMLElement;
     constructor(props) {
         super(props);
+        this.state = { pageData: this.props.pageData };
     }
+
+    // getChildContext() {
+    //     return { mobilePage: this };
+    // }
 
     static getInstanceByElement(element: HTMLElement): MobilePage {
         return (element as any).mobilePage;
@@ -119,21 +124,21 @@ export class MobilePage extends React.Component<Props, {}>{
 
     renderFooter(pageData: PageData): JSX.Element {
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
-        let headerControls = (pageData.header || { controls: [] }).controls || [];
+        // let headerControls = (pageData.header || { controls: [] }).controls || [];
 
-        let allControls = [...headerControls, ...footerControls];
-        let views = pageData.views || [];
-        for (let i = 0; i < views.length; i++) {
-            let controls = views[i].controls || [];
-            allControls.push(...controls);
-        }
+        // let allControls = [...headerControls, ...footerControls];
+        // let views = pageData.views || [];
+        // for (let i = 0; i < views.length; i++) {
+        //     let controls = views[i].controls || [];
+        //     allControls.push(...controls);
+        // }
 
         return (
             <PageFooter>
                 {this.renderControls(footerControls)}
-                {allControls.filter(o => o.controlName == 'style').length == 0 ?
+                {/*{allControls.filter(o => o.controlName == 'style').length == 0 ?
                     this.renderControls([{ controlId: guid(), controlName: 'style', data: {} }]) : null
-                }
+                }*/}
             </PageFooter>
         )
     }
@@ -195,7 +200,7 @@ export class MobilePage extends React.Component<Props, {}>{
 
     render() {
         let children = React.Children.toArray(this.props.children) || [];
-        let pageData = this.props.pageData;
+        let pageData = this.state.pageData;
         return (
             <div>
                 <PageComponent>

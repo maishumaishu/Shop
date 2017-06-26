@@ -65,7 +65,7 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
     renderFooter(pageData: PageData): JSX.Element {
         if (!pageData.footer)
             return null;
-
+            
         return (
             <PageFooter>
                 {this.renderControls(pageData.footer.controls)}

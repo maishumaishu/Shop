@@ -23,7 +23,7 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
         this.state = { templates: null };
         this.dataSource = new wuzhui.WebDataSource<PageData>({
             primaryKeys: ['_id'],
-            select: (args) => station.getPageDatas(),
+            select: (args) => station.pageDatas(),
             delete: (item) => station.deletePageData(item._id)
         });
         station.pageTemplates().then(templates => {
