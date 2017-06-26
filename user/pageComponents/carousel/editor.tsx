@@ -1,7 +1,7 @@
 import { Editor, EditorProps, guid } from 'mobileComponents/editor';
 import { default as Control, Props as ControlProps, State as ControlState, CarouselItem } from 'mobileComponents/carousel/control';
 // import site = require('Site');
-import { default as station } from 'services/Station';
+import { default as station } from 'services/station';
 // import { ImagePreview } from 'common/ImagePreview';
 // import { Button } from 'common/controls';
 import FormValidator from 'lib/formValidator';

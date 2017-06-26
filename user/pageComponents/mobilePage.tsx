@@ -39,24 +39,20 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         this.state = { pageData: this.props.pageData };
     }
 
-    // getChildContext() {
-    //     return { mobilePage: this };
-    // }
-
     static getInstanceByElement(element: HTMLElement): MobilePage {
         return (element as any).mobilePage;
     }
 
-    async createControlInstance(controlData: ControlData, element: HTMLElement) {
+    static async createControlInstance(controlData: ControlData, element: HTMLElement) {
         let { controlId, controlName, data, selected } = controlData;
-        let controlType = await this.getControlType(controlName);
+        let controlType = await MobilePage.getControlType(controlName);
         let reactElement = React.createElement(controlType, data);
         let control = ReactDOM.render(reactElement, element);
         control.id = controlId;
         return { control, controlType };
     }
 
-    getControlType(controlName: string): Promise<React.ComponentClass<any>> {
+    static getControlType(controlName: string): Promise<React.ComponentClass<any>> {
         return new Promise((resolve, reject) => {
             requirejs([`mobileComponents/${controlName}/control`], function (exports) {
                 resolve(exports.default);
@@ -72,13 +68,28 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         return this.renderRuntimeControls(controls);
     }
 
+    static renderControl(controlData: ControlData) {
+        let o = controlData;
+        let runtimeControl = (
+            <div id={o.controlId} key={o.controlId}
+                ref={(e: HTMLElement) => {
+                    if (!e) return;
+                    MobilePage.createControlInstance(o, e);
+
+
+                }} />
+        );
+
+        return runtimeControl;
+    }
+
     renderRuntimeControls(controls: ControlData[]) {
         controls = controls || [];
         return controls.map((o, i) =>
             <div id={o.controlId} key={o.controlId}
                 ref={(e: HTMLElement) => {
                     if (!e) return;
-                    this.createControlInstance(o, e);
+                    MobilePage.createControlInstance(o, e);
 
 
                 }} />
@@ -90,7 +101,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             <div id={o.controlId} key={o.controlId}
                 ref={(e: HTMLElement) => {
                     if (!e) return;
-                    this.createControlInstance(o, e)
+                    MobilePage.createControlInstance(o, e)
                         .then(data => {
                             if (o.selected != 'disabled') {
                                 e.onclick = (event) => {
@@ -211,8 +222,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             </div>
         );
     }
-
-
 }
 
 function guid() {

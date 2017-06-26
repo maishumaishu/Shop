@@ -27,7 +27,7 @@
         "dest"
     ],
     "include": [
-        "../../scripts/typings",
+        "../../lib/typings",
         "*.ts",
         "*.tsx",
         "**/*.tsx",

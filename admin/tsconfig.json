@@ -21,7 +21,7 @@
         "experimentalDecorators": true
     },
     "include": [
-        "../scripts",
+        "../lib/typings",
         "*.tsx",
         "**/*.tsx",
         "*.ts",

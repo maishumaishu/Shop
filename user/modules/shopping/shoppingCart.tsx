@@ -1,8 +1,12 @@
 import { Page, Menu, defaultNavBar, app } from 'site';
-import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData } from 'userServices';
+import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'userServices';
 
-import { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
-    PageComponent, PageHeader, PageFooter, PageView, Button, Dialog } from 'mobileControls';
+import {
+    loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
+    PageComponent, PageHeader, PageFooter, PageView, Button, Dialog
+} from 'mobileControls';
+
+import { MobilePage } from 'pageComponents/mobilePage'
 
 
 export default function (page: Page, hideMenu: boolean = false) {
@@ -15,6 +19,7 @@ export default function (page: Page, hideMenu: boolean = false) {
 
     let shoppingCart = page.createService(ShoppingCartService);
     let shop = page.createService(ShoppingService);
+    let station = page.createService(StationService);
 
     class ShoppingCartPage extends React.Component<
         { hideMenu: boolean, pageName: string },
@@ -207,7 +212,9 @@ export default function (page: Page, hideMenu: boolean = false) {
                         })}
                     </PageHeader>
                     <PageFooter>
-                        {/*{this.state.items.length > 0 ?
+
+
+                        {this.state.items.length > 0 ?
                             <div className="settlement" style={{ bottom: this.props.hideMenu ? 0 : null, paddingLeft: 0 }}>
                                 <div className="pull-right">
                                     {this.state.status == 'normal' ?
@@ -241,7 +248,14 @@ export default function (page: Page, hideMenu: boolean = false) {
                             </div>
                             : null
                         }
-                        {(!this.props.hideMenu ? <Menu pageName={this.props.pageName} /> : null)}*/}
+                        {!this.props.hideMenu ?
+                            <div ref={async (e: HTMLElement) => {
+                                if (!e) return;
+                                let menuControlData = await station.menuControlData();
+                                let menuElement = MobilePage.createControlInstance(menuControlData, e);
+                            }}></div> :
+                            null
+                        }
                     </PageFooter>
                     <PageView className="main container">
                         {this.state.items.length > 0 ?

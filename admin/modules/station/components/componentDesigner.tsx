@@ -15,7 +15,9 @@ export class ComponentDesigner extends React.Component<Props, State>{
     constructor(props) {
         super(props);
         this.state = { pageData: {} };
-        station.controlData(this.props.controlName).then(controlData => {
+        station.controlData(this.props.controlName).then(async controlData => {
+
+
             let pageData: PageData = this.state.pageData;
             let target = this.props.target || 'default';
             if (controlData == null)
@@ -32,6 +34,14 @@ export class ComponentDesigner extends React.Component<Props, State>{
                 case 'default':
                     pageData.views = [{ controls: [controlData] }];
                     break;
+            }
+
+            if (controlData.controlName != 'style') {
+                let styleControlData = await station.styleControlData();
+                styleControlData.selected = 'disabled';
+                pageData.footer = pageData.footer || { controls: [] };
+                pageData.footer.controls = pageData.footer.controls || [];
+                pageData.footer.controls.push(styleControlData);
             }
 
             this.setState(this.state);

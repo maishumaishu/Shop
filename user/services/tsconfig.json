@@ -7,7 +7,7 @@
         "outFile": "../dest/userServices.js"
     },
     "include": [
-        "../../scripts",
+        "../../lib/typings",
         "*.ts"
     ]
 }
