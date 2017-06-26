@@ -59,7 +59,7 @@ export let config = {
 //                         <i className="icon-th-large"></i>
 //                         <span>分类</span>
 //                     </a>
-//                 </li>
+//               import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'userServices';  </li>
 //                 <li>
 //                     <a name="shopping.shoppingCart" onClick={() => app.redirect('shopping_shoppingCart')}>
 //                         <i className="icon-shopping-cart"></i>

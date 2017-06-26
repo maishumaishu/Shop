@@ -118,17 +118,21 @@ namespace userServices {
             }
             return pageData;
         }
+        //============================================================
+        // PageData
         pageData(pageId: string) {
             let url = this.url('Page/GetPageData');
             let data = { pageId };
             return this.get<PageData>(url, { pageId }).then(pageData => this.fillPageData(pageData));
         }
-
-
+        defaultPageData() {
+            let url = this.url('Page/GetDefaultPageData');
+            return this.get<PageData>(url).then(pageData => this.fillPageData(pageData));
+        }
         //============================================================
         controlData(name: string) {
             let url = this.url('Page/GetControlData');
-            return this.get<ControlData>(url, { query: { controlName: name } });
+            return this.getByJson<ControlData>(url, { query: { controlName: name } });
         }
         saveControlData(data: ControlData) {
             let url = this.url('Page/SaveControlData');

@@ -228,6 +228,49 @@ namespace userServices {
             return this.ajax<T>(url, options);
         }
 
+        getByJson<T>(url: string, data?: any) {
+
+            data = data || {};
+            let headers = {
+                'application-key': tokens.appToken,
+            };
+
+            if (tokens.userToken) {
+                headers['user-token'] = tokens.userToken;
+            }
+
+            let urlParams = '';
+            for (let key in data) {
+                urlParams = urlParams + `&${key}=${JSON.stringify(data[key])}`;
+            }
+
+            if (urlParams)
+                url = url.indexOf('?') < 0 ? url + '?' + urlParams : url + '&' + urlParams;
+
+            let options = {
+                headers,
+                method: 'get',
+            }
+            return this.ajax<T>(url, options);
+        }
+
+        // static getByJson<T>(url: string, data?) {
+        //     // let _url = url + '?' + JSON.stringify(data);
+        //     data = data || {};
+
+        //     let _data = {};
+        //     for (let key in data) {
+        //         _data[key] = JSON.stringify(data[key]);
+        //     }
+        //     return ajax<T>({
+        //         headers: {
+        //             'content-type': 'application/json'
+        //         },
+        //         url: url, method: 'get',
+        //         data: _data
+        //     });
+        // }
+
         post<T>(url: string, data?: Object) {
             return this.ajaxByJSON<T>(url, data, 'post');
         }
