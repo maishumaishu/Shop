@@ -7,7 +7,10 @@
         "outFile": "../dest/userServices.js"
     },
     "include": [
-        "../../lib/typings",
+        "../../lib/typings/chitu.d.ts",
+        "../../lib/typings/fetch.d.ts",
+        "../../lib/typings/wuzhui.d.ts",
+
         "*.ts"
     ]
 }

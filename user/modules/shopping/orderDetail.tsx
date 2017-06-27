@@ -3,7 +3,7 @@ import { ShoppingService, AccountService, Order } from 'userServices';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
 import * as ui from 'ui';
 
-let { PageComponent, PageHeader, PageFooter, PageView, Button, ImageBox } = controls;
+let { PageComponent, PageHeader, PageFooter, PageView, ImageBox } = controls;
 
 export default function (page: Page) {
     let shopping = page.createService(ShoppingService);
@@ -70,11 +70,20 @@ export default function (page: Page) {
 
                                 {order.Status == 'WaitingForPayment' ?
                                     <div className="form-group">
-                                        <Button onClick={() => this.purchase()} className="btn btn-block btn-primary">微信支付</Button>
+                                        <button className="btn btn-block btn-primary"
+                                            ref={(e: HTMLButtonElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => this.purchase());
+                                            }}>微信支付</button>
                                     </div> : null}
                                 {order.Status == 'Send' ?
                                     <div className="form-group">
-                                        <Button onClick={() => this.confirmReceived()} confirm={'你确定收到货了吗？'} className="btn btn-primary btn-block">确认收货</Button>
+                                        <button className="btn btn-primary btn-block"
+                                            ref={(e: HTMLButtonElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => this.confirmReceived(), { confirm: '你确定收到货了吗？' })
+
+                                            }}>确认收货</button>
                                     </div> : null}
                             </div>
                         </div>

@@ -66,10 +66,16 @@ requirejs.config({
         },
         mobileControls: {
             exports: 'controls',
-            deps: ['hammer', 'bezier-easing']
+            deps: ['hammer', 'bezier-easing', 'react']
         },
         userServices: {
             exports: 'userServices'
+        },
+        ui: {
+            exports: 'ui'
+        },
+        site: {
+            deps: ['react']
         }
     },
     paths: {
@@ -86,18 +92,23 @@ requirejs.config({
         carousel: 'scripts/carousel',
         modules: modulesPath,
         services: 'userServices',
-        mobileComponents: 'pageComponents'
-        // ui: 'ui'
+        mobileComponents: 'pageComponents',
+        formValidator: 'scripts/formValidator',
+        mobileControls: 'scripts/mobileControls',
+        ui: 'scripts/ui'
     }
 });
 
-requirejs(['react', 'react-dom', 'application'], function (React, ReactDOM, app) {
+requirejs(['react', 'react-dom'], function (React, ReactDOM) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
-    app.run();
     window['h'] = React.createElement;
 
-    requirejs(['css!mobileComponents/style/style_default.css']);
+    requirejs(['site'], function (site) {
+        site.app.run();
+
+    })
+    // requirejs(['css!mobileComponents/style/style_default.css']);
 
 })
 

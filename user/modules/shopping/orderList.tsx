@@ -2,7 +2,7 @@ import { Page, defaultNavBar } from 'site';
 import { ShoppingService, Order } from 'userServices';
 import { app } from 'site';
 
-let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs, Button } = controls;
+let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } = controls;
 type DataList = controls.DataList;
 
 export default function (page: Page) {
@@ -72,8 +72,14 @@ export default function (page: Page) {
                     control = <a href={`#shopping_purchase?id=${order.Id}`} className={btnClassName}>立即付款</a>
                     break;
                 case 'Send':
-                    control = <Button className={btnClassName} onClick={() => this.confirmReceived()}
-                        confirm={'你确定收到货了吗？'}>确认收货</Button>;
+                    control =
+                        <button className={btnClassName}
+                            ref={(e: HTMLButtonElement) => {
+                                if (!e) return;
+                                e.onclick = ui.buttonOnClick(() => this.confirmReceived(), { confirm: '你确定收到货了吗？' });
+                            }}>
+                            确认收货
+                        </button>;
                     break;
                 case 'ToEvaluate':
                     control = <a href={'#shopping_evaluation'} className={btnClassName}>评价晒单</a>;

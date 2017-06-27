@@ -48,7 +48,7 @@ export default function (page: Page) {
                     <PageView ref={o => o ? this.dataView = o.element : null}>
                         <DataList className="container" loadData={this.loadFavorProducts} dataItem={(o: FavorProduct) => (
                             <div key={o.ProductId}>
-                                <div className="item row">
+                                <div className="itpull-right btn-primaryem row">
                                     <div onClick={() => this.showProduct(o.ProductId)} className="col-xs-4">
                                         <ImageBox src={o.ImageUrl} className="img-responsive" />
                                     </div>
@@ -56,8 +56,9 @@ export default function (page: Page) {
                                         <div onClick={() => this.showProduct(o.ProductId)} className="name">
                                             <div>{o.ProductName}</div>
                                         </div>
-                                        <button ref={`btn_${o.Id}`} onClick={(event) => this.unfavor(event, o)} className="pull-right">
-                                            <i className="icon-heart"></i> 取消收藏
+                                        <button ref={`btn_${o.Id}`} onClick={(event) => this.unfavor(event, o)} className="pull-right btn btn-primary">
+                                            <i className="icon-heart"></i> 
+                                            <span>取消收藏</span>   
                                         </button>
                                         <label className="pull-right">
                                             已取消

@@ -1,5 +1,5 @@
 import { Page, defaultNavBar, app } from 'site';
-let { PageComponent, PageHeader, PageFooter, PageView, Button, DataList } = controls;
+let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 import FormValidator from 'formValidator';
 import * as services from 'userServices';
 import * as ui from 'ui';

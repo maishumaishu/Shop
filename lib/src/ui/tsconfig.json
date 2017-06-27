@@ -4,10 +4,9 @@
         "module": "none",
         "sourceMap": false,
         "declaration": true,
-        "outFile": "../dest/ui.js"
+        "outFile": "../../ui.js"
     },
     "include": [
-        "../../scripts",
         "*.ts"
     ]
-}
+}   

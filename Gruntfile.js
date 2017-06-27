@@ -41,9 +41,9 @@ module.exports = function (grunt) {
             },
             user: {
                 files: [
-                    { expand: true, cwd: user_src, src: ['**/*.html', '**/*.css', '**/*.png'], dest: user_dest },
+                    { expand: true, cwd: user_src, src: ['**/*.html', '**/*.css', '**/*.png', 'content/font/*.*'], dest: user_dest },
                     { expand: true, cwd: 'lib', src: ['*.js'], dest: `${user_dest}/scripts` },
-                    { expand: true, cwd: `${user_src}/dest`, src: ['*.js'], dest: user_dest }
+                    { expand: true, cwd: `${user_src}/dest`, src: ['*.js'], dest: `${user_dest}` }
                 ]
             }
         },
@@ -60,6 +60,9 @@ module.exports = function (grunt) {
                 ]
             },
             user: {
+                options: {
+                    sourceMap: true
+                },
                 files: [
                     {
                         expand: true,

@@ -87,9 +87,10 @@ export let config = {
 //     }
 // }
 
+let station = Service.createService(StationService);
+
 export class Menu extends React.Component<{ pageName?: string }, { itemsCount?: number }>{
     render() {
-        let station = Service.createService(StationService);
         return (
             <div ref={async (e: HTMLElement) => {
                 if (!e) return;
@@ -109,7 +110,7 @@ export class Page extends chitu.Page {
 
 
         let className = this.routeData.pageName.split('.').join('-');
-        this.element.className = (allowImmersionHeader ? 'page immersion ' : 'page ') + className;
+        this.element.className = (allowImmersionHeader ? 'mobile-page immersion ' : 'mobile-page ') + className;
         this.displayStatic = topLevelPages.indexOf(this.name) >= 0 || this.name == 'home.search';
 
         //=========================================
@@ -251,6 +252,15 @@ export class Application extends BaseApplication {
     constructor() {
         super();
         this.pageType = Page;
+
+        //==================================================
+        // 添加样式
+        let styleElement = document.createElement("div");
+        document.body.appendChild(styleElement);
+        station.styleControlData().then(controlData => {
+            MobilePage.createControlInstance(controlData, styleElement);
+        })
+        //==================================================
     }
 
     protected parseRouteString(routeString: string) {
@@ -262,7 +272,7 @@ export class Application extends BaseApplication {
         let page = super.createPage(routeData);// as Page;
 
         let path = routeData.actionPath.substr(routeData.basePath.length);
-        let cssPath = `css!content/app` + path;
+        let cssPath = `css!modules` + path;
         requirejs([cssPath]);
 
         return page;
@@ -345,3 +355,4 @@ export function subscribe<T>(component: React.Component<any, any>, item: ValueSt
         componentWillUnmount();
     }
 }
+

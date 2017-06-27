@@ -13,7 +13,7 @@ export interface ComponentProp<T> extends React.Props<T> {
     // mode?: Mode,
     createElement?: (type, props, ...children) => JSX.Element
 }
-export abstract class Component<P extends ComponentProp<any>, S> extends React.Component<P, S> {
+export abstract class Component<P extends ComponentProp<any>, S extends P> extends React.Component<P, S> {
     private _element: HTMLElement;
     static contextTypes = { designer: React.PropTypes.object };
     context: { designer: IMobilePageDesigner };
@@ -21,6 +21,7 @@ export abstract class Component<P extends ComponentProp<any>, S> extends React.C
     constructor(props) {
         super(props);
         this.id = this.guid();
+        this.state = this.props as S
     }
     abstract _render(h): JSX.Element;
     get element(): HTMLElement {
@@ -39,7 +40,10 @@ export abstract class Component<P extends ComponentProp<any>, S> extends React.C
     }
 
     render() {
-        return this._render(h);
+        if (this.context.designer != null)
+            return this._render(createDesignTimeElement);
+
+        return this._render(React.createElement);
     }
 
     private guid() {
@@ -198,7 +202,7 @@ function isError(responseData: any): Error {
     return null;
 }
 
-export function h(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
+export function createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
     props = props || {};
     if (typeof type == 'string')
         props.onClick = () => { };

@@ -1,28 +1,34 @@
-class Page extends chitu.Page {
-    constructor(params) {
-        super(params);
-        let className = this.routeData.pageName.split('.').join('-');
-        this.element.className = 'mobile-page ' + className;
-    }
-    createService<T>(type: { new (): T }) {
-        return new type();
-    }
-}
-class Application extends chitu.Application {
-    constructor() {
-        super();
-        this.pageType = Page;
+// class Page extends chitu.Page {
+//     constructor(params) {
+//         super(params);
+//         let className = this.routeData.pageName.split('.').join('-');
+//         this.element.className = 'mobile-page ' + className;
+//     }
+//     createService<T>(type: { new (): T }) {
+//         return new type();
+//     }
+// }
+// class Application extends chitu.Application {
+//     constructor() {
+//         super();
+//         this.pageType = Page;
 
-        this.pageCreated.add((sender, page) => {
-            let routeData = page.routeData;
-            let path = routeData.actionPath.substr(routeData.basePath.length);
-            let cssPath = `css!modules` + path;
-            requirejs([cssPath]);
-        })
-    }
-}
-import { } from 'mobileControls';
-var app = new Application();
+//         this.pageCreated.add((sender, page) => {
+//             let routeData = page.routeData;
+//             let path = routeData.actionPath.substr(routeData.basePath.length);
+//             let cssPath = `css!modules` + path;
+//             requirejs([cssPath]);
+//         });
+//         //this.parseRouteString
+//     }
+//     protected parseRouteString(routeString: string) {
+//         routeString = routeString.replace(/_/, '/');
+//         let routeData = super.parseRouteString(routeString);
+//         return routeData;
+//     }
+// }
+
+// var app = new Application();
 
 // function setMobilePageLocation(element: HTMLElement) {
 //     // let nodes = document.querySelectorAll('mobile-page');
@@ -42,4 +48,4 @@ var app = new Application();
 
 
 
-export = app;                                                                                                                                               
+// export = app;                                                                                                                                               

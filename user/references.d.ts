@@ -1,17 +1,16 @@
+
 declare module 'mobileControls' {
     export = controls;
 }
-declare module 'userServices'{
+declare module 'userServices' {
     export = userServices;
 }
-declare module "chitu.mobile"{
-    import * as cm from 'lib/mobile/chitu.mobile';
-    export = cm;
-}
-declare module 'controls'{
-    export = controls;
-}
-declare module 'ui'{
+
+// // declare module "chitu.mobile" {
+// //     //    import * from 'chitu.mobile';
+// //     // export = cm;
+// // }
+declare module 'ui' {
     export = ui;
 }
 declare function h(type, props, ...children);

@@ -8,11 +8,14 @@
         "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
-            "*": [
-                "lib/dest/*"
+            "chitu.mobile": [
+                "lib/src/chitu.mobile"
             ],
             "mobileComponents/*": [
                 "user/pageComponents/*"
+            ],
+            "formValidator": [
+                "lib/formValidator.d.ts"
             ]
         },
         "experimentalDecorators": true
@@ -20,17 +23,28 @@
     "exclude": [
         "user",
         "components",
-        "controls",
         "pageComponents",
-        "services",
-        "userServices.tsx"
+        "controls",
+        "services"
     ],
     "include": [
-        "../lib/typings",
-        "../lib/dest/mobile/mobileControls.d.ts",
+        "../lib/typings/fetch.d.ts",
+        "../lib/typings/hammer.d.ts",
+        "../lib/typings/jquery.d.ts",
+        "../lib/typings/react/*.*",
+        "../lib/typings/react-dom/*.*",
+        "../lib/typings/require.d.ts",
+        
+        "../lib/mobileControls.d.ts",
+        "../lib/formValidator.d.ts",
+        "../lib/ui.d.ts",
+
+        "dest/*.d.ts",
         "*.tsx",
         "**/*.tsx",
         "*.ts",
         "**/*.ts"
+        // "../lib/src/ui",
+        // "../lib/src/chitu.mobile"
     ]
 }

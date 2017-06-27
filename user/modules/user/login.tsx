@@ -3,7 +3,7 @@ import * as ui from 'ui';
 import * as services from 'userServices';
 import { app } from 'site';
 import FormValidator from 'formValidator';
-let { PageComponent, PageHeader, PageFooter, PageView, Button, DataList } = controls;
+let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 
 export default function (page: Page) {
     let member = page.createService(services.MemberService);

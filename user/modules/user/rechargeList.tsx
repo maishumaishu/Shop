@@ -1,7 +1,7 @@
 import { Page, defaultNavBar, app, formatDate } from 'site';
 import { AccountService, BalanceDetail } from 'userServices';
 
-let { PageComponent, PageHeader, PageView, Button, DataList } = controls;
+let { PageComponent, PageHeader, PageView, DataList } = controls;
 
 export default function (page: Page) {
 
@@ -40,7 +40,7 @@ export default function (page: Page) {
                     <PageHeader>
                         {defaultNavBar({
                             title: '充值记录',
-                            right: <Button onClick={() => this.charge()} className="right-button" style={{ width: 'unset' }}>充值</Button>
+                            right: <button onClick={() => this.charge()} className="right-button" style={{ width: 'unset' }}>充值</button>
                         })}
                     </PageHeader>
                     <PageView>

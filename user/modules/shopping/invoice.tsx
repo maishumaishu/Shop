@@ -1,5 +1,5 @@
 import { Page, app, defaultNavBar } from 'site';
-let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } = controls;
+import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 
 export default function (page: Page) {
     interface InvoicePageProps extends React.Props<InvoicePage> {

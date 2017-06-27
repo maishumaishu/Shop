@@ -1,7 +1,7 @@
 import { Page, defaultNavBar, app, formatDate } from 'site';
 import { AccountService, ScoreDetail } from 'userServices';
 
-let { PageComponent, PageHeader, PageView, Button, DataList } = controls;
+let { PageComponent, PageHeader, PageView, DataList } = controls;
 
 export default function (page: Page) {
     class ScroeListComponent extends React.Component<{}, {}>{

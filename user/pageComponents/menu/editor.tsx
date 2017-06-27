@@ -13,9 +13,9 @@ type Link = {
 }
 let links: Link[] = [
     { text: '请选择链接', url: '' },
-    { text: '店铺主页', url: '#home/index' },
-    { text: '购物车', url: '#shopping/shoppingCart' },
-    { text: '会员主页', url: '#user/index' }
+    { text: '店铺主页', url: '#home_index' },
+    { text: '购物车', url: '#shopping_shoppingCart' },
+    { text: '会员主页', url: '#user_index' }
 ]
 
 export default class MenuEditor extends Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>

@@ -1,7 +1,7 @@
 import { Page, searchNavBar, app } from 'site';
 import { StationService } from 'userServices';
 
-let { PageComponent, PageHeader, PageFooter, PageView, Button } = controls;
+import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 
 export default function (page: Page) {
     interface SearchPageState {

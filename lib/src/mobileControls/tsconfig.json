@@ -1,13 +1,17 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "module": "amd",
+        "module": "none",
         "sourceMap": false,
-        "outFile": "../../scripts/mobileControls.js",
+        "outFile": "../../mobileControls.js",
         "jsx": "react",
         "declaration": true
     },
     "exclude": [
         "mobileControls.d.ts"
+    ],
+    "include": [
+        "../../typings",
+        "*.tsx"
     ]
 }

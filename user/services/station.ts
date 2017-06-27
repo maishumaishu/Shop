@@ -113,12 +113,12 @@ namespace userServices {
                 pageData.footer.controls.push(menuControlData);
             }
 
-            let styleControlData = pageData.footer.controls.filter(o => o.controlName == 'style')[0];
-            if (!styleControlData) {
-                styleControlData = await this.styleControlData();
-                styleControlData.selected = 'disabled';
-                pageData.footer.controls.push(styleControlData);
-            }
+            // let styleControlData = pageData.footer.controls.filter(o => o.controlName == 'style')[0];
+            // if (!styleControlData) {
+            //     styleControlData = await this.styleControlData();
+            //     styleControlData.selected = 'disabled';
+            //     pageData.footer.controls.push(styleControlData);
+            // }
             return pageData;
         }
         //============================================================

@@ -150,7 +150,7 @@ namespace userServices {
             }
 
             let url = this.url('Product/GetProducts');
-            var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;
+            var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;   
             if (categoryId != null) {
                 args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
             }

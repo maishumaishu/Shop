@@ -1,13 +1,13 @@
 import { componentsDir, Component, component } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'userServices';
-import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel, PageHeader, PageFooter, PageView, Button } from 'mobileControls';
+import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, Panel, PageHeader, PageFooter, PageView } from 'mobileControls';
 import * as ui from 'ui';
 requirejs(['css!mobileComponents/product/control.css']);
 
 export interface Props {
 
 }
-export interface State {
+export interface State extends Props {
 
 }
 
@@ -50,7 +50,7 @@ interface ProductPageState {
 }
 
 
-class ProductPanel extends Component<{ product: Product, parent: ProductView, shop: ShoppingService } & React.Props<ProductPanel>,
+class ProductPanel extends React.Component<{ product: Product, parent: ProductView, shop: ShoppingService } & React.Props<ProductPanel>,
     { product: Product, count: number }> {
 
     private panel: controls.Panel;
@@ -105,12 +105,12 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
     show() {
         this.panel.show('right');
     } ProductView
-    _render(h) {
+    render() {
         let p = this.state.product;
         return (
             <Panel ref={(o) => {
                 if (!o) return;
-                this.panel = o, this.element = o.element
+                this.panel = o
             }}
                 header={
                     <div>
@@ -194,7 +194,7 @@ class ProductPanel extends Component<{ product: Product, parent: ProductView, sh
     }
 }
 
-class ProductView extends Component<{ product: Product, shop: ShoppingService, shoppingCart: ShoppingCartService }, ProductPageState>{
+class ProductView extends React.Component<{ product: Product, shop: ShoppingService, shoppingCart: ShoppingCartService }, ProductPageState>{
 
     private productView: controls.PageView;
     private header: controls.PageHeader;
@@ -264,7 +264,7 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
         this.introduceView.slide('origin');
     }
 
-    _componentDidMount() {
+    componentDidMount() {
         let buttons = this.header.element.querySelectorAll('nav button');
         let title = this.header.element.querySelector('nav.bg-primary') as HTMLElement;
 
@@ -327,7 +327,7 @@ class ProductView extends Component<{ product: Product, shop: ShoppingService, s
         console.assert(this.pageComponent != null);
         return this.pageComponent.element;
     }
-    _render(h) {
+    render() {
         let p = this.state.product;
         let { productsCount, couponsCount } = this.state;
         return (

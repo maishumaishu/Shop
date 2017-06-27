@@ -9,7 +9,7 @@
         "baseUrl": "../",
         "paths": {
             "*": [
-                "lib/dest/*"
+                "lib/*"
             ],
             "mobileComponents/*": [
                 "user/pageComponents/*"
@@ -22,10 +22,11 @@
     },
     "include": [
         "../lib/typings",
+        "../lib/*.d.ts",
+        "../user/dest",
         "*.tsx",
         "**/*.tsx",
         "*.ts",
-        "**/*.ts",
-        "../user/dest/*.d.ts"
+        "**/*.ts"
     ]
 }

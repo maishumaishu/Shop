@@ -3,7 +3,7 @@ import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, Stati
 
 import {
     loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
-    PageComponent, PageHeader, PageFooter, PageView, Button, Dialog
+    PageComponent, PageHeader, PageFooter, PageView, Dialog
 } from 'mobileControls';
 
 import { MobilePage } from 'pageComponents/mobilePage'
@@ -218,25 +218,28 @@ export default function (page: Page, hideMenu: boolean = false) {
                             <div className="settlement" style={{ bottom: this.props.hideMenu ? 0 : null, paddingLeft: 0 }}>
                                 <div className="pull-right">
                                     {this.state.status == 'normal' ?
-                                        <Button className="btn btn-primary" onClick={() => this.buy()} disabled={this.state.selectedCount == 0}>
+                                        <button className="btn btn-primary" onClick={() => this.buy()} disabled={this.state.selectedCount == 0}>
                                             {this.state.selectedCount > 0 ? `结算（${this.state.selectedCount}）` : '结算'}
-                                        </Button>
+                                        </button>
                                         :
-                                        <Button className="btn btn-primary" onClick={() => this.deleteSelectedItems()} disabled={this.state.deleteItems.length == 0}
-                                            confirm={this.deleteConfirmText(this.state.deleteItems)}>
+                                        <button className="btn btn-primary" onClick={() => this.deleteSelectedItems()} disabled={this.state.deleteItems.length == 0}
+                                            ref={(e: HTMLButtonElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => this.deleteSelectedItems(), { confirm: this.deleteConfirmText(this.state.deleteItems) })
+                                            }} >
                                             删除
-                                        </Button>
+                                        </button>
                                     }
                                 </div>
                                 <div style={{ width: '100%', paddingTop: 8 }}>
-                                    <Button className="select-all pull-left" onClick={() => this.checkAll()}>
+                                    <button className="select-all pull-left" onClick={() => this.checkAll()}>
                                         {this.isCheckedAll() ?
                                             <i className="icon-ok-sign"></i>
                                             :
                                             <i className="icon-circle-blank"></i>
                                         }
                                         <span className="text">全选</span>
-                                    </Button>
+                                    </button>
                                     {this.state.status == 'normal' ?
                                         <label className="pull-right" style={{ paddingRight: 10, paddingTop: 2 }}>
                                             总计：<span className="price">￥{this.state.totalAmount.toFixed(2)}</span>
@@ -259,9 +262,9 @@ export default function (page: Page, hideMenu: boolean = false) {
                                 {this.state.items.map(o =>
                                     <li key={o.Id} className="list-group-item row">
                                         {!o.IsGiven ?
-                                            <Button onClick={() => this.selectItem(o)} className="pull-left icon">
+                                            <button onClick={() => this.selectItem(o)} className="pull-left icon">
                                                 <i className={this.isChecked(o) ? 'icon-ok-sign' : 'icon-circle-blank'}></i>
-                                            </Button> : null}
+                                            </button> : null}
                                         <a href={`#home_product?id=${o.ProductId}`} className="pull-left pic">
                                             {o.Type == 'Reduce' || o.Type == 'Discount' ?
                                                 <div className={o.Type}>

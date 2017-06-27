@@ -1,3 +1,5 @@
+/// <reference path="../typings/chitu.d.ts"/>
+
 import * as chitu from 'chitu';
 /**
  * 说明：页面中元素的获取，都是实时 DOM 查询，而不是保存在一个变量中，是因为

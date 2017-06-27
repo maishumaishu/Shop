@@ -1,6 +1,6 @@
 import { Page, defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices';
-let { PageComponent, PageHeader, PageFooter, PageView, Button, ImageFileSelector, ImageBox } = controls;
+let { PageComponent, PageHeader, PageFooter, PageView, ImageFileSelector, ImageBox } = controls;
 
 export type RouteValues = { orderDetailId: string, productImageUrl: string };
 export default function (page: Page) {
@@ -61,7 +61,13 @@ export default function (page: Page) {
                     </PageHeader>
                     <PageFooter>
                         <div className="container" style={{ paddingTop: 10, paddingBottom: 10, height: 50 }}>
-                            <Button onClick={() => this.submit()} className="btn btn-primary btn-block" confirm={'确定要发表评价吗？'}>提交</Button>
+                            <button className="btn btn-primary btn-block"
+                                ref={(e: HTMLButtonElement) => {
+                                    if (!e) return;
+                                    e.onclick = ui.buttonOnClick(() => this.submit(), { confirm: '确定要发表评价吗？' });
+                                }}>
+                                提交
+                            </button>
                         </div>
                     </PageFooter>
                     <PageView>
@@ -112,7 +118,7 @@ export default function (page: Page) {
         }
     }
 
-    let {orderDetailId, productImageUrl} = page.routeData.values as RouteValues;
+    let { orderDetailId, productImageUrl } = page.routeData.values as RouteValues;
     ReactDOM.render(<ProductEvaluate orderDetailId={orderDetailId} productImageUrl={productImageUrl} />, page.element);
 }
 

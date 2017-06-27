@@ -1,7 +1,7 @@
 import { Page, defaultNavBar, app } from 'site';
 import { ShoppingService, ReceiptInfo, Order } from 'userServices';
 import { ReceiptEditRouteValues } from 'modules/user/receiptEdit';
-let { PageComponent, PageHeader, PageView, PageFooter, Button } = controls;
+import { PageComponent, PageHeader, PageView, PageFooter } from 'mobileControls';
 export type SetAddress = (address: string, order: Order) => void;
 export interface ReceiptListRouteValues {
     callback: SetAddress,
@@ -127,11 +127,14 @@ export default function (page: Page) {
                                                     <span className="icon-pencil" style={{ fontSize: 20 }}></span>
                                                     <span style={{ marginLeft: 4 }}>编辑</span>
                                                 </a>
-                                                <Button onClick={() => this.deleteReceipt(receipt)} confirm={"你删除该收货地址吗？"}
-                                                    style={{ marginLeft: 12, border: 'none', background: 'none' }}>
+                                                <button style={{ marginLeft: 12, border: 'none', background: 'none' }}
+                                                    ref={(e: HTMLButtonElement) => {
+                                                        if (!e) return;
+                                                        e.onclick = ui.buttonOnClick(() => this.deleteReceipt(receipt), { confirm: '你删除该收货地址吗？' })
+                                                    }}   >
                                                     <span className="icon-remove" style={{ fontSize: 20 }}></span>
                                                     <span style={{ marginLeft: 4 }}>删除</span>
-                                                </Button>
+                                                </button>
                                             </div>
                                         </div>
                                         <div className="clearfix"></div>
@@ -151,7 +154,7 @@ export default function (page: Page) {
 
                     </PageView>
                     <PageFooter>
-                        <div className="container navbar-fixed-bottom">
+                        <div className="container">
                             <div className="form-group">
                                 <button onClick={() => this.newReceipt()} className="btn btn-primary btn-block">
                                     添加新的收货地址

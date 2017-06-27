@@ -2,7 +2,6 @@ import { componentsDir, Component } from 'mobileComponents/common';
 import * as common from 'mobileComponents/common'
 import { PageComponent, PageView } from 'mobileControls';
 requirejs([`css!${componentsDir}/member/control`]);
-// let ImageBox = controls.ImageBox;
 import * as ui from 'ui';
 export interface Props extends React.Props<MemberControl> {
 

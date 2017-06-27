@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "module": "none",
+        "module": "amd",
         "sourceMap": false,
-        "outFile": "../../dest/mobileControls.js",
+        "outDir": "..",
         "jsx": "react",
         "declaration": true
     },
     "exclude": [
-        "mobileControls.d.ts"
+    ],
+    "include":[
+        "*.ts"
     ]
 }
