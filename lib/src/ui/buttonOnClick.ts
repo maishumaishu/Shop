@@ -60,7 +60,7 @@ namespace ui {
                                    
                                 </div>
                                 <div class="modal-footer">
-                                    <button name="cancel" type="button" class="btn btn-default" data-dismiss="modal">
+                                    <button name="cancel" type="button" class="btn btn-default">
                                         取消
                                     </button>
                                     <button name="ok" type="button" class="btn btn-primary">
@@ -75,17 +75,28 @@ namespace ui {
             let modalFooter = confirmDialogElment.querySelector('.modal-footer');
             let cancelButton = modalFooter.querySelector('[name="cancel"]') as HTMLButtonElement;
             let okButton = modalFooter.querySelector('[name="ok"]') as HTMLButtonElement;
-            // cancelButton.onclick = function () {
-            //     reject();
-            // }
+            cancelButton.onclick = function () {
+                dialog.hide().then(() => {
+                    confirmDialogElment.remove();
+                    dialog = null;
+                });
+            }
             okButton.onclick = function () {
-                execute(event).then(() => $(confirmDialogElment).modal('hide'));
+                // execute(event).then(() => $(confirmDialogElment).modal('hide'));
+                execute(event)
+                    .then(() => dialog.hide())
+                    .then(() => {
+                        confirmDialogElment.remove();
+                        dialog = null;
+                    });
             }
 
-            $(confirmDialogElment).modal();
-            $(confirmDialogElment).on('hidden.bs.modal', function () {
-                $(confirmDialogElment).remove();
-            });
+            // $(confirmDialogElment).modal();
+            // $(confirmDialogElment).on('hidden.bs.modal', function () {
+            //     $(confirmDialogElment).remove();
+            // });
+            let dialog = new Dialog(confirmDialogElment);
+            dialog.show();
         }
     }
 
@@ -113,17 +124,14 @@ namespace ui {
             modalBody.innerHTML = `<h5>${msg}</h5>`;
         else
             modalBody.appendChild(msg);
-            
-        setTimeout(() => {
-            toastDialogElement.className = 'modal fade out';
-            $(toastDialogElement).modal('hide');
-            setTimeout(() => {
-                toastDialogElement.className = 'modal fade';
-                toastDialogElement.style.removeProperty('display');
-                $(toastDialogElement).remove();
-            }, 500);
-        }, 500);
 
-        $(toastDialogElement).modal();
+        let dialog = new Dialog(toastDialogElement);
+        dialog.show();
+        setTimeout(() => {
+            dialog.hide().then(() => {
+                toastDialogElement.remove();
+                dialog = null;
+            });
+        }, 500);
     }
 }
