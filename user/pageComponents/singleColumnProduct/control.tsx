@@ -38,6 +38,9 @@ export default class SingleColumnProductControl extends Component<Props, State> 
                 if (item) {
                     products[i].Count = item.Count;
                 }
+                else {
+                    products[i].Count = 0;
+                }
             }
             this.state.products = products;
             this.setState(this.state);
