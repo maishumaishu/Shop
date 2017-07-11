@@ -3,8 +3,7 @@ import { default as ProductControl } from 'mobileComponents/product/control';
 export default function (page: chitu.Page) {
     ReactDOM.render(
         <div>
-            <ProductControl />
-            <StyleControl style="default"/>
+            <ProductControl productId={page.routeData.values.id} />
         </div>, page.element);
 }
 
