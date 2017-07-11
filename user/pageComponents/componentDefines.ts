@@ -24,6 +24,12 @@ let componets: Array<ComponentDefine> = [
         displayName: "单列商品",
         icon: "",
         introduce: ""
+    },
+    {
+        name: "summaryHeader",
+        displayName: "店铺信息",
+        icon: "",
+        introduce: "显示店铺相关信息，包括店铺图标，店铺名称，商品数量，订单数量等等，一般放置在首页顶部。"
     }
 ];
 
