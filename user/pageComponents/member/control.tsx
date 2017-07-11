@@ -1,24 +1,49 @@
 import { componentsDir, Component } from 'mobileComponents/common';
 import * as common from 'mobileComponents/common'
 import { PageComponent, PageView } from 'mobileControls';
+import { MemberService, Service, UserInfo, userData } from 'userServices';
+
+let member = Service.createService(MemberService);
+
 requirejs([`css!${componentsDir}/member/control`]);
 import * as ui from 'ui';
-export interface Props extends React.Props<MemberControl> {
-
+export class Props implements React.Props<MemberControl> {
+    showBalance: boolean = false;
+    showLevel: boolean = false;
+    showScore: boolean = false;
+    sellsCenter: 'showToMember' | 'showToSells' = 'showToMember';
 }
 
-export interface State {
-
+export interface State extends Props {
+    balance: number,
+    userInfo: UserInfo
 }
 
 export default class MemberControl extends Component<Props, State>{
+    constructor(props) {
+        // props = Object.assign(new Props(), props);
+        // debugger;
+        super(props);
+        console.assert(this.state != null);
+        this.state.balance = userData.balance.value;
+        userData.balance.add((value) => {
+            this.state.balance = value;
+            this.setState(this.state);
+        });
+        member.userInfo().then(userInfo => {
+            this.state.userInfo = userInfo;
+            this.setState(this.state);
+        });
+    }
     _render(h) {
+        // let balance = this.state.balance;
+        //let userInfo = this.state.userInfo || {} as UserInfo;
+        let { balance, userInfo, showBalance, showLevel, sellsCenter } = this.state;
+        userInfo = userInfo || {} as UserInfo;
         return (
             <div className="memberControl">
                 <div className="mobile-user-info">
                     <a href="#user_userInfo" className="pull-left" style={{ margin: '-8px 20px 0px 0px' }}>
-                        {/*<ImageBox src={'userInfo.HeadImageUrl'} className="img-circle img-full"
-                            text="上传头像" />*/}
                         <img className="img-circle img-full" title="上传头像"
                             src={'userInfo.HeadImageUrl'}
                             ref={(e: HTMLImageElement) => {
@@ -31,12 +56,25 @@ export default class MemberControl extends Component<Props, State>{
                     <div>
                         <div style={{ width: '100%' }}>
                             <a className="nick-name" href="#user_userInfo">
-                                {/*{userInfo.NickName == null ? '未填写' : userInfo.NickName}*/}
+                                {userInfo.NickName == null ? '未填写' : userInfo.NickName}
                             </a>
                         </div>
                         <div className="pull-left">
-                            <h5 style={{ color: 'white' }}>普通用户</h5>
+                            {showLevel ?
+                                <h5 style={{ color: 'white' }}>普通用户</h5>
+                                : null
+                            }
                         </div>
+                        {balance != null && showBalance ?
+                            <div className="pull-right">
+                                <a href="#user_rechargeList" style={{ color: 'white' }}>
+                                    <h5>余额&nbsp;&nbsp;
+                                        <span className="price">￥{balance.toFixed(2)}</span>&nbsp;&nbsp;
+                                        <span className="icon-chevron-right"></span>
+                                    </h5>
+                                </a>
+                            </div>
+                            : null}
                     </div>
                     <div className="clearfix"></div>
                 </div>
@@ -90,6 +128,12 @@ export default class MemberControl extends Component<Props, State>{
                         <span className="icon-chevron-right pull-right"></span>
                         <span className="pull-right value" style={{ display: 'none' }}>undefined</span>
                         <strong>我的优惠券</strong>
+                    </a>
+                </div>
+                <div className="list-group">
+                    <a className="list-group-item">
+                        <span className="icon-chevron-right pull-right"></span>
+                        <strong>销售员中心</strong>
                     </a>
                 </div>
                 <div className="list-group">
