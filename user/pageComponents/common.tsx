@@ -3,15 +3,17 @@ export const pageClassName = 'mobile-page';
 
 export interface IMobilePageDesigner {
     selecteControl(control: Component<any, any>, controlType: React.ComponentClass<any>);
+    isDesignMode?: boolean;
 }
 
 //==============================================================    
-// const ENABLE_CLICK = "enableClick";
-// export type Mode = 'design' | 'preview';
 export interface ComponentProp<T> extends React.Props<T> {
     onClick?: (event: MouseEvent, control: T) => void,
     // mode?: Mode,
-    createElement?: (type, props, ...children) => JSX.Element
+    createElement?: (type, props, ...children) => JSX.Element,
+}
+export interface ComponentConstructor {
+    new (props): Component<any, any>
 }
 export abstract class Component<P extends ComponentProp<any>, S extends P> extends React.Component<P, S> {
     private _element: HTMLElement;
@@ -21,7 +23,7 @@ export abstract class Component<P extends ComponentProp<any>, S extends P> exten
     constructor(props) {
         super(props);
         this.id = this.guid();
-        this.state = this.props as S
+        this.state = Object.assign({}, this.props) as S
     }
     abstract _render(h): JSX.Element;
     get element(): HTMLElement {

@@ -7,6 +7,7 @@
         "outFile": "../../ui.js"
     },
     "include": [
-        "*.ts"
+        "*.ts",
+        "../../typings/jquery.d.ts"
     ]
 }   

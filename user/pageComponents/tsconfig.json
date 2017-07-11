@@ -11,7 +11,11 @@
         "paths": {
             "*": [
                 "lib/dest/*",
-                "../services/*"
+                "../services/*",
+                "../*"
+            ],
+            "chitu.mobile": [
+                "lib/chitu.mobile.d.ts"
             ],
             "formValidator": [
                 "lib/formValidator.d.ts"
@@ -27,12 +31,14 @@
         "experimentalDecorators": true
     },
     "exclude": [
-        "dest"
+        "dest",
+        "../references.d.ts"  
     ],
     "include": [
         "../../lib/typings",
         "../../lib/*.d.ts",
-        "../services/*",        
+        "../services/*.ts",   
+        "../*",     
         "*.ts",
         "*.tsx",
         "**/*.tsx"

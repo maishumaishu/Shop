@@ -31,7 +31,8 @@ module.exports = function (grunt) {
                     { expand: true, cwd: admin_src, src: ['**/*.css', '**/*.html', 'content/font/*.*'], dest: admin_dest },
                     { expand: true, cwd: admin_src, src: ['lib/ueditor/**/*.*'], dest: admin_dest },
                     { expand: true, cwd: 'lib', src: ['*.js'], dest: `${admin_dest}/scripts` },
-                    { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` }
+                    { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` },
+                    { expand: true, cwd: `${user_src}/dest`, src: ['userServices.js'], dest: `${admin_dest}/mobile` }
                 ]
             },
             admin_bt: {
@@ -69,7 +70,13 @@ module.exports = function (grunt) {
                         cwd: user_src,
                         src: [`**/*.less`],
                         dest: `${user_dest}`,
-                        ext: '.css'
+                        ext: '.css',
+                        filter: function (filepath) {
+                            if (filepath.endsWith('style.less'))
+                                return false;
+
+                            return true;
+                        }
                     }
                 ]
             },

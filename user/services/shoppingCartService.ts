@@ -32,7 +32,7 @@ namespace userServices {
 
             return items;
         }
-
+        
         addItem(productId: string, count?: number) {
             count = count || 1;
             return this.post<ShoppingCartItem[]>(this.url('ShoppingCart/AddItem'), { productId, count })

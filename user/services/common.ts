@@ -2,6 +2,8 @@ namespace userServices {
     //==========================================================
     // 公用函数 模块开始
     export function imageUrl(path: string) {
+        if (!path) return path;
+
         if (path.startsWith(`http://localhost:${location.port}`)) {
             path = path.substr(`http://localhost:${location.port}`.length);
         }

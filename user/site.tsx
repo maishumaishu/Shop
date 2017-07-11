@@ -277,6 +277,19 @@ export class Application extends BaseApplication {
 
         return page;
     }
+
+    protected createPageElement(routeData: chitu.RouteData) {
+        let element = document.createElement('div');
+        if (location.pathname.endsWith('preview.html')) {
+            let container = document.querySelector('.screen');
+            console.assert(container != null, 'screen is not exists.');
+            container.appendChild(element);
+        }
+        else {
+            document.body.appendChild(element);
+        }
+        return element;
+    }
 }
 
 export let app = new Application();

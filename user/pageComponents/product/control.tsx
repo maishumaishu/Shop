@@ -2,21 +2,21 @@ import { componentsDir, Component, component } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'userServices';
 import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, Panel, PageHeader, PageFooter, PageView } from 'mobileControls';
 import * as ui from 'ui';
+import { app } from 'site';
 requirejs(['css!mobileComponents/product/control.css']);
 
 export interface Props {
-
+    productId?: string
 }
 export interface State extends Props {
 
 }
 
-@component("product")
+// @component("product")
 export default class ProductControl extends Component<Props, State>{
     private productView: ProductView;
     constructor(props) {
         super(props);
-
     }
     get element() {
         return this.productView.element;
@@ -24,13 +24,32 @@ export default class ProductControl extends Component<Props, State>{
     _render(h) {
         let shopping = new ShoppingService();
         let shoppingCart = new ShoppingCartService();
-        let product = {
+
+        let product: Product;
+        let designer = this.context.designer;
+        // if (designer == null || !designer.isDesignMode) {
+
+        // }
+        // else {
+        product = {
             Id: 'abc', Name: "Product", ImageUrl: "ABC_200_200", ImageUrls: ["ABC_200_200"],
             Price: 100, MemberPrice: 100, Promotions: [], Arguments: [],
             CustomProperties: []
         } as Product;
+        // }
+
         return (
-            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} />
+            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product}
+                ref={async (e) => {
+                    if (!e || !this.props.productId) return;
+                    let p = await shopping.product(this.props.productId);
+                    p.ImageUrl = p.ImageUrl || 'empty_300_300';
+                    if (!p.ImageUrls || p.ImageUrls.length == 0) {
+                        p.ImageUrls = [p.ImageUrl];
+                    }
+                    e.state.product = p;
+                    e.setState(e.state);
+                }} />
         );
     }
 }
@@ -194,7 +213,12 @@ class ProductPanel extends React.Component<{ product: Product, parent: ProductVi
     }
 }
 
-class ProductView extends React.Component<{ product: Product, shop: ShoppingService, shoppingCart: ShoppingCartService }, ProductPageState>{
+interface ProductViewProps extends React.Props<ProductView> {
+    product: Product, shop: ShoppingService,
+    shoppingCart: ShoppingCartService
+}
+
+class ProductView extends React.Component<ProductViewProps, ProductPageState>{
 
     private productView: controls.PageView;
     private header: controls.PageHeader;
@@ -293,7 +317,7 @@ class ProductView extends React.Component<{ product: Product, shop: ShoppingServ
             p = shop.favorProduct;
         }
 
-        return p.bind(shop)(this.props.product.Id).then(o => {
+        return p.bind(shop)(this.state.product.Id).then(o => {
             this.state.isFavored = !this.state.isFavored;
             this.setState(this.state);
         })
@@ -335,7 +359,7 @@ class ProductView extends React.Component<{ product: Product, shop: ShoppingServ
                 <PageHeader ref={(o) => this.header = o}>
                     <nav className="bg-primary"></nav>
                     <nav>
-                        <button className="leftButton">
+                        <button className="leftButton" onClick={() => app.back()}>
                             <i className="icon-chevron-left"></i>
                         </button>
                         <button className="rightButton"
@@ -386,7 +410,7 @@ class ProductView extends React.Component<{ product: Product, shop: ShoppingServ
                             <span>
                                 已选：{this.state.productSelectedText}
                             </span>
-                            <span className="badge">
+                            <span className="pull-right">
                                 <i className="icon-chevron-right"></i>
                             </span>
                         </li>

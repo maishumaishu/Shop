@@ -29,6 +29,9 @@ requirejs.config({
         },
         ui: {
             exports: 'ui'
+        },
+        userServices: {
+            exports: 'userServices'
         }
     },
     paths: {

@@ -2,6 +2,8 @@ import { Page, defaultNavBar, app } from 'site';
 import { ShoppingService, ReceiptInfo, Order } from 'userServices';
 import { ReceiptEditRouteValues } from 'modules/user/receiptEdit';
 import { PageComponent, PageHeader, PageView, PageFooter } from 'mobileControls';
+import ui = require('ui');
+
 export type SetAddress = (address: string, order: Order) => void;
 export interface ReceiptListRouteValues {
     callback: SetAddress,

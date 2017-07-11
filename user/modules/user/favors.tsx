@@ -48,7 +48,7 @@ export default function (page: Page) {
                     <PageView ref={o => o ? this.dataView = o.element : null}>
                         <DataList className="container" loadData={this.loadFavorProducts} dataItem={(o: FavorProduct) => (
                             <div key={o.ProductId}>
-                                <div className="itpull-right btn-primaryem row">
+                                <div className="item row">
                                     <div onClick={() => this.showProduct(o.ProductId)} className="col-xs-4">
                                         <ImageBox src={o.ImageUrl} className="img-responsive" />
                                     </div>

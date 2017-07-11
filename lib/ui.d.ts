@@ -1,4 +1,10 @@
 declare namespace ui {
+    class Dialog {
+        private element;
+        constructor(element: HTMLElement);
+        show(): void;
+        hide(): Promise<any>;
+    }
     function alert(msg: string): void;
 }
 declare namespace ui {

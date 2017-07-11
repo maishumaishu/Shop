@@ -15,7 +15,8 @@ export abstract class Editor<ControlProp, ControlState, State, ControlType exten
 
     constructor(props: EditorProps<ControlProp, ControlState, ControlType>) {
         super(props);
-        this.state = Object.assign({} as State, this.props.control.state);
+        console.assert(this.props.control.state != null);
+        this.state = this.props.control.state as any;
     }
 
     componentDidMount() {
