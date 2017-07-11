@@ -2,7 +2,7 @@ import components from 'mobileComponents/componentDefines';
 import StyleControl from 'mobileComponents/style/control';
 import { VirtualMobile } from 'mobilePage';
 import { MobilePage } from 'mobileComponents/mobilePage';
-import { Component as Control, componentsDir } from 'mobileComponents/common';
+import { Component as Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { PageData, ControlData, guid, default as station } from 'services/station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
@@ -26,15 +26,20 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private allContainer: HTMLElement;
     private _element: HTMLElement;
     private selectedContainer: HTMLElement;
-    // private controls: [string, React.Component<any, any>][];
+    private mobilePage: MobilePage;
 
     saved: chitu.Callback<MobilePageDesigner, { pageData: PageData }>;
 
     constructor(props: Props) {
         super(props);
         this.state = { pageData: props.pageData, editors: [] };
-        // this.controls = [];
         this.saved = chitu.Callbacks();
+    }
+
+    static childContextTypes = { designer: React.PropTypes.object };
+
+    getChildContext(): { designer: IMobilePageDesigner } {
+        return { designer: this }
     }
 
     get element() {
@@ -72,11 +77,17 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         if (pageData.footer)
             controlDatas.push(...pageData.footer.controls || [])
 
-        // controlDatas.forEach(o => {
-        //     let control = this.controls.filter(c => c[0] == o.controlId)[0];
-        //     console.assert(control != null);
-        //     o.data = control[1].state;
-        // });
+        controlDatas.forEach(o => {
+            let control = this.mobilePage.components.filter(c => c.controlId == o.controlId)[0];
+            console.assert(control != null);
+
+            let data = {};
+            for (let key in control.props) {
+                data[key] = control.state[key];
+            }
+
+            o.data = data;
+        });
 
         let save = this.props.save;
         return save(this.state.pageData).then(data => {
@@ -145,7 +156,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
                     <VirtualMobile >
-                        <MobilePage pageData={pageData}
+                        <MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
                             designTime={{
                                 controlSelected: (a, b) => this.selecteControl(a, b)
                             }} />
@@ -224,16 +235,18 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             padding: 0, listStyle: 'none',
                             display: showComponentPanel == true ? 'block' : 'none'
                         }}>
-                        {components.map((c, i) => (
-                            <li key={c.name} data-controlName={c.name}
-                                style={{
-                                    float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
-                                    textAlign: 'center', paddingTop: 20, backgroundColor: 'white', zIndex: 100
-                                }} >
-                                <img src={c.icon} />
-                                {c.displayName}
-                            </li>
-                        ))}
+                        {components.map((c, i) => {
+                            return (
+                                <li key={c.name} data-controlName={c.name}
+                                    style={{
+                                        float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
+                                        textAlign: 'center', paddingTop: 20, backgroundColor: 'white', zIndex: 100
+                                    }} >
+                                    <img src={c.icon} />
+                                    {c.displayName}
+                                </li>
+                            )
+                        })}
                         <li className="clearfix"></li>
                     </ul>
                     <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
