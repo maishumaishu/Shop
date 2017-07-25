@@ -20,13 +20,22 @@
         },
         "experimentalDecorators": true
     },
+    "exclude": [],
     "include": [
         "../lib/typings",
         "../lib/*.d.ts",
-        "../user/dest",
+        "../www/user/userServices.d.ts",
+        "services/*",
+        "references.d.ts",
+        // "application.tsx"
+
+        "modules/station/components/virtualMobile",
+        "modules/station/components/mobilePageDesigner",
+        "modules/station/components/componentDesigner",
+
         "*.tsx",
-        "**/*.tsx",
-        "*.ts",
-        "**/*.ts"
+        "**/*.tsx"
+        // "*.ts",
+        // "**/*.ts"
     ]
 }

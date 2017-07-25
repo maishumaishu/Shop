@@ -1,5 +1,6 @@
 import { Page, defaultNavBar, app, formatDate } from 'site';
 import { AccountService, BalanceDetail } from 'userServices';
+
 import ui = require('ui');
 
 let { PageComponent, PageHeader, PageView, DataList } = controls;

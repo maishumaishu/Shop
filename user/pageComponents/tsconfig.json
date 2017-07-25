@@ -10,9 +10,9 @@
         "inlineSourceMap": false,
         "paths": {
             "*": [
-                "lib/dest/*",
-                "../services/*",
-                "../*"
+                "lib/*",
+                "../../www/user/*"
+                // "../*"
             ],
             "chitu.mobile": [
                 "lib/chitu.mobile.d.ts"
@@ -27,7 +27,7 @@
                 "user/pageComponents/*"
             ]
         },
-        "declaration": true,
+        "declaration": false,
         "experimentalDecorators": true
     },
     "exclude": [
@@ -37,12 +37,8 @@
     "include": [
         "../../lib/typings",
         "../../lib/*.d.ts",
-        "../services/*.ts",   
-        "../*",     
-        "*.ts",
-        "*.tsx",
+        "../../www/user/*.d.ts",
+        "./*",  
         "**/*.tsx"
-        // "../../lib/dest/*.d.ts",
-       
     ]
 }

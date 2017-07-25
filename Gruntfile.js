@@ -113,3 +113,8 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['admin', 'user']);
     grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
 }
+
+/**
+ * 说明：
+ * １.编译顺序 user/service user/pageComponents user admin
+ */

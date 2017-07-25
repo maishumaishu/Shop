@@ -4,7 +4,7 @@
         "module": "none",
         "sourceMap": false,
         "declaration": true,
-        "outFile": "../dest/userServices.js"
+        "outFile": "../../www/user/userServices.js"
     },
     "include": [
         "../../lib/typings/chitu.d.ts",

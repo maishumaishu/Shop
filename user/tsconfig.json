@@ -3,13 +3,13 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../www",
+        "outDir": "../www/user",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
             "chitu.mobile": [
-                "lib/src/chitu.mobile"
+                "lib/chitu.mobile"
             ],
             "mobileComponents/*": [
                 "user/pageComponents/*"
@@ -18,7 +18,8 @@
                 "lib/formValidator.d.ts"
             ]
         },
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "declaration": true
     },
     "exclude": [
         "user",
@@ -39,7 +40,8 @@
         "../lib/formValidator.d.ts",
         "../lib/ui.d.ts",
 
-        "dest/*.d.ts",
+        "../www/user/userServices.d.ts",
+
         "*.tsx",
         "**/*.tsx",
         "*.ts",
