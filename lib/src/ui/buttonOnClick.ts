@@ -70,24 +70,28 @@ namespace ui {
                             </div>
                         </div>
                     `;
+
+            let modalHeader = confirmDialogElment.querySelector('.modal-header');
             let modalBody = confirmDialogElment.querySelector('.modal-body');
-            modalBody.innerHTML = `<h5>${args.confirm}</h5>`;
             let modalFooter = confirmDialogElment.querySelector('.modal-footer');
+
+            modalBody.innerHTML = `<h5>${args.confirm}</h5>`;
+
             let cancelButton = modalFooter.querySelector('[name="cancel"]') as HTMLButtonElement;
             let okButton = modalFooter.querySelector('[name="ok"]') as HTMLButtonElement;
-            cancelButton.onclick = function () {
-                dialog.hide().then(() => {
+            let closeButton = modalHeader.querySelector('.close') as HTMLElement;
+
+            closeButton.onclick = cancelButton.onclick = function () {
+                ui.hideDialog(confirmDialogElment).then(() => {
                     confirmDialogElment.remove();
-                    dialog = null;
                 });
             }
             okButton.onclick = function () {
                 // execute(event).then(() => $(confirmDialogElment).modal('hide'));
                 execute(event)
-                    .then(() => dialog.hide())
+                    .then(() => ui.hideDialog(confirmDialogElment))
                     .then(() => {
                         confirmDialogElment.remove();
-                        dialog = null;
                     });
             }
 
@@ -95,8 +99,9 @@ namespace ui {
             // $(confirmDialogElment).on('hidden.bs.modal', function () {
             //     $(confirmDialogElment).remove();
             // });
-            let dialog = new Dialog(confirmDialogElment);
-            dialog.show();
+            // let dialog = new Dialog(confirmDialogElment);
+            // dialog.show();
+            ui.showDialog(confirmDialogElment);
         }
     }
 
