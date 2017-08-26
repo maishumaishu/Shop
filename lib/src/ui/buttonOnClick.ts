@@ -87,7 +87,6 @@ namespace ui {
                 });
             }
             okButton.onclick = function () {
-                // execute(event).then(() => $(confirmDialogElment).modal('hide'));
                 execute(event)
                     .then(() => ui.hideDialog(confirmDialogElment))
                     .then(() => {
@@ -95,12 +94,6 @@ namespace ui {
                     });
             }
 
-            // $(confirmDialogElment).modal();
-            // $(confirmDialogElment).on('hidden.bs.modal', function () {
-            //     $(confirmDialogElment).remove();
-            // });
-            // let dialog = new Dialog(confirmDialogElment);
-            // dialog.show();
             ui.showDialog(confirmDialogElment);
         }
     }
