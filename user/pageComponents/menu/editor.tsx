@@ -3,14 +3,21 @@ import { Props as ControlProps, State as ControlState, default as Control, MenuN
 import { FormValidator } from 'formValidator';
 requirejs(['css!mobileComponents/menu/editor.css']);
 let h = React.createElement;
-export interface EditorState {
+
+export interface MenuEditorState extends Partial<ControlState> {
     currentItem?: MenuNode;
 }
+
+interface MenuEditorProps extends EditorProps {
+
+}
+
 
 type Link = {
     text: string,
     url: string
 }
+
 let links: Link[] = [
     { text: '请选择链接', url: '' },
     { text: '店铺主页', url: '#home_index' },
@@ -18,20 +25,21 @@ let links: Link[] = [
     { text: '会员主页', url: '#user_index' }
 ]
 
-export default class MenuEditor extends Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>
+export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>{ //Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>
     private itemDialogELement: HTMLElement;
     private nameInput: HTMLInputElement;
     private validator: FormValidator;
 
     constructor(props) {
-        super(props);
-        this.state = { menuNodes: this.props.control.props.menuNodes || [] };
+        super(props);    
+        this.state.currentItem = {} as MenuNode;    
     }
     editItem(menuItem: MenuNode) {
         this.state.currentItem = menuItem;
         this.setState(this.state);
         this.validator.clearErrors();
-        $(this.itemDialogELement).modal();
+        // $(this.itemDialogELement).modal();
+        ui.showDialog(this.itemDialogELement);
     }
     deleteItem(menuItem: MenuNode) {
         let menuNodes = this.state.menuNodes.filter(o => o != menuItem);
@@ -44,7 +52,8 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
         this.state.currentItem = { url: '' } as MenuNode;
         this.setState(this.state);
         this.validator.clearErrors();
-        $(this.itemDialogELement).modal();
+        // $(this.itemDialogELement).modal();
+        ui.showDialog(this.itemDialogELement);
     }
     save() {
         if (!this.validator.validateForm()) {
@@ -56,7 +65,8 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
             this.state.menuNodes.push(currentItem);
         }
         this.setState(this.state);
-        $(this.itemDialogELement).modal('hide');
+        // $(this.itemDialogELement).modal('hide');
+        ui.hideDialog(this.itemDialogELement);
         return Promise.resolve();
     }
     createValidator(form: HTMLElement) {
@@ -83,6 +93,15 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
     linkName(url: string) {
         let link = links.filter(o => o.url == url)[0];
         return link ? link.text : '';
+    }
+    componentDidUpdate() {
+        let control = (this.props.control as Control);
+        var keys = control.persistentMembers;
+        for (let i = 0; i < keys.length; i++) {
+            let prop = this.state[keys[i]];
+            control.state[keys[i]] = prop;
+        }
+        control.setState(control.state);
     }
     render() {
         let menuNodes = this.state.menuNodes || [];
@@ -133,7 +152,7 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
                             <div className="clearfix"></div>
                         </li>
                     )}
-                    <li onClick={() => $(this.itemDialogELement).modal()}>
+                    <li onClick={() => ui.showDialog(this.itemDialogELement)}>
                         <button className="btn btn-primary"
                             onClick={(e) => {
                                 this.newItem();
@@ -143,7 +162,7 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
                         </button>
                     </li>
                 </ul>
-                {currentItem ? <div className="modal fade"
+                <div className="modal fade"
                     ref={(e: HTMLElement) => {
                         if (!e) return;
                         this.itemDialogELement = e;
@@ -237,7 +256,7 @@ export default class MenuEditor extends Editor<ControlProps, ControlState, Edito
                             </div>
                         </div>
                     </div>
-                </div> : null}
+                </div>
             </div>
         );
     }

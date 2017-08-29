@@ -47,14 +47,14 @@ export class StationService extends Service {
 
         let menuControlData = pageData.footer.controls.filter(o => o.controlName == 'menu')[0];
         if (!menuControlData && pageData.showMenu == true) {
-            menuControlData = await this.menuControlData();
+            menuControlData = await this.menuControlData() as any;
             menuControlData.selected = 'disabled';
             pageData.footer.controls.push(menuControlData);
         }
 
         let styleControlData = pageData.footer.controls.filter(o => o.controlName == 'style')[0];
         if (!styleControlData) {
-            styleControlData = await this.styleControlData();
+            styleControlData = await this.styleControlData() as any;
             styleControlData.selected = 'disabled';
             pageData.footer.controls.push(styleControlData);
         }
@@ -115,7 +115,7 @@ export class StationService extends Service {
     }
     deletePageData(pageId: string) {
         let url = this.url('Page/DeletePage');
-        return Service.delete(url, { pageId });
+        return Service.deleteByJson(url, { pageId });
     }
     setDefaultPage(pageId: string) {
         let url = this.url('Page/SetDefaultPage');
@@ -154,7 +154,7 @@ export class StationService extends Service {
     //============================================================
     controlData(name: string) {
         let url = this.url('Page/GetControlData');
-        return Service.getByJson<ControlData>(url, { query: { controlName: name } });
+        return Service.get<ControlData>(url, { query: JSON.stringify({ controlName: name }) });
     }
     saveControlData(data: ControlData, name: string) {
         let url = this.url('Page/SaveControlData');

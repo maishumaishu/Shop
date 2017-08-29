@@ -6,12 +6,16 @@ export interface Props extends React.Props<StyleControl> {
 export interface State extends Props {
 }
 export default class StyleControl extends Component<Props, State>{
+
+    persistentMembers = [];
+
     constructor(props) {
         super(props);
-        // this.state = { style: this.props.style };
+        this.state = { style: this.props.style };
     }
     _render(h) {
-        let style = (this.state || { style: 'default' }).style;
+        console.assert(this.state != null);
+        let style = this.state.style || 'default'; //(this.state || { style: 'default' }).style;
         let path = `../user/pageComponents/style/style_${style}.css`;
         return <link rel="stylesheet" href={path}></link>
     }

@@ -15,6 +15,9 @@ export interface State extends Props {
 // @component("product")
 export default class ProductControl extends Component<Props, State>{
     private productView: ProductView;
+
+    persistentMembers = [];
+
     constructor(props) {
         super(props);
     }

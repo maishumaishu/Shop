@@ -154,7 +154,7 @@ export class ShoppingService extends Service {
     }
     deleteProduct(id: string) {
         var url = this.url('Product/DeleteProduct');
-        return Service.delete(url, { id });
+        return Service.deleteByJson(url, { id });
     }
     getProductList(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
 
@@ -191,10 +191,10 @@ export class ShoppingService extends Service {
         obj.Fields = JSON.stringify(product.Fields) as any;
         if (!obj.Id) {
             product.Id = undefined;
-            return Service.post(Service.config.shopUrl + 'Product/AddProduct', obj);
+            return Service.postByJson(Service.config.shopUrl + 'Product/AddProduct', obj);
         }
         else {
-            return Service.put(Service.config.shopUrl + 'Product/UpdateProduct', obj);
+            return Service.putByJson(Service.config.shopUrl + 'Product/UpdateProduct', obj);
         }
     }
     removeProduct(productId) {
@@ -226,7 +226,7 @@ export class ShoppingService extends Service {
     }
     deleteCategory(id) {
         let url = this.url('Product/DeleteProductCategory');
-        return Service.delete(url, { id });
+        return Service.deleteByJson(url, { id });
     }
     //==========================================
     // 品牌
@@ -246,7 +246,7 @@ export class ShoppingService extends Service {
     }
     deleteBrand(brand: Brand) {
         let url = this.url('Product/DeleteBrand');
-        return Service.delete(url, { id: brand.Id });
+        return Service.deleteByJson(url, { id: brand.Id });
     }
     //==========================================
     setStock(productId, quantity) {
@@ -289,7 +289,7 @@ export class ShoppingService extends Service {
     }
     deleteCoupon(coupon: Coupon) {
         let url = this.url('Coupon/DeleteCoupon');
-        return Service.delete(url, { id: coupon.Id });
+        return Service.deleteByJson(url, { id: coupon.Id });
     }
     couponCodes(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Coupon/GetCouponCodes');
@@ -321,10 +321,10 @@ export class ShoppingService extends Service {
         return Service.get<Array<FreightSolution>>(this.url('Freight/GetFreightSolutions'));
     }
     deleteFreightSolution(dataItem) {
-        return Service.delete(this.url('Freight/DeleteFreightSolution'), dataItem);
+        return Service.deleteByJson(this.url('Freight/DeleteFreightSolution'), dataItem);
     }
     updateFreightSolution(dataItem) {
-        return Service.put(this.url('Freight/UpdateFreightSolution'), dataItem);
+        return Service.putByJson(this.url('Freight/UpdateFreightSolution'), dataItem);
     }
     regionFreights(solutionId) {
         let url = `${Service.config.shopUrl}Freight/GetRegionFreights`
@@ -332,7 +332,7 @@ export class ShoppingService extends Service {
     }
     setRegionFreight(id, freight, freeAmount) {
         let url = this.url('Freight/SetRegionFreight');
-        return Service.put(url, { id: id, freight: freight, freeAmount: freeAmount });
+        return Service.putByJson(url, { id: id, freight: freight, freeAmount: freeAmount });
     }
     productFreights(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Freight/GetProductFreights');
@@ -340,7 +340,7 @@ export class ShoppingService extends Service {
     }
     addProductFreight(productId: string, solutionId: string) {
         let url = this.url('Freight/AddProductFreight');
-        return Service.post(url, { productId, solutionId });
+        return Service.postByJson(url, { productId, solutionId });
     }
     cityFreight() {
         let url = this.url('Freight/GetCityFreight');

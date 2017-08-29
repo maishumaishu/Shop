@@ -33,7 +33,7 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     }
     private showPage(pageId?: string) {
         var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
-        var url = 'Station/Page';
+        var url = 'station/page';
         if (pageId)
             url = url + '?pageId=' + pageId;
 
@@ -42,11 +42,12 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     private pageSave(pageData: PageData) {
     }
     private showCreatePageDialog() {
-        $(this.templateDialogElement).modal();
+        // $(this.templateDialogElement).modal();
+        ui.showDialog(this.templateDialogElement);
     }
     private selecteTemplate(template: TemplatePageData) {
         var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
-        let url = 'Station/Page?templateId=' + template._id;
+        let url = 'station/page?templateId=' + template._id;
         app.redirect(url, routeValue)
     }
     componentDidMount() {
@@ -116,7 +117,11 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
                     <div className="modal-dialog modal-lg">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal">
+                                <button type="button" className="close" data-dismiss="modal"
+                                    ref={(e: HTMLButtonElement) => {
+                                        if (!e) return;
+                                        e.onclick = () => ui.hideDialog(this.templateDialogElement);
+                                    }}>
                                     <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
                                 </button>
                                 <h4 className="modal-title">请选择模板</h4>

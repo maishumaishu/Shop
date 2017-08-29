@@ -36,7 +36,7 @@ export default async function (page: chitu.Page) {
             }
 
             p.then(() => {
-                $(this.dialogElement).modal('hide');
+                ui.hideDialog(this.dialogElement);
                 this.setState(this.state)
             });
             return p;
@@ -75,7 +75,12 @@ export default async function (page: chitu.Page) {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal"
+                                ref={(e: HTMLButtonElement) => {
+                                    if (!e) return;
+                                    e.onclick = () => ui.hideDialog(this.dialogElement)
+
+                                }}>取消</button>
                             <button type="button" className="btn btn-primary"
                                 ref={(e: HTMLButtonElement) => {
                                     if (!e) return;
@@ -87,23 +92,20 @@ export default async function (page: chitu.Page) {
                         </div>
                     </div>
                 </div>, this.dialogElement);
-            $(this.dialogElement).modal();
+
+            ui.showDialog(this.dialogElement);
         }
         edit(app: Application) {
             this.nameInput.value = app.name;
-            $(this.dialogElement).modal();
+            // $(this.dialogElement).modal();
+            // let dialog = new ui.Dialog(this.dialogElement);
+            // dialog.show();
+            ui.showDialog(this.dialogElement);
         }
         render() {
             let stores = this.state.stores || [];
             return (
                 <div>
-                    <button className="btn btn-sm btn-primary"
-                        ref={(e: HTMLButtonElement) => {
-                            if (!e) return;
-                            e.onclick = () => this.showDialog({} as Application);
-                        }}>
-                        创建店铺
-                    </button>
                     <div className="modal fade" role="dialog"
                         ref={(e: HTMLElement) => this.dialogElement = e || this.dialogElement}>
 
@@ -137,7 +139,7 @@ export default async function (page: chitu.Page) {
                                             onClick={() => this.showDialog(o)}>编辑</button>
                                     </div>
                                     <div className="col-xs-6">
-                                        <a href={`?${o.token}#Home/Index`} className="btn btn-success btn-block">详细</a>
+                                        <a href={`?${o.token}#home/index`} className="btn btn-success btn-block">详细</a>
                                     </div>
                                 </div>
                             </li>

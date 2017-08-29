@@ -58,7 +58,7 @@ export default function (page: chitu.Page) {
 
             let verifyCode = this.verifyCodeInput.value;
             return userService.register({ smsId: this.smsId, user, verifyCode }).then(data => {
-                app.redirect('Home/Index');
+                app.redirect('user/myStores');
                 return data;
             });
         }

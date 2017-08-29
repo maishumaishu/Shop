@@ -23,7 +23,7 @@ export default async function (page: chitu.Page) {
             }
             return userService.login(this.usernameInput.value, this.passwordInput.value)
                 .then(function () {
-                    app.redirect(`User/MyStores`);
+                    app.redirect(`user/myStores`);
                 });
         }
         render() {
@@ -59,10 +59,10 @@ export default async function (page: chitu.Page) {
                     <div className="form-group">
                         <div className="col-sm-offset-2 col-sm-10" >
                             <div className="pull-left" >
-                                <a href="#User/ForgetPassword" > 忘记密码 </a>
+                                <a href="#user/forgetPassword" > 忘记密码 </a>
                             </div>
                             <div className="pull-right" >
-                                <a href="#User/Register" > 注册 </a>
+                                <a href="#user/register" > 注册 </a>
                             </div>
                         </div>
                     </div>

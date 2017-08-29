@@ -89,9 +89,9 @@
             }
         }   
         tfoot tr{
-            td.pagingBar .total {
-                float: right;
-            }
+            // td.pagingBar .total {
+            //     float: right;
+            // }
         }
     }
 
@@ -204,6 +204,39 @@
         margin-top: -1px;
         box-shadow: 0 -2px 3px 0 rgba(0,0,0,0.15);
     }
+
+    .pagingBar {
+        background-color: #eff3f8;
+        text-align: right;
+
+        .total {
+            float: left;
+        }
+
+        a {
+            /*background-color: #fafafa;
+            color: #2283c5;*/
+            margin-right: 4px;
+            .active{
+                color: red;
+            }
+        }
+    }
+    
+    // .pagingBar .total {
+    //     float: left;
+    // }
+    
+    // .pagingBar a {
+    //     /*background-color: #fafafa;
+    //     color: #2283c5;*/
+    //     margin-right: 4px;
+    // }
+    
+    // .pagingBar a.active{
+    //     color: red;
+    // }
+    
 
 }
 

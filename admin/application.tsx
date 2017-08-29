@@ -8,50 +8,8 @@ import * as ui from 'ui';
 ui.setDialogContainer(document.querySelector('.dialog-container') as HTMLElement);
 
 let viewContainer: HTMLElement;
-class Application extends chitu.Application {
 
-    constructor() {
-        super();
-
-        this.pageCreated.add((app, page) => {
-            page.load.add((sender, args) => {
-                let element = sender.element.querySelector('admin-pc');
-                if (element == null) {
-                    sender.element.className = (sender.element.className || '') + ' admin-pc';
-                }
-            });
-        })
-    }
-
-    protected createPageElement(routeData: chitu.RouteData): HTMLElement {
-        let element = document.createElement('div');
-        console.assert(viewContainer != null, 'view container cannt be null.');
-        let className = routeData.pageName.split('.').join('-');
-        element.className = className;
-        viewContainer.appendChild(element);
-
-        return element;
-    }
-
-    run() {
-
-        let element = document.createElement('div');
-        document.body.insertBefore(element, document.body.children[0]);
-        ReactDOM.render(<Page />, element);
-
-        super.run();
-    }
-}
-
-var app = new Application();
-
-if (service.token == null && location.hash != '#User/Register' && location.hash != '#User/Login') {
-    app.redirect('User/Login');
-}
-
-window['app'] = app;
-export = app;
-
+var h = React.createElement;
 class Page extends React.Component<any, {
     currentNode: MenuNode, username: string
 }> {
@@ -228,6 +186,52 @@ class Page extends React.Component<any, {
         );
     }
 }
+
+let element = document.createElement('div');
+document.body.insertBefore(element, document.body.children[0]);
+ReactDOM.render(<Page />, element);
+
+class Application extends chitu.Application {
+    
+        constructor() {
+            super();
+    
+            this.pageCreated.add((app, page) => {
+                page.load.add((sender, args) => {
+                    let element = sender.element.querySelector('admin-pc');
+                    if (element == null) {
+                        sender.element.className = (sender.element.className || '') + ' admin-pc';
+                    }
+                });
+            })
+        }
+    
+        protected createPageElement(routeData: chitu.RouteData): HTMLElement {
+            let element = document.createElement('div');
+            console.assert(viewContainer != null, 'view container cannt be null.');
+            let className = routeData.pageName.split('.').join('-');
+            element.className = className;
+            viewContainer.appendChild(element);
+    
+            return element;
+        }
+    
+        run() {
+    
+    
+    
+            super.run();
+        }
+    }
+    
+    var app = new Application();
+    
+    if (service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
+        app.redirect('user/login');
+    }
+    
+    window['app'] = app;
+    export = app;
 
 
 

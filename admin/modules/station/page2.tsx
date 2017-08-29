@@ -50,7 +50,7 @@ export default async function (page: chitu.Page) {
     class Page extends React.Component<{ pageData: PageData }, State>{
         private selectedContainer: HTMLElement;
         private allContainer: HTMLElement;
-        private editors: Editor<any, any, React.Component<any, any>, any>[];
+        private editors: Editor<any, any>[];
         private pageId: string;
         private validator: FormValidator;
 
@@ -188,7 +188,7 @@ export default async function (page: chitu.Page) {
             let control: React.Component<any, any> = ReactDOM.render(controlReactElement, controlHTMLElement);
 
             let editorType = await this.getEditorType(controlName);
-            let editorReactElement = React.createElement(editorType, { control } as EditorProps<any, any, React.Component<any, any>>);
+            let editorReactElement = React.createElement(editorType, { control } as EditorProps);
             // let editorElement = 
             // let props: EditorProps<any, any, React.Component<any, any>> = { controlElement: element, controlId, controlData, pageId: this.pageId };
             // let reactElement = React.createElement(editorType, props);

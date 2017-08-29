@@ -23,7 +23,7 @@ export class ActivityService extends Service {
     }
     deleteActivity(item) {
         let url = baseUrl + 'DeleteActivity';
-        return Service.delete(url, item);
+        return Service.deleteByJson(url, item);
     }
     activities() {
         return Service.get(baseUrl + 'GetActivities');

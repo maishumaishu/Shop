@@ -1,11 +1,11 @@
-import { Editor } from 'mobileComponents/editor';
+import { Editor, EditorProps } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control'
 let h = React.createElement;
-export interface EditorState {
+export interface EditorState extends ControlState{
 
 }
 
-export default class MyEditor extends Editor<ControlProps, ControlState, EditorState, Control> {
+export default class MyEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
         super(props);//, Control, Data
     }

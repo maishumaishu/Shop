@@ -7,7 +7,7 @@ let member = Service.createService(MemberService);
 
 requirejs([`css!${componentsDir}/member/control`]);
 import * as ui from 'ui';
-export class Props implements React.Props<MemberControl> {
+export class Props {
     showBalance: boolean = false;
     showLevel: boolean = false;
     showScore: boolean = false;
@@ -20,6 +20,9 @@ export interface State extends Props {
 }
 
 export default class MemberControl extends Component<Props, State>{
+
+    persistentMembers = [];
+    
     constructor(props) {
         // props = Object.assign(new Props(), props);
         // debugger;

@@ -2,11 +2,11 @@ import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control } from 'mobileComponents/member/control';
 requirejs(['css!mobileComponents/member/editor.css']);
 
-export interface EditorState {
+export interface EditorState extends Partial<ControlState> {
 
 }
 
-export default class MemberEditor extends Editor<ControlProps, ControlState, EditorState, Control> {
+export default class MemberEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
         super(props);
     }

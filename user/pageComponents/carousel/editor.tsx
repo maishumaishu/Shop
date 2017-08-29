@@ -17,7 +17,7 @@ requirejs([`css!${Editor.path('carousel')}.css`]);
 export interface EditorState {
     editItemIndex: number
 }
-export default class EditorComponent extends Editor<ControlProps, ControlState, EditorState, Control>{
+export default class EditorComponent extends Editor<EditorProps, EditorState>{
     constructor(props) {
         super(props);
     }

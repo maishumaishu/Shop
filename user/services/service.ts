@@ -88,9 +88,9 @@ namespace userServices {
 
     export abstract class Service {
         error = chitu.Callbacks<Service, Error>();
-        ajax<T>(url: string, options: FetchOptions): Promise<T> {
+        ajax<T>(url: string, options: RequestInit): Promise<T> {
 
-            let _ajax = async (url: string, options: FetchOptions): Promise<T> => {
+            let _ajax = async (url: string, options: RequestInit): Promise<T> => {
                 let user_token = tokens.userToken;
                 if (user_token) {
                     options.headers['user-token'] = user_token;

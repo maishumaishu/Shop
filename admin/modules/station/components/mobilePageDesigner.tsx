@@ -78,11 +78,13 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             controlDatas.push(...pageData.footer.controls || [])
 
         controlDatas.forEach(o => {
-            let control = this.mobilePage.components.filter(c => c.controlId == o.controlId)[0];
+            let control = (this.mobilePage.components.filter(c => c.controlId == o.controlId)[0]) as any as Control<any, any>;
             console.assert(control != null);
 
+            let keys = control.persistentMembers || [];
             let data = {};
-            for (let key in control.props) {
+            for (let i = 0; i < keys.length; i++) {
+                let key = keys[i];
                 data[key] = control.state[key];
             }
 

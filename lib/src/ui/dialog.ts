@@ -21,12 +21,19 @@ namespace ui {
         }
     }
 
+    /** 弹窗
+     * @param element bootstrap 的 modal 元素
+     */
     export function showDialog(element: HTMLElement) {
         element.style.display = 'block';
         element.className = 'modal fade in';
+        let closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
+        for (let i = 0; i < closeButtons.length; i++) {
+            (closeButtons[i] as HTMLElement).onclick = () => hideDialog(element);
+        }
     }
 
-    export function hideDialog(element:HTMLElement){
+    export function hideDialog(element: HTMLElement) {
         element.className = 'modal fade out';
         element.style.removeProperty('display');
         return new Promise((reslove, reject) => {
@@ -42,7 +49,7 @@ namespace ui {
         if (typeof args == 'string') {
             args = { title: '&nbsp;', message: args }
         }
-        
+
         element.innerHTML = `
             <div class="modal-dialog">
                 

@@ -66,11 +66,12 @@ export class UserService {
         return Service.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
     }
     applications(): Promise<Array<Application>> {
-        let url = this.url(`application/list`);
+        // let url = this.url(`application/list`);
+        let url = this.url('admin/applications')
         return Service.get<Application[]>(url);
     }
     addApplication(app: Application) {
-        let url = this.url('application/add');
+        let url = this.url('admin/addApplication');
         return Service.postByJson(url, { app }).then(data => {
             Object.assign(app, data);
             return data;
@@ -81,12 +82,13 @@ export class UserService {
         return Service.putByJson(url, { app });
     }
     deleteApplication(app: Application) {
-        let url = this.url('application/delete');
-        return Service.delete(url, { id: app._id });
+        console.assert(app != null)
+        let url = this.url('admin/deleteApplication');
+        return Service.deleteByJson(url, { appId: app._id });
     }
     recharge(userId: string, amount: number) {
         let url = Service.config.accountUrl + 'Account/Recharge';
-        return Service.put(url, { userId, amount });
+        return Service.putByJson(url, { userId, amount });
     }
     async members(args: wuzhui.DataSourceSelectArguments) {
 

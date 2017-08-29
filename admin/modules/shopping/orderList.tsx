@@ -24,7 +24,7 @@ export default function (page: chitu.Page) {
                 headerStyle: { width: '120px' } as CSSStyleDeclaration
             }),
             new wz.BoundField({
-                dataField: 'Consignee', headerText: '收款人',
+                dataField: 'Consignee', headerText: '收货人',
                 headerStyle: { width: '100px' } as CSSStyleDeclaration
             }),
             new wz.BoundField({

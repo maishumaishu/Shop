@@ -70,7 +70,7 @@ namespace userServices {
         }
 
         advertItems(): Promise<{ ImgUrl: string, Id: string }[]> {
-            return this.get<{ ImgUrl: string }[]>(this.url('Home/GetAdvertItems')).then(items => {
+            return this.get<{ ImgUrl: string, Id: string }[]>(this.url('Home/GetAdvertItems')).then(items => {
                 items.forEach(o => o.ImgUrl = imageUrl(o.ImgUrl));
                 return items;
             });

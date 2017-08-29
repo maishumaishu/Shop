@@ -1,29 +1,44 @@
-import { componentsDir } from 'mobileComponents/common'
+import { componentsDir, Component } from 'mobileComponents/common'
 
 export interface MobiePageDesigner {
     loadEditor();
 }
 
-export interface EditorProps<ControlProp, ControlState, ControlType extends React.Component<ControlProp, ControlState>> {
-    control: ControlType
-    // pageId: string,
+export interface EditorProps {
+    control: Component<any, any>
 }
 
-export abstract class Editor<ControlProp, ControlState, State, ControlType extends React.Component<ControlProp, ControlState>>
-    extends React.Component<EditorProps<ControlProp, ControlState, ControlType>, ControlState & State> {
+export abstract class Editor<P extends EditorProps, S> extends React.Component<P, S>{
     private controlType: React.ComponentClass<any>;
 
-    constructor(props: EditorProps<ControlProp, ControlState, ControlType>) {
+    constructor(props) {
         super(props);
         console.assert(this.props.control.state != null);
-        this.state = this.props.control.state as any;
+
+        var state = {} as S;
+        let keys = this.props.control.persistentMembers;
+        for (let i = 0; i < keys.length; i++) {
+            let key = keys[i];
+            var value = this.props.control.state[key];
+            state[key] = value;
+        }
+        this.state = state;
     }
 
     componentDidMount() {
     }
 
     componentDidUpdate() {
-        this.props.control.setState(this.state || {} as ControlState);
+        let control = this.props.control;
+        console.assert(control != null);
+        let controlState = control.state;
+        let keys = control.persistentMembers;
+        for (let i = 0; i < keys.length; i++) {
+            let key = keys[i];
+            controlState[key] = this.state[key];
+        }
+        control.setState(controlState);
+        // this.props.control.setState(this.state || {} as ControlState);
     }
 
     static path(controlName: string) {

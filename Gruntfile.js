@@ -116,5 +116,6 @@ module.exports = function (grunt) {
 
 /**
  * 说明：
+ * lib/src/ui lib/src/mobileControls lib/src
  * １.编译顺序 user/service user/pageComponents user admin
  */

@@ -1,16 +1,15 @@
-import { Editor } from 'mobileComponents/editor';
+import { Editor,EditorProps } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control, StyleType } from 'mobileComponents/style/control'
 let h = React.createElement;
 requirejs(['css!mobileComponents/style/editor.css']);
-export interface EditorState {
+export interface EditorState extends Partial<ControlState> {
 
 }
 
-export default class StyleEditor extends Editor<ControlProps, ControlState, EditorState, Control> {
+export default class StyleEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
         super(props);
-
-        // this.state = { style: this.props.control.state.style };
+        this.state = { style: this.props.control.state.style };
     }
     setCurrentStyle(name: StyleType) {
         this.state.style = name;

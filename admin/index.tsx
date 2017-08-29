@@ -18,7 +18,7 @@ requirejs.config({
                 'css!scripts/jQuery.FileUpload/css/jquery.fileupload-ui.css']
         },
         'site': {
-            deps: ['jquery.cookie', 'bootbox']
+            // deps: ['jquery.cookie', 'bootbox']
         },
         'application': {
             deps: ['chitu']
@@ -35,31 +35,29 @@ requirejs.config({
         }
     },
     paths: {
-        ace: 'assets/js/uncompressed/ace',
-        'bezier-easing': 'scripts/bezier-easing',
         bootstrap: 'scripts/bootstrap',
         bootbox: 'scripts/bootbox',
         chitu: 'scripts/chitu',
         crossroads: 'scripts/crossroads',
         css: 'scripts/css',
+        formValidator:'scripts/formValidator',
         hammer: 'scripts/hammer',
-        JData: 'scripts/JData',
         jquery: 'scripts/jquery-2.1.3',
-        'jquery.cookie': 'scripts/jquery.cookie',
+        react: 'scripts/react',
+        mobileControls:'scripts/mobileControls',
+        move: 'scripts/move',
+        text: 'scripts/text',
+        ui: 'scripts/ui',
+        
+        'bezier-easing': 'scripts/bezier-easing',        
         'jquery.fileupload': 'scripts/jQuery.FileUpload/jquery.fileupload',
         'jquery.validate': 'scripts/jquery.validate',
         'jquery-ui': 'scripts/jquery-ui',
         'jquery.ui.widget': 'scripts/jquery.ui.widget',
-        knockout: 'scripts/knockout-3.2.0',
-        'ko.map': 'scripts/knockout.mapping.debug',
-        'ko.val': 'scripts/knockout.validation.cn',
-        'knockout.validation': 'scripts/knockout.validation',
-        'knockout.mapping': 'scripts/knockout.mapping',
-        react: 'scripts/react',
         'react-dom': 'scripts/react-dom',
-        move: 'scripts/move',
-        'MicrosoftAjax.debug': 'scripts/MicrosoftAjax.debug',
-        text: 'scripts/text',
+
+        ace: 'assets/js/uncompressed/ace',
+        
         sv: 'services',
         custom: 'Custom',
         mod: 'modules',
@@ -71,11 +69,11 @@ requirejs.config({
         'ue': 'scripts/ueditor',
         'wuzhui': 'scripts/wuzhui',
         service: 'services/service',
-        userServices: 'mobile/userServices',
-        mobileComponents: '../user/pageComponents',
+        userServices: '../user/userServices',
         componentDesigner: 'modules/station/components/componentDesigner',
+        mobileComponents: '../user/pageComponents',
         mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
-        mobilePage: 'modules/station/components/virtualMobile'
+        mobilePage: 'modules/station/components/virtualMobile',
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui'];

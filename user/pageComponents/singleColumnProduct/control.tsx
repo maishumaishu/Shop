@@ -27,6 +27,7 @@ export interface State {
 }
 
 export default class SingleColumnProductControl extends Component<Props, State> {
+    persistentMembers = [];
     constructor(args) {
         super(args);
         this.state = { products: [] };

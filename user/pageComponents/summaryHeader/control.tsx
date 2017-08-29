@@ -15,6 +15,7 @@ export interface State {
 }
 
 export default class SummaryHeaderControl extends React.Component<Props, State>{
+    
     render() {
         let url = '';
         return (
