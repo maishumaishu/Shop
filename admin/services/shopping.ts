@@ -139,7 +139,7 @@ export class ShoppingService extends Service {
     product(productId: string) {
         let url = Service.config.shopUrl + 'Product/GetProduct';
         let data = { productId: productId };
-        return this.ajax<Product>({ url, data }).then((data) => {
+        return Service.get<Product>(url, data).then((data) => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
             if (data.ImagePaths)
@@ -198,7 +198,8 @@ export class ShoppingService extends Service {
         }
     }
     removeProduct(productId) {
-        return Service.callMethod('Product/DeleteProduct', { id: productId });
+        let url = Service.config.shopUrl + 'Product/DeleteProduct';
+        return Service.deleteByJson(url, { id: productId });
     }
     topProduct(productId) {
         return Service.callMethod('Product/ProductTop', { id: productId });

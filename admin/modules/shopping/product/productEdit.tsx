@@ -4,122 +4,122 @@ import { Service, ValueStore } from 'service';
 
 import UE = require('ue.ext');
 // import { ImageBox } from 'common/controls';
-import { PropertiesComponent } from 'modules/shopping/Product/Properties';
+import { PropertiesComponent } from 'modules/shopping/product/properties';
 import FormValidator from 'formValidator';
 import * as ui from 'ui';
 
-class Product {
-    Id = ko.observable()
-    Name = ko.observable();
-    Unit = ko.observable();
-    OldPrice = ko.observable();
-    Price = ko.observable();
-    CostPrice = ko.observable();
-    Introduce = ko.observable<string>();
-    ImagePaths = ko.observableArray([]);
-    Score = ko.observable();
+// class Product {
+//     Id = ko.observable()
+//     Name = ko.observable();
+//     Unit = ko.observable();
+//     OldPrice = ko.observable();
+//     Price = ko.observable();
+//     CostPrice = ko.observable();
+//     Introduce = ko.observable<string>();
+//     ImagePaths = ko.observableArray([]);
+//     Score = ko.observable();
 
-    ImagePath = ko.pureComputed<string>({
-        read: function () {
-            return this.ImagePaths().join(',');
-        },
-        write: function (value) {
-            if (value)
-                this.ImagePaths(value.split(','));
-            else
-                this.ImagePaths([]);
-        }
-    }, this);
+//     ImagePath = ko.pureComputed<string>({
+//         read: function () {
+//             return this.ImagePaths().join(',');
+//         },
+//         write: function (value) {
+//             if (value)
+//                 this.ImagePaths(value.split(','));
+//             else
+//                 this.ImagePaths([]);
+//         }
+//     }, this);
 
-    BrandId = ko.observable();
-    ProductCategoryId = ko.observable();
-    OffShelve = ko.observable();
-    OnShelve = ko.computed(function () {
-        var offShelve = this.OffShelve();
-        if (offShelve == null)
-            offShelve = false;
+//     BrandId = ko.observable();
+//     ProductCategoryId = ko.observable();
+//     OffShelve = ko.observable();
+//     OnShelve = ko.computed(function () {
+//         var offShelve = this.OffShelve();
+//         if (offShelve == null)
+//             offShelve = false;
 
-        return !offShelve;
-    }, this);
-    SKU = ko.observable();
-    Commission = ko.observable();
-    DisplayCommission = ko.computed({
-        read: function () {
-            var c = ko.unwrap(this.Commission);
-            if (c == null)
-                return null;
+//         return !offShelve;
+//     }, this);
+//     SKU = ko.observable();
+//     Commission = ko.observable();
+//     DisplayCommission = ko.computed({
+//         read: function () {
+//             var c = ko.unwrap(this.Commission);
+//             if (c == null)
+//                 return null;
 
-            return (c * 100).toFixed(0);
-        },
-        write: function (value) {
-            if (value == null)
-                return;
-            this.Commission(new Number(value).valueOf() / 100);
-        }
-    }, this);
+//             return (c * 100).toFixed(0);
+//         },
+//         write: function (value) {
+//             if (value == null)
+//                 return;
+//             this.Commission(new Number(value).valueOf() / 100);
+//         }
+//     }, this);
 
-    // Group = {
-    //     Id: ko.observable(),
-    //     Name: ko.observable(),
-    //     ProductPropertyDefeineId: ko.observable(),
-    //     ProductArgumentId: ko.observable()
-    // };
+//     // Group = {
+//     //     Id: ko.observable(),
+//     //     Name: ko.observable(),
+//     //     ProductPropertyDefeineId: ko.observable(),
+//     //     ProductArgumentId: ko.observable()
+//     // };
 
-    Stock = ko.observable();
-    BuyLimitedNumber = ko.observable();
-    MemberPrice = ko.observable();
-    Discout = ko.observable();
+//     Stock = ko.observable();
+//     BuyLimitedNumber = ko.observable();
+//     MemberPrice = ko.observable();
+//     Discout = ko.observable();
 
-    CategoryName = ko.observable();
-    PropertyDefineId = ko.observable();
+//     CategoryName = ko.observable();
+//     PropertyDefineId = ko.observable();
 
-    // Arguments:{ key:string,value:string }[] = [];
-    // Fields: { key:string,value:string }[] = [];
-    Arguments = ko.observableArray<{ key: string, value: string }>();
-    Fields = ko.observableArray<{ key: string, value: string }>();
+//     // Arguments:{ key:string,value:string }[] = [];
+//     // Fields: { key:string,value:string }[] = [];
+//     Arguments = ko.observableArray<{ key: string, value: string }>();
+//     Fields = ko.observableArray<{ key: string, value: string }>();
 
-    constructor() {
-        this.Name.extend({ required: true });
-        this.Price.extend({ required: true });
-        this.Unit.extend({ required: true });
-        this.Introduce.extend({ required: true });
-    }
-}
+//     constructor() {
+//         this.Name.extend({ required: true });
+//         this.Price.extend({ required: true });
+//         this.Unit.extend({ required: true });
+//         this.Introduce.extend({ required: true });
+//     }
+// }
 
 
-interface KeyValue {
-    key: string,
-    value: string
-}
+// interface KeyValue {
+//     key: string,
+//     value: string
+// }
 
-class PageModel {
-    private $dlg_groups: JQuery;
-    private page: chitu.Page;
+// class PageModel {
+//     private $dlg_groups: JQuery;
+//     private page: chitu.Page;
 
-    constructor(page: chitu.Page) {
-        this.$dlg_groups = $(page.element).find('[name="groupList"]');
-        this.page = page;
-    }
+//     constructor(page: chitu.Page) {
+//         this.$dlg_groups = $(page.element).find('[name="groupList"]');
+//         this.page = page;
+//     }
 
-    back() {
-        app.back();
-        // .catch(() => {
-        //     location.href = '#Shopping/ProductList';
-        // })
-    }
+//     back() {
+//         app.back();
+//         // .catch(() => {
+//         //     location.href = '#Shopping/ProductList';
+//         // })
+//     }
 
-    product = new Product();
-    categories = ko.observableArray();
-    brands = ko.observableArray();
+//     product = new Product();
+//     categories = ko.observableArray();
+//     brands = ko.observableArray();
 
-    remove = (item, event) => {
-        this.product.ImagePaths.remove(item);
-    }
+//     remove = (item, event) => {
+//         this.product.ImagePaths.remove(item);
+//     }
 
-    save(model: PageModel) {
-        // return shopping.saveProduct(model.product);
-    }
-}
+//     save(model: PageModel) {
+//         // return shopping.saveProduct(model.product);
+//     }
+// }
 
 export default function (page: chitu.Page) {
     // requirejs(['common/ImageFileResize'], () => {
@@ -156,16 +156,17 @@ export default function (page: chitu.Page) {
     //     page_load(page, model, page.routeData.values);
     // });
     //requirejs(['css!content/Shopping/ProductEdit.css'], function (html) { });
-    requirejs([`css!${page.routeData.actionPath}.css`]);
+    requirejs([`css!${page.routeData.actionPath}`]);
 
     type PageState = {
         categories: Array<{ Id: string, Name: string }>,
         brands: Array<Brand>, product: ShoppingProduct
     };
-    class Page extends React.Component<{ product: ShoppingProduct }, PageState>{
+    class ProductEditPage extends React.Component<{ product: ShoppingProduct }, PageState>{
         private validator: FormValidator;
         private element: HTMLElement;
         private introduceInput: HTMLInputElement;
+        private introduceEditor: HTMLInputElement;
         private fieldPropertiies: PropertiesComponent;
         private argumentsProperties: PropertiesComponent;
 
@@ -311,7 +312,7 @@ export default function (page: chitu.Page) {
                     </div>
                     <div className="row form-group">
                         <div className="col-sm-12">
-                            <script id="productEditEditor" type="text/html" dangerouslySetInnerHTML={{ __html: product.Introduce }}>
+                            <script id="productEditEditor" type="text/html" dangerouslySetInnerHTML={{ __html: product.Introduce || '' }}>
                             </script>
                             <span className="introduce validationMessage" style={{ display: 'none' }}></span>
                             <input name="introduce" type="hidden"
@@ -370,11 +371,10 @@ export default function (page: chitu.Page) {
     }
 
     p.then((product) => {
-        debugger;
         if (page.routeData.values.parentId)
             product.Id = undefined;
 
-        ReactDOM.render(<Page product={product} />, element);
+        ReactDOM.render(<ProductEditPage product={product} />, element);
     })
 
 }

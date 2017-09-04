@@ -86,7 +86,7 @@ export class UserService {
         let url = this.url('admin/deleteApplication');
         return Service.deleteByJson(url, { appId: app._id });
     }
-    recharge(userId: string, amount: number) {
+    recharge(userId: string, amount: number):Promise<{Balance:number}> {
         let url = Service.config.accountUrl + 'Account/Recharge';
         return Service.putByJson(url, { userId, amount });
     }
@@ -101,7 +101,7 @@ export class UserService {
         let ids = members.map(o => o.Id);
         let memberBalances = await Service.get<Array<{ MemberId: string, Balance: number }>>(
             Service.config.accountUrl + 'Account/GetAccountBalances',
-            { userIds: ids.concat(',') }
+            { userIds: ids.join(',') }
         );
 
         for (let i = 0; i < members.length; i++) {
@@ -110,6 +110,8 @@ export class UserService {
 
         return members;
     }
+
+
 }
 
 export default new UserService();

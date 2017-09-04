@@ -7,7 +7,7 @@ export interface MenuNode {
     Visible?: boolean
 };
 
-export　let menuData: MenuNode[] = [
+export let menuData: MenuNode[] = [
     { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index' },
     {
         Title: "微店",
@@ -41,7 +41,12 @@ export　let menuData: MenuNode[] = [
         Title: "商品",
         Icon: "icon-gift",
         Children: [
-            { Url: "shopping/productList", Title: "商品列表" },
+            {
+                Url: "shopping/productList", Title: "商品列表",
+                Children: [
+                    { Url: 'shopping/product/productEdit', Visible: false }
+                ]
+            },
             { Url: "shopping/productCategoryList", Title: "商品类别" },
             { Url: "shopping/brandList", Title: "品牌管理" },
 

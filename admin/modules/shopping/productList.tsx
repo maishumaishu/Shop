@@ -274,11 +274,11 @@ class Page extends React.Component<{}, PageState>{
                                 商品链接
                             </button>
                             <button className="btn btn-minier btn-purple" title="点击添加其他规格商品" style={{ marginRight: 4 }}
-                                onClick={() => app.redirect(`Shopping/Product/ProductEdit?parentId=${dataItem.Id}`)}>
+                                onClick={() => app.redirect(`shopping/product/productEdit?parentId=${dataItem.Id}`)}>
                                 <i className="icon-copy" />
                             </button>
                             <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
-                                onClick={() => { app.redirect(`Shopping/Product/ProductEdit?id=${dataItem.Id}`) }}>
+                                onClick={() => { app.redirect(`shopping/product/productEdit?id=${dataItem.Id}`) }}>
                                 <i className="icon-pencil"></i>
                             </button>
                             <button className="btn btn-minier btn-warning">
@@ -352,7 +352,7 @@ class Page extends React.Component<{}, PageState>{
 
                         </li>
                         <li data-bind="visible:tabs.current() == 'all'" className="pull-right">
-                            <a href="#Shopping/Product/ProductEdit" className="btn btn-primary btn-sm pull-right">添加</a>
+                            <a href="#shopping/product/productEdit" className="btn btn-primary btn-sm pull-right">添加</a>
                             <button className="btn btn-primary btn-sm pull-right"
                                 onClick={() => this.search()}>搜索</button>
                             <input type="text" className="form-control" style={{ width: 300 }} placeholder="请输入SKU或名称、类别"

@@ -13,10 +13,13 @@ export default function (page: chitu.Page) {
 
         private userIdInputElement: HTMLInputElement;
         private amountInputElement: HTMLInputElement;
+        private dataSource = new wuzhui.WebDataSource({ select: (args) => memberService.members(args) });
+        private editMemeber: UserInfo;
 
-        showRechargeDialog(userId: string) {
-            this.userIdInputElement.value = userId;
-            $(this.rechargeDialogElement).modal();
+        showRechargeDialog(user: UserInfo) {
+            this.userIdInputElement.value = user.Id;
+            ui.showDialog(this.rechargeDialogElement);
+            this.editMemeber = user;
         }
         recharge() {
             if (!this.validator.validateForm())
@@ -28,9 +31,8 @@ export default function (page: chitu.Page) {
         }
         componentDidMount() {
             let self = this;
-            let dataSource = new wuzhui.WebDataSource({ select: (args) => memberService.members(args) })
             let gridView = wz.appendGridView(page.element, {
-                dataSource,
+                dataSource: self.dataSource,
                 columns: [
                     new wz.BoundField({ dataField: 'Id', headerText: '编号' }),
                     new wz.BoundField({ dataField: 'Mobile', headerText: '手机' }),
@@ -56,7 +58,7 @@ export default function (page: chitu.Page) {
                             ReactDOM.render(
                                 <div>
                                     <button className="btn btn-primary btn-minier"
-                                        onClick={() => self.showRechargeDialog(dataItem.UserId)}>充值</button>
+                                        onClick={() => self.showRechargeDialog(dataItem)}>充值</button>
                                     <a className="btn btn-primary btn-minier" style={{ marginLeft: 4 }}>充值记录</a>
                                 </div>,
                                 cell.element);
@@ -114,7 +116,16 @@ export default function (page: chitu.Page) {
                                     <button className="btn btn-primary"
                                         ref={(e: HTMLButtonElement) => {
                                             if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.recharge());
+
+                                            e.onclick = ui.buttonOnClick(() =>
+                                                this.recharge().then((o) => {
+                                                    ui.alert({ title: '充值', message: '充值成功！' });
+                                                    ui.hideDialog(this.rechargeDialogElement);
+                                                    console.assert(this.editMemeber != null);
+                                                    this.editMemeber.Balance = o.Balance;
+                                                    this.dataSource.updated.fire(this.dataSource, { item: this.editMemeber });
+                                                })
+                                            );
                                         }}>确定</button>
                                 </div>
                             </div>

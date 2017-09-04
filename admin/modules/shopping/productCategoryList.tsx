@@ -114,12 +114,15 @@ export default function (page: chitu.Page) {
             else {
                 p = this.dataSource.insert(dataItem);
             }
-            p.then(() => $(this.dialogElement).modal('hide'));
+            // p.then(() => $(this.dialogElement).modal('hide'));
+            p.then(() => ui.hideDialog(this.dialogElement));
+
         }
         add() {
             this.validator.clearErrors();
             $(this.dialogElement).find('input').val('');
-            $(this.dialogElement).modal();
+            // $(this.dialogElement).modal();
+            ui.showDialog(this.dialogElement);
         }
         edit(dataItem) {
             (this.dialogElement['Id'] as HTMLSelectElement).value = dataItem.Id;

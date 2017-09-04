@@ -43,34 +43,40 @@ export function createEditor(editorId: string, field: KnockoutObservable<string>
 export function createUEEditor(editorId: string, field: HTMLInputElement) {
     let ueditorLoadDeferred = $.Deferred();
 
-    requirejs(references, function () {
-        (<any>window).ZeroClipboard = arguments[2];
-        let UE = window['UE'];
-        UE.delEditor(editorId);
-        let ue = UE.getEditor(editorId, {
-            elementPathEnabled: false,
-            enableAutoSave: false
+    requirejs(['um'], function () {
+
+        let UM = window['UM'];
+        var um = UM.getEditor('container', {
+        	/* 传入配置参数,可配参数列表看umeditor.config.js */
+            toolbar: ['undo redo | bold italic underline']
         });
+        // (<any>window).ZeroClipboard = arguments[2];
+        // let UE = window['UE'];
+        // UE.delEditor(editorId);
+        // let ue = UE.getEditor(editorId, {
+        //     elementPathEnabled: false,
+        //     enableAutoSave: false
+        // });
 
-        ue.ready(() => {
-            ue.setHeight(300);
-            ue.setContent(field.value || '');
+        // ue.ready(() => {
+        //     ue.setHeight(300);
+        //     ue.setContent(field.value || '');
 
-            let disable_subscribe = false;
-            // field.subscribe(function (value) {
-            //     if (disable_subscribe)
-            //         return;
+        //     let disable_subscribe = false;
+        //     // field.subscribe(function (value) {
+        //     //     if (disable_subscribe)
+        //     //         return;
 
-            //     ue.setContent(value);
-            // });
+        //     //     ue.setContent(value);
+        //     // });
 
-            ue.addListener('contentChange', function (editor) {
-                let content = this.getContent();
-                disable_subscribe = true;
-                field.value = (content);
-                disable_subscribe = false;
-            });
-        });
+        //     ue.addListener('contentChange', function (editor) {
+        //         let content = this.getContent();
+        //         disable_subscribe = true;
+        //         field.value = (content);
+        //         disable_subscribe = false;
+        //     });
+        // });
 
 
     });

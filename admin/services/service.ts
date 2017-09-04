@@ -88,6 +88,10 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
         // }
 
         // try {
+
+        options = options || {};
+        options.method = options.method || 'get';
+
         let response = await fetch(url, options);
         let responseText = response.text();
         let p: Promise<string>;
@@ -223,11 +227,13 @@ export class Service {
         return $.ajax({ url: url, data: data, method: 'post' });
     }
 
-    static ajax<T>(options: { url: string, data: any, method?: string, headers?: any }): Promise<T> {
+    private static ajax<T>(options: { url: string, data: any, method?: string, headers?: any }): Promise<T> {
         let { data, method, headers, url } = options;
 
         headers = headers || {};
-        headers['user-token'] = Service.token;
+        if (Service.token)
+            headers['user-token'] = Service.token;
+        
         if (location.search) {
             headers['application-key'] = location.search.substr(1);
         }
