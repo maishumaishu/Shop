@@ -1,5 +1,6 @@
 ﻿import app = require('application')
-import { default as shopping, Product as ShoppingProduct, Brand } from 'services/shopping';
+import { default as shopping, Product as Product, Brand } from 'services/shopping';
+import { StationService, guid } from 'services/station';
 import { Service, ValueStore } from 'service';
 
 import UE = require('ue.ext');
@@ -8,161 +9,19 @@ import { PropertiesComponent } from 'modules/shopping/product/properties';
 import FormValidator from 'formValidator';
 import * as ui from 'ui';
 
-// class Product {
-//     Id = ko.observable()
-//     Name = ko.observable();
-//     Unit = ko.observable();
-//     OldPrice = ko.observable();
-//     Price = ko.observable();
-//     CostPrice = ko.observable();
-//     Introduce = ko.observable<string>();
-//     ImagePaths = ko.observableArray([]);
-//     Score = ko.observable();
-
-//     ImagePath = ko.pureComputed<string>({
-//         read: function () {
-//             return this.ImagePaths().join(',');
-//         },
-//         write: function (value) {
-//             if (value)
-//                 this.ImagePaths(value.split(','));
-//             else
-//                 this.ImagePaths([]);
-//         }
-//     }, this);
-
-//     BrandId = ko.observable();
-//     ProductCategoryId = ko.observable();
-//     OffShelve = ko.observable();
-//     OnShelve = ko.computed(function () {
-//         var offShelve = this.OffShelve();
-//         if (offShelve == null)
-//             offShelve = false;
-
-//         return !offShelve;
-//     }, this);
-//     SKU = ko.observable();
-//     Commission = ko.observable();
-//     DisplayCommission = ko.computed({
-//         read: function () {
-//             var c = ko.unwrap(this.Commission);
-//             if (c == null)
-//                 return null;
-
-//             return (c * 100).toFixed(0);
-//         },
-//         write: function (value) {
-//             if (value == null)
-//                 return;
-//             this.Commission(new Number(value).valueOf() / 100);
-//         }
-//     }, this);
-
-//     // Group = {
-//     //     Id: ko.observable(),
-//     //     Name: ko.observable(),
-//     //     ProductPropertyDefeineId: ko.observable(),
-//     //     ProductArgumentId: ko.observable()
-//     // };
-
-//     Stock = ko.observable();
-//     BuyLimitedNumber = ko.observable();
-//     MemberPrice = ko.observable();
-//     Discout = ko.observable();
-
-//     CategoryName = ko.observable();
-//     PropertyDefineId = ko.observable();
-
-//     // Arguments:{ key:string,value:string }[] = [];
-//     // Fields: { key:string,value:string }[] = [];
-//     Arguments = ko.observableArray<{ key: string, value: string }>();
-//     Fields = ko.observableArray<{ key: string, value: string }>();
-
-//     constructor() {
-//         this.Name.extend({ required: true });
-//         this.Price.extend({ required: true });
-//         this.Unit.extend({ required: true });
-//         this.Introduce.extend({ required: true });
-//     }
-// }
-
-
-// interface KeyValue {
-//     key: string,
-//     value: string
-// }
-
-// class PageModel {
-//     private $dlg_groups: JQuery;
-//     private page: chitu.Page;
-
-//     constructor(page: chitu.Page) {
-//         this.$dlg_groups = $(page.element).find('[name="groupList"]');
-//         this.page = page;
-//     }
-
-//     back() {
-//         app.back();
-//         // .catch(() => {
-//         //     location.href = '#Shopping/ProductList';
-//         // })
-//     }
-
-//     product = new Product();
-//     categories = ko.observableArray();
-//     brands = ko.observableArray();
-
-//     remove = (item, event) => {
-//         this.product.ImagePaths.remove(item);
-//     }
-
-//     save(model: PageModel) {
-//         // return shopping.saveProduct(model.product);
-//     }
-// }
+const station = new StationService();
+const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
-    // requirejs(['common/ImageFileResize'], () => {
-    //     ($(this.element).find('[name="ImageUpload"]') as any).imageFileResize({
-    //         max_width: 800,
-    //         max_height: 800,
-    //         callback: (file, imageData) => {
-    //             var img_base64 = imageData.split(';')[1].split(',')[1];
-    //             $.ajax({
-    //                 url: Service.config.shopUrl + 'Common/UploadImage?dir=Shopping',
-    //                 method: 'post',
-    //                 dataType: 'json',
-    //                 data: {
-    //                     imageData: img_base64
-    //                 }
-    //             }).done((result) => {
-    //                 var path = result.path;
-    //                 if (path[0] == '/') {
-    //                     path = path.substr(1, path.length - 1);
-    //                 }
-    //                 this.model.product.ImagePaths.push(Service.config.shopUrl + path);
-    //             });
-    //         }
-    //     });
-    // });
 
-    // requirejs([`text!${page.routeData.actionPath}.html`, 'css!content/Shopping/ProductEdit.css'], function (html) {
-    //     var element = document.createElement('div');
-    //     page.element.appendChild(element);
-    //     element.innerHTML = html;
-    //     let model = new PageModel(page);
-    //     UE.createEditor('productEditEditor', model.product.Introduce);
-    //     ko.applyBindings(model, page.element);
-    //     page_load(page, model, page.routeData.values);
-    // });
-    //requirejs(['css!content/Shopping/ProductEdit.css'], function (html) { });
     requirejs([`css!${page.routeData.actionPath}`]);
+
 
     type PageState = {
         categories: Array<{ Id: string, Name: string }>,
-        brands: Array<Brand>, product: ShoppingProduct
+        brands: Array<Brand>, product: Product
     };
-    class ProductEditPage extends React.Component<{ product: ShoppingProduct }, PageState>{
+    class ProductEditPage extends React.Component<{ product: Product }, PageState>{
         private validator: FormValidator;
         private element: HTMLElement;
         private introduceInput: HTMLInputElement;
@@ -172,7 +31,10 @@ export default function (page: chitu.Page) {
 
         constructor(props) {
             super(props);
-            this.state = { categories: [], brands: [], product: this.props.product };
+            this.state = {
+                categories: [], brands: [],
+                product: this.props.product
+            };
             shopping.categories().then(o => {
                 this.state.categories = o;
                 this.setState(this.state);
@@ -202,8 +64,29 @@ export default function (page: chitu.Page) {
                 this.setState(this.state);
             })
         }
+        updloadImage(imageFile: File) {
+            ui.imageFileToBase64(imageFile)
+                .then(data => {
+                    let imageName = `${guid()}_${data.width}_${data.height}`;
+                    return station.saveImage(imageName, data.base64).then(o => Object.assign(data, { name: imageName }));
+                })
+                .then(data => {
+                    this.state.product.ImagePaths.push(data.name);
+                    this.setState(this.state);
+                });
+        }
+        deleteImage(imageName: string) {
+            return station.removeImage(imageName).then(data => {
+                var imagePaths = this.state.product.ImagePaths.filter(o => o != imageName);
+                this.state.product.ImagePaths = imagePaths;
+                this.setState(this.state);
+                return data;
+            });
+        }
         render() {
             let product = this.state.product;
+            let ImagePaths = this.state.product.ImagePaths || [];
+            // let { imageSources } = this.state;
             return (
                 <div className="Shopping-ProductEdit"
                     ref={(e: HTMLElement) => this.element = e || this.element}>
@@ -307,6 +190,51 @@ export default function (page: chitu.Page) {
                     <hr />
                     <div className="row">
                         <div className="col-sm-12">
+                            <h5>商品图片</h5>
+                        </div>
+                    </div>
+                    <div className="row form-group">
+                        {(ImagePaths).map((o, i) =>
+                            <div key={i} className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: imageThumbSize, height: imageThumbSize }}>
+                                <img key={i} style={{ width: '100%', height: '100%' }}
+                                    ref={(e: HTMLImageElement) => {
+                                        if (!e) return;
+                                        ui.loadImage(e, { loadImage: () => station.getImageAsBase64(o, 100) });
+                                    }} />
+                                <div style={{ position: 'relative', bottom: 18, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
+                                    <button href="javascript:" style={{ color: 'white' }} className="btn-link"
+                                        ref={(e: HTMLButtonElement) => {
+                                            if (!e) return;
+                                            e.onclick = ui.buttonOnClick(() => this.deleteImage(o), {
+                                                confirm: '确定删除该图片吗？'
+                                            })
+                                        }}>
+                                        删除
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        <a className="fileinput-button" style={{ float: 'left', padding: '0 12px 0 12px' }}>
+                            <div className="text-center" style={{ width: imageThumbSize, height: imageThumbSize, padding: '16px 0 0 0', border: 'solid 1px #ccc' }}>
+                                <i className="icon-plus icon-4x"></i>
+                                <div>图片上传</div>
+                                <input name="ImageUpload" type="file" style={{ position: 'relative', top: '-100%', width: '100%', height: '100%', opacity: 0 }}
+                                    ref={(e: HTMLInputElement) => {
+                                        if (!e) return;
+                                        e.onchange = () => {
+                                            if (e.files.length > 0)
+                                                this.updloadImage(e.files[0]);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            {/* <input name="ImageUpload" type="file" style={{ position: 'relative', top: -112, left: 0, opacity: 0, width: 112, height: 112 }} /> */}
+                        </a>
+                    </div>
+                    <hr />
+
+                    <div className="row">
+                        <div className="col-sm-12">
                             <h5>商品详情*</h5>
                         </div>
                     </div>
@@ -327,33 +255,6 @@ export default function (page: chitu.Page) {
                                 }} />
                         </div>
                     </div>
-                    <hr />
-
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <h5>商品图片</h5>
-                        </div>
-                    </div>
-                    <div className="row form-group">
-                        {(product.ImagePaths || []).map((o, i) =>
-                            <div key={i} className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: 114, height: 114 }}>
-                                {/*<ImageBox key={i} style={{ width: 112, height: 112 }} src={o} />*/}
-                                <img key={i} src={o} style={{ width: 112, height: 112 }} ref={(e: HTMLImageElement) => ui.loadImage(e)} />
-                                <div style={{ position: 'relative', bottom: 18, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
-                                    <a data-bind="click:$root.remove" href="javascript:" style={{ color: 'white' }}>
-                                        删除
-                                    </a>
-                                </div>
-                            </div>
-                        )}
-                        <a className="fileinput-button" style={{ float: 'left', padding: '0 12px 0 12px' }}>
-                            <div className="text-center" style={{ width: 112, height: 112, padding: '30px 0 0 0', border: 'solid 1px #ccc' }}>
-                                <i className="icon-plus icon-4x"></i>
-                                <div>图片上传</div>
-                            </div>
-                            <input name="ImageUpload" type="file" style={{ position: 'relative', top: -112, left: 0, opacity: 0, width: 112, height: 112 }} />
-                        </a>
-                    </div>
                 </div>
             );
         }
@@ -362,12 +263,14 @@ export default function (page: chitu.Page) {
     var element = document.createElement('div');
     page.element.appendChild(element);
     var productId = page.routeData.values.id || page.routeData.values.parentId;
-    let p: Promise<ShoppingProduct>;
+    let p: Promise<Product>;
     if (productId) {
         p = shopping.product(productId);
     }
     else {
-        p = Promise.resolve({} as ShoppingProduct);
+        p = Promise.resolve({
+            ImagePaths: []
+        } as Product);
     }
 
     p.then((product) => {
