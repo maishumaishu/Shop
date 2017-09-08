@@ -61,9 +61,9 @@ export class StationService extends Service {
         return pageData;
     }
     private trimPageData(pageData: PageData) {
-        
+
         // 深复制 pageData
-        let pageDataCopy = JSON.parse(JSON.stringify(pageData)); 
+        let pageDataCopy = JSON.parse(JSON.stringify(pageData));
 
         let trimControls = (controls: ControlData[]) => {
             return controls.filter(o => o.selected != 'disabled');
@@ -125,17 +125,32 @@ export class StationService extends Service {
         let url = this.url('Page/GetTemplatePageDatas');
         return Service.get<TemplatePageData[]>(url);
     }
-    saveImage(pageId: string, name: string, image: string) {
+
+    /**
+     * 保存图片
+     * @param name 图片名称
+     * @param imageBase64 图片的 base64 字符串 
+     */
+    saveImage(name: string, imageBase64: string) {
         let url = `${Service.config.siteUrl}Page/SaveImage`;
-        return Service.postByJson(url, { pageId, name, image });
+        return Service.postByJson(url, { name, image: imageBase64 });
+    }
+
+    /**
+     * 获取图片的 base64 字符串
+     * @param name 图片名称
+     */
+    getImageAsBase64(name: string, maxWidth?: number): Promise<string> {
+        let url = `${Service.config.siteUrl}Page/GetImage`;
+        return Service.get<string>(url, { name, maxWidth });
     }
     imageUrl(pageId: string, fileName: string) {
         let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-key=${Service.appToken}`;
         return url;
     }
-    removeImage(pageId: string, name: string) {
+    removeImage(name: string) {
         let url = `${Service.config.siteUrl}Page/RemoveImage`;
-        return Service.postByJson(url, { pageId, name });
+        return Service.deleteByJson(url, { name });
     }
     getImageNameFromUrl(imageUrl: string) {
         var arr = imageUrl.split('?');
