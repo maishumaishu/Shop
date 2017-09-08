@@ -2362,3 +2362,14 @@
 .marvel-device.macbook .home {
     display: none
 }
+
+/* 滚动条样式 */
+.marvel-device .screen::-webkit-scrollbar-track-piece {
+    background-color:#fff;
+}
+.marvel-device .screen::-webkit-scrollbar {
+    width:4px;
+}
+.marvel-device .screen::-webkit-scrollbar-thumb {
+    background:#999;
+} 
