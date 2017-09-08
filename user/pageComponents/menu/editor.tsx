@@ -31,8 +31,8 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
     private validator: FormValidator;
 
     constructor(props) {
-        super(props);    
-        this.state.currentItem = {} as MenuNode;    
+        super(props);
+        this.state.currentItem = {} as MenuNode;
     }
     editItem(menuItem: MenuNode) {
         this.state.currentItem = menuItem;
@@ -111,16 +111,32 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
             <div className="menuEditor">
 
                 <div className="menu-apply">
-                    <div className="title">将菜单应用到以下页面：</div>
-                    <div>
-                        <label className="item">
-                            <input type="checkbox" /> 店铺首页
+                    <div className="pull-left">
+                        <div className="title">将菜单应用到以下页面：</div>
+                        <div>
+                            <label className="item">
+                                <input type="checkbox" /> 店铺首页
                         </label>
-                        <label className="item">
-                            <input type="checkbox" /> 会员主页
+                            <label className="item">
+                                <input type="checkbox" /> 会员主页
                         </label>
-                        <div className="clearfix"></div>
+                            <div className="clearfix"></div>
+                        </div>
                     </div>
+                    <div className="pull-right" style={{ position: 'relative', top: '100%', marginTop: -30 }}>
+                        <label className="pull-right">
+                            <input type="checkbox" className="ace ace-switch ace-switch-5"
+                                ref={(e: HTMLInputElement) => {
+                                    if (!e) return;
+                                    e.checked = true;
+                                }} />
+                            <span className="lbl middle"></span>
+                        </label>
+                        <div className="pull-right" style={{ padding: '4px 10px 0 0' }}>
+                            菜单项显示图标
+                        </div>
+                    </div>
+                    <div className="clear-fix" />
                 </div>
                 <ul className="menu">
                     {menuNodes.map((o, i) =>
