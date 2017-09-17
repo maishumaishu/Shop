@@ -19,7 +19,7 @@ function arrayToGroup(fields: KeyValue[]): KeyValue[][] {
         }
     }
 
-    if (field_group.length < row_items_count) {
+    if (field_group.length < row_items_count && field_group.length > 0) {
         result.push(field_group);
     }
 
@@ -115,7 +115,7 @@ class ProductPropertiesModel {
 }
 
 export class PropertiesComponent extends React.Component<
-    React.Props<PropertiesComponent> & { name: string, properties: KeyValue[] },
+    React.Props<PropertiesComponent> & { name: string, properties: KeyValue[], emptyText?: string },
     { properties: KeyValue[] }>{
     private dialogElement: HTMLFormElement;
     private fieldsInput: HTMLInputElement;
@@ -151,13 +151,20 @@ export class PropertiesComponent extends React.Component<
             <div>
                 <div className="row">
                     <div className="col-sm-6">
-                        <h5>{this.props.name}</h5>
+                        <h4>{this.props.name}</h4>
                     </div>
                     <div className="col-sm-6 button-bar">
                         <button className="btn btn-primary btn-sm"
                             onClick={() => this.showPropertiesDialog()}>设置</button>
                     </div>
                 </div>
+                {groupProperties.length == 0 && this.props.emptyText ?
+                    <div className="row from-group">
+                        <div className="text-center" style={{ height: 40 }}>
+                            {this.props.emptyText}
+                        </div>
+                    </div> : null
+                }
                 {groupProperties.map((o, i) =>
                     <div key={i} className="row form-group">
                         {o.map((c, j) =>

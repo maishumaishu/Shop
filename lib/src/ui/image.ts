@@ -14,10 +14,17 @@ namespace ui {
 
     let draws = {
         text: (imageText: string, options?: { fontSize: number }): CanvasDraw => {
-            options = Object.assign({
-                fontSize: 40
-            }, options);
+
             return (ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) => {
+
+                // let fontSize1 = Math.floor(canvasHeight / 3 * 0.8);
+                let fontSize = Math.floor((canvasWidth / imageText.length) * 0.6);
+                // let fontSize = Math.min(fontSize1, fontSize2);
+
+                options = Object.assign({
+                    fontSize
+                }, options);
+
                 ctx.fillStyle = 'whitesmoke';
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -27,8 +34,11 @@ namespace ui {
                 ctx.textAlign = "left";
                 // 设置填充颜色
                 ctx.fillStyle = "#999";
+
+                let textWidth = fontSize * imageText.length;
+                let startX = Math.floor((canvasWidth - textWidth) / 2);
                 // 设置字体内容，以及在画布上的位置
-                ctx.fillText(imageText, canvasWidth / 2 - 75, canvasHeight / 2);
+                ctx.fillText(imageText, startX, Math.floor(canvasHeight * 0.6));
             }
         }
     };
@@ -56,7 +66,12 @@ namespace ui {
         imageText?: string
     };
 
-    export function loadImage(element: HTMLImageElement, options?: LoadImageOptions): Promise<string> {
+    /**
+     * 在 IMG 元素上渲染图片 
+     * @param element 要渲染的 IMG 元素 
+     * @param options 渲染选项，默认将 IMG 元素的 SRC 属性渲染出来 
+     */
+    export function renderImage(element: HTMLImageElement, options?: LoadImageOptions): Promise<string> {
         // imageText = imageText || config.imageDisaplyText;
         //, imageUrl: string, imageText?: string
 
@@ -117,16 +132,16 @@ namespace ui {
     }
 
     export type ImageFileToBase64Result = { base64: string, width: number, height: number };
-    export function imageFileToBase64(imageFile: File, options?: { maxWidth: number }): Promise<ImageFileToBase64Result> {
+    export function imageFileToBase64(imageFile: File, size?: { width: number, height: number }): Promise<ImageFileToBase64Result> {
         if (!imageFile) throw errors.argumentNull('imageFile');
 
-        options = options || {} as any;
+        // options = options || {} as any;
 
         return new Promise<ImageFileToBase64Result>((resolve, reject) => {
-            if (!(/image/i).test(imageFile.type)) {
-                console.log("File " + imageFile.name + " is not an image.");
-                reject();
-            }
+            // if (!(/image/i).test(imageFile.type)) {
+            //     console.log("File " + imageFile.name + " is not an image.");
+            //     reject();
+            // }
 
             var reader = new FileReader();
             reader.readAsArrayBuffer(imageFile);
@@ -139,21 +154,17 @@ namespace ui {
                 image.onload = () => {
                     var canvas = document.createElement('canvas');
 
-                    let width: number;
-                    let height: number;
-                    if (options.maxWidth) {
-                        width = options.maxWidth ? options.maxWidth : image.width;
-                        height = (width / image.width) * image.height;
-                    }
-                    else {
-                        width = image.width;
-                        height = image.height;
+                    let width = image.width;
+                    let height = image.height;
+                    if (size) {
+                        width = size.width;
+                        height = size.height;
                     }
 
                     canvas.width = width;
                     canvas.height = height;
                     var ctx = canvas.getContext("2d");
-                    ctx.drawImage(image, 0, 0);
+                    ctx.drawImage(image, 0, 0, width, height);
 
                     let data = canvas.toDataURL("/jpeg", 0.7);
                     resolve({ base64: data, width, height });

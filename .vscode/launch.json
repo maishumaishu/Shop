@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "启动程序",
-            "program": "${file}",
+            "program": "${workspaceRoot}/images/app.js",
             "outFiles": []
         },
         {
@@ -17,7 +17,7 @@
             "name": "附加到进程",
             "address": "localhost",
             "port": 5858,
-            "outFiles": []
+            "outFiles":  ["images/app.js"]
         }
     ]
 }

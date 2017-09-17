@@ -48,10 +48,12 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
         return null;
     }
 
+    //==============================================================
+    // 将 json 对象格式化
     let datePattern = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;;
     function travelJSON(result: any) {
         // var prefix = this.datePrefix;
-        if (typeof result === 'string' && value.match(datePattern)) {
+        if (typeof result === 'string' && result.match(datePattern)) {
             return new Date(result);
         }
         var stack = new Array();
@@ -80,6 +82,7 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
         }
         return result;
     }
+    //==============================================================
 
     let _ajax = async (url: string, options: RequestInit): Promise<T> => {
         // let user_token = tokens.userToken;
@@ -195,7 +198,7 @@ username.add((value) => {
 })
 
 
-let local_service_host = '192.168.1.9:2800'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
+let local_service_host = 'localhost:2800'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
 let remote_service_host = 'shop.alinq.cn:2800';
 let urlConfigs = {
     local: {
@@ -211,11 +214,50 @@ let urlConfigs = {
         serviceHost: remote_service_host,
         shopUrl: `http://${remote_service_host}/AdminShop/`,
         weixinUrl: `http://${remote_service_host}/AdminWeiXin/`,
-        siteUrl: `http://${remote_service_host}/RE/`,
+        siteUrl: `http://${remote_service_host}/AdminSite/`,
         memberUrl: `http://${remote_service_host}/AdminMember/`,
         accountUrl: `http://${local_service_host}/AdminAccountTest/`,
         imageUrl: `http://${remote_service_host}/UserServices/Site/`
     }
+}
+
+export function imageUrl(path: string) {
+    if (!path) return path;
+
+    // if (path.startsWith(`http://localhost:`)) {
+    //     path = path.substr(`http://localhost:${location.port}`.length);
+    //     var index = path.indexOf('/');
+    //     console.assert(index >0);
+    //     path = path.substr(index);
+    // }
+    // else if (path.startsWith('http://localhost')) {
+    //     path = path.substr('http://localhost'.length);
+    // }
+    // else if (path.startsWith('file://')) {
+    //     path = path.substr('file://'.length);
+    // }
+    // let url: string;
+    // if (!path.startsWith('http')) {
+    //     const imageBasePath = 'http://web.alinq.cn/store2';
+    //     url = imageBasePath + path;
+    // }
+    // else {
+    //     url = path;
+    // }
+    // url = url + `?application-key=${tokens.appToken}`;
+    let HTTP = 'http://'
+    if (path.startsWith(HTTP)) {
+        path = path.substr(HTTP.length);
+        let index = path.indexOf('/');
+        console.assert(index > 0);
+        path = path.substr(index);
+    }
+    else if (path[0] != '/') {
+        path = '/' + path;
+    }
+
+    let url = 'http://image.alinq.cn' + path;
+    return url;
 }
 
 export class Service {
@@ -227,13 +269,13 @@ export class Service {
         return $.ajax({ url: url, data: data, method: 'post' });
     }
 
-    private static ajax<T>(options: { url: string, data: any, method?: string, headers?: any }): Promise<T> {
+    private static ajax<T>(options: { url: string, data?: any, method?: string, headers?: any }): Promise<T> {
         let { data, method, headers, url } = options;
 
         headers = headers || {};
         if (Service.token)
             headers['user-token'] = Service.token;
-        
+
         if (location.search) {
             headers['application-key'] = location.search.substr(1);
         }
@@ -274,16 +316,19 @@ export class Service {
         // let _url = url + '?' + JSON.stringify(data);
         data = data || {};
 
-        let _data = {};
-        for (let key in data) {
-            _data[key] = JSON.stringify(data[key]);
+        // let _data = {};
+        // for (let key in data) {
+        //     _data[key] = JSON.stringify(data[key]);
+        // }
+        console.assert(url.indexOf('?') < 0);
+        if (data) {
+            url = url + '?' + JSON.stringify(data);
         }
         return Service.ajax<T>({
             headers: {
                 'content-type': 'application/json'
             },
-            url: url, method: 'get',
-            data: _data
+            url: url, method: 'get'
         });
     }
 
@@ -344,12 +389,6 @@ export class Service {
         let search = window.location.search || '';
         return search.substr(1);
     }
-    // static set appToken(value: string) {
-    //     if (value === undefined)
-    //         localStorage.removeItem('appToken');
-
-    //     localStorage.setItem('appToken', value);
-    // }
 
     static get storeId() {
         return Service.userId;
@@ -378,6 +417,7 @@ export class Service {
         return username;
     }
 }
+
 
 export default Service;
 

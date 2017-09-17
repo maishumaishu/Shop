@@ -2,7 +2,7 @@ import components from 'mobileComponents/componentDefines';
 import bootbox = require('bootbox');
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { componentsDir } from 'mobileComponents/common';
-import { default as station, PageData, ControlData } from 'services/station';
+import { default as station, PageData, ControlDescrtion } from 'services/station';
 // import { Button } from 'common/controls';
 import app = require('application');
 import FormValidator from 'formValidator';
@@ -43,7 +43,7 @@ export default async function (page: chitu.Page) {
     let editorTypes: { [propName: string]: React.ComponentClass<any> } = {};
     let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
     type State = {
-        componentInstances: ControlData[],
+        componentInstances: ControlDescrtion[],
         pageName: string,
         pageRemark: string,
     }

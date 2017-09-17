@@ -14,15 +14,7 @@ export let menuData: MenuNode[] = [
         Icon: "icon-home",
         Children: [
             { Title: '店铺概况', Url: 'station/index' },
-            {
-                Title: '页面管理',
-                Icon: "icon-bullhorn",
-                Url: 'station/pageList',
-                Children: [
-                    { Title: '页面', Url: 'station/page', Visible: false },
-                    { Title: '页面', Url: 'station/page1', Visible: false }
-                ]
-            },
+            { Title: '店铺首页', Url: 'station/pages/home' },
             {
                 Title: '会员主页',
                 Url: 'station/storeMember'
@@ -34,7 +26,20 @@ export let menuData: MenuNode[] = [
             {
                 Title: '店铺风格',
                 Url: 'station/storeStyle'
-            }
+            },
+            {
+                Title: '商品类别',
+                Url: 'station/storeCategories'
+            },
+            {
+                Title: '页面管理',
+                Icon: "icon-bullhorn",
+                Url: 'station/pageList',
+                Children: [
+                    { Title: '页面', Url: 'station/page', Visible: false },
+                    { Title: '页面', Url: 'station/page1', Visible: false }
+                ]
+            },
         ]
     },
     {

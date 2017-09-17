@@ -91,16 +91,16 @@ module.exports = function (grunt) {
                     },
                 ]
             },
-            user_bt: {
-                files: [
-                    { expand: false, src: `${user_src}/content/bootstrap_red.less`, dest: `${user_dest}/content/bootstrap_red.css` }
-                ]
-            },
-            admin_bt: {
-                files: [
-                    { expand: false, src: `${admin_src}/content/bootstrap_blue.less`, dest: `${admin_dest}/content/bootstrap_bule.css` }
-                ]
-            }
+            // user_bt: {
+            //     files: [
+            //         { expand: false, src: `${user_src}/content/bootstrap_red.less`, dest: `${user_dest}/content/bootstrap_red.css` }
+            //     ]
+            // },
+            // admin_bt: {
+            //     files: [
+            //         { expand: false, src: `${admin_src}/content/bootstrap_blue.less`, dest: `${admin_dest}/content/bootstrap_bule.css` }
+            //     ]
+            // }
         }
     });
     grunt.loadNpmTasks('grunt-shell');

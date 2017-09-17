@@ -1,5 +1,5 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { PageData, ControlData, guid, default as station } from 'services/station'
+import { PageData, ControlDescrtion, guid, default as station } from 'services/station'
 import { default as StyleControl } from 'mobileComponents/style/control';
 
 interface Props extends React.Props<ComponentDesigner> {
@@ -11,12 +11,14 @@ interface State {
     pageData: PageData
 }
 
+/**
+ * 组件设计器,数据以组件名称保存，即多个组件实例使用一份数据。
+ */
 export class ComponentDesigner extends React.Component<Props, State>{
     constructor(props) {
         super(props);
         this.state = { pageData: {} };
         station.controlData(this.props.controlName).then(async controlData => {
-
 
             let pageData: PageData = this.state.pageData;
             let target = this.props.target || 'default';
@@ -50,7 +52,7 @@ export class ComponentDesigner extends React.Component<Props, State>{
     save(pageData: PageData) {
 
         let { target, controlName } = this.props;
-        let controlDatas: ControlData[];
+        let controlDatas: ControlDescrtion[];
         switch (target) {
             case 'header':
                 controlDatas = pageData.header.controls;

@@ -1,6 +1,26 @@
 
 namespace ui {
 
+    function addClassName(element: HTMLElement, className: string) {
+        console.assert(className != null, 'class is null');
+        let c1 = (element.className || '').split(/\s+/);
+        let c2 = className.split(/\s+/);
+        var itemsToAdd = c2.filter(o => c1.indexOf(o) < 0);
+        c1.push(...itemsToAdd);
+
+        element.className = c1.join(' ');
+    }
+
+
+    function removeClassName(element: HTMLElement, className: string) {
+        console.assert(className != null, 'class is null');
+        let c1 = (element.className || '').split(/\s+/);
+        let c2 = className.split(/\s+/);
+        var itemsRemain = c1.filter(o => c2.indexOf(o) < 0);
+
+        element.className = itemsRemain.join(' ');
+    }
+
     export class Dialog {
         private element: HTMLElement;
         constructor(element: HTMLElement) {
@@ -8,10 +28,14 @@ namespace ui {
         }
         show() {
             this.element.style.display = 'block';
-            this.element.className = 'modal fade in';
+
+            removeClassName(this.element, 'out');
+            addClassName(this.element, 'modal fade in');
         }
         hide(): Promise<any> {
-            this.element.className = 'modal fade out';
+            removeClassName(this.element, 'in');
+            addClassName(this.element, 'modal fade out');
+
             this.element.style.removeProperty('display');
             return new Promise((reslove, reject) => {
                 setTimeout(() => {
@@ -25,8 +49,13 @@ namespace ui {
      * @param element bootstrap 的 modal 元素
      */
     export function showDialog(element: HTMLElement) {
+
+        removeClassName(element, 'out');
         element.style.display = 'block';
-        element.className = 'modal fade in';
+        setTimeout(() => {
+            addClassName(element, 'modal fade in');
+        }, 100);
+
         let closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
         for (let i = 0; i < closeButtons.length; i++) {
             (closeButtons[i] as HTMLElement).onclick = () => hideDialog(element);
@@ -34,10 +63,13 @@ namespace ui {
     }
 
     export function hideDialog(element: HTMLElement) {
-        element.className = 'modal fade out';
-        element.style.removeProperty('display');
+
+        removeClassName(element, 'in');
+        addClassName(element, 'modal fade out');
+
         return new Promise((reslove, reject) => {
             setTimeout(() => {
+                element.style.removeProperty('display');
                 reslove();
             }, 1000);
         });
@@ -75,8 +107,9 @@ namespace ui {
         // $(element).on('hidden.bs.modal', () => {
         //     $(element).remove();
         // });
-        var dialog = new Dialog(element);
-        dialog.show();
+        // var dialog = new Dialog(element);
+        // dialog.show();
+        ui.showDialog(element);
 
         let titleElement = element.querySelector('.modal-title');
 
@@ -84,7 +117,7 @@ namespace ui {
         let modalFooter = element.querySelector('.modal-footer');
         let cancelButton = modalFooter.querySelector('[name="cancel"]') as HTMLButtonElement;
         let okButton = modalFooter.querySelector('[name="ok"]') as HTMLButtonElement;
-        okButton.onclick = () => dialog.hide();
+        okButton.onclick = () => ui.hideDialog(element);//dialog.hide()
 
     }
 }

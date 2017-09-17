@@ -38,6 +38,7 @@ namespace userServices {
         private _nickName = new ValueStore<string>();
         private _shoppingCartItems = new ValueStore<ShoppingCartItem[]>();
         private _userToken = new ValueStore<string>();
+        private _score = new ValueStore<number>();
 
         constructor() {
             this.userToken.add((value) => {
@@ -91,6 +92,10 @@ namespace userServices {
         get userToken() {
             return this._userToken;
         }
+
+        get score() {
+            return this._score;
+        }
     }
 
     export let userData = new UserData();
@@ -101,13 +106,14 @@ namespace userServices {
             userData.shoppingCartItems.value = value;
         })
 
-        let member = Service.createService(MemberService); //new MemberService();
+        let member = Service.createService(MemberService);
         member.userInfo().then((o: UserInfo) => {
             // userData.toEvaluateCount.value = o.ToEvaluateCount;
             // userData.sendCount.value = o.SendCount;
             // userData.notPaidCount.value = o.NotPaidCount;
             // userData.balance.value = 0;
             userData.nickName.value = o.NickName;
+            userData.score.value = 0;
         })
 
         let account = new AccountService();
@@ -131,7 +137,7 @@ namespace userServices {
             //==============================================
         })
     });
-    
+
     userData.userToken.value = localStorage.getItem('userToken');
 }
 

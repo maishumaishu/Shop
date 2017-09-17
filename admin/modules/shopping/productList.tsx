@@ -5,6 +5,7 @@ import bootbox = require('bootbox');
 import { default as site } from 'site';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
+import tips from 'tips';
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
 type ProductStock = { unlimit: boolean, stock: number, productId: string, productName: string };
@@ -45,6 +46,7 @@ class Page extends React.Component<{}, PageState>{
                     BuyLimitedNumber: restriction.quantity
                 } as Product
                 this.dataSource.updated.fire(this.dataSource, { item });
+                ui.hideDialog(this.restrictionDialog);
             });
     }
 
@@ -123,10 +125,10 @@ class Page extends React.Component<{}, PageState>{
         return this.dataSource.delete(dataItem);
     }
     componentDidMount() {
-        shopping.getProductList
+        shopping.queryProducts
         let dataSource = this.dataSource = new wuzhui.WebDataSource<Product>({
             primaryKeys: ['Id'],
-            select: (args) => shopping.getProducts(args),
+            select: (args) => shopping.products(args),
             delete: (item) => shopping.deleteProduct(item.Id)
         });
         // dataSource.ajaxMethods.delete = 'delete';
@@ -208,6 +210,7 @@ class Page extends React.Component<{}, PageState>{
                                     <div>
                                         <button className={className}
                                             onClick={() => offShelve ? self.onShelve(dataItem) : self.offShelve(dataItem)}
+                                            title={offShelve ? tips.clickOnShelve : tips.clickOffShelve}
                                         >{text}</button>
                                     </div>,
                                     element);
@@ -273,15 +276,15 @@ class Page extends React.Component<{}, PageState>{
                             <button className="btn btn-minier btn-success" style={{ marginRight: 4 }}>
                                 商品链接
                             </button>
-                            <button className="btn btn-minier btn-purple" title="点击添加其他规格商品" style={{ marginRight: 4 }}
-                                onClick={() => app.redirect(`shopping/product/productEdit?parentId=${dataItem.Id}`)}>
+                            <button className="btn btn-minier btn-purple" style={{ marginRight: 4 }}>
                                 <i className="icon-copy" />
                             </button>
                             <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
                                 onClick={() => { app.redirect(`shopping/product/productEdit?id=${dataItem.Id}`) }}>
                                 <i className="icon-pencil"></i>
                             </button>
-                            <button className="btn btn-minier btn-warning">
+                            <button className="btn btn-minier btn-warning" title={tips.clickAddRegularProduct}
+                                onClick={() => app.redirect(`shopping/product/productEdit?parentId=${dataItem.Id}`)}>
                                 <i className="icon-plus"></i>
                             </button>
                             <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}

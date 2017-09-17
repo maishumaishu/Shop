@@ -1,5 +1,4 @@
 import { componentsDir, Component } from 'mobileComponents/common';
-import * as common from 'mobileComponents/common'
 import { PageComponent, PageView } from 'mobileControls';
 import { MemberService, Service, UserInfo, userData } from 'userServices';
 
@@ -7,27 +6,37 @@ let member = Service.createService(MemberService);
 
 requirejs([`css!${componentsDir}/member/control`]);
 import * as ui from 'ui';
-export class Props {
-    showBalance: boolean = false;
-    showLevel: boolean = false;
-    showScore: boolean = false;
-    sellsCenter: 'showToMember' | 'showToSells' = 'showToMember';
+export interface Props {
+    // showBalance?: boolean,// = false;
+    // showLevel?: boolean,// = false;
+    // showScore?: boolean,// = false;
+    // sellsCenter?: 'showToMember' | 'showToSells',// = 'showToMember';
 }
 
-export interface State extends Props {
+export interface State {
     balance: number,
-    userInfo: UserInfo
+    score: number,
+    userInfo: UserInfo,
+    showBalance?: boolean,// = false;
+    showLevel?: boolean,// = false;
+    showScore?: boolean,// = false;
+    sellsCenter?: 'showToMember' | 'showToSells',// = 'showToMember';
 }
 
 export default class MemberControl extends Component<Props, State>{
 
-    persistentMembers = [];
-    
+    get persistentMembers(): (keyof State)[] {
+        return ["showBalance", "showLevel", "showScore", "sellsCenter"];
+    }
+
     constructor(props) {
-        // props = Object.assign(new Props(), props);
-        // debugger;
         super(props);
-        console.assert(this.state != null);
+        this.state = {
+            balance: userData.balance.value,
+            score: userData.score.value,
+            userInfo: {} as UserInfo
+        };
+
         this.state.balance = userData.balance.value;
         userData.balance.add((value) => {
             this.state.balance = value;
@@ -38,46 +47,56 @@ export default class MemberControl extends Component<Props, State>{
             this.setState(this.state);
         });
     }
+
     _render(h) {
         // let balance = this.state.balance;
         //let userInfo = this.state.userInfo || {} as UserInfo;
-        let { balance, userInfo, showBalance, showLevel, sellsCenter } = this.state;
+        let { balance, userInfo, showBalance, showLevel, sellsCenter, showScore } = this.state;
         userInfo = userInfo || {} as UserInfo;
         return (
             <div className="memberControl">
                 <div className="mobile-user-info">
-                    <a href="#user_userInfo" className="pull-left" style={{ margin: '-8px 20px 0px 0px' }}>
+                    <a href="#user_userInfo" className="pull-left" style={{ margin: '0 20px 0px 0px' }}>
                         <img className="img-circle img-full" title="上传头像"
                             src={'userInfo.HeadImageUrl'}
                             ref={(e: HTMLImageElement) => {
                                 if (!e) return;
 
-                                ui.loadImage(e);
+                                ui.renderImage(e);
                             }} />
                     </a>
 
                     <div>
-                        <div style={{ width: '100%' }}>
-                            <a className="nick-name" href="#user_userInfo">
+                        <div style={{ width: '100%', height: 40 }}>
+                            <a className="nick-name pull-left" href="#user_userInfo">
                                 {userInfo.NickName == null ? '未填写' : userInfo.NickName}
                             </a>
-                        </div>
-                        <div className="pull-left">
-                            {showLevel ?
-                                <h5 style={{ color: 'white' }}>普通用户</h5>
-                                : null
-                            }
-                        </div>
-                        {balance != null && showBalance ?
-                            <div className="pull-right">
-                                <a href="#user_rechargeList" style={{ color: 'white' }}>
-                                    <h5>余额&nbsp;&nbsp;
-                                        <span className="price">￥{balance.toFixed(2)}</span>&nbsp;&nbsp;
-                                        <span className="icon-chevron-right"></span>
+                            {showScore ?
+                                <div className="pull-right">
+                                    <h5 style={{ color: 'white' }}>积分&nbsp;&nbsp;
+                                    <span className="score">{(balance || 0)}</span>&nbsp;&nbsp;
+                                    <span className="icon-chevron-right"></span>
                                     </h5>
-                                </a>
+                                </div> : null}
+                        </div>
+                        <div>
+                            <div className="pull-left">
+                                {showLevel ?
+                                    <h5 style={{ color: 'white' }}>普通用户</h5>
+                                    : null
+                                }
                             </div>
-                            : null}
+                            {showBalance ?
+                                <div className="pull-right">
+                                    <a href="#user_rechargeList" style={{ color: 'white' }}>
+                                        <h5>余额&nbsp;&nbsp;
+                                        <span className="price">￥{(balance || 0).toFixed(2)}</span>&nbsp;&nbsp;
+                                        <span className="icon-chevron-right"></span>
+                                        </h5>
+                                    </a>
+                                </div>
+                                : null}
+                        </div>
                     </div>
                     <div className="clearfix"></div>
                 </div>

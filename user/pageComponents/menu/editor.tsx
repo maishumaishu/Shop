@@ -32,13 +32,12 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
 
     constructor(props) {
         super(props);
-        this.state.currentItem = {} as MenuNode;
+        this.state = { currentItem: {} as MenuNode };
     }
     editItem(menuItem: MenuNode) {
         this.state.currentItem = menuItem;
         this.setState(this.state);
         this.validator.clearErrors();
-        // $(this.itemDialogELement).modal();
         ui.showDialog(this.itemDialogELement);
     }
     deleteItem(menuItem: MenuNode) {
@@ -52,7 +51,6 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
         this.state.currentItem = { url: '' } as MenuNode;
         this.setState(this.state);
         this.validator.clearErrors();
-        // $(this.itemDialogELement).modal();
         ui.showDialog(this.itemDialogELement);
     }
     save() {
@@ -60,12 +58,10 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
             return;
         }
         let currentItem = this.state.currentItem;
-
         if (this.state.menuNodes.indexOf(currentItem) < 0) {
             this.state.menuNodes.push(currentItem);
         }
         this.setState(this.state);
-        // $(this.itemDialogELement).modal('hide');
         ui.hideDialog(this.itemDialogELement);
         return Promise.resolve();
     }
@@ -94,17 +90,16 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
         let link = links.filter(o => o.url == url)[0];
         return link ? link.text : '';
     }
-    componentDidUpdate() {
-        let control = (this.props.control as Control);
-        var keys = control.persistentMembers;
-        for (let i = 0; i < keys.length; i++) {
-            let prop = this.state[keys[i]];
-            control.state[keys[i]] = prop;
-        }
-        control.setState(control.state);
+    toggleDisplayIcon() {
+        this.state.showIcon = this.state.showIcon ? false : true;
+        this.setState(this.state);
     }
     render() {
         let menuNodes = this.state.menuNodes || [];
+        menuNodes.sort((a, b) => {
+            return (a.sortNumber || 0) - (b.sortNumber || 0);
+        });
+
         let currentItem = this.state.currentItem;
 
         return (
@@ -112,23 +107,14 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
 
                 <div className="menu-apply">
                     <div className="pull-left">
-                        <div className="title">将菜单应用到以下页面：</div>
-                        <div>
-                            <label className="item">
-                                <input type="checkbox" /> 店铺首页
-                        </label>
-                            <label className="item">
-                                <input type="checkbox" /> 会员主页
-                        </label>
-                            <div className="clearfix"></div>
-                        </div>
-                    </div>
-                    <div className="pull-right" style={{ position: 'relative', top: '100%', marginTop: -30 }}>
                         <label className="pull-right">
                             <input type="checkbox" className="ace ace-switch ace-switch-5"
                                 ref={(e: HTMLInputElement) => {
                                     if (!e) return;
-                                    e.checked = true;
+                                    e.checked = this.state.showIcon;
+                                    e.onchange = () => {
+                                        this.toggleDisplayIcon();
+                                    }
                                 }} />
                             <span className="lbl middle"></span>
                         </label>
@@ -141,6 +127,9 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                 <ul className="menu">
                     {menuNodes.map((o, i) =>
                         <li key={i}>
+                            <div className="pull-left" style={{ width: 60 }}>
+                                {o.sortNumber}
+                            </div>
                             <div className="pull-left" style={{ width: 100 }}>
                                 {o.name}
                             </div>
@@ -203,9 +192,40 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                                                 e.value = currentItem.name || ''
                                                 e.onchange = () => {
                                                     currentItem.name = e.value;
-                                                    {/*this.setState(this.state);*/ }
                                                 }
                                             }} />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-sm-2 control-label">序号</label>
+                                    <div className="col-sm-10">
+                                        <input name="sortNumber" type="text" className="form-control" placeholder="请输入菜单项序号"
+                                            ref={(e: HTMLInputElement) => {
+                                                if (!e) return;
+                                                {/* this.nameInput = e || this.nameInput */ }
+                                                e.value = currentItem.sortNumber as any || ''
+                                                e.onchange = () => {
+                                                    currentItem.sortNumber = Number.parseInt(e.value);
+                                                }
+                                            }} />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="col-sm-2 control-label">图标</label>
+                                    <div className="col-sm-10">
+                                        <div className="input-group">
+                                            <input name="icon" type="text" className="form-control" placeholder="请输入菜单项图标"
+                                                ref={(e: HTMLInputElement) => {
+                                                    if (!e) return;
+                                                    e.value = currentItem.icon || ''
+                                                    e.onchange = () => {
+                                                        currentItem.icon = e.value;
+                                                    }
+                                                }} />
+                                            <div className="input-group-addon">
+                                                <i className="icon-cog" style={{ cursor: 'pointer' }} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -218,7 +238,6 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                                                     e.value = currentItem.url || '';
                                                     e.onchange = () => {
                                                         currentItem.url = e.value;
-                                                        {/*this.setState(this.state);*/ }
                                                     }
                                                 }} /> :
                                             <select className="form-control"

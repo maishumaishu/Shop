@@ -9,6 +9,7 @@ export interface EditorState extends Partial<ControlState> {
 export default class MemberEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
         super(props);
+        this.state = {};
     }
     render() {
         return (

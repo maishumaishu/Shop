@@ -27,7 +27,7 @@ namespace userServices {
         }
 
         private url(path: string) {
-            return `${config.service.shop}${path}`;
+            return `${config.service.member}${path}`;
         }
 
         userInfo(): Promise<UserInfo> {

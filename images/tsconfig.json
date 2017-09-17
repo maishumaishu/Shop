@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "allowJs": false,
+        "module": "commonjs",
+        "sourceMap": true
+    }
+}

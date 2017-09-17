@@ -115,6 +115,10 @@ namespace userServices {
         private url(path: string) {
             return `${config.service.shop}${path}`;
         }
+        /**
+         * 获取单个商品
+         * @param productId 商品编号
+         */
         product(productId): Promise<Product> {
             let url = this.url('Product/GetProduct');
             return this.get<Product>(url, { productId })
@@ -150,7 +154,7 @@ namespace userServices {
             }
 
             let url = this.url('Product/GetProducts');
-            var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;   
+            var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;
             if (categoryId != null) {
                 args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
             }
@@ -161,6 +165,37 @@ namespace userServices {
                 return o.Products;
             });
         }
+
+        productsByIds(productIds: string[]) {
+            if (!productIds || productIds.length == 0)
+                return [];
+
+            var url = this.url('Product/GetProductsByIds');
+            return this.getByJson<Product[]>(url, { ids: productIds })
+                .then(items => {
+                    items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl));
+                    return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);;
+                });
+        }
+        /**
+         * 
+         * @param count 要获取商品的最多数量
+         */
+        productsByCategory(count: number, categoryId?: string) {
+            var args = { startRowIndex: 0, maximumRows: count } as wuzhui.DataSourceSelectArguments;
+            if (categoryId != null) {
+                args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
+            }
+
+            let url = this.url('Product/GetProducts');
+            return this.get<{ Products: Array<Product> }>(url, args).then(o => {
+                o.Products.forEach(o => {
+                    o.ImageUrl = imageUrl(o.ImageUrl);
+                });
+                return o.Products;
+            })
+        }
+
         category(categoryId: string) {
             let url = this.url('Product/GetCategory');
             return this.get<ProductCategory>(url, { categoryId });

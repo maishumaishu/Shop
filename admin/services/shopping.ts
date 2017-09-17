@@ -1,6 +1,6 @@
 ﻿
 // import Product = require('models/Product');
-import { Service as Service } from 'service';
+import { Service as Service, imageUrl } from 'service';
 // import mapping = require('knockout.mapping');
 
 // let JData = window['JData'];
@@ -11,12 +11,13 @@ export interface Product {
     BuyLimitedNumber: number;
     // ChildrenCount: number;
     Name: string;
-    // Unit: string;
+    Unit: string;
     OffShelve: boolean;
     OldPrice: string;
     Price: number;
     CostPrice: string;
     Introduce: string;
+    ImageUrl: string;
     ImagePaths: string[];
     Score: number;
     ProductCategoryId: string,
@@ -142,21 +143,36 @@ export class ShoppingService extends Service {
         return Service.get<Product>(url, data).then((data) => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
-            if (data.ImagePaths)
-                data.ImagePaths = ((data as any).ImagePath as string).split(',');
+            // if (data['ImagePath'])
+            //     data.ImagePaths = ((data as any).ImagePath as string).split(',');
+            // else
+            //     data.ImagePaths = [];
+
+            data.ImageUrl = imageUrl(data.ImageUrl);
 
             return data;
         });
     }
-    getProducts(args: wuzhui.DataSourceSelectArguments) {
+    products(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
-        return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
+        return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args)
+            .then(r => {
+                r.dataItems.forEach(item => item.ImageUrl = imageUrl(item.ImageUrl));
+                return r;
+            });
+    }
+    productsByIds(productIds: string[]) {
+        var url = this.url('Product/GetProductsByIds');
+        return Service.getByJson<Product[]>(url, { ids: productIds }).then(items => {
+            items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl));
+            return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);
+        });
     }
     deleteProduct(id: string) {
         var url = this.url('Product/DeleteProduct');
         return Service.deleteByJson(url, { id });
     }
-    getProductList(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
+    queryProducts(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
 
         var url = this.url('Product/GetProducts');
         if (searchText) {
@@ -189,6 +205,8 @@ export class ShoppingService extends Service {
         obj.parentId = parentId;
         obj.Arguments = JSON.stringify(product.Arguments) as any;
         obj.Fields = JSON.stringify(product.Fields) as any;
+        obj["ImagePath"] = product.ImagePaths.join(',');
+
         if (!obj.Id) {
             product.Id = undefined;
             return Service.postByJson(Service.config.shopUrl + 'Product/AddProduct', obj);
@@ -225,7 +243,7 @@ export class ShoppingService extends Service {
         let url = this.url('Product/UpdateProductCategory');
         return Service.putByJson(url, { model: item })
     }
-    deleteCategory(id) {
+    deleteCategory(id: string): Promise<any> {
         let url = this.url('Product/DeleteProductCategory');
         return Service.deleteByJson(url, { id });
     }
@@ -252,7 +270,7 @@ export class ShoppingService extends Service {
     //==========================================
     setStock(productId, quantity) {
         let url = this.url('Product/SetStock');
-        return Service.postByJson<any>(url, { productId: productId, quantity: quantity });
+        return Service.putByJson<any>(url, { productId: productId, quantity: quantity });
     }
     getProductStocks(productIds: string[]) {
         let url = this.url('Product/GetProductStocks');
@@ -263,7 +281,8 @@ export class ShoppingService extends Service {
         return Service.get<Array<{ ProductId: string, LimitedNumber: number }>>(url, { productIds: productIds });
     }
     buyLimited(productId, quantity) {
-        return Service.postByJson('Product/SetBuyLimitedQuantity', { productId: productId, quantity: quantity });
+        let url = this.url('Product/SetBuyLimitedQuantity');
+        return Service.putByJson(url, { productId: productId, quantity: quantity });
     }
     // couponDataSource = new JData.WebDataSource(Service.config.shopUrl + 'ShoppingData/Select?source=Coupons&selection=Id,Title,Discount,Amount,ValidBegin,ValidEnd,ReceiveBegin,ReceiveEnd,\
     //                                                                      Remark,Picture,BrandNames,CategoryNames,ProductNames',

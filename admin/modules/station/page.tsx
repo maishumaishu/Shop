@@ -1,8 +1,8 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { default as station, PageData, ControlData, guid } from 'services/station';
+import { StationService, PageData, ControlDescrtion, guid } from 'services/station';
 import { componentsDir } from 'mobileComponents/common';
 
-let editorTypes: { [propName: string]: React.ComponentClass<any> } = {};
+let station = new StationService();
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
 
 export interface RouteValue {
@@ -11,7 +11,7 @@ export interface RouteValue {
 
 export default async function (page: chitu.Page) {
     class State {
-        componentInstances: ControlData[]
+        componentInstances: ControlDescrtion[]
     }
 
     let onSave = ((page.routeData.values || {}) as RouteValue).onSave;
@@ -53,7 +53,7 @@ export default async function (page: chitu.Page) {
         render() {
             return (
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
-                    save={(pageData) => station.savePageData(pageData)}>
+                    save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true}>
                 </MobilePageDesigner>
             );
         }

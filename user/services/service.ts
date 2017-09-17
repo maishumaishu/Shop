@@ -56,7 +56,7 @@ namespace userServices {
     }
 
     const REMOTE_HOST = 'service.alinq.cn:2800';//'localhost:2800';//
-    const LOCAL_HOST = '192.168.1.9:2800';
+    const LOCAL_HOST = 'localhost:2800';
 
     var services = {
         local: {
@@ -231,19 +231,20 @@ namespace userServices {
             data = data || {};
             let headers = {
                 'application-key': tokens.appToken,
+                'content-type': 'application/json'
             };
 
             if (tokens.userToken) {
                 headers['user-token'] = tokens.userToken;
             }
 
-            let urlParams = '';
-            for (let key in data) {
-                urlParams = urlParams + `&${key}=${JSON.stringify(data[key])}`;
-            }
+            // let urlParams = '';
+            // for (let key in data) {
+            //     urlParams = urlParams + `&${key}=${JSON.stringify(data[key])}`;
+            // }
 
-            if (urlParams)
-                url = url.indexOf('?') < 0 ? url + '?' + urlParams : url + '&' + urlParams;
+            console.assert(url.indexOf('?') < 0);
+            url = url + '?' + JSON.stringify(data);
 
             let options = {
                 headers,
@@ -299,7 +300,7 @@ namespace userServices {
             return this.ajax<T>(url, options);
         }
 
-        static createService<T extends Service>(serviceType: { new (): T }): T {
+        static createService<T extends Service>(serviceType: { new(): T }): T {
             let result = new serviceType();
             return result;
         }

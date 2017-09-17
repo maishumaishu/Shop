@@ -11,12 +11,20 @@ export interface Props {
 }
 
 export interface State {
-
 }
 
-export default class SummaryHeaderControl extends React.Component<Props, State>{
-    
-    render() {
+export default class SummaryHeaderControl extends common.Component<Props, State>{
+
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    get persistentMembers(): (keyof State)[] {
+        return null;
+    }
+
+    _render() {
         let url = '';
         return (
             <div className="summaryHeader">

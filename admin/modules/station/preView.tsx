@@ -1,5 +1,5 @@
 import { Editor, EditorProps } from 'mobileComponents/editor'
-import { default as station, PageData, guid, ControlData } from 'services/station';
+import { default as station, PageData, guid, ControlDescrtion } from 'services/station';
 import FormValidator from 'formValidator';
 import { VirtualMobile } from 'mobilePage';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
@@ -40,7 +40,7 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
             </VirtualMobile>
         );
     }
-    renderControls(controls: ControlData[]) {
+    renderControls(controls: ControlDescrtion[]) {
         controls = controls || [];
         return controls.map((o, i) =>
             <div key={o.controlId}
@@ -82,7 +82,7 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
         ));
     }
 
-    async createControlInstance(controlData: ControlData, element: HTMLElement) {
+    async createControlInstance(controlData: ControlDescrtion, element: HTMLElement) {
         let { controlId, controlName, data, selected } = controlData;
         let controlType = await this.getControlType(controlName);
         let reactElement = React.createElement(controlType, data);

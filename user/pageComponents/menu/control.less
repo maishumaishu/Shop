@@ -6,15 +6,29 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height: 50px;
         border-top: 1px solid #dddddd;
         background-color: #f8f8f8;
+        height: 50px;        
+        
+     
+
         li {
             float: left;
-            padding-top: 15px;
             color: #777777;
             cursor: pointer;
             text-align: center;
+            i {
+                width: 100%;
+                font-size: x-large;
+                padding: 2px 0px 0px 0px;
+                display: block;
+            }
+        }
+
+        &.noicon {
+            li {
+                padding-top: 15px;                
+            }
         }
     }
 }

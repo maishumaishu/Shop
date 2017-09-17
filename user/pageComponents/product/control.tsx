@@ -383,7 +383,7 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
                                     <img src={o} className="img-responsive-100 img-full" title="牛牛店宝"
                                         ref={(e: HTMLImageElement) => {
                                             if (!e) return;
-                                            ui.loadImage(e)
+                                            ui.renderImage(e)
                                         }} />
                                 </div>
                             ))}

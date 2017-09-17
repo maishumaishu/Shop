@@ -1,0 +1,133 @@
+.singleColumnProductEditor {
+    input.form-control, select.form-control {
+        width: 220px;
+    }
+    .form-group {
+        label {
+            width: 100px;
+            margin-top: 4px;
+        }
+        span {
+            margin-right: 6px;
+        }
+    }
+    
+    .product-add {
+        @width:100px;
+        @height:100px;
+        @icon-fontsize:52px;
+        @padding-top:(@height - @icon-fontsize)/2;
+
+        width: @width;
+        height: 100px;
+        background-color: white;
+        text-align: center;
+        padding-top: @padding-top;
+        border: 1px gray solid;
+        i {
+            font-size: @icon-fontsize;
+            cursor: pointer;
+        }
+        input[type='file'] {
+            width: 100%;
+            height: 100%;
+            margin-top: 0 - @icon-fontsize;
+            opacity: 0;
+        }
+    }
+
+    ul.selected-products {
+        li {
+            height: 100px;
+            width: 100px;
+            float: left;
+            margin: 0 10px 10px 0;
+            img {
+                width: 100px;
+                height: 100px;
+            }
+            .delete {
+                @height:24px;
+                position: relative; 
+                bottom: @height;
+                height: @height;
+                background-color: rgba(0, 0, 0, 0.55); 
+                color: white;
+                text-align: center;
+                button {
+                    color: white;    
+                }
+            }
+        }
+    }
+    
+    // label {
+    //     float: left;
+    //     width: 120px;
+    // }
+}
+
+.productSelectDialog.modal {
+    .modal-dialog {
+        .modal-content {
+            @width:700px;
+            width: @width;
+
+            .modal-body {
+                @width:700px;
+                @padding:15px;
+
+                width: @width;
+                height: 450px;
+                padding: @padding;
+                
+                .loading, .norecords {
+                    padding: 200px 0 20px 0;
+                    text-align: center; 
+                }
+                .product {
+                    width: (@width - @padding * 2) / 5;
+                    padding: 10px;
+                    float: left;
+                    text-align: center;
+                    img {
+                        height: 100px;
+                        width: 100px;
+                    }
+                    .interception {
+                        width: 100%;
+                        display: block;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        -webkit-text-overflow: ellipsis;
+                        -moz-binding: url(ellipsis.xml#ellipsis);
+                        -ms-text-overflow: ellipsis;
+                        -o-text-overflow: ellipsis;
+                        text-overflow: ellipsis;     
+                    }
+                }
+            }
+            .modal-footer {
+                .pagination {
+                    margin: 0;
+                    width: 100%;
+
+                    .active {
+                        color: red;
+                    }
+                    li > a{
+                        padding: 3px 6px;
+                        min-width: 32px;
+                        text-align: center;
+                    }
+                    .total {
+                        float: right;
+                        padding-top: 4px;
+                    }
+                }
+                
+            }
+        }
+    }
+  
+}

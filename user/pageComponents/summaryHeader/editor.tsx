@@ -6,7 +6,8 @@ export interface EditorState extends Partial<ControlState> {
 }
 export default class MyEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {};
     }
 
     render() {

@@ -123,12 +123,12 @@ namespace ui {
         else
             modalBody.appendChild(msg);
 
-        let dialog = new Dialog(toastDialogElement);
-        dialog.show();
+        // let dialog = new Dialog(toastDialogElement);
+        // dialog.show();
+        ui.showDialog(toastDialogElement);
         setTimeout(() => {
-            dialog.hide().then(() => {
+            ui.hideDialog(toastDialogElement).then(() => {
                 toastDialogElement.remove();
-                dialog = null;
             });
         }, 500);
     }

@@ -43,42 +43,26 @@ export function createEditor(editorId: string, field: KnockoutObservable<string>
 export function createUEEditor(editorId: string, field: HTMLInputElement) {
     let ueditorLoadDeferred = $.Deferred();
 
-    requirejs(['um'], function () {
+    requirejs(['um', 'um_zh'], function () {
 
         let UM = window['UM'];
-        var um = UM.getEditor('container', {
-        	/* 传入配置参数,可配参数列表看umeditor.config.js */
-            toolbar: ['undo redo | bold italic underline']
+        UM.delEditor(editorId);
+        var um = UM.getEditor(editorId, {
+            /* 传入配置参数,可配参数列表看umeditor.config.js */
+            //toolbar: []//'undo redo | bold italic underline'
+            initialFrameHeight: 300,
+            initialFrameWidth: '100%'
         });
-        // (<any>window).ZeroClipboard = arguments[2];
-        // let UE = window['UE'];
-        // UE.delEditor(editorId);
-        // let ue = UE.getEditor(editorId, {
-        //     elementPathEnabled: false,
-        //     enableAutoSave: false
-        // });
+        um.addListener('contentChange', function () {
+            let content = this.getContent();
+            field.value = content;
+            
+            let ev = {
+                target: field as EventTarget
+            } as Event;
 
-        // ue.ready(() => {
-        //     ue.setHeight(300);
-        //     ue.setContent(field.value || '');
-
-        //     let disable_subscribe = false;
-        //     // field.subscribe(function (value) {
-        //     //     if (disable_subscribe)
-        //     //         return;
-
-        //     //     ue.setContent(value);
-        //     // });
-
-        //     ue.addListener('contentChange', function (editor) {
-        //         let content = this.getContent();
-        //         disable_subscribe = true;
-        //         field.value = (content);
-        //         disable_subscribe = false;
-        //     });
-        // });
-
-
+            field.onchange(ev);
+        });
     });
 }
 

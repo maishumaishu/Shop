@@ -4,8 +4,11 @@ namespace userServices {
     export function imageUrl(path: string) {
         if (!path) return path;
 
-        if (path.startsWith(`http://localhost:${location.port}`)) {
+        if (path.startsWith(`http://localhost:`)) {
             path = path.substr(`http://localhost:${location.port}`.length);
+            var index = path.indexOf('/');
+            console.assert(index >0);
+            path = path.substr(index);
         }
         else if (path.startsWith('http://localhost')) {
             path = path.substr('http://localhost'.length);
@@ -13,9 +16,9 @@ namespace userServices {
         else if (path.startsWith('file://')) {
             path = path.substr('file://'.length);
         }
-        const imageBasePath = 'http://service.alinq.cn:2800/AdminServices/Shop';
         let url: string;
         if (!path.startsWith('http')) {
+            const imageBasePath = 'http://web.alinq.cn/store2';
             url = imageBasePath + path;
         }
         else {

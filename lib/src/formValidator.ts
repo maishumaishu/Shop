@@ -664,7 +664,7 @@ export class FormValidator {
             }
         }
 
-        return null;
+        return elements[elements.length - 1].value;
     };
 
 }

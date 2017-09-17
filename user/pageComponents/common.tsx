@@ -19,12 +19,9 @@ export abstract class Component<P, S> extends React.Component<P, S> {
     private _element: HTMLElement;
     static contextTypes = { designer: React.PropTypes.object };
     context: { designer: IMobilePageDesigner };
-    id: string;
 
     constructor(props) {
         super(props);
-        this.id = this.guid();
-        // this.state = Object.assign({}, this.props) as S
     }
     abstract get persistentMembers(): (keyof S)[];
     abstract _render(h): JSX.Element;
@@ -34,13 +31,30 @@ export abstract class Component<P, S> extends React.Component<P, S> {
     set element(value: HTMLElement) {
         console.assert(value != null, 'value can not null.');
         this._element = value;
-        // if (this.props.onClick != null) {
-        //     this._element.onclick = (event) => {
-        //         event.preventDefault();
-        //         event.stopPropagation();
-        //         this.props.onClick(event, this);
-        //     }
-        // }
+    }
+    get state(): S {
+        return super.state;
+    }
+
+    /**
+     * 重写 set state， 在第一次赋值，将 props 的持久化成员赋值过来。 
+     */
+    set state(value: S) {
+        value = value || {} as S;
+        if (super.state != null) {
+            super.state = value;
+            return;
+        }
+
+        var state = {} as any;
+        let keys = this.persistentMembers || [];
+        for (let i = 0; i < keys.length; i++) {
+            var prop = (this.props as any)[keys[i]];
+            if (prop !== undefined)
+                state[keys[i]] = prop;
+        }
+
+        super.state = Object.assign(value, state);;
     }
 
     render() {
@@ -49,19 +63,6 @@ export abstract class Component<P, S> extends React.Component<P, S> {
 
         return this._render(React.createElement);
     }
-
-    private guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-    };
-
-    // static controlSelected: (control: Component<any, any>, type: React.ComponentClass<any>) => void;
-
 
     static loadEditor(controlName: string, control: Component<any, any>, editorElement: HTMLElement) {
         let editorPathName = `pageComponent/${controlName}/editor`; //Editor.path(controlName);
@@ -97,6 +98,14 @@ export abstract class Component<P, S> extends React.Component<P, S> {
             p = p.parentElement;
         }
         return screenElement;
+    }
+
+    protected loadControlCSS() {
+        var typeName = this.constructor.name;
+        typeName = typeName.replace('Control', '');
+        typeName = typeName[0].toLowerCase() + typeName.substr(1);
+
+        requirejs([`css!${componentsDir}/${typeName}/control`]);
     }
 
 }
@@ -149,12 +158,3 @@ export function editor(pathName: string, exportName?: string) {
 export interface ControlState {
     persistentMembers: (keyof this)[];
 }
-
-// export function persistentProperty(value: boolean) {
-//     return function (target: ControlState, propertyKey: string, descriptor: PropertyDescriptor) {
-//         // console.log("f(): called");
-//         let state = target;
-//         // state.persistentProperties = state.persistentProperties || [];
-//         state.persistentProperties.push(propertyKey);
-//     }
-// }

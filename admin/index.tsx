@@ -13,17 +13,16 @@ requirejs.config({
         chitu: {
             exports: 'chitu'
         },
-        'jquery.fileupload': {
-            deps: ['scripts/jQuery.FileUpload/jquery.iframe-transport',
-                'css!scripts/jQuery.FileUpload/css/jquery.fileupload-ui.css']
+        dilu: {
+            exports: 'dilu'
         },
-        'site': {
+        site: {
             // deps: ['jquery.cookie', 'bootbox']
         },
-        'application': {
+        application: {
             deps: ['chitu']
         },
-        'mobileControls': {
+        mobileControls: {
             exports: 'controls',
             deps: ['hammer', 'bezier-easing']
         },
@@ -36,15 +35,14 @@ requirejs.config({
         um: {
             deps: [
                 'jquery',
-                'css!umeditor/themes/default/css/umeditor.css',
-                'umeditor/third-party/template.min.js',
+                'css!scripts/umeditor/themes/default/css/umeditor.css',
+                'scripts/umeditor/third-party/template.min',
                 'um_config',
-                'um_zh'
             ]
         },
         um_config: {
             deps: [
-                'umeditor/third-party/template.min.js'
+                'scripts/umeditor/third-party/template.min'
             ]
         },
         um_zh: {
@@ -55,6 +53,7 @@ requirejs.config({
         bootstrap: 'scripts/bootstrap',
         chitu: 'scripts/chitu',
         css: 'scripts/css',
+        dilu: 'scripts/dilu',
         formValidator: 'scripts/formValidator',
         hammer: 'scripts/hammer',
         jquery: 'scripts/jquery-2.1.3',
@@ -63,9 +62,9 @@ requirejs.config({
         move: 'scripts/move',
         text: 'scripts/text',
         ui: 'scripts/ui',
-        um: 'umeditor/umeditor',
-        um_config: 'umeditor/umeditor.config.js',
-        um_zh: 'umeditor/lang/zh-cn/zh-cn.js',
+        um: 'scripts/umeditor/umeditor',
+        um_config: 'scripts/umeditor/umeditor.config',
+        um_zh: 'scripts/umeditor/lang/zh-cn/zh-cn',
 
         'bezier-easing': 'scripts/bezier-easing',
         'jquery.fileupload': 'scripts/jQuery.FileUpload/jquery.fileupload',

@@ -16,10 +16,6 @@ export default function (page: chitu.Page) {
             super(props);
             this.state = {};
 
-            let select = shopping.url('Product/GetProductCategories');
-            let insert = shopping.url('Product/AddProductCategory');
-            let update = shopping.url('Product/UpdateProductCategory');
-            let deleteUrl = shopping.url('Product/DeleteProductCategory');
             this.dataSource = new wuzhui.WebDataSource<Category>({
                 primaryKeys: ['Id'],
                 select: () => shopping.categories(),
@@ -68,7 +64,16 @@ export default function (page: chitu.Page) {
                         headerText: '隐藏', headerStyle: { textAlign: 'center' } as CSSStyleDeclaration,
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
                     }),
-                    new wuzhui.BoundField({ dataField: 'ImagePath', headerText: '图片', headerStyle: { textAlign: 'center' } as CSSStyleDeclaration }),
+                    // new wuzhui.BoundField({ dataField: 'ImagePath', headerText: '图片', headerStyle: { textAlign: 'center' } as CSSStyleDeclaration }),
+                    customField({
+                        headerText: '图片',
+                        itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
+                        createItemCell(dataItem: Category) {
+                            let cell = new wuzhui.GridViewCell();
+                            ReactDOM.render(<img src={dataItem.ImagePath} style={{ height: 36, width: 36 }} />, cell.element);
+                            return cell;
+                        }
+                    }),
                     customField({
                         // itemEditor: null,
                         headerText: '操作',

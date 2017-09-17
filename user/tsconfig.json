@@ -35,10 +35,7 @@
         "../lib/typings/react/*.*",
         "../lib/typings/react-dom/*.*",
         "../lib/typings/require.d.ts",
-        
-        "../lib/mobileControls.d.ts",
-        "../lib/formValidator.d.ts",
-        "../lib/ui.d.ts",
+        "../lib/*.d.ts",
 
         "../www/user/userServices.d.ts",
 

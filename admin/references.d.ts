@@ -23,6 +23,9 @@ declare module 'service' {
     import * as c from 'services/service';
     export = c;
 }
+declare module 'dilu' {
+    export = dilu;
+}
 declare function h(type, props, ...children);
 
 

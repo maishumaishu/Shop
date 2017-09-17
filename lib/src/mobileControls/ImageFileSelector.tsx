@@ -94,7 +94,7 @@ namespace controls {
             return (
                 <div>
                     {this.state.images.map((o, i) =>
-                        <div key={i} data-bind="click:$parent.showImagePage,tap:$parent.showImagePage" className="pull-left item">
+                        <div key={i} className="pull-left item">
                             <img src={o} width='100%' height="100%" />
                         </div>
                     )}

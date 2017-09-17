@@ -1,8 +1,8 @@
 ﻿import { default as Service } from 'service';
+import templates from 'services/data/templates'
 
-
-export interface ControlData {
-    controlId: string, controlName: string, data: any,
+export interface ControlDescrtion {
+    controlId: string, controlName: string, data?: any,
     selected?: boolean | 'disabled'
 }
 
@@ -13,9 +13,9 @@ export interface PageData {
     // controls?: Array<ControlData>,
     isDefault?: boolean,
     showMenu?: boolean,
-    header?: { controls: ControlData[] },
-    footer?: { controls: ControlData[] },
-    views?: { controls: ControlData[] }[]
+    header?: { controls: ControlDescrtion[] },
+    footer?: { controls: ControlDescrtion[] },
+    views?: { controls: ControlDescrtion[] }[]
 }
 
 export interface TemplatePageData {
@@ -35,7 +35,6 @@ export function guid() {
 }
 
 export class StationService extends Service {
-    // private _homeProduct: JData.WebDataSource;
     private url(path: string) {
         let url = `${Service.config.siteUrl}${path}`;
         return url;
@@ -65,7 +64,7 @@ export class StationService extends Service {
         // 深复制 pageData
         let pageDataCopy = JSON.parse(JSON.stringify(pageData));
 
-        let trimControls = (controls: ControlData[]) => {
+        let trimControls = (controls: ControlDescrtion[]) => {
             return controls.filter(o => o.selected != 'disabled');
         }
         if (pageDataCopy.header) {
@@ -83,29 +82,30 @@ export class StationService extends Service {
     }
     savePageData(pageData: PageData) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
-        let _pageData = this.trimPageData(pageData);
-        return Service.postByJson(url, { pageData: _pageData }).then((data) => {
+        // let _pageData = this.trimPageData(pageData);
+        return Service.postByJson(url, { pageData }).then((data) => {
             Object.assign(pageData, data);
             return data;
         });
     }
     pageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
-        let data = { pageId };
-        return Service.get<PageData>(url, { pageId }).then(pageData => this.fillPageData(pageData));
+        let query = { _id: pageId };
+        return Service.getByJson<PageData>(url, { query });
     }
     pageDataByName(name: string) {
-        let url = `${Service.config.siteUrl}Page/GetPageDataByName`;
-        let data = { name };
-        return Service.get<PageData>(url, data).then(o => {
-            // this.fillPageData(o);
+        let url = `${Service.config.siteUrl}Page/GetPageData`;
+        let query = { name };
+        return Service.getByJson<PageData>(url, { query }).then(o => {
             return o;
         });
     }
-    pageDataByTemplate(templateId: string) {
-        let url = `${Service.config.siteUrl}Page/GetPageDataByTemplate`;
-        let data = { templateId };
-        return Service.get<PageData>(url, data).then(o => this.fillPageData(o));
+    pageDataByTemplate(templateId: string): Promise<PageData> {
+        // let url = `${Service.config.siteUrl}Page/GetPageDataByTemplate`;
+        // let data = { templateId };
+        // return Service.get<PageData>(url, data).then(o => this.fillPageData(o));
+        var pageData = templates.filter(o => o._id == templateId).map(o => o.pageData)[0];
+        return Promise.resolve(pageData);
     }
     pageDatas() {
         let url = this.url('Page/GetPageDatas');
@@ -121,10 +121,85 @@ export class StationService extends Service {
         let url = this.url('Page/SetDefaultPage');
         return Service.putByJson(url, { pageId });
     }
-    pageTemplates() {
-        let url = this.url('Page/GetTemplatePageDatas');
-        return Service.get<TemplatePageData[]>(url);
+    async pageTemplates(): Promise<TemplatePageData[]> {
+        return Promise.resolve(templates);
     }
+
+    private defaultPages = {
+        member: <PageData>{
+            name: '*member',
+            views: [{ controls: [{ controlId: guid(), controlName: 'member', selected: true }] }]
+        },
+        menu: <PageData>{
+            name: '*menu',
+            footer: { controls: [{ controlId: guid(), controlName: 'menu', selected: true }] }
+        },
+        style: <PageData>{
+            name: '*style',
+            footer: { controls: [{ controlId: guid(), controlName: 'style', selected: true }] }
+        },
+        categories: <PageData>{
+            name: '*categories',
+            views: [{ controls: [{ controlId: guid(), controlName: 'categories', selected: true }] }]
+        },
+        home: <PageData>{
+            name: '*home',
+            views: [{ controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }]
+        }
+    };
+
+    homePage(): Promise<PageData> {
+        const pageName = this.defaultPages.home.name;
+        return this.pageDataByName(pageName).then(pageData => {
+            if (pageData == null) {
+                pageData = this.defaultPages.home;
+            }
+            return pageData;
+        });
+    }
+
+    memberPage(): Promise<PageData> {
+        const pageName = this.defaultPages.member.name;
+        return this.pageDataByName(pageName).then(pageData => {
+            if (pageData == null) {
+                pageData = this.defaultPages.member;
+            }
+            return pageData;
+        });
+    }
+
+    menuPage(): Promise<PageData> {
+        const pageName = this.defaultPages.menu.name;
+        return this.pageDataByName(pageName).then(pageData => {
+            if (pageData == null) {
+                pageData = this.defaultPages.menu;
+            }
+            return pageData;
+        });
+    }
+
+    stylePage(): Promise<PageData> {
+        const pageName = this.defaultPages.style.name;
+        return this.pageDataByName(pageName).then(pageData => {
+            if (pageData == null)
+                pageData = this.defaultPages.style;
+
+            return pageData;
+        });
+    }
+
+    categoriesPage(): Promise<PageData> {
+        const pageName = this.defaultPages.categories.name;
+        return this.pageDataByName(pageName).then(pageData => {
+            if (pageData == null)
+                pageData = this.defaultPages.categories;
+
+            return pageData;
+        });
+    }
+
+    //=================================================================
+    // 和图片相干的接口
 
     /**
      * 保存图片
@@ -140,7 +215,7 @@ export class StationService extends Service {
      * 获取图片的 base64 字符串
      * @param name 图片名称
      */
-    getImageAsBase64(name: string, maxWidth?: number): Promise<string> {
+    getImageBase64(name: string, maxWidth?: number): Promise<string> {
         let url = `${Service.config.siteUrl}Page/GetImage`;
         return Service.get<string>(url, { name, maxWidth });
     }
@@ -152,12 +227,12 @@ export class StationService extends Service {
         let url = `${Service.config.siteUrl}Page/RemoveImage`;
         return Service.deleteByJson(url, { name });
     }
-    getImageNameFromUrl(imageUrl: string) {
-        var arr = imageUrl.split('?');
-        console.assert(arr.length == 2);
-        var params = this.pareeUrlQuery(arr[1]);
-        return params.name;
-    }
+    // getImageNameFromUrl(imageUrl: string) {
+    //     var arr = imageUrl.split('?');
+    //     console.assert(arr.length == 2);
+    //     var params = this.pareeUrlQuery(arr[1]);
+    //     return params.name;
+    // }
     private pareeUrlQuery(query): any {
         let match, pl = /\+/g, search = /([^&=]+)=?([^&]*)/g, decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
         let urlParams = {};
@@ -169,9 +244,9 @@ export class StationService extends Service {
     //============================================================
     controlData(name: string) {
         let url = this.url('Page/GetControlData');
-        return Service.get<ControlData>(url, { query: JSON.stringify({ controlName: name }) });
+        return Service.get<ControlDescrtion>(url, { query: JSON.stringify({ controlName: name }) });
     }
-    saveControlData(data: ControlData, name: string) {
+    saveControlData(data: ControlDescrtion, name: string) {
         let url = this.url('Page/SaveControlData');
         (data as any).name = name;
         return Service.postByJson(url, { data }).then(result => {

@@ -1,13 +1,13 @@
 ﻿import app = require('application')
 import { default as shopping, Product as Product, Brand } from 'services/shopping';
 import { StationService, guid } from 'services/station';
-import { Service, ValueStore } from 'service';
+import { Service, ValueStore, imageUrl } from 'service';
 
 import UE = require('ue.ext');
-// import { ImageBox } from 'common/controls';
 import { PropertiesComponent } from 'modules/shopping/product/properties';
 import FormValidator from 'formValidator';
 import * as ui from 'ui';
+import tips from 'tips';
 
 const station = new StationService();
 const imageThumbSize = 112;
@@ -15,7 +15,7 @@ const imageThumbSize = 112;
 export default function (page: chitu.Page) {
 
     requirejs([`css!${page.routeData.actionPath}`]);
-
+    var editorId = guid();
 
     type PageState = {
         categories: Array<{ Id: string, Name: string }>,
@@ -45,7 +45,7 @@ export default function (page: chitu.Page) {
             })
         }
         componentDidMount() {
-            UE.createUEEditor('productEditEditor', this.introduceInput);
+            UE.createUEEditor(editorId, this.introduceInput);
             this.validator = new FormValidator(this.element, {
                 name: { rules: ['required'] },
                 price: { rules: ['required'] },
@@ -61,7 +61,7 @@ export default function (page: chitu.Page) {
             this.state.product.Arguments = this.argumentsProperties.state.properties;
             return shopping.saveProduct(this.state.product, page.routeData.values.parentId).then(data => {
                 this.state.product.Id = data.Id;
-                this.setState(this.state);
+                // this.setState(this.state);
             })
         }
         updloadImage(imageFile: File) {
@@ -86,7 +86,7 @@ export default function (page: chitu.Page) {
         render() {
             let product = this.state.product;
             let ImagePaths = this.state.product.ImagePaths || [];
-            // let { imageSources } = this.state;
+
             return (
                 <div className="Shopping-ProductEdit"
                     ref={(e: HTMLElement) => this.element = e || this.element}>
@@ -108,20 +108,22 @@ export default function (page: chitu.Page) {
                     <br />
                     <div className="row">
                         <div className="col-sm-12">
-                            <h5>基本信息</h5>
+                            <h4>基本信息</h4>
                         </div>
                     </div>
                     <div className="row form-group">
                         <div className="col-lg-4 col-md-4">
-                            <label className="col-lg-3">类别</label>
+                            <label className="col-lg-3">类别*</label>
                             <div className="col-lg-9">
                                 <select name="ProductCategoryId" className="form-control"
-                                    value={product.ProductCategoryId || ''}
-                                    onChange={(e) => {
-                                        product.ProductCategoryId = (e.target as HTMLSelectElement).value;
-                                        this.setState(this.state);
+                                    ref={(e: HTMLSelectElement) => {
+                                        if (!e) return;
+                                        e.value = product.ProductCategoryId || '';
+                                        e.onchange = () => {
+                                            product.ProductCategoryId = e.value;
+                                        }
                                     }}>
-                                    <option>请选择类别</option>
+                                    <option value="">请选择类别</option>
                                     {this.state.categories.map(o =>
                                         <option key={o.Id} value={o.Id}>{o.Name}</option>
                                     )}
@@ -129,22 +131,28 @@ export default function (page: chitu.Page) {
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4">
-                            <label className="col-lg-3">*名称</label>
+                            <label className="col-lg-3">名称*</label>
                             <div className="col-lg-9">
-                                <input name="name" className="form-control" placeholder="请输入产品的名称" value={product.Name}
-                                    onChange={(e) => {
-                                        product.Name = (e.target as HTMLInputElement).value;
-                                        this.setState(this.state);
+                                <input name="name" className="form-control" placeholder="请输入产品的名称"
+                                    ref={(e: HTMLInputElement) => {
+                                        if (!e) return;
+                                        e.value = product.Name || '';
+                                        e.onchange = () => {
+                                            product.Name = e.value;
+                                        }
                                     }} />
                             </div>
                         </div>
                         <div className="col-lg-4  col-md-4">
                             <label className="col-lg-3">品牌</label>
                             <div className="col-lg-9">
-                                <select className="form-control" value={product.BrandId || ''}
-                                    onChange={(e) => {
-                                        product.BrandId = (e.target as HTMLSelectElement).value;
-                                        this.setState(this.state);
+                                <select className="form-control"
+                                    ref={(e: HTMLSelectElement) => {
+                                        if (!e) return;
+                                        e.value = product.BrandId || '';
+                                        e.onchange = () => {
+                                            product.BrandId = e.value;
+                                        }
                                     }}>
                                     <option>请选择品牌</option>
                                     {this.state.brands.map(o =>
@@ -159,21 +167,27 @@ export default function (page: chitu.Page) {
                         <div className="col-lg-4 col-md-4">
                             <label className="col-lg-3">SKU</label>
                             <div className="col-lg-9">
-                                <input className="form-control" value={product.SKU || ''}
-                                    onChange={(e) => {
-                                        product.SKU = (e.target as HTMLInputElement).value;
-                                        this.setState(this.state);
+                                <input className="form-control"
+                                    ref={(e: HTMLInputElement) => {
+                                        if (!e) return;
+                                        e.value = product.SKU || '';
+                                        e.onchange = () => {
+                                            product.SKU = e.value;
+                                        }
                                     }} />
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4">
-                            <label className="col-lg-3">*价格</label>
+                            <label className="col-lg-3">价格*</label>
                             <div className="col-lg-9">
                                 <div className="input-group">
-                                    <input name="price" className="form-control" placeholder="请输入产品价格" value={product.Price as any || ''}
-                                        onChange={(e) => {
-                                            product.Price = Number.parseFloat((e.target as HTMLInputElement).value);
-                                            this.setState(this.state);
+                                    <input name="price" className="form-control" placeholder="请输入产品价格"
+                                        ref={(e: HTMLInputElement) => {
+                                            if (!e) return;
+                                            e.value = product.Price as any || '';
+                                            e.onchange = () => {
+                                                product.Price = Number.parseFloat(e.value);
+                                            }
                                         }} />
                                     <span className="input-group-addon">
                                         元
@@ -182,25 +196,37 @@ export default function (page: chitu.Page) {
                                 <span className="price validationMessage" style={{ display: 'none' }}></span>
                             </div>
                         </div>
+                        <div className="col-lg-4 col-md-4">
+                            <label className="col-lg-3">单位*</label>
+                            <div className="col-lg-9">
+                                <input name="unit" className="form-control" placeholder="请输入产品单位"
+                                    ref={(e: HTMLInputElement) => {
+                                        if (!e) return;
+                                        e.value = product.Unit as any || '';
+                                        e.onchange = () => {
+                                            product.Unit = e.value;
+                                        }
+                                    }} />
+                                <span className="price validationMessage" style={{ display: 'none' }}></span>
+                            </div>
+                        </div>
                     </div>
                     <hr />
-                    <PropertiesComponent ref={(e) => this.fieldPropertiies = e || this.fieldPropertiies} name="商品规格" properties={product.Fields} />
+                    <PropertiesComponent ref={(e) => this.fieldPropertiies = e || this.fieldPropertiies} name="商品规格" properties={product.Fields}
+                        emptyText={tips.noProductRegular} />
                     <hr />
-                    <PropertiesComponent ref={(e => this.argumentsProperties = e || this.argumentsProperties)} name="商品属性" properties={product.Arguments} />
+                    <PropertiesComponent ref={(e => this.argumentsProperties = e || this.argumentsProperties)} name="商品属性" properties={product.Arguments}
+                        emptyText={tips.noProductProperty} />
                     <hr />
                     <div className="row">
                         <div className="col-sm-12">
-                            <h5>商品图片</h5>
+                            <h4>商品图片</h4>
                         </div>
                     </div>
                     <div className="row form-group">
                         {(ImagePaths).map((o, i) =>
                             <div key={i} className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: imageThumbSize, height: imageThumbSize }}>
-                                <img key={i} style={{ width: '100%', height: '100%' }}
-                                    ref={(e: HTMLImageElement) => {
-                                        if (!e) return;
-                                        ui.loadImage(e, { loadImage: () => station.getImageAsBase64(o, 100) });
-                                    }} />
+                                <img key={i} src={imageUrl(o)} style={{ width: '100%', height: '100%' }} />
                                 <div style={{ position: 'relative', bottom: 18, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
                                     <button href="javascript:" style={{ color: 'white' }} className="btn-link"
                                         ref={(e: HTMLButtonElement) => {
@@ -235,12 +261,12 @@ export default function (page: chitu.Page) {
 
                     <div className="row">
                         <div className="col-sm-12">
-                            <h5>商品详情*</h5>
+                            <h4>商品详情*</h4>
                         </div>
                     </div>
                     <div className="row form-group">
                         <div className="col-sm-12">
-                            <script id="productEditEditor" type="text/html" dangerouslySetInnerHTML={{ __html: product.Introduce || '' }}>
+                            <script id={editorId} type="text/html" dangerouslySetInnerHTML={{ __html: product.Introduce || '' }}>
                             </script>
                             <span className="introduce validationMessage" style={{ display: 'none' }}></span>
                             <input name="introduce" type="hidden"
@@ -250,7 +276,6 @@ export default function (page: chitu.Page) {
                                     e.value = product.Introduce || '';
                                     e.onchange = (event) => {
                                         product.Introduce = (event.target as HTMLInputElement).value || '';
-                                        this.setState(this.state);
                                     }
                                 }} />
                         </div>
@@ -281,19 +306,3 @@ export default function (page: chitu.Page) {
     })
 
 }
-
-// function page_load(page: chitu.Page, model: PageModel, args: any) {
-//     let categories_deferred = shopping.categories().then(function (data) {
-//         mapping.fromJS(data, {}, model.categories);
-//     });
-//     let brands_deferred = shopping.brands().then(function (data) {
-//         mapping.fromJS(data, {}, model.brands);
-//     });
-
-//     var productId = page.routeData.values.id || page.routeData.values.parentId;
-//     return Promise.all([categories_deferred, brands_deferred]).then(() => {
-//         return shopping.product(args.id);
-//     }).then((data) => {
-//         mapping.fromJS(data, {}, model.product);
-//     });
-// }

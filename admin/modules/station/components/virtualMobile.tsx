@@ -1,4 +1,4 @@
-import { default as station, PageData, ControlData } from 'services/station';
+import { default as station, PageData, ControlDescrtion } from 'services/station';
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 import { Component as Control, ComponentProp as ControlProp } from 'mobileComponents/common';
 import { default as StyleControl } from 'mobileComponents/style/control';
@@ -48,7 +48,7 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
                 <div className="camera"></div>
                 <div className="sensor"></div>
                 <div className="speaker"></div>
-                <div className="screen"
+                <div className="screen mobile-page"
                     ref={(e: HTMLElement) => {
                         if (!e) return;
                         this.screenElement = e;

@@ -4,20 +4,24 @@ import { VirtualMobile } from 'mobilePage';
 import { MobilePage } from 'mobileComponents/mobilePage';
 import { Component as Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
-import { PageData, ControlData, guid, default as station } from 'services/station';
+import { PageData, ControlDescrtion, guid, StationService } from 'services/station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 import * as ui from 'ui';
+
+
+let station = new StationService();
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData,
     showComponentPanel?: boolean,
     showPageEditor?: boolean,
+    showMenuSwitch?: boolean,
     save: (pageData: PageData) => Promise<any>
 }
 
 export interface State {
-    pageData?: PageData,
-    editors: React.ReactElement<any>[]
+    editors: React.ReactElement<any>[],
+    pageData: PageData
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
@@ -32,8 +36,49 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        this.state = { pageData: props.pageData, editors: [] };
+        if (this.props.pageData == null)
+            throw new Error("Property of pageData cannt be null.");
+
+        let pageData = JSON.parse(JSON.stringify(this.props.pageData)) as PageData;
+        if (!pageData.footer)
+            pageData.footer = { controls: [] };
+
+        console.assert(pageData.footer.controls != null, 'footer controls is null.');
+
+        this.state = { editors: [], pageData };
+
+        let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
+        if (!existsStyleControl) {
+            station.stylePage().then(stylePageData => {
+                let styleControl = stylePageData.footer.controls[0];
+                console.assert(styleControl != null && styleControl.controlName == 'style');
+                styleControl.selected = 'disabled';
+                this.state.pageData.footer.controls.push(styleControl);
+                this.setState(this.state);
+            })
+        }
+
+        let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
+        if (!existsMenuControl && pageData.showMenu) {
+            this.loadMenu();
+        }
+
         this.saved = chitu.Callbacks();
+    }
+
+    async loadMenu() {
+        let menuPageData = await station.menuPage();
+        let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+        console.assert(menuControlData != null);
+        menuControlData.selected = 'disabled';
+        this.state.pageData.footer.controls.push(menuControlData);
+        this.setState(this.state);
+    }
+
+    unloadMenu() {
+        var controls = this.state.pageData.footer.controls.filter(o => o.controlName != 'menu');
+        this.state.pageData.footer.controls = controls;
+        this.setState(this.state);
     }
 
     static childContextTypes = { designer: React.PropTypes.object };
@@ -65,34 +110,44 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     }
 
     save() {
-        if (typeof this.state.pageData == 'string')
-            return Promise.resolve();
-
-        let pageData = this.state.pageData;
-        let controlDatas = new Array<ControlData>();
+        let pageData = this.props.pageData;
+        let controlDatas = new Array<ControlDescrtion>();
+        //=====================================================================
+        // 将 pageData 中的所以控件找出来，放入到 controlDatas
         (pageData.views || []).forEach(view => controlDatas.push(...view.controls || []));
-        if (pageData.header)
-            controlDatas.push(...pageData.header.controls || []);
 
-        if (pageData.footer)
-            controlDatas.push(...pageData.footer.controls || [])
+        pageData.views = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.views));
+        var controls = pageData.views[0].controls;
+        for (let i = 0; i < controls.length; i++) {
+            let componet = (this.mobilePage.components.filter(c => c.controlId == controls[i].controlId)[0]) as any as Control<any, any>;
+            console.assert(componet != null);
 
-        controlDatas.forEach(o => {
-            let control = (this.mobilePage.components.filter(c => c.controlId == o.controlId)[0]) as any as Control<any, any>;
-            console.assert(control != null);
-
-            let keys = control.persistentMembers || [];
+            let keys = componet.persistentMembers || [];
             let data = {};
             for (let i = 0; i < keys.length; i++) {
                 let key = keys[i];
-                data[key] = control.state[key];
+                data[key] = componet.state[key];
             }
+            controls[i].data = data;
+        }
 
-            o.data = data;
-        });
+        // controlDatas.forEach(o => {
+        //     let control = (this.mobilePage.components.filter(c => c.controlId == o.controlId)[0]) as any as Control<any, any>;
+        //     console.assert(control != null);
+
+        //     let keys = control.persistentMembers || [];
+        //     let data = {};
+        //     for (let i = 0; i < keys.length; i++) {
+        //         let key = keys[i];
+        //         data[key] = control.state[key];
+        //     }
+
+        //     o.data = data;
+        // });
+
 
         let save = this.props.save;
-        return save(this.state.pageData).then(data => {
+        return save(pageData).then(data => {
             this.saved.fire(this, { pageData })
             return data;
         });
@@ -168,31 +223,54 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
                 <div className="admin-pc" style={{ paddingLeft: 390 }} >
                     <ul style={{ margin: 0 }}>
-                        <div className="pull-right">
+                        {this.props.showMenuSwitch ? <li className="pull-left">
+                            <div className="pull-left" style={{ paddingTop: 4, paddingRight: 10 }}>
+                                显示导航菜单
+                            </div>
+                            <label className="pull-left">
+                                <input type="checkbox" className="ace ace-switch ace-switch-5"
+                                    ref={(e: HTMLInputElement) => {
+                                        if (!e) return;
+
+                                        e.checked = pageData.showMenu;
+                                        e.onchange = async () => {
+                                            this.props.pageData.showMenu = pageData.showMenu = e.checked;
+                                            if (e.checked)
+                                                this.loadMenu();
+                                            else
+                                                this.unloadMenu();
+                                        }
+                                    }} />
+                                <span className="lbl middle"></span>
+                            </label>
+                        </li> : null}
+                        <li className="pull-right">
                             <button className="btn btn-primary" style={{ marginLeft: 4 }}
                                 ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存页面成功' }) : null}>保存</button>
-                        </div>
-                        <div className="pull-right">
+                        </li>
+                        <li className="pull-right">
                             <button className="btn btn-primary" style={{ marginLeft: 4 }}
                                 onClick={() => this.preview()}>预览</button>
-                        </div>
-                        <div className="clearfix">
-                        </div>
+                        </li>
+                        <li className="clearfix">
+                        </li>
                     </ul>
+
+                    <div className="clear-fix" />
                     <hr style={{ margin: 0 }} />
-                    <h5 style={{ display: this.props.showPageEditor == true ? 'block' : 'none' }}>页面信息</h5>
-                    <form style={{ height: 40, display: this.props.showPageEditor == true ? 'block' : 'none' }}>
+
+                    <div className="form-group" style={{ height: 40, display: this.props.showPageEditor == true ? 'block' : 'none', marginTop: 20 }}>
                         <div className="row">
                             <div className="col-sm-4">
                                 <label className="control-label pull-left" style={{ paddingTop: 8 }}>名称</label>
                                 <div style={{ paddingLeft: 40 }}>
-                                    <input name="name" className="form-control" placeholder="请输入页面名称（选填）"
+                                    <input name="name" className="form-control" placeholder="请输入页面名称（必填）"
                                         ref={(e: HTMLInputElement) => {
                                             if (!e) return;
                                             e.value = pageData.name || '';
                                             e.onchange = () => {
                                                 pageData.name = e.value;
-                                                this.setState(this.state);
+                                                {/* this.setState(this.state); */ }
                                             }
                                         }} />
                                 </div>
@@ -200,58 +278,44 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             <div className="col-sm-8">
                                 <label className="control-label pull-left" style={{ paddingTop: 8 }}>备注</label>
                                 <div style={{ paddingLeft: 40 }}>
-                                    <input name="remark" className="form-control pull-left" placeholder="请输入页面备注（必填）"
+                                    <input name="remark" className="form-control pull-left" placeholder="请输入页面备注（选填）"
                                         ref={(e: HTMLInputElement) => {
                                             if (!e) return;
                                             e.value = pageData.remark || '';
                                             e.onchange = () => {
                                                 pageData.remark = e.value;
-                                                this.setState(this.state);
                                             }
                                         }} />
                                 </div>
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <div className="checkbox">
-                                    <label>
-                                        <input type="checkbox"
-                                            ref={(e: HTMLInputElement) => {
-                                                if (!e) return;
-                                                e.checked = pageData.showMenu;
-                                                e.onchange = async () => {
-                                                    pageData.showMenu = e.checked;
-                                                    this.setState(this.state);
-                                                }
-                                            }} /> 显示菜单
-                                    </label>
-                                </div>
-                            </div>
+                    </div>
+
+
+                    <div className="form-group">
+                        <hr style={{ display: this.props.showPageEditor == true ? 'block' : 'none' }} />
+                        <h5 style={{ display: showComponentPanel == true ? 'block' : 'none' }}>页面组件</h5>
+                        <ul ref={(e: HTMLElement) => this.allContainer = e || this.allContainer}
+                            style={{
+                                padding: 0, listStyle: 'none',
+                                display: showComponentPanel == true ? 'block' : 'none'
+                            }}>
+                            {components.map((c, i) => {
+                                return (
+                                    <li key={c.name} data-controlName={c.name}
+                                        style={{
+                                            float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
+                                            textAlign: 'center', paddingTop: 20, backgroundColor: 'white', zIndex: 100
+                                        }} >
+                                        <img src={c.icon} />
+                                        {c.displayName}
+                                    </li>
+                                )
+                            })}
+                            <li className="clearfix"></li>
+                        </ul>
+                        <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
                         </div>
-                    </form>
-                    <hr style={{ display: this.props.showPageEditor == true ? 'block' : 'none' }} />
-                    <h5 style={{ display: showComponentPanel == true ? 'block' : 'none' }}>页面组件</h5>
-                    <ul ref={(e: HTMLElement) => this.allContainer = e || this.allContainer}
-                        style={{
-                            padding: 0, listStyle: 'none',
-                            display: showComponentPanel == true ? 'block' : 'none'
-                        }}>
-                        {components.map((c, i) => {
-                            return (
-                                <li key={c.name} data-controlName={c.name}
-                                    style={{
-                                        float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
-                                        textAlign: 'center', paddingTop: 20, backgroundColor: 'white', zIndex: 100
-                                    }} >
-                                    <img src={c.icon} />
-                                    {c.displayName}
-                                </li>
-                            )
-                        })}
-                        <li className="clearfix"></li>
-                    </ul>
-                    <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
                     </div>
                 </div>
                 <div className="clearfix">
