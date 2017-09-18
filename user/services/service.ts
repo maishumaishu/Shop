@@ -55,32 +55,39 @@ namespace userServices {
         },
     }
 
-    const REMOTE_HOST = 'service.alinq.cn:2800';//'localhost:2800';//
-    const LOCAL_HOST = 'localhost:2800';
+    const REMOTE_HOST = 'service.alinq.cn';//'localhost:2800';//
+    // const LOCAL_HOST = 'service.alinq.cn';//'localhost:2800';
 
-    var services = {
-        local: {
-            host: LOCAL_HOST,
-            shop: `http://${LOCAL_HOST}/UserShopTest/`,
-            site: `http://${LOCAL_HOST}/UserSiteTest/`,
-            member: `http://${LOCAL_HOST}/UserMemberTest/`,
-            weixin: `http://${LOCAL_HOST}/UserWeiXinTest/`,
-            account: `http://${LOCAL_HOST}/UserAccountTest/`,
-        },
-        server: {
-            host: REMOTE_HOST,
-            shop: `http://${REMOTE_HOST}/UserShop/`,
-            site: `http://${REMOTE_HOST}/UserSite/`,
-            member: `http://${REMOTE_HOST}/UserMember/`,
-            weixin: `http://${REMOTE_HOST}/UserWeiXin/`,
-            account: `http://${REMOTE_HOST}/UserAccount/`,
-        }
-    }
+    // var services = {
+    //     local: {
+    //         host: LOCAL_HOST,
+    //         shop: `https://${LOCAL_HOST}/UserShopTest/`,
+    //         site: `https://${LOCAL_HOST}/UserSiteTest/`,
+    //         member: `https://${LOCAL_HOST}/UserMemberTest/`,
+    //         weixin: `https://${LOCAL_HOST}/UserWeiXinTest/`,
+    //         account: `https://${LOCAL_HOST}/UserAccountTest/`,
+    //     },
+    //     server: {
+    //         host: REMOTE_HOST,
+    //         shop: `https://${REMOTE_HOST}/UserShop/`,
+    //         site: `https://${REMOTE_HOST}/UserSite/`,
+    //         member: `https://${REMOTE_HOST}/UserMember/`,
+    //         weixin: `https://${REMOTE_HOST}/UserWeiXin/`,
+    //         account: `https://${REMOTE_HOST}/UserAccount/`,
+    //     }
+    // }
 
 
 
     export let config = {
-        service: services.local,
+        service: {
+            host: REMOTE_HOST,
+            shop: `https://${REMOTE_HOST}/UserShop/`,
+            site: `https://${REMOTE_HOST}/UserSite/`,
+            member: `https://${REMOTE_HOST}/UserMember/`,
+            weixin: `https://${REMOTE_HOST}/UserWeiXin/`,
+            account: `https://${REMOTE_HOST}/UserAccount/`,
+        },
         /** 调用服务接口超时时间，单位为秒 */
         ajaxTimeout: 30,
         pageSize: 10

@@ -31,11 +31,11 @@ export interface UserInfo {
 
 export class UserService {
     private url(path: string) {
-        let url = `http://${Service.config.serviceHost}/${path}`;
+        let url = `https://${Service.config.serviceHost}/${path}`;
         return url;
     }
     login(username, password) {
-        let url = `http://${Service.config.serviceHost}/admin/login`;
+        let url = `https://${Service.config.serviceHost}/admin/login`;
         return Service.get<{ token: string, userId: string, appToken: string }>(url, { username, password }).then((o) => {
             Service.token = o.token;
             Service.userId = o.userId;
@@ -45,7 +45,7 @@ export class UserService {
     }
     async register(model: RegisterModel) {
         (model.user as any).group = 'owner';
-        let url = `http://${Service.config.serviceHost}/admin/register`;
+        let url = `https://${Service.config.serviceHost}/admin/register`;
         return Service.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
             .then((result) => {
                 // Service.appToken = result.appToken;
@@ -54,15 +54,15 @@ export class UserService {
             });
     }
     private createApplication() {
-        let url = `http://${Service.config.serviceHost}/application/add`;
+        let url = `https://${Service.config.serviceHost}/application/add`;
         return Service.postByJson<{ token: string }>(url, { name: guid() });
     }
     isMobileRegister(mobile: string) {
-        let url = `http://${Service.config.serviceHost}/admin/isMobileRegister`;
+        let url = `https://${Service.config.serviceHost}/admin/isMobileRegister`;
         return Service.get<boolean>(url, { mobile });
     }
     sendVerifyCode(mobile: string) {
-        let url = `http://${Service.config.serviceHost}/sms/sendVerifyCode`;
+        let url = `https://${Service.config.serviceHost}/sms/sendVerifyCode`;
         return Service.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
     }
     applications(): Promise<Array<Application>> {

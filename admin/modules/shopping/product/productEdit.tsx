@@ -67,11 +67,10 @@ export default function (page: chitu.Page) {
         updloadImage(imageFile: File) {
             ui.imageFileToBase64(imageFile)
                 .then(data => {
-                    let imageName = `${guid()}_${data.width}_${data.height}`;
-                    return station.saveImage(imageName, data.base64).then(o => Object.assign(data, { name: imageName }));
+                    return station.saveImage(data.base64).then(o => `${o._id}_${data.width}_${data.height}`);
                 })
-                .then(data => {
-                    this.state.product.ImagePaths.push(data.name);
+                .then(name => {
+                    this.state.product.ImagePaths.push(name);
                     this.setState(this.state);
                 });
         }

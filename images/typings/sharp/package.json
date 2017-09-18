@@ -1,0 +1,50 @@
+{
+  "_from": "@types/sharp@ts2.5",
+  "_id": "@types/sharp@0.17.4",
+  "_inBundle": false,
+  "_integrity": "sha512-neuT5MJ5lIJqeReDMqQSfVh2WTmWsgZ0ql9PRw2zvsh1CGgNwq9tYFsRFe2AmgwOaHyd2VOGd6o+bvZRTBGvLA==",
+  "_location": "/@types/sharp",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@types/sharp@ts2.5",
+    "name": "@types/sharp",
+    "escapedName": "@types%2fsharp",
+    "scope": "@types",
+    "rawSpec": "ts2.5",
+    "saveSpec": null,
+    "fetchSpec": "ts2.5"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/@types/sharp/-/sharp-0.17.4.tgz",
+  "_shasum": "f81a324ada06d3354b9396b00c0b21765f033f79",
+  "_spec": "@types/sharp@ts2.5",
+  "_where": "/home/maishu/.cache/typescript/2.5",
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "François Nguyen",
+      "url": "https://github.com/lith-light-g"
+    }
+  ],
+  "dependencies": {
+    "@types/node": "*"
+  },
+  "deprecated": false,
+  "description": "TypeScript definitions for sharp",
+  "license": "MIT",
+  "main": "",
+  "name": "@types/sharp",
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/DefinitelyTyped/DefinitelyTyped.git"
+  },
+  "scripts": {},
+  "typeScriptVersion": "2.0",
+  "typesPublisherContentHash": "79cbec9506723da972435216c3e74a7fac017d5c3c7bf0b7dbb9715e45a04044",
+  "version": "0.17.4"
+}

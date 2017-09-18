@@ -32,7 +32,7 @@ namespace userServices {
 
         userInfo(): Promise<UserInfo> {
             let url1 = this.url('Member/CurrentUserInfo');
-            let url2 = `http://${config.service.host}/user/userInfo`;
+            let url2 = `https://${config.service.host}/user/userInfo`;
             return Promise.all([this.get<UserInfo>(url1), this.get<{ mobile }>(url2)])
                 .then((data) => {
                     data[0].Mobile = data[1].mobile;
@@ -51,12 +51,12 @@ namespace userServices {
 
         sentVerifyCode(mobile: string, type: VerifyCodeType): Promise<{ smsId: string }> {
             console.assert(mobile != null);
-            let url = `http://${config.service.host}/sms/sendVerifyCode`;
+            let url = `https://${config.service.host}/sms/sendVerifyCode`;
             return this.get(url, { mobile, type });
         }
 
         checkVerifyCode(smsId: string, verifyCode: string) {
-            let url = `http://${config.service.host}/sms/checkVerifyCode`;
+            let url = `https://${config.service.host}/sms/checkVerifyCode`;
             return this.get(url, { smsId, verifyCode });
         }
 
@@ -72,7 +72,7 @@ namespace userServices {
         /** 用户注册 */
         register(data: RegisterModel) {
             console.assert(data != null);
-            let url = `http://${config.service.host}/user/register`;
+            let url = `https://${config.service.host}/user/register`;
             return this.post<{ token: string, userId: string }>(url, data).then((data) => {
                 tokens.userToken = data.token;
                 return data;
@@ -80,7 +80,7 @@ namespace userServices {
         }
 
         login(username: string, password: string): Promise<{ token: string, userId: string }> {
-            let url = `http://${config.service.host}/user/login`;
+            let url = `https://${config.service.host}/user/login`;
             return this.post<{ token: string, userId: string }>(url, { username, password }).then((result) => {
                 tokens.userToken = result.token;
                 return result;
@@ -88,7 +88,7 @@ namespace userServices {
         }
 
         resetPassword(mobile: string, password: string, smsId: string, verifyCode: string) {
-            let url = `http://${config.service.host}/user/resetPassword`;
+            let url = `https://${config.service.host}/user/resetPassword`;
             return this.put(url, { mobile, password, smsId, verifyCode }).then(data => {
                 debugger;
                 return data;
@@ -96,7 +96,7 @@ namespace userServices {
         }
 
         changePassword(password: string, smsId: string, verifyCode: string) {
-            let url = `http://${config.service.host}/user/changePassword`;
+            let url = `https://${config.service.host}/user/changePassword`;
             return this.put(url, { password, smsId, verifyCode }).then(data => {
                 debugger;
                 return data;
@@ -104,7 +104,7 @@ namespace userServices {
         }
 
         changeMobile(mobile: string, smsId: string, verifyCode: string) {
-            let url = `http://${config.service.host}/user/changeMobile`;
+            let url = `https://${config.service.host}/user/changeMobile`;
             return this.put(url, { mobile, smsId, verifyCode });
         }
 

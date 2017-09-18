@@ -199,8 +199,6 @@ export class ShoppingService extends Service {
         alert(product.Id());
     }
     saveProduct(product: Product, parentId): Promise<{ Id: string }> {
-        debugger;
-
         var obj: any = Object.assign({}, product);// ko.mapping.toJS(product, { ignore: ['ExtProperties'] });
         obj.parentId = parentId;
         obj.Arguments = JSON.stringify(product.Arguments) as any;

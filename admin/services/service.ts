@@ -198,28 +198,28 @@ username.add((value) => {
 })
 
 
-let local_service_host = 'localhost:2800'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
-let remote_service_host = 'shop.alinq.cn:2800';
-let urlConfigs = {
-    local: {
-        serviceHost: local_service_host,
-        shopUrl: `http://${local_service_host}/AdminShopTest/`,
-        weixinUrl: `http://${local_service_host}/AdminWeiXinTest/`,
-        siteUrl: `http://${local_service_host}/AdminSiteTest/`,
-        memberUrl: `http://${local_service_host}/AdminMemberTest/`,
-        accountUrl: `http://${local_service_host}/AdminAccountTest/`,
-        imageUrl: `http://${local_service_host}/AdminSiteTest/`
-    },
-    remote: {
-        serviceHost: remote_service_host,
-        shopUrl: `http://${remote_service_host}/AdminShop/`,
-        weixinUrl: `http://${remote_service_host}/AdminWeiXin/`,
-        siteUrl: `http://${remote_service_host}/AdminSite/`,
-        memberUrl: `http://${remote_service_host}/AdminMember/`,
-        accountUrl: `http://${local_service_host}/AdminAccountTest/`,
-        imageUrl: `http://${remote_service_host}/UserServices/Site/`
-    }
-}
+// let local_service_host = 'service.alinq.cn'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
+let remote_service_host = 'service.alinq.cn';
+// let urlConfigs = {
+//     local: {
+//         serviceHost: local_service_host,
+//         shopUrl: `http://${local_service_host}/AdminShopTest/`,
+//         weixinUrl: `http://${local_service_host}/AdminWeiXinTest/`,
+//         siteUrl: `http://${local_service_host}/AdminSiteTest/`,
+//         memberUrl: `http://${local_service_host}/AdminMemberTest/`,
+//         accountUrl: `http://${local_service_host}/AdminAccountTest/`,
+//         imageUrl: `http://${local_service_host}/AdminSiteTest/`
+//     },
+//     remote: {
+//         serviceHost: remote_service_host,
+//         shopUrl: `http://${remote_service_host}/AdminShop/`,
+//         weixinUrl: `http://${remote_service_host}/AdminWeiXin/`,
+//         siteUrl: `http://${remote_service_host}/AdminSite/`,
+//         memberUrl: `http://${remote_service_host}/AdminMember/`,
+//         accountUrl: `http://${local_service_host}/AdminAccountTest/`,
+//         imageUrl: `http://${remote_service_host}/UserServices/Site/`
+//     }
+// }
 
 export function imageUrl(path: string) {
     if (!path) return path;
@@ -262,7 +262,15 @@ export function imageUrl(path: string) {
 
 export class Service {
     static error = $.Callbacks()
-    static config = urlConfigs.local
+    static config = {
+        serviceHost: remote_service_host,
+        shopUrl: `https://${remote_service_host}/AdminShop/`,
+        weixinUrl: `https://${remote_service_host}/AdminWeiXin/`,
+        siteUrl: `https://${remote_service_host}/AdminSite/`,
+        memberUrl: `https://${remote_service_host}/AdminMember/`,
+        accountUrl: `https://${remote_service_host}/AdminAccountTest/`,
+        imageUrl: `https://${remote_service_host}/UserServices/Site/`
+    }
     static callMethod(path: string, data?): JQueryPromise<any> {
         data = data || {};
         var url = Service.config.shopUrl + path;

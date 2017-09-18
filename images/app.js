@@ -6,7 +6,8 @@ const querystring = require("querystring");
 const mongodb = require("mongodb");
 const fs = require("fs");
 const settings = require("./settings");
-const hostname = '127.0.0.1';
+const sharp = require("sharp");
+const hostname = 'localhost';
 const port = 3218;
 const imageCollectionName = 'AppImage';
 const errors = {
@@ -20,42 +21,56 @@ const errors = {
 const contentTypes = {
     application_json: 'application/json',
     text_plain: 'text/plain',
-    image_jpeg: 'image/jpeg'
 };
-// let options = {} as http.ServerOptions;
+const imageContextTypes = {
+    gif: 'image/gif',
+    png: 'image/png',
+    jpeg: 'image/jpeg',
+    webp: 'image/webp'
+};
+const defaultImageType = 'webp';
 const server = http.createServer(async (req, res) => {
     let db;
     try {
+        let query = {};
         let urlInfo = url.parse(req.url);
+        let { search } = urlInfo;
+        if (search) {
+            query = querystring.parse(search.substr(1));
+        }
         let path = urlInfo.pathname;
         console.assert(path && path.length > 0);
-        // path = path.substr(1);
         if (path.endsWith('/')) {
             path = path.substr(0, path.length - 1);
         }
         db = await mongodb.MongoClient.connect(settings.mongodb_conn);
         let action;
-        switch (path) {
-            case "/get":
-                action = get;
-                break;
-            case '/upload':
-                action = upload;
-                break;
-            default:
-                if (path.startsWith('/Images') || path.startsWith('/ueditor/net/upload/image')) {
-                    action = imageFile;
-                    break;
-                }
-                else if (/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}_\d+_\d+/i.test(path)) {
-                    action = imageByName;
-                    break;
-                }
-                throw errors.pathNotSupport(path);
+        let context;
+        if (path.startsWith('/Images') || path.startsWith('/ueditor/net/upload/image')) {
+            action = imageFile;
         }
-        let result = await action(req, res, db);
+        else if (/^\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}_\d+_\d+$/i.test(path)) {
+            action = imageByName;
+        }
+        else if (/^\/[a-f\d]{24}_\d+_\d+$/i.test(path)) {
+            var arr = path.substr(1).split('_');
+            context = new mongodb.ObjectID(arr[0]);
+            action = imageById;
+        }
+        else {
+            throw errors.pathNotSupport(path);
+        }
+        let result = await action(req, res, db, context);
         if (!result)
             throw errors.actionResultIsNull();
+        if (result.contentType.startsWith('image') && query.width) {
+            let width = Number.parseInt(query.width);
+            let height = query.height ? Number.parseInt(query.height) : width;
+            let type = query.type || defaultImageType;
+            let contentType = imageContextTypes[type] || imageContextTypes[defaultImageType];
+            result.data = await resizeImage(result.data, type, width, height);
+            result.contentType = contentType;
+        }
         res.setHeader("Content-Type", result.contentType || contentTypes.text_plain);
         res.statusCode = result.statusCode || 200;
         res.end(result.data);
@@ -71,38 +86,12 @@ const server = http.createServer(async (req, res) => {
         }
     }
 });
-async function get(req, res, db) {
-    let urlInfo = url.parse(req.url);
-    let { search } = urlInfo;
-    if (!search) {
-        throw errors.searchCanntNull();
-    }
-    let query = querystring.parse(search.substr(1));
-    if (!query.id) {
-        throw errors.parameterRequired('id');
-    }
-    let id = new mongodb.ObjectID(query.id);
-    let collection = await db.collection(imageCollectionName);
-    let item = await collection.findOne({ _id: id });
-    if (!item) {
-        throw errors.objectNotExists(imageCollectionName, id);
-    }
-    let arr = (item.data || '').split(',');
-    if (arr.length != 2)
-        throw errors.dataFormatError();
-    let buffer = new Buffer(arr[1], 'base64');
-    return { data: buffer, contentType: contentTypes.image_jpeg };
-}
-async function upload(req, res, db) {
-    return { data: { _id: 'abcd' }, contentType: contentTypes.image_jpeg };
-}
 async function imageFile(req, res, db) {
     let urlInfo = url.parse(req.url);
     let pathname = __dirname + urlInfo.pathname;
     if (!fs.existsSync(pathname)) {
         return { data: 'file not exists.', statusCode: 404 };
     }
-    let actionResult = { data: null, contentType: contentTypes.text_plain, statusCode: 404 };
     var buffers = new Array();
     return new Promise((resolve, reject) => {
         let stream = fs.createReadStream(pathname)
@@ -111,8 +100,7 @@ async function imageFile(req, res, db) {
         })
             .on('end', () => {
             let buffer = Buffer.concat(buffers);
-            actionResult.data = buffer;
-            resolve(actionResult);
+            resolve({ data: buffer, contentType: imageContextTypes.jpeg });
         })
             .on('error', (err) => {
             reject(err);
@@ -131,7 +119,28 @@ async function imageByName(req, res, db) {
     if (arr.length != 2)
         throw errors.dataFormatError();
     let buffer = new Buffer(arr[1], 'base64');
-    return { data: buffer, contentType: contentTypes.image_jpeg };
+    return { data: buffer, contentType: imageContextTypes.jpeg };
+}
+async function imageById(req, res, db, _id) {
+    let collection = db.collection(imageCollectionName);
+    let item = await collection.findOne({ _id });
+    let arr = (item.data || '').split(',');
+    if (arr.length != 2)
+        throw errors.dataFormatError();
+    let buffer = new Buffer(arr[1], 'base64');
+    return { data: buffer, contentType: imageContextTypes.jpeg };
+}
+async function resizeImage(buffer, type, width, height) {
+    height = height || width;
+    return new Promise((resolve, reject) => {
+        var sharpInstance = sharp(buffer).resize(width, height);
+        var typeMethod = (sharpInstance[type] || sharpInstance.webp).bind(sharpInstance);
+        typeMethod().toBuffer((err, data) => {
+            if (err)
+                reject(err);
+            resolve(data);
+        });
+    });
 }
 server.listen(port, hostname, () => {
     console.log(`server running at http://${hostname}:${port}`);

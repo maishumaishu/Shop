@@ -206,9 +206,9 @@ export class StationService extends Service {
      * @param name 图片名称
      * @param imageBase64 图片的 base64 字符串 
      */
-    saveImage(name: string, imageBase64: string) {
+    saveImage(imageBase64: string): Promise<{ _id: string }> {
         let url = `${Service.config.siteUrl}Page/SaveImage`;
-        return Service.postByJson(url, { name, image: imageBase64 });
+        return Service.postByJson<{ _id: string }>(url, { name, image: imageBase64 });
     }
 
     /**

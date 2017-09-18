@@ -4,7 +4,7 @@
 //                 Federico Caselli <https://github.com/CaselIT>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-/// <reference types="node"/>
+/// <reference path="../node/index.d.ts"/>
 
 export interface DeserializeOptions {
     /** {Boolean, default:false}, evaluate functions in the BSON document scoped to the object deserialized. */
