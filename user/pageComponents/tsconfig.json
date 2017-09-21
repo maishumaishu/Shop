@@ -37,7 +37,7 @@
     "include": [
         "../../lib/typings",
         "../../lib/*.d.ts",
-        "../../www/user/*.d.ts",
+        "../services/*.ts",
         "./*",  
         "**/*.tsx"
     ]

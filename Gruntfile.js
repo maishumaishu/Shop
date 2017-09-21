@@ -30,14 +30,11 @@ module.exports = function (grunt) {
                 files: [
                     { expand: true, cwd: admin_src, src: ['**/*.css', '**/*.html', 'content/font/*.*'], dest: admin_dest },
                     { expand: true, cwd: 'lib', src: ['ueditor/**/*.*'], dest: `${admin_dest}/scripts` },
+                    { expand: true, cwd: 'lib', src: ['umeditor/**/*.*'], dest: `${admin_dest}/scripts` },
                     { expand: true, cwd: 'lib', src: ['*.js'], dest: `${admin_dest}/scripts` },
+                    { expand: true, cwd: `${admin_src}/lib/bootstrap-3.3.7/fonts`, src: ['*.*'], dest: `${admin_dest}/content/font` },
                     // { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` },
                     // { expand: true, cwd: `${user_src}/dest`, src: ['userServices.js'], dest: `${admin_dest}/mobile` }
-                ]
-            },
-            admin_bt: {
-                files: [
-                    { expand: true, cwd: `${admin_src}/lib/bootstrap-3.3.7/fonts`, src: ['*.*'], dest: `${admin_dest}/content/font` },
                 ]
             },
             user: {
