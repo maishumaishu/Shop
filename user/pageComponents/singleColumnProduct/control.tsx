@@ -3,7 +3,7 @@ import { ShoppingCartService, ShoppingService, Product } from 'userServices';
 import * as ui from 'ui';
 
 let { ImageBox } = controls;
-requirejs([`css!${componentsDir}/singleColumnProduct/control`]);
+// requirejs([`css!${componentsDir}/singleColumnProduct/control`]);
 export class Data {
     private _product: Product;
 
@@ -16,10 +16,10 @@ export class Data {
 }
 
 let shopping = new ShoppingService();
-let shoppingCart = new ShoppingCartService();
+// let shoppingCart = new ShoppingCartService();
 
 
-type ProductExt = Product & { Count: number };
+// type ProductExt = Product & { Count: number };
 
 export interface Props {
 
@@ -37,7 +37,7 @@ type ProductsByCustom = {
 }
 
 export interface State {
-    products?: (Product & { Count: number })[],
+    products?: Product[],
     // productsType?: ProductsFromCategory | ProductsByCustom,
 
     //=======================================
@@ -51,114 +51,128 @@ export interface State {
     productIds?: string[],
     //=======================================
 
-    moduleTitle?: string,
+    /**
+     * 列表类型
+     */
+    listType?: 'singleColumn' | 'doubleColumn' | 'largePicture',
 
+    /**
+     * 价格右侧显示内容类型
+     */
+    displayType?: 'none' | 'addProduct' | 'activity',
+
+    /** 
+     * 显示商品标题，仅单列显示商品有效
+     */
+    displayTitle?: boolean,
 }
 
 export default class SingleColumnProductControl extends Component<Props, State> {
     get persistentMembers(): (keyof State)[] {
-        return ['productSourceType', 'prodcutsCount', 'categoryId', 'productIds', 'moduleTitle']
+        return [
+            'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',
+            'listType', 'displayType', 'displayTitle'
+        ]
     }
     constructor(args) {
         super(args);
         this.state = { products: [], productSourceType: 'category', prodcutsCount: 1 };
-        Promise.all([shopping.products(0), shoppingCart.items()]).then(data => {
-            let products = data[0] as (Product & { Count: number })[];
-            let items = data[1];
-            for (let i = 0; i < products.length; i++) {
-                let item = items.filter(o => o.ProductId == products[i].Id)[0];
-                if (item) {
-                    products[i].Count = item.Count;
-                }
-                else {
-                    products[i].Count = 0;
-                }
-            }
+        this.loadControlCSS();
+        Promise.all([shopping.products(0)]).then(data => {
+            let products = data[0];// as (Product & { Count: number })[];
+            // let items = data[1];
+            // for (let i = 0; i < products.length; i++) {
+            //     let item = items.filter(o => o.ProductId == products[i].Id)[0];
+            //     if (item) {
+            //         products[i].Count = item.Count;
+            //     }
+            //     else {
+            //         products[i].Count = 0;
+            //     }
+            // }
             this.state.products = products;
             this.setState(this.state);
         });
     }
 
     addProduct(product: Product & { Count: number }) {
-        let count = product.Count + 1;
-        return shoppingCart.updateItem(product.Id, count, true).then(items => {
-            product.Count = count;
-            this.setState(this.state);
-        });
+        // let count = product.Count + 1;
+        // return shoppingCart.updateItem(product.Id, count, true).then(items => {
+        //     product.Count = count;
+        //     this.setState(this.state);
+        // });
     }
 
     removeProduct(product: Product & { Count: number }) {
-        let count = product.Count - 1;
-        if (count < 0) {
-            return;
-        }
-        return shoppingCart.updateItem(product.Id, count, true).then(items => {
-            product.Count = count;
-            this.setState(this.state);
-        });
+        // let count = product.Count - 1;
+        // if (count < 0) {
+        //     return;
+        // }
+        // return shoppingCart.updateItem(product.Id, count, true).then(items => {
+        //     product.Count = count;
+        //     this.setState(this.state);
+        // });
     }
 
-    _render(h) {
-
-        var products = new Array<ProductExt>();
+    _render() {
+        var products = new Array<Product>();
         return (
             <div
-                ref={(e: HTMLElement) => {
+                ref={async (e: HTMLElement) => {
                     if (!e) return;
-                    this.asyncRender().then(element => {
-                        ReactDOM.render(element, e);
-                    });
+                    let listType = this.state.listType;
+                    let element: React.ReactElement<any>;
+                    switch (listType) {
+                        case 'doubleColumn':
+                        default:
+                            element = await this.renderDoubleColumn();
+                            break;
+                        case 'singleColumn':
+                            element = await this.renderSingleColumn();
+                            break;
+                        case 'largePicture':
+                            element = await this.renderLargePicture();
+                            break;
+                    }
+                    ReactDOM.render(element, e);
+
                 }}>
             </div>
         );
     }
 
-    async asyncRender(): Promise<JSX.Element> {
+    async renderSingleColumn(): Promise<JSX.Element> {
 
-        var products: ProductExt[];
-        // if (this.state.categoryId)
-        if (this.state.productSourceType == 'category')
-            products = await shopping.productsByCategory(this.state.prodcutsCount, this.state.categoryId) as ProductExt[];
-        else
-            products = await shopping.productsByIds(this.state.productIds) as ProductExt[];
+        var products = await this.products();
+        let showProductTitle = this.state.displayTitle;
+
+        let leftClassName = showProductTitle ? 'col-xs-4' : 'col-xs-3';
+        let rightClassName = showProductTitle ? 'col-xs-8' : 'col-xs-9';
 
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
-                    <div key={o.Id} className="product">
-                        <ImageBox className="image" src={o.ImageUrl} text="高州风味" />
-                        <div className="content">
-                            <div className="title">
+                    <div key={o.Id} className="product single">
+                        <div className={leftClassName}>
+                            <img className="image img-responsive" src={o.ImageUrl} title="高州风味" />
+                        </div>
+                        <div className={`content ${rightClassName}`}>
+                            <div className="name interception">
                                 {o.Name}
                             </div>
-                            <div>
-                                <div className="price">
+                            {showProductTitle ?
+                                <div className="title interception">
+                                    {o.Title}
+                                </div> : null}
+                            <div className="price">
+                                <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
+                                </span>
+                                <div className="pull-right">
+                                    <i className="icon-plus-sign" />
                                 </div>
                             </div>
-                            <div>
-                                <div className="input-group buttonBar">
-                                    <span className="input-group-addon"
-                                        ref={(e: HTMLElement) => {
-                                            if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.removeProduct(o));
-                                        }}>
-                                        <i className="icon-minus"></i>
-                                    </span>
-                                    <input type="text" className="form-control" style={{ textAlign: 'center' }}
-                                        ref={(e: HTMLInputElement) => {
-                                            if (!e) return;
-                                            e.value = (o.Count == null ? 0 : o.Count) as any;
-                                        }} />
-                                    <span className="input-group-addon" style={{ cursor: 'pointer' }}
-                                        ref={(e: HTMLElement) => {
-                                            if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.addProduct(o));
-                                        }}>
-                                        <i className="icon-plus"></i>
-                                    </span>
-                                </div>
-                            </div>
+
                         </div>
                         <div className="clearfix"></div>
                         <hr />
@@ -166,7 +180,97 @@ export default class SingleColumnProductControl extends Component<Props, State> 
                 )}
             </div>
         );
+    }
+
+    async renderDoubleColumn(): Promise<JSX.Element> {
+        var products = await this.products();
+        return (
+            <div className="singleColumnProductControl">
+                {products.filter(o => o != null).map(o =>
+                    <div key={o.Id} className="product double col-xs-6">
+                        <div>
+                            <img src={o.ImageUrl} title="高州风味" />
+                            <div className="name">
+                                {o.Name}
+                            </div>
+                            <div>
+                                <div className="price pull-left">
+                                    ￥{o.Price.toFixed(2)}
+                                </div>
+                                <div className="pull-right">
+                                    <i className="icon-plus-sign" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="clearfix"></div>
+                    </div>
+                )}
+            </div>
+        );
 
 
     }
+
+    async renderLargePicture() {
+        var products = await this.products();
+
+        products = products.filter(o => o != null);
+        let largeProduct = products[0];
+        return (
+            <div className="singleColumnProductControl">
+                <div key={largeProduct.Id} className="product large">
+                    <img className="image img-responsive" src={largeProduct.ImageUrl} title="高州风味" />
+                    <div className="content">
+                        <div className="title interception">
+                            {largeProduct.Name}
+                        </div>
+                        <div>
+                            <div className="price pull-left">
+                                ￥{largeProduct.Price.toFixed(2)}
+                            </div>
+                            <div className="pull-right">
+                                <i className="icon-plus-sign" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div className="clearfix"></div>
+                </div>
+
+                {products.filter((o, i) => i > 0).map(o =>
+                    <div key={o.Id} className="product small col-xs-6">
+                        <div>
+                            <img className="image img-responsive" src={o.ImageUrl} title="高州风味" />
+                            <div className="title interception">
+                                {o.Name}
+                            </div>
+                            <div>
+                                <div className="price pull-left">
+                                    ￥{o.Price.toFixed(2)}
+                                </div>
+                                <div className="pull-right">
+                                    <i className="icon-plus-sign" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="clearfix"></div>
+                    </div>
+                )}
+            </div>
+        );
+
+
+    }
+
+    async products(): Promise<Product[]> {
+        var products: Product[];
+        if (this.state.productSourceType == 'category')
+            products = await shopping.productsByCategory(this.state.prodcutsCount, this.state.categoryId);
+        else
+            products = await shopping.productsByIds(this.state.productIds);
+
+        return products;
+    }
+
 }

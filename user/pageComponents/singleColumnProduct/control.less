@@ -1,31 +1,80 @@
 .singleColumnProductControl {
     padding-top: 10px;
-    .product {
-        img {
-            width:80px;
-            height: 80px; 
-            float: left;
+    .product{
+        /* 页面样式 开始*/
+        .interception {
+            width: 100%;
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            -webkit-text-overflow: ellipsis;
+            -moz-binding: url("ellipsis.xml#ellipsis");
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
         }
-        .content {
-            margin-left: 90px;
-            .title {
-                font-size: 16px;
-                color: black;
-                text-align: left;
-            }
-            .price {
+        .name {
+            font-size: 14px;
+            color: black;
+            text-align: left;
+        }
+        .price {
+            span {
                 font-size: 14px;
                 color: #f70;
                 font-weight: bold;
                 text-align: left;
             }
-            .buttonBar{
-                width: 120px;
+            i {
+                font-size: 20px;
             }
         }
-        hr {
-            margin-top: 10px;
-            margin-bottom: 10px;
+        
+        &.single {
+            .name {
+                margin-top: 6px;
+            }
+            .title {
+                font-size: 14px;
+                color: gray;
+                text-align: left;
+                margin-top: 4px;
+                height: 20px;                
+            }
+            .price {
+                margin-top: 4px;
+            }
+            .content {
+                // margin-left: 90px;
+                .buttonBar{
+                    width: 120px;
+                }
+            }
+            hr {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+        }
+        &.double {
+            text-align: center;
+            
+            .name {
+                height: 40px;
+                overflow: hidden;
+                margin-bottom: 6px;
+                margin-top: 10px;
+                color: #333333;
+            }
+            border-bottom: solid 1px whitesmoke;
+            padding: 10px 10px 10px 10px ;
+
+            &:nth-child(2n+1) {
+                border-right: 1px solid whitesmoke;
+            }
+
+            img {
+                width: 80%;
+            }
         }
     }
 }

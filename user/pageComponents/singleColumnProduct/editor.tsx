@@ -2,6 +2,7 @@ import { Editor, EditorProps } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control';
 import { ShoppingService, Category, Product } from 'services/shopping';
 import { StationService } from 'services/station';
+import { imageUrl } from 'services/service';
 
 export interface EditorState extends ControlState {
 
@@ -17,16 +18,35 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
 
     constructor(props) {
         super(props);
-        this.state = { productSourceType: 'category' };
+        this.state = { productSourceType: 'category', listType: 'doubleColumn' };
 
         this.loadEditorCSS();
     }
 
     setSourceTypeInput(e: HTMLInputElement) {
+        // if (!e || e.onchange) return;
+        // e.checked = this.state.productSourceType == e.value;
+        // e.onchange = () => {
+        //     this.state.productSourceType = e.value as any;
+        //     this.setState(this.state);
+        // }
+        this.setRadioElement(e, "productSourceType");
+    }
+
+    setRadioElement(e: HTMLInputElement, member: keyof EditorState) {
         if (!e || e.onchange) return;
-        e.checked = this.state.productSourceType == e.value;
+        e.checked = (this.state[member] || '').toString() == e.value;
         e.onchange = () => {
-            this.state.productSourceType = e.value as any;
+            this.state[member] = e.value;
+            this.setState(this.state);
+        }
+    }
+
+    setCheckElement(e: HTMLInputElement, member: keyof EditorState) {
+        if (!e || e.onchange) return
+        e.checked = this.state[member] as any;
+        e.onchange = () => {
+            this.state[member] = e.checked as any;
             this.setState(this.state);
         }
     }
@@ -66,15 +86,15 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
         });
     }
 
-    setTitleInput(e: HTMLInputElement) {
-        if (!e || e.onchange) return;
+    // setTitleInput(e: HTMLInputElement) {
+    //     if (!e || e.onchange) return;
 
-        e.onchange = () => {
-            this.state.moduleTitle = e.value;
-            this.setState(this.state);
-        }
-        e.value = this.state.moduleTitle;
-    }
+    //     e.onchange = () => {
+    //         this.state.moduleTitle = e.value;
+    //         this.setState(this.state);
+    //     }
+    //     e.value = this.state.moduleTitle;
+    // }
 
     setImageFileInput(e: HTMLInputElement) {
         if (!e || e.onchange != null)
@@ -157,6 +177,7 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
     render() {
         let productSourceType = this.state.productSourceType;
         let productIds = this.state.productIds;
+        let listType = this.state.listType;
 
         return (
             <div className="singleColumnProductEditor well">
@@ -164,30 +185,43 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
                     <label className="pull-left">数据来源</label>
                     <span>
                         <input name="sourceType" type="radio" value="category"
-                            ref={(e: HTMLInputElement) => this.setSourceTypeInput(e)} />
+                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productSourceType')} />
                         分类
                     </span>
                     <span>
                         <input name="sourceType" type="radio" value="custom"
-                            ref={(e: HTMLInputElement) => this.setSourceTypeInput(e)} />
+                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productSourceType')} />
                         手动添加
                     </span>
                 </div>
                 <div className="form-group">
                     <label className="pull-left">列表样式</label>
                     <span>
-                        <input name="styleType" type="radio" value="small" />
-                        小图
+                        <input name="styleType" type="radio" value="singleColumn"
+                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'listType')} />
+                        单列
                     </span>
                     <span>
-                        <input name="styleType" type="radio" value="big" />
+                        <input name="styleType" type="radio" value="doubleColumn"
+                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'listType')} />
+                        双列
+                    </span>
+                    <span>
+                        <input name="styleType" type="radio" value="largePicture"
+                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'listType')} />
                         大图
                     </span>
-                    <span>
-                        <input name="styleType" type="radio" value="oneBigOtherSamll" />
-                        一大多小
-                    </span>
                 </div>
+                {listType == 'singleColumn' ?
+                    <div className="form-group">
+                        <label className="pull-left">显示商品标题</label>
+                        <div style={{ display: "block" }}>
+                            <input name="displayType" type="checkbox" value="true" style={{ marginTop: 8 }}
+                                ref={(e: HTMLInputElement) => this.setCheckElement(e, 'displayTitle')} />
+
+                        </div>
+                    </div> : null}
+
                 <div style={{ display: productSourceType == 'category' ? 'block' : 'none' }}>
                     <div className="form-group">
                         <label className="pull-left">商品数量</label>
