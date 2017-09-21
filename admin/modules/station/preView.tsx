@@ -1,22 +1,27 @@
 import { Editor, EditorProps } from 'mobileComponents/editor'
-import { default as station, PageData, guid, ControlDescrtion } from 'services/station';
+import { StationService, PageData, guid, ControlDescrtion } from 'services/station';
 import FormValidator from 'formValidator';
 import { VirtualMobile } from 'mobilePage';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 
 
 
+let station = new StationService();
 
 export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
     let { pageId, templateId } = page.routeData.values;
-    let pageData = {} as PageData;
-    if (pageId)
-        pageData = await station.pageData(pageId);
-    else if (templateId)
-        pageData = await station.pageDataByTemplate(templateId);
+    var pages = await Promise.all([station.pageData(pageId), station.stylePage(), station.menuPage()])
+    pages[0].footer = pages[0].footer || { controls: [] };
+    pages[1].footer = pages[1].footer || { controls: [] };
+    pages[2].footer = pages[2].footer || { controls: [] };
+    pages[0].footer.controls = pages[0].footer.controls.concat(pages[1].footer.controls);
+    if (pages[0].showMenu) {
+        pages[0].footer.controls = pages[0].footer.controls.concat(pages[2].footer.controls);
+    }
 
+    let pageData = pages[0];
     let h = React.createElement;
     ReactDOM.render(
         <div className="mobile">
@@ -65,7 +70,7 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
     renderFooter(pageData: PageData): JSX.Element {
         if (!pageData.footer)
             return null;
-            
+
         return (
             <PageFooter>
                 {this.renderControls(pageData.footer.controls)}
@@ -76,7 +81,7 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
 
     renderViews(pageData: PageData) {
         return (pageData.views || []).map((o, i) => (
-            <section key={i}>
+            <section key={i} style={{ paddingBottom: pageData.showMenu ? 50 : null }}>
                 {this.renderControls(o.controls)}
             </section>
         ));
