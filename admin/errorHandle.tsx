@@ -15,8 +15,17 @@ services.error.add((sender, error) => {
         app.redirect('user/login');
         return;
     };
-    ui.alert({
-        title: '错误',
-        message: error.Message || error.message
-    });
+
+    //========================================
+    // 延迟处理错误，让其它模块先处理
+    let timeoutId = setTimeout(() => {
+        if (!error.handled) {
+            ui.alert({
+                title: '错误',
+                message: error.Message || error.message
+            });
+        }
+    }, 100);
+    clearTimeout(timeoutId);
+    //========================================
 });
