@@ -65,7 +65,8 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         let action: Action;
         let context: any;
 
-        if (path.startsWith('/Images') || path.startsWith('/ueditor/net/upload/image')) {
+        if (path.startsWith('/Images') || path.startsWith('/ueditor/net/upload/image') ||
+            path.startsWith('/umeditor.net/upload')) {
             action = imageFile;
         }
         else if (/^\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}_\d+_\d+$/i.test(path)) {
