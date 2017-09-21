@@ -18,14 +18,14 @@ export class ActivityService extends Service {
         let url = baseUrl + 'AddActivity';
         return Service.postByJson(url, item);
     }
-    getActivity(id: string): JQueryPromise<any> {
-        return $.ajax({ url: baseUrl + 'GetActivity', method: 'post', data: { id: id } });
+    getActivity(id: string): Promise<any> {
+        return Service.get(baseUrl + 'GetActivity', { id }); //$.ajax({ url: baseUrl + 'GetActivity', method: 'post', data: { id: id } });
     }
-    deleteActivity(item) {
+    deleteActivity(item): Promise<any> {
         let url = baseUrl + 'DeleteActivity';
         return Service.deleteByJson(url, item);
     }
-    activities() {
+    activities(): Promise<any> {
         return Service.get(baseUrl + 'GetActivities');
     }
     addPromotion(activityId, type, method) {

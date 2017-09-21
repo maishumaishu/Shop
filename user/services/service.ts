@@ -1,5 +1,13 @@
 namespace userServices {
 
+    export interface DataSourceSelectArguments {
+        startRowIndex: number;
+        totalRowCount: number;
+        maximumRows: number;
+        sortExpression: string;
+        filter: string;
+    }
+
     //==========================================================
     // 错误处理模块
     export class AjaxError implements Error {
@@ -55,30 +63,7 @@ namespace userServices {
         },
     }
 
-    const REMOTE_HOST = 'service.alinq.cn';//'localhost:2800';//
-    // const LOCAL_HOST = 'service.alinq.cn';//'localhost:2800';
-
-    // var services = {
-    //     local: {
-    //         host: LOCAL_HOST,
-    //         shop: `https://${LOCAL_HOST}/UserShopTest/`,
-    //         site: `https://${LOCAL_HOST}/UserSiteTest/`,
-    //         member: `https://${LOCAL_HOST}/UserMemberTest/`,
-    //         weixin: `https://${LOCAL_HOST}/UserWeiXinTest/`,
-    //         account: `https://${LOCAL_HOST}/UserAccountTest/`,
-    //     },
-    //     server: {
-    //         host: REMOTE_HOST,
-    //         shop: `https://${REMOTE_HOST}/UserShop/`,
-    //         site: `https://${REMOTE_HOST}/UserSite/`,
-    //         member: `https://${REMOTE_HOST}/UserMember/`,
-    //         weixin: `https://${REMOTE_HOST}/UserWeiXin/`,
-    //         account: `https://${REMOTE_HOST}/UserAccount/`,
-    //     }
-    // }
-
-
-
+    const REMOTE_HOST = 'service.alinq.cn';
     export let config = {
         service: {
             host: REMOTE_HOST,
@@ -245,11 +230,6 @@ namespace userServices {
                 headers['user-token'] = tokens.userToken;
             }
 
-            // let urlParams = '';
-            // for (let key in data) {
-            //     urlParams = urlParams + `&${key}=${JSON.stringify(data[key])}`;
-            // }
-
             console.assert(url.indexOf('?') < 0);
             url = url + '?' + JSON.stringify(data);
 
@@ -259,23 +239,6 @@ namespace userServices {
             }
             return this.ajax<T>(url, options);
         }
-
-        // static getByJson<T>(url: string, data?) {
-        //     // let _url = url + '?' + JSON.stringify(data);
-        //     data = data || {};
-
-        //     let _data = {};
-        //     for (let key in data) {
-        //         _data[key] = JSON.stringify(data[key]);
-        //     }
-        //     return ajax<T>({
-        //         headers: {
-        //             'content-type': 'application/json'
-        //         },
-        //         url: url, method: 'get',
-        //         data: _data
-        //     });
-        // }
 
         post<T>(url: string, data?: Object) {
             return this.ajaxByJSON<T>(url, data, 'post');

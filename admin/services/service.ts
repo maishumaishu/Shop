@@ -23,31 +23,6 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
         }
     }
 
-    /** 
-     * 判断服务端返回的数据是否为错误信息 
-     * @param responseData 服务端返回的数据
-     */
-    function isError(responseData: any): Error {
-        if (responseData == null)
-            return null;
-
-        if (responseData.Type == 'ErrorObject') {
-            if (responseData.Code == 'Success') {
-                return null;
-            }
-            let err = new Error(responseData.Message);
-            err.name = responseData.Code;
-            return err;
-        }
-
-        let err: Error = responseData;
-        if (err.name !== undefined && err.message !== undefined && err['stack'] !== undefined) {
-            return err;
-        }
-
-        return null;
-    }
-
     //==============================================================
     // 将 json 对象格式化
     let datePattern = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;;
@@ -85,12 +60,6 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
     //==============================================================
 
     let _ajax = async (url: string, options: RequestInit): Promise<T> => {
-        // let user_token = tokens.userToken;
-        // if (user_token) {
-        //     options.headers['user-token'] = user_token;
-        // }
-
-        // try {
 
         options = options || {};
         options.method = options.method || 'get';
@@ -117,7 +86,7 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
             textObject = text;
         }
 
-        let err = response.status >= 300 ? textObject : isError(textObject);
+        let err = response.status >= 300 ? textObject : null;
         if (typeof err == 'string') {
             let ajaxError = new AjaxError(options.method);
             ajaxError.name = `${response.status}`;
@@ -153,7 +122,6 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
             })
             .catch(err => {
                 reject(err);
-                // this.error.fire(this, err);
 
                 if (timeId)
                     clearTimeout(timeId);
@@ -200,51 +168,10 @@ username.add((value) => {
 
 // let local_service_host = 'service.alinq.cn'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
 let remote_service_host = 'service.alinq.cn';
-// let urlConfigs = {
-//     local: {
-//         serviceHost: local_service_host,
-//         shopUrl: `http://${local_service_host}/AdminShopTest/`,
-//         weixinUrl: `http://${local_service_host}/AdminWeiXinTest/`,
-//         siteUrl: `http://${local_service_host}/AdminSiteTest/`,
-//         memberUrl: `http://${local_service_host}/AdminMemberTest/`,
-//         accountUrl: `http://${local_service_host}/AdminAccountTest/`,
-//         imageUrl: `http://${local_service_host}/AdminSiteTest/`
-//     },
-//     remote: {
-//         serviceHost: remote_service_host,
-//         shopUrl: `http://${remote_service_host}/AdminShop/`,
-//         weixinUrl: `http://${remote_service_host}/AdminWeiXin/`,
-//         siteUrl: `http://${remote_service_host}/AdminSite/`,
-//         memberUrl: `http://${remote_service_host}/AdminMember/`,
-//         accountUrl: `http://${local_service_host}/AdminAccountTest/`,
-//         imageUrl: `http://${remote_service_host}/UserServices/Site/`
-//     }
-// }
 
-export function imageUrl(path: string) {
+export function imageUrl(path: string, width?: number) {
     if (!path) return path;
 
-    // if (path.startsWith(`http://localhost:`)) {
-    //     path = path.substr(`http://localhost:${location.port}`.length);
-    //     var index = path.indexOf('/');
-    //     console.assert(index >0);
-    //     path = path.substr(index);
-    // }
-    // else if (path.startsWith('http://localhost')) {
-    //     path = path.substr('http://localhost'.length);
-    // }
-    // else if (path.startsWith('file://')) {
-    //     path = path.substr('file://'.length);
-    // }
-    // let url: string;
-    // if (!path.startsWith('http')) {
-    //     const imageBasePath = 'http://web.alinq.cn/store2';
-    //     url = imageBasePath + path;
-    // }
-    // else {
-    //     url = path;
-    // }
-    // url = url + `?application-key=${tokens.appToken}`;
     let HTTP = 'http://'
     if (path.startsWith(HTTP)) {
         path = path.substr(HTTP.length);
@@ -256,7 +183,10 @@ export function imageUrl(path: string) {
         path = '/' + path;
     }
 
-    let url = 'http://image.alinq.cn' + path;
+    let url = 'https://image.alinq.cn' + path;
+    if (width) {
+        url = url + '?width=' + width;
+    }
     return url;
 }
 
@@ -270,11 +200,6 @@ export class Service {
         memberUrl: `https://${remote_service_host}/AdminMember/`,
         accountUrl: `https://${remote_service_host}/AdminAccountTest/`,
         imageUrl: `https://${remote_service_host}/UserServices/Site/`
-    }
-    static callMethod(path: string, data?): JQueryPromise<any> {
-        data = data || {};
-        var url = Service.config.shopUrl + path;
-        return $.ajax({ url: url, data: data, method: 'post' });
     }
 
     private static ajax<T>(options: { url: string, data?: any, method?: string, headers?: any }): Promise<T> {
