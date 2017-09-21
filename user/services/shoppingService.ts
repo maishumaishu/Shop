@@ -50,7 +50,8 @@ namespace userServices {
         ProductCategoryId: string, Name: string, //IsFavored?: boolean,
         ProductCategoryName: string,
         CustomProperties: Array<CustomProperty>,
-        Promotions: Promotion[]
+        Promotions: Promotion[],
+        Title: string,
     }
     export interface CustomProperty {
         Name: string,
@@ -154,13 +155,13 @@ namespace userServices {
             }
 
             let url = this.url('Product/GetProducts');
-            var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;
+            var args = { startRowIndex: pageIndex * 20 } as DataSourceSelectArguments;
             if (categoryId != null) {
                 args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
             }
             return this.get<{ Products: Array<Product> }>(url, args).then(o => {
                 o.Products.forEach(o => {
-                    o.ImageUrl = imageUrl(o.ImageUrl);
+                    o.ImageUrl = imageUrl(o.ImageUrl, 100);
                 });
                 return o.Products;
             });
@@ -173,7 +174,7 @@ namespace userServices {
             var url = this.url('Product/GetProductsByIds');
             return this.getByJson<Product[]>(url, { ids: productIds })
                 .then(items => {
-                    items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl));
+                    items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl, 100));
                     return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);;
                 });
         }
@@ -182,7 +183,7 @@ namespace userServices {
          * @param count 要获取商品的最多数量
          */
         productsByCategory(count: number, categoryId?: string) {
-            var args = { startRowIndex: 0, maximumRows: count } as wuzhui.DataSourceSelectArguments;
+            var args = { startRowIndex: 0, maximumRows: count } as DataSourceSelectArguments;
             if (categoryId != null) {
                 args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
             }
@@ -252,7 +253,7 @@ namespace userServices {
             return result;
         }
         myOrderList(pageIndex, type?: 'WaitingForPayment' | 'Send') {
-            let args = {} as wuzhui.DataSourceSelectArguments;
+            let args = {} as DataSourceSelectArguments;
             args.startRowIndex = config.pageSize * pageIndex;
             args.maximumRows = config.pageSize;
             if (type)
