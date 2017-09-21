@@ -1,30 +1,24 @@
 namespace userServices {
     //==========================================================
     // 公用函数 模块开始
-    export function imageUrl(path: string) {
+    export function imageUrl(path: string, width?: number) {
         if (!path) return path;
-
-        if (path.startsWith(`http://localhost:`)) {
-            path = path.substr(`http://localhost:${location.port}`.length);
-            var index = path.indexOf('/');
-            console.assert(index >0);
+    
+        let HTTP = 'http://'
+        if (path.startsWith(HTTP)) {
+            path = path.substr(HTTP.length);
+            let index = path.indexOf('/');
+            console.assert(index > 0);
             path = path.substr(index);
         }
-        else if (path.startsWith('http://localhost')) {
-            path = path.substr('http://localhost'.length);
+        else if (path[0] != '/') {
+            path = '/' + path;
         }
-        else if (path.startsWith('file://')) {
-            path = path.substr('file://'.length);
+    
+        let url = 'https://image.alinq.cn' + path;
+        if (width) {
+            url = url + '?width=' + width;
         }
-        let url: string;
-        if (!path.startsWith('http')) {
-            const imageBasePath = 'http://web.alinq.cn/store2';
-            url = imageBasePath + path;
-        }
-        else {
-            url = path;
-        }
-        url = url + `?application-key=${tokens.appToken}`;
         return url;
     }
 
