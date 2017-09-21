@@ -34,6 +34,7 @@ export interface PageData {
     }[];
 }
 
+const menuHeight = 50;
 export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     private screenElement: HTMLElement;
     components: (React.Component<any, any> & { controlId: string, controlName: string })[];
@@ -125,7 +126,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                         });
 
                     var c = await MobilePage.createControlInstance(o, e);
-                    var componet = Object.assign(c.control, { controlId: o.controlId,controlName: o.controlName  });
+                    var componet = Object.assign(c.control, { controlId: o.controlId, controlName: o.controlName });
                     this.components.push(componet);
                 }} />
         );
@@ -136,18 +137,18 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             return null;
 
         return (
-            <PageHeader>
+            <header className="page-header">
                 {this.renderControls(pageData.header.controls)}
-            </PageHeader>
+            </header>
         )
     }
 
     renderFooter(pageData: PageData): JSX.Element {
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
         return (
-            <PageFooter>
+            <footer className="page-footer">
                 {this.renderControls(footerControls)}
-            </PageFooter>
+            </footer>
         )
     }
 
@@ -163,9 +164,10 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
     renderRuntimeViews(pageData: PageData) {
         return (pageData.views || []).map((o, i) => (
-            <PageView key={i}>
+            <section className="page-view" key={i}>
                 {this.renderControls(o.controls)}
-            </PageView>
+                {pageData.showMenu ? <div style={{ height: menuHeight }} className="menu-placeholder"></div> : null}
+            </section>
         ));
     }
 
@@ -200,6 +202,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         return (pageData.views || []).map((o, i) => (
             <section key={i} ref={(e: HTMLElement) => e != null ? sortableElement(e, i) : null}>
                 {this.renderControls(o.controls)}
+                {pageData.showMenu ? <div style={{ height: menuHeight }} className="menu-placeholder"></div> : null}
             </section>
         ));
     }
