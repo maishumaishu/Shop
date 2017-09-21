@@ -26,7 +26,8 @@ export interface Product {
     Stock: number;
     ParentId: string,
     Fields: { key: string, value: string }[],
-    Arguments: { key: string, value: string }[]
+    Arguments: { key: string, value: string }[],
+    Title: string
 }
 
 export interface Brand {
@@ -143,11 +144,6 @@ export class ShoppingService extends Service {
         return Service.get<Product>(url, data).then((data) => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
-            // if (data['ImagePath'])
-            //     data.ImagePaths = ((data as any).ImagePath as string).split(',');
-            // else
-            //     data.ImagePaths = [];
-
             data.ImageUrl = imageUrl(data.ImageUrl);
 
             return data;
@@ -157,14 +153,14 @@ export class ShoppingService extends Service {
         var url = this.url('Product/GetProducts');
         return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args)
             .then(r => {
-                r.dataItems.forEach(item => item.ImageUrl = imageUrl(item.ImageUrl));
+                r.dataItems.forEach(item => item.ImageUrl = imageUrl(item.ImageUrl, 100));
                 return r;
             });
     }
     productsByIds(productIds: string[]) {
         var url = this.url('Product/GetProductsByIds');
         return Service.getByJson<Product[]>(url, { ids: productIds }).then(items => {
-            items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl));
+            items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl, 100));
             return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);
         });
     }
@@ -199,11 +195,12 @@ export class ShoppingService extends Service {
         alert(product.Id());
     }
     saveProduct(product: Product, parentId): Promise<{ Id: string }> {
-        var obj: any = Object.assign({}, product);// ko.mapping.toJS(product, { ignore: ['ExtProperties'] });
-        obj.parentId = parentId;
+        var obj = Object.assign({ parentId }, product);// ko.mapping.toJS(product, { ignore: ['ExtProperties'] });
+        // obj.parentId = parentId;
         obj.Arguments = JSON.stringify(product.Arguments) as any;
         obj.Fields = JSON.stringify(product.Fields) as any;
         obj["ImagePath"] = product.ImagePaths.join(',');
+        obj.Unit = obj.Unit || '件';
 
         if (!obj.Id) {
             product.Id = undefined;
@@ -216,9 +213,6 @@ export class ShoppingService extends Service {
     removeProduct(productId) {
         let url = Service.config.shopUrl + 'Product/DeleteProduct';
         return Service.deleteByJson(url, { id: productId });
-    }
-    topProduct(productId) {
-        return Service.callMethod('Product/ProductTop', { id: productId });
     }
     onShelve(productId) {
         //return services.callMethod('Product/OnShelve', { productId: productId });
@@ -328,10 +322,10 @@ export class ShoppingService extends Service {
     }
     //===================================================
     getDefineProperties(defineId) {
-        return Service.callMethod('Product/GetDefineProperties', { defineId: defineId });
+        return Service.get('Product/GetDefineProperties', { defineId: defineId });
     }
     getProductArguments(argumentId) {
-        return Service.callMethod('Product/GetProductArguments', { argumentId: argumentId });
+        return Service.get('Product/GetProductArguments', { argumentId: argumentId });
     }
     //================================================================
     // 运费
