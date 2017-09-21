@@ -142,40 +142,7 @@ export default function (page: chitu.Page) {
                                     }} />
                             </div>
                         </div>
-                        <div className="col-lg-4  col-md-4">
-                            <label className="col-lg-3">品牌</label>
-                            <div className="col-lg-9">
-                                <select className="form-control"
-                                    ref={(e: HTMLSelectElement) => {
-                                        if (!e) return;
-                                        e.value = product.BrandId || '';
-                                        e.onchange = () => {
-                                            product.BrandId = e.value;
-                                        }
-                                    }}>
-                                    <option>请选择品牌</option>
-                                    {this.state.brands.map(o =>
-                                        <option key={o.Id} value={o.Id}>{o.Name}</option>
-                                    )}
-                                </select>
-                            </div>
-                        </div>
 
-                    </div>
-                    <div className="row form-group">
-                        <div className="col-lg-4 col-md-4">
-                            <label className="col-lg-3">SKU</label>
-                            <div className="col-lg-9">
-                                <input className="form-control"
-                                    ref={(e: HTMLInputElement) => {
-                                        if (!e) return;
-                                        e.value = product.SKU || '';
-                                        e.onchange = () => {
-                                            product.SKU = e.value;
-                                        }
-                                    }} />
-                            </div>
-                        </div>
                         <div className="col-lg-4 col-md-4">
                             <label className="col-lg-3">价格*</label>
                             <div className="col-lg-9">
@@ -195,20 +162,54 @@ export default function (page: chitu.Page) {
                                 <span className="price validationMessage" style={{ display: 'none' }}></span>
                             </div>
                         </div>
+                    </div>
+                    <div className="row form-group">
                         <div className="col-lg-4 col-md-4">
-                            <label className="col-lg-3">单位*</label>
+                            <label className="col-lg-3">标题</label>
                             <div className="col-lg-9">
-                                <input name="unit" className="form-control" placeholder="请输入产品单位"
+                                <input name="unit" className="form-control" placeholder="请输入产品标题"
                                     ref={(e: HTMLInputElement) => {
                                         if (!e) return;
-                                        e.value = product.Unit as any || '';
+                                        e.value = product.Title || '';
                                         e.onchange = () => {
-                                            product.Unit = e.value;
+                                            product.Title = e.value;
                                         }
                                     }} />
                                 <span className="price validationMessage" style={{ display: 'none' }}></span>
                             </div>
                         </div>
+                        <div className="col-lg-4 col-md-4">
+                            <label className="col-lg-3">SKU</label>
+                            <div className="col-lg-9">
+                                <input className="form-control"
+                                    ref={(e: HTMLInputElement) => {
+                                        if (!e) return;
+                                        e.value = product.SKU || '';
+                                        e.onchange = () => {
+                                            product.SKU = e.value;
+                                        }
+                                    }} />
+                            </div>
+                        </div>
+                        <div className="col-lg-4  col-md-4">
+                            <label className="col-lg-3">品牌</label>
+                            <div className="col-lg-9">
+                                <select className="form-control"
+                                    ref={(e: HTMLSelectElement) => {
+                                        if (!e) return;
+                                        e.value = product.BrandId || '';
+                                        e.onchange = () => {
+                                            product.BrandId = e.value;
+                                        }
+                                    }}>
+                                    <option>请选择品牌</option>
+                                    {this.state.brands.map(o =>
+                                        <option key={o.Id} value={o.Id}>{o.Name}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
                     <hr />
                     <PropertiesComponent ref={(e) => this.fieldPropertiies = e || this.fieldPropertiies} name="商品规格" properties={product.Fields}
