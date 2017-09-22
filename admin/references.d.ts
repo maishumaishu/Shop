@@ -19,10 +19,10 @@ declare module 'componentDesigner' {
     import * as c from 'modules/station/components/componentDesigner';
     export = c;
 }
-declare module 'service' {
-    import * as c from 'services/service';
-    export = c;
-}
+// declare module 'service' {
+//     import * as c from 'services/service';
+//     export = c;
+// }
 declare module 'dilu' {
     export = dilu;
 }

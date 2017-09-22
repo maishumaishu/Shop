@@ -1,7 +1,7 @@
 import { default as site } from 'site';
 import { CommandField, createGridView, GridViewItemPopupEditor } from 'myWuZhui';
 import FormValidator from 'formValidator';
-import { default as shopping, Brand } from 'services/shopping'
+import { default as shopping } from 'services/shopping'
 import { default as activity } from 'services/activity'
 export default function (page: chitu.Page) {
 

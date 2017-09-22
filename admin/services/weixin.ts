@@ -21,7 +21,7 @@
 //     return services;
 // });
 
-import { default as Service } from 'service';
+import { default as Service } from 'services/service';
 
 export class WebXinService extends Service {
     getSetting() {

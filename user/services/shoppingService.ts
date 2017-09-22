@@ -41,29 +41,29 @@ namespace userServices {
         ProvinceName: string,
         RegionId: string
     }
-    export interface Product {
-        Id: string, Arguments: Array<{ key: string, value: string }>,
-        BrandId: string, BrandName: string, Price: number,
-        Score: number, Unit: string, MemberPrice: number,
-        Fields: Array<{ key: string, value: string }>,
-        GroupId: string, ImageUrl: string, ImageUrls: Array<string>,
-        ProductCategoryId: string, Name: string, //IsFavored?: boolean,
-        ProductCategoryName: string,
-        CustomProperties: Array<CustomProperty>,
-        Promotions: Promotion[],
-        Title: string,
-    }
-    export interface CustomProperty {
-        Name: string,
-        Options: Array<{ Name: string, Selected: boolean, Value: string }>
-    }
-    export interface Promotion {
-        Type: 'Given' | 'Reduce' | 'Discount',
-        Contents: {
-            Id: string,
-            Description: string
-        }[],
-    }
+    // export interface Product {
+    //     Id: string, Arguments: Array<{ key: string, value: string }>,
+    //     BrandId: string, BrandName: string, Price: number,
+    //     Score: number, Unit: string, MemberPrice: number,
+    //     Fields: Array<{ key: string, value: string }>,
+    //     GroupId: string, ImagePath: string, ImagePaths: Array<string>,
+    //     ProductCategoryId: string, Name: string, //IsFavored?: boolean,
+    //     ProductCategoryName: string,
+    //     CustomProperties: Array<CustomProperty>,
+    //     Promotions: Promotion[],
+    //     Title: string,
+    // }
+    // export interface CustomProperty {
+    //     Name: string,
+    //     Options: Array<{ Name: string, Selected: boolean, Value: string }>
+    // }
+    // export interface Promotion {
+    //     Type: 'Given' | 'Reduce' | 'Discount',
+    //     Contents: {
+    //         Id: string,
+    //         Description: string
+    //     }[],
+    // }
     export interface ProductCategory {
         Id: string, Name: string, ImagePath: string
     }
@@ -132,11 +132,11 @@ namespace userServices {
                 .then(o => this.processProduct(o));
         }
         private processProduct(product: Product): Product {
-            if (!product.ImageUrls && product.ImageUrl != null) {
-                product.ImageUrls = product.ImageUrl.split(',').map(o => imageUrl(o));
+            if (!product.ImagePaths && product.ImagePath != null) {
+                product.ImagePaths = product.ImagePath.split(',').map(o => imageUrl(o));
             }
-            product.ImageUrls = product.ImageUrls || [];
-            product.ImageUrl = product.ImageUrls[0];
+            product.ImagePaths = product.ImagePaths || [];
+            product.ImagePath = product.ImagePaths[0];
             product.Arguments = product.Arguments || [];
             product.Fields = product.Fields || [];
 
@@ -161,7 +161,7 @@ namespace userServices {
             }
             return this.get<{ Products: Array<Product> }>(url, args).then(o => {
                 o.Products.forEach(o => {
-                    o.ImageUrl = imageUrl(o.ImageUrl, 100);
+                    o.ImagePath = imageUrl(o.ImagePath, 100);
                 });
                 return o.Products;
             });
@@ -174,7 +174,7 @@ namespace userServices {
             var url = this.url('Product/GetProductsByIds');
             return this.getByJson<Product[]>(url, { ids: productIds })
                 .then(items => {
-                    items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl, 100));
+                    items.forEach(o => o.ImagePath = imageUrl(o.ImagePath, 100));
                     return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);;
                 });
         }
@@ -191,7 +191,7 @@ namespace userServices {
             let url = this.url('Product/GetProducts');
             return this.get<{ Products: Array<Product> }>(url, args).then(o => {
                 o.Products.forEach(o => {
-                    o.ImageUrl = imageUrl(o.ImageUrl);
+                    o.ImagePath = imageUrl(o.ImagePath);
                 });
                 return o.Products;
             })

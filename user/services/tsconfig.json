@@ -10,6 +10,8 @@
         "../../lib/typings/chitu.d.ts",
         "../../lib/typings/fetch.d.ts",
         "../../lib/typings/wuzhui.d.ts",
+        
+        "../../share/*.ts",
 
         "*.ts"
     ]

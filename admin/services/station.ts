@@ -1,4 +1,4 @@
-﻿import { default as Service } from 'service';
+﻿import { default as Service } from 'services/service';
 import templates from 'services/data/templates'
 
 export interface ControlDescrtion {
@@ -223,9 +223,9 @@ export class StationService extends Service {
         let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-key=${Service.appToken}`;
         return url;
     }
-    removeImage(name: string) {
+    removeImage(_id: string) {
         let url = `${Service.config.siteUrl}Page/RemoveImage`;
-        return Service.deleteByJson(url, { name });
+        return Service.deleteByJson(url, { _id });
     }
     // getImageNameFromUrl(imageUrl: string) {
     //     var arr = imageUrl.split('?');

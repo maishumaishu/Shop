@@ -24,6 +24,7 @@
     "include": [
         "../lib/typings",
         "../lib/*.d.ts",
+        "../share/*.d.ts",
         "../www/user/userServices.d.ts",
         "services/*",
         "references.d.ts",

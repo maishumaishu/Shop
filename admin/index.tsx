@@ -75,7 +75,6 @@ requirejs.config({
 
         ace: 'assets/js/uncompressed/ace',
 
-        sv: 'services',
         custom: 'Custom',
         mod: 'modules',
         modules: 'modules',
@@ -85,7 +84,7 @@ requirejs.config({
         ueditor: 'ueditor',
         'ue': 'ueditor',
         'wuzhui': 'scripts/wuzhui',
-        service: 'services/service',
+        // service: 'services/service',
         userServices: '../user/userServices',
         componentDesigner: 'modules/station/components/componentDesigner',
         mobileComponents: '../user/pageComponents',

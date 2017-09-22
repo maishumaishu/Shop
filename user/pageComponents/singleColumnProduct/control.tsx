@@ -1,5 +1,5 @@
 import { Component, componentsDir } from 'mobileComponents/common';
-import { ShoppingCartService, ShoppingService, Product } from 'userServices';
+import { ShoppingCartService, ShoppingService, imageUrl } from 'userServices';
 import * as ui from 'ui';
 
 let { ImageBox } = controls;
@@ -130,9 +130,6 @@ export default class SingleColumnProductControl extends Component<Props, State> 
                         case 'singleColumn':
                             element = await this.renderSingleColumn();
                             break;
-                        case 'largePicture':
-                            element = await this.renderLargePicture();
-                            break;
                     }
                     ReactDOM.render(element, e);
 
@@ -154,7 +151,7 @@ export default class SingleColumnProductControl extends Component<Props, State> 
                 {products.filter(o => o != null).map(o =>
                     <div key={o.Id} className="product single">
                         <div className={leftClassName}>
-                            <img className="image img-responsive" src={o.ImageUrl} title="高州风味" />
+                            <img className="image img-responsive" src={imageUrl(o.ImagePath)} title="高州风味" />
                         </div>
                         <div className={`content ${rightClassName}`}>
                             <div className="name interception">
@@ -189,14 +186,14 @@ export default class SingleColumnProductControl extends Component<Props, State> 
                 {products.filter(o => o != null).map(o =>
                     <div key={o.Id} className="product double col-xs-6">
                         <div>
-                            <img src={o.ImageUrl} title="高州风味" />
+                            <img src={imageUrl(o.ImagePath)} title="高州风味" />
                             <div className="name">
                                 {o.Name}
                             </div>
-                            <div>
-                                <div className="price pull-left">
+                            <div className="price">
+                                <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
-                                </div>
+                                </span>
                                 <div className="pull-right">
                                     <i className="icon-plus-sign" />
                                 </div>
@@ -211,57 +208,6 @@ export default class SingleColumnProductControl extends Component<Props, State> 
 
     }
 
-    async renderLargePicture() {
-        var products = await this.products();
-
-        products = products.filter(o => o != null);
-        let largeProduct = products[0];
-        return (
-            <div className="singleColumnProductControl">
-                <div key={largeProduct.Id} className="product large">
-                    <img className="image img-responsive" src={largeProduct.ImageUrl} title="高州风味" />
-                    <div className="content">
-                        <div className="title interception">
-                            {largeProduct.Name}
-                        </div>
-                        <div>
-                            <div className="price pull-left">
-                                ￥{largeProduct.Price.toFixed(2)}
-                            </div>
-                            <div className="pull-right">
-                                <i className="icon-plus-sign" />
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className="clearfix"></div>
-                </div>
-
-                {products.filter((o, i) => i > 0).map(o =>
-                    <div key={o.Id} className="product small col-xs-6">
-                        <div>
-                            <img className="image img-responsive" src={o.ImageUrl} title="高州风味" />
-                            <div className="title interception">
-                                {o.Name}
-                            </div>
-                            <div>
-                                <div className="price pull-left">
-                                    ￥{o.Price.toFixed(2)}
-                                </div>
-                                <div className="pull-right">
-                                    <i className="icon-plus-sign" />
-                                </div>
-                            </div>
-
-                        </div>
-                        <div className="clearfix"></div>
-                    </div>
-                )}
-            </div>
-        );
-
-
-    }
 
     async products(): Promise<Product[]> {
         var products: Product[];
@@ -270,6 +216,7 @@ export default class SingleColumnProductControl extends Component<Props, State> 
         else
             products = await shopping.productsByIds(this.state.productIds);
 
+        products.forEach(o => o.ImagePath = o.ImagePaths[0]);
         return products;
     }
 

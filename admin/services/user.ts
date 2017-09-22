@@ -1,4 +1,4 @@
-import { default as Service } from 'service';
+import { default as Service } from 'services/service';
 
 function guid() {
     function s4() {

@@ -1,40 +1,37 @@
 ﻿
 // import Product = require('models/Product');
-import { Service as Service, imageUrl } from 'service';
+import { Service as Service } from 'services/service';
 // import mapping = require('knockout.mapping');
 
 // let JData = window['JData'];
 
 
-export interface Product {
-    Id: string;
-    BuyLimitedNumber: number;
-    // ChildrenCount: number;
-    Name: string;
-    Unit: string;
-    OffShelve: boolean;
-    OldPrice: string;
-    Price: number;
-    CostPrice: string;
-    Introduce: string;
-    ImageUrl: string;
-    ImagePaths: string[];
-    Score: number;
-    ProductCategoryId: string,
-    BrandId: string,
-    SKU: string,
-    Stock: number;
-    ParentId: string,
-    Fields: { key: string, value: string }[],
-    Arguments: { key: string, value: string }[],
-    Title: string
-}
+// export interface Product {
+//     Id: string;
+//     BuyLimitedNumber: number;
+//     // ChildrenCount: number;
+//     Name: string;
+//     Unit: string;
+//     OffShelve: boolean;
+//     OldPrice: string;
+//     Price: number;
+//     CostPrice: string;
+//     Introduce: string;
+//     ImagePath: string;
+//     ImagePaths: string[];
+//     ImageCover: string;
+//     Score: number;
+//     ProductCategoryId: string,
+//     BrandId: string,
+//     SKU: string,
+//     Stock: number;
+//     ParentId: string,
+//     Fields: { key: string, value: string }[],
+//     Arguments: { key: string, value: string }[],
+//     Title: string
+// }
 
-export interface Brand {
-    Id: string;
-    Name: string;
-    Image: string;
-}
+
 
 //===============================================
 // 运费
@@ -144,23 +141,18 @@ export class ShoppingService extends Service {
         return Service.get<Product>(url, data).then((data) => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
-            data.ImageUrl = imageUrl(data.ImageUrl);
 
             return data;
         });
     }
     products(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
-        return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args)
-            .then(r => {
-                r.dataItems.forEach(item => item.ImageUrl = imageUrl(item.ImageUrl, 100));
-                return r;
-            });
+        return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
     }
     productsByIds(productIds: string[]) {
         var url = this.url('Product/GetProductsByIds');
         return Service.getByJson<Product[]>(url, { ids: productIds }).then(items => {
-            items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl, 100));
+            // items.forEach(o => o.ImagePath = imageUrl(o.ImagePath, 100));
             return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);
         });
     }
@@ -199,7 +191,7 @@ export class ShoppingService extends Service {
         // obj.parentId = parentId;
         obj.Arguments = JSON.stringify(product.Arguments) as any;
         obj.Fields = JSON.stringify(product.Fields) as any;
-        obj["ImagePath"] = product.ImagePaths.join(',');
+        obj.ImagePaths = product.ImagePaths.join(',') as any;
         obj.Unit = obj.Unit || '件';
 
         if (!obj.Id) {

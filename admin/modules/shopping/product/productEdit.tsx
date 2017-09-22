@@ -1,13 +1,14 @@
 ﻿import app = require('application')
-import { default as shopping, Product as Product, Brand } from 'services/shopping';
+import { default as shopping } from 'services/shopping';
 import { StationService, guid } from 'services/station';
-import { Service, ValueStore, imageUrl } from 'service';
+import { Service, ValueStore, imageUrl } from 'services/service';
 
 import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';
 import FormValidator from 'formValidator';
 import * as ui from 'ui';
 import tips from 'tips';
+import ImageUpload from 'components/imageUpload';
 
 const station = new StationService();
 const imageThumbSize = 112;
@@ -75,17 +76,34 @@ export default function (page: chitu.Page) {
                 });
         }
         deleteImage(imageName: string) {
-            return station.removeImage(imageName).then(data => {
+            let arr = imageName.split('_');
+            console.assert(arr.length == 3);
+            return station.removeImage(arr[0]).then(data => {
                 var imagePaths = this.state.product.ImagePaths.filter(o => o != imageName);
                 this.state.product.ImagePaths = imagePaths;
                 this.setState(this.state);
                 return data;
             });
         }
+        saveContentImage(data: ui.ImageFileToBase64Result) {
+            return station.saveImage(data.base64).then(o => {
+                let name = `${o._id}_${data.width}_${data.height}`;
+                this.state.product.ImagePaths.push(name);
+                this.setState(this.state);
+            });
+        }
+        saveCoverImage(data: ui.ImageFileToBase64Result) {
+            return station.saveImage(data.base64).then(o => {
+                let name = `${o._id}_${data.width}_${data.height}`;
+                this.state.product.ImagePath = name;
+                this.setState(this.state);
+            });
+        }
+
         render() {
             let product = this.state.product;
-            let ImagePaths = this.state.product.ImagePaths || [];
-
+            let imagePaths = this.state.product.ImagePaths || [];
+            let imagePath = this.state.product.ImagePath;
             return (
                 <div className="Shopping-ProductEdit"
                     ref={(e: HTMLElement) => this.element = e || this.element}>
@@ -224,38 +242,24 @@ export default function (page: chitu.Page) {
                         </div>
                     </div>
                     <div className="row form-group">
-                        {(ImagePaths).map((o, i) =>
-                            <div key={i} className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: imageThumbSize, height: imageThumbSize }}>
-                                <img key={i} src={imageUrl(o)} style={{ width: '100%', height: '100%' }} />
-                                <div style={{ position: 'relative', bottom: 18, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
-                                    <button href="javascript:" style={{ color: 'white' }} className="btn-link"
-                                        ref={(e: HTMLButtonElement) => {
-                                            if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.deleteImage(o), {
-                                                confirm: '确定删除该图片吗？'
-                                            })
-                                        }}>
-                                        删除
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                        <a className="fileinput-button" style={{ float: 'left', padding: '0 12px 0 12px' }}>
-                            <div className="text-center" style={{ width: imageThumbSize, height: imageThumbSize, padding: '16px 0 0 0', border: 'solid 1px #ccc' }}>
-                                <i className="icon-plus icon-4x"></i>
-                                <div>图片上传</div>
-                                <input name="ImageUpload" type="file" style={{ position: 'relative', top: '-100%', width: '100%', height: '100%', opacity: 0 }}
-                                    ref={(e: HTMLInputElement) => {
-                                        if (!e) return;
-                                        e.onchange = () => {
-                                            if (e.files.length > 0)
-                                                this.updloadImage(e.files[0]);
-                                        }
-                                    }}
-                                />
-                            </div>
-                            {/* <input name="ImageUpload" type="file" style={{ position: 'relative', top: -112, left: 0, opacity: 0, width: 112, height: 112 }} /> */}
+                        {(imagePaths).map((o, i) => <ImageThumber imagePath={o} key={o}
+                            removed={() => {
+                                this.state.product.ImagePaths = imagePaths.filter((item, index) => index != i);
+                                this.setState(this.state);
+                            }} />)}
+                        <a style={{ float: 'left', paddingLeft: 12 }}>
+                            <ImageUpload title="内容图片"
+                                saveImage={(data) => this.saveContentImage(data)} style={{ float: 'left' }} />
                         </a>
+                        {imagePath ?
+                            <ImageThumber imagePath={imagePath}
+                                removed={() => {
+                                    this.state.product.ImagePath = '', this.setState(this.state)
+                                }} /> :
+                            <a style={{ float: 'left', paddingLeft: 12 }}>
+                                <ImageUpload title={'封面图片'}
+                                    saveImage={(data) => this.saveCoverImage(data)} style={{ float: 'left' }} />
+                            </a>}
                     </div>
                     <hr />
 
@@ -305,4 +309,44 @@ export default function (page: chitu.Page) {
         ReactDOM.render(<ProductEditPage product={product} />, element);
     })
 
+}
+
+{/* <div key={i} className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: imageThumbSize, height: imageThumbSize }}>
+                                <img key={i} src={imageUrl(o)} style={{ width: '100%', height: '100%' }} />
+                                <div style={{ position: 'relative', bottom: 24, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
+                                    <button href="javascript:" style={{ color: 'white' }} className="btn-link"
+                                        ref={(e: HTMLButtonElement) => {
+                                            if (!e) return;
+                                            e.onclick = ui.buttonOnClick(() => this.deleteImage(o), {
+                                                confirm: '确定删除该图片吗？'
+                                            })
+                                        }}>
+                                        删除
+                                    </button>
+                                </div>
+                            </div> */}
+
+class ImageThumber extends React.Component<React.Props<ImageThumber> & { imagePath, removed: (sender: ImageThumber) => void }, {}>{
+    setDeleteButton(e: HTMLButtonElement, imagePath: string) {
+        if (!e) return;
+        let arr = imagePath.split('_');
+        console.assert(arr.length == 3);
+        e.onclick = ui.buttonOnClick(() => station.removeImage(arr[0]).then(o => this.props.removed(this)), {
+            confirm: '确定删除该图片吗？'
+        })
+    }
+    render() {
+        let imagePath = this.props.imagePath;
+        return (
+            <div className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: imageThumbSize, height: imageThumbSize }}>
+                <img src={imageUrl(imagePath, 100)} style={{ width: '100%', height: '100%' }} />
+                <div style={{ position: 'relative', bottom: 24, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
+                    <button href="javascript:" style={{ color: 'white' }} className="btn-link"
+                        ref={(e: HTMLButtonElement) => this.setDeleteButton(e, imagePath)}>
+                        删除
+                    </button>
+                </div>
+            </div>
+        );
+    }
 }

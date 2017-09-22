@@ -1,5 +1,5 @@
 import { componentsDir, Component, component } from 'mobileComponents/common';
-import { ShoppingCartService, ShoppingService, Product, Promotion, CustomProperty, userData, ValueStore } from 'userServices';
+import { ShoppingCartService, ShoppingService, userData, ValueStore } from 'userServices';
 import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, Panel, PageHeader, PageFooter, PageView } from 'mobileControls';
 import * as ui from 'ui';
 import { app } from 'site';
@@ -35,7 +35,7 @@ export default class ProductControl extends Component<Props, State>{
         // }
         // else {
         product = {
-            Id: 'abc', Name: "Product", ImageUrl: "ABC_200_200", ImageUrls: ["ABC_200_200"],
+            Id: 'abc', Name: "Product", ImagePath: "ABC_200_200", ImagePaths: ["ABC_200_200"],
             Price: 100, MemberPrice: 100, Promotions: [], Arguments: [],
             CustomProperties: []
         } as Product;
@@ -46,9 +46,9 @@ export default class ProductControl extends Component<Props, State>{
                 ref={async (e) => {
                     if (!e || !this.props.productId) return;
                     let p = await shopping.product(this.props.productId);
-                    p.ImageUrl = p.ImageUrl || 'empty_300_300';
-                    if (!p.ImageUrls || p.ImageUrls.length == 0) {
-                        p.ImageUrls = [p.ImageUrl];
+                    p.ImagePath = p.ImagePath || 'empty_300_300';
+                    if (!p.ImagePaths || p.ImagePaths.length == 0) {
+                        p.ImagePaths = [p.ImagePath];
                     }
                     e.state.product = p;
                     e.setState(e.state);
@@ -378,7 +378,7 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
                 <PageView ref={(o) => this.productView = o}>
                     <div name="productImages" className="swiper-container">
                         <div className="swiper-wrapper">
-                            {p.ImageUrls.map((o, i) => (
+                            {p.ImagePaths.map((o, i) => (
                                 <div key={i} className="swiper-slide" style={{ textAlign: "center" }}>
                                     <img src={o} className="img-responsive-100 img-full" title="牛牛店宝"
                                         ref={(e: HTMLImageElement) => {

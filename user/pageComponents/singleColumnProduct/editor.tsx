@@ -1,6 +1,6 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control';
-import { ShoppingService, Category, Product } from 'services/shopping';
+import { ShoppingService, Category } from 'services/shopping';
 import { StationService } from 'services/station';
 import { imageUrl } from 'services/service';
 
@@ -24,12 +24,6 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
     }
 
     setSourceTypeInput(e: HTMLInputElement) {
-        // if (!e || e.onchange) return;
-        // e.checked = this.state.productSourceType == e.value;
-        // e.onchange = () => {
-        //     this.state.productSourceType = e.value as any;
-        //     this.setState(this.state);
-        // }
         this.setRadioElement(e, "productSourceType");
     }
 
@@ -86,16 +80,6 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
         });
     }
 
-    // setTitleInput(e: HTMLInputElement) {
-    //     if (!e || e.onchange) return;
-
-    //     e.onchange = () => {
-    //         this.state.moduleTitle = e.value;
-    //         this.setState(this.state);
-    //     }
-    //     e.value = this.state.moduleTitle;
-    // }
-
     setImageFileInput(e: HTMLInputElement) {
         if (!e || e.onchange != null)
             return;
@@ -130,21 +114,18 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
         }
     }
 
-    productSelected(product: Product) {
+    productSelected(product: Product): boolean {
         let productIds = this.state.productIds || [];
+        let exists = productIds.indexOf(product.Id) >= 0;
+        if (exists) {
+            ui.alert({ title: "提示", message: '该商品已选择' })
+            return false;
+        }
         productIds.push(product.Id);
 
         this.state.productIds = productIds;
         this.setState(this.state);
-    }
-
-    renderImage(e: HTMLImageElement, productId: string) {
-        if (!e) return;
-        shopping.product(productId).then(p => {
-            e.src = p.ImageUrl;
-            console.assert(p.ImageUrl != null, 'product image url is null');
-            ui.renderImage(e);
-        })
+        return true;
     }
 
     async renderProducts(container: HTMLElement, productIds: string[]) {
@@ -155,7 +136,7 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
             <ul className="selected-products">
                 {products.map(o =>
                     <li key={o.Id} className="product">
-                        <img src={o.ImageUrl} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+                        <img src={imageUrl(o.ImagePath, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                         <div className="delete">
                             <button className="btn-link"
                                 ref={(e: HTMLButtonElement) => this.setProductDelete(e, o.Id)}>
@@ -206,11 +187,6 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
                             ref={(e: HTMLInputElement) => this.setRadioElement(e, 'listType')} />
                         双列
                     </span>
-                    <span>
-                        <input name="styleType" type="radio" value="largePicture"
-                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'listType')} />
-                        大图
-                    </span>
                 </div>
                 {listType == 'singleColumn' ?
                     <div className="form-group">
@@ -254,7 +230,7 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
 }
 
 
-type ProductsDialogProps = { shopping: ShoppingService, selected: (product: Product) => void } & React.Props<ProductSelectDialog>;
+type ProductsDialogProps = { shopping: ShoppingService, selected: (product: Product) => boolean } & React.Props<ProductSelectDialog>;
 class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[] }>{
 
     private element: HTMLElement;
@@ -283,9 +259,14 @@ class ProductSelectDialog extends React.Component<ProductsDialogProps, { product
     }
 
     productSelected(p: Product) {
+        var isOK = true;
         if (this.props.selected) {
-            this.props.selected(p);
+            isOK = this.props.selected(p);
         }
+
+        if (!isOK)
+            return;
+
         ui.hideDialog(this.element);
     }
 
@@ -405,7 +386,7 @@ class ProductSelectDialog extends React.Component<ProductsDialogProps, { product
                                         {products.map(p =>
                                             <div key={p.Id} className="product"
                                                 onClick={() => this.productSelected(p)}>
-                                                <img src={p.ImageUrl} ref={(e: HTMLImageElement) => this.renderImage(e, p.ImageUrl)} />
+                                                <img src={imageUrl(p.ImagePath, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                                                 <div className="interception">
                                                     {p.Name}
                                                 </div>

@@ -8,7 +8,7 @@
 //     }
 
 // })(function () {
-import { default as Service } from 'service';
+import { default as Service } from 'services/service';
 
 var baseUrl = Service.config.shopUrl + 'PromotionActivity/';
 let JData = window['JData'];

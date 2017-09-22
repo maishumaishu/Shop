@@ -1,4 +1,4 @@
-import { default as shopping, Product } from 'services/shopping';
+import { default as shopping } from 'services/shopping';
 import station from 'services/station';
 import app = require('application');
 import bootbox = require('bootbox');
