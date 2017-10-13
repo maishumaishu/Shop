@@ -102,10 +102,10 @@ module.exports = function (grunt) {
     });
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-contrib-stylus');
+    // grunt.loadNpmTasks('grunt-contrib-sass');
+    // grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.registerTask('admin', ['shell:admin', 'sass:admin', 'less:admin', 'less:mobileComponents', 'stylus:admin', 'copy:admin']);
+    grunt.registerTask('admin', ['shell:admin', 'less:admin', 'less:mobileComponents', 'copy:admin']);
     grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
     grunt.registerTask('default', ['admin', 'user']);
     grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);

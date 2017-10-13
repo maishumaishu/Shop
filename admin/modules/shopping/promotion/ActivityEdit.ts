@@ -24,7 +24,7 @@ var promotionTypeTexts = {
     Discount: '满折'
 };
 
-var services = window['services'];
+// var services = window['services'];
 var site = window['site'];
 
 function showDialog($dlg, title, ok_callback) {
@@ -69,10 +69,10 @@ function getConditionText(promotionRule: PromotionContentRule) {
         condition_text = `购买指定商品任意 ${ko.unwrap(promotionRule.buyCount)} 件`//chitu.Utility.format('购买指定商品任意 {0} 件,', <any>ko.unwrap(promotionRule.buyCount));
     }
     else if (promotion.method() == promotionMethods.amount) {
-        condition_text = `购买指定商品满 ${new Number(promotionRule.buyAmount())['toFormattedString']('￥{0:C2}')} 元,`;
+        condition_text = `购买指定商品满 ￥${new Number(promotionRule.buyAmount()).toFixed(2)} 元,`;
     }
     return condition_text;
-}
+}//['toFormattedString'] ('￥{0:C2}')
 
 function createPromotionRule(promotion, type1): PromotionContentRule {
     /// <param name="promotion" type="PromotionContent"/>
@@ -146,7 +146,7 @@ class PromotionContent {
 
 
         var self = this;
-        services.activity.addContentRule(levelValue, givenType, givenValue, this.promotionId, rule.description)
+        sv_activity.addContentRule(levelValue, givenType, givenValue, this.promotionId, rule.description)
             .done((data) => {
                 rule['id'] = data.Id;
                 self.rules.push(rule);
@@ -163,7 +163,7 @@ class PromotionContent {
     }
 
     removeRule = (item) => {
-        services.activity.deleteContentRule(item.id).done(function () {
+        sv_activity.deleteContentRule(item.id).done(function () {
             item.promotion.rules.remove(item);
         });
     }
@@ -371,7 +371,8 @@ class AmountPromotionContentRule extends PromotionContentRule {
         this.reduceAmount = ko.observable<number>().extend({ required: true });
         this.givenValue = ko.computed(() => this.reduceAmount() == null ? '' : this.reduceAmount().toString());
         this.description = ko.computed(() => {
-            let str = new Number(this.reduceAmount())['toFormattedString']('￥{0:C2}');
+            // let str = new Number(this.reduceAmount())['toFormattedString']('￥{0:C2}');
+            let str = `￥${new Number(this.reduceAmount()).toFixed(2)}`; 
             var given_text = `即减 ${str} 元`;
             return getConditionText(this) + given_text;
         });
@@ -428,12 +429,12 @@ class PromotionRange {
 
         var self = this;
         this.allProducts.subscribe((value) => {
-            services.activity.changeIsAll(self.promotionId, value);
+            sv_activity.changeIsAll(self.promotionId, value);
         });
     }
     addRule = (type, name, id, collectionType, promotionId) => {
         var self = this;
-        return services.activity.addRangeRule(id, name, type, collectionType, promotionId)
+        return sv_activity.addRangeRule(id, name, type, collectionType, promotionId)
             .done((data) => {
                 var rule = this.newRule(data.Id, type, id, name, collectionType, promotionId);
                 self.rules.push(rule);
@@ -441,7 +442,7 @@ class PromotionRange {
     }
     removeRule = (item) => {
         /// <param name="item" type="PromotionRangeRule"/>
-        return services.activity.deleteRangeRule(ko.unwrap(item.id))
+        return sv_activity.deleteRangeRule(ko.unwrap(item.id))
             .done(() => {
                 this.rules.remove(item);
             });
@@ -458,7 +459,7 @@ class PromotionRange {
                 self.product_val.showAllMessages();
                 return $.Deferred().reject();
             }
-            return services.shopping.getProduct(self.product.id()).done((product) => {
+            return shopping.product(self.product.id()).then((product) => {
                 var name = ko.unwrap(product.Name)
                 var productId = ko.unwrap(product.Id)
                 var collectionType = ko.unwrap(self.product.collectionType)
@@ -538,7 +539,7 @@ class PromotionRangeRule {
         this.isInclude.subscribe((value) => {
             var type = value ? 'Include' : 'Exclude';
             this.collectionType(value ? 'Include' : 'Exclude');
-            services.activity.changeCollectionType(ko.unwrap(this.id), type);
+            sv_activity.changeCollectionType(ko.unwrap(this.id), type);
         }, this);
     }
 }
@@ -589,7 +590,7 @@ class Model {
         }
 
         this.removePromotion = (item) => {
-            return services.activity.deletePromotion(ko.unwrap(item.id)).done(() => {
+            return sv_activity.deletePromotion(ko.unwrap(item.id)).done(() => {
                 this.promotions.remove(item);
             });
         }

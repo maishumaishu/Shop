@@ -35,8 +35,8 @@
         "modules/station/components/componentDesigner",
 
         "*.tsx",
-        "**/*.tsx"
-        // "*.ts",
-        // "**/*.ts"
+        "**/*.tsx",
+        "*.ts",
+        "**/*.ts"
     ]
 }

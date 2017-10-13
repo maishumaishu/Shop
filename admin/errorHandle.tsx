@@ -11,8 +11,13 @@ alertElement.className = 'modal fade';
 container.appendChild(alertElement);
 
 services.error.add((sender, error) => {
-    if (error.Code == 'NotLogin') {
-        app.redirect('user/login');
+    //724
+
+    if (error.name == 'NotLogin' || error.status == 724) {
+        services.token = '';
+        // location.search = '';
+        // app.redirect('user/login');
+        location.href = 'index.html#user/login';
         return;
     };
 
@@ -22,10 +27,12 @@ services.error.add((sender, error) => {
         if (!error.handled) {
             ui.alert({
                 title: '错误',
-                message: error.Message || error.message
+                message: error.message
             });
         }
+
+        clearTimeout(timeoutId);
+
     }, 100);
-    clearTimeout(timeoutId);
     //========================================
 });

@@ -23,6 +23,16 @@
 
 import { default as Service } from 'services/service';
 
+let headers = {};
+if (Service.token)
+    headers['user-token'] = Service.token;
+
+if (location.search) {
+    headers['application-key'] = location.search.substr(1);
+}
+
+$.ajaxSettings.headers = headers;
+
 export class WebXinService extends Service {
     getSetting() {
         return $.ajax({

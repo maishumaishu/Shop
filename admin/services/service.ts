@@ -1,5 +1,10 @@
-﻿import $ = require('jquery');
+﻿// import $ = require('jquery');
+import * as chitu from 'chitu';
 
+interface ServiceError extends Error {
+    handled: boolean;
+    status: number;
+}
 
 function ajax<T>(url: string, options: RequestInit): Promise<T> {
 
@@ -11,17 +16,17 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
 
     //==========================================================
     // 错误处理模块
-    class AjaxError implements Error {
-        name: string;
-        message: string;
-        method: 'get' | 'post';
+    // class AjaxError implements Error {
+    //     name: string;
+    //     message: string;
+    //     method: 'get' | 'post';
 
-        constructor(method) {
-            this.name = 'ajaxError';
-            this.message = 'Ajax Error';
-            this.method = method;
-        }
-    }
+    //     constructor(method) {
+    //         this.name = 'ajaxError';
+    //         this.message = 'Ajax Error';
+    //         this.method = method;
+    //     }
+    // }
 
     //==============================================================
     // 将 json 对象格式化
@@ -88,13 +93,17 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
 
         let err = response.status >= 300 ? textObject : null;
         if (typeof err == 'string') {
-            let ajaxError = new AjaxError(options.method);
+            let ajaxError = new Error() as ServiceError;//(options.method);
             ajaxError.name = `${response.status}`;
             ajaxError.message = response.statusText;
+
             err = ajaxError;
         }
-        if (err)
+
+        if (err) {
+            (err as ServiceError).status = response.status;
             throw err;
+        }
 
         textObject = travelJSON(textObject);
         return textObject;
@@ -105,7 +114,7 @@ function ajax<T>(url: string, options: RequestInit): Promise<T> {
         let timeId: number;
         if (options.method == 'get') {
             timeId = window.setTimeout(() => {
-                let err = new AjaxError(options.method);
+                let err = new Error() as ServiceError;
                 err.name = 'timeout';
                 reject(err);
                 // this.error.fire(this, err);
@@ -191,7 +200,7 @@ export function imageUrl(path: string, width?: number) {
 }
 
 export class Service {
-    static error = $.Callbacks()
+    static error = chitu.Callbacks<Service, ServiceError>()
     static config = {
         serviceHost: remote_service_host,
         shopUrl: `https://${remote_service_host}/AdminShop/`,
@@ -202,7 +211,11 @@ export class Service {
         imageUrl: `https://${remote_service_host}/UserServices/Site/`
     }
 
-    private static ajax<T>(options: { url: string, data?: any, method?: string, headers?: any }): Promise<T> {
+    // ajax<T>(options: { url: string, data: any, method?: string, headers?: any }) {
+    //     return Service.ajax<T>(options);
+    // }
+
+    ajax<T>(options: { url: string, data?: any, method?: string, headers?: any }): Promise<T> {
         let { data, method, headers, url } = options;
 
         headers = headers || {};
@@ -225,13 +238,13 @@ export class Service {
                 }
                 return data as T;
             })
-            .catch((error) => {
+            .catch((error: ServiceError) => {
                 Service.error.fire(this, error);
                 throw error;
             });
     }
 
-    static get<T>(url: string, data?) {
+    get<T>(url: string, data?) {
         let urlParams = '';
         for (let key in data) {
             urlParams = urlParams + `&${key}=${data[key]}`;
@@ -242,10 +255,10 @@ export class Service {
         if (urlParams)
             url = url.indexOf('?') < 0 ? url + '?' + urlParams : url + '&' + urlParams;
 
-        return Service.ajax<T>({ url: url, data: data, method: 'get' });
+        return this.ajax<T>({ url: url, data: data, method: 'get' });
     }
 
-    static getByJson<T>(url: string, data?) {
+    getByJson<T>(url: string, data?) {
         // let _url = url + '?' + JSON.stringify(data);
         data = data || {};
 
@@ -257,7 +270,7 @@ export class Service {
         if (data) {
             url = url + '?' + JSON.stringify(data);
         }
-        return Service.ajax<T>({
+        return this.ajax<T>({
             headers: {
                 'content-type': 'application/json'
             },
@@ -265,8 +278,8 @@ export class Service {
         });
     }
 
-    static putByJson<T>(url: string, data) {
-        return Service.ajax<T>({
+    putByJson<T>(url: string, data) {
+        return this.ajax<T>({
             headers: {
                 'content-type': 'application/json'
             },
@@ -275,8 +288,8 @@ export class Service {
         });
     }
 
-    static postByJson<T>(url: string, data) {
-        return Service.ajax<T>({
+    postByJson<T>(url: string, data) {
+        return this.ajax<T>({
             headers: {
                 'content-type': 'application/json'
             },
@@ -299,14 +312,14 @@ export class Service {
     //     });
     // }
 
-    static delete(url: string, data) {
-        return Service.ajax({
+    delete(url: string, data) {
+        return this.ajax({
             url, data, method: 'delete'
         })
     }
 
-    static deleteByJson(url: string, data) {
-        return Service.ajax({
+    deleteByJson(url: string, data) {
+        return this.ajax({
             headers: {
                 'content-type': 'application/json'
             },
@@ -314,9 +327,7 @@ export class Service {
         })
     }
 
-    ajax<T>(options: { url: string, data: any, method?: string, headers?: any }) {
-        return Service.ajax<T>(options);
-    }
+
 
     static get appToken() {
         let search = window.location.search || '';

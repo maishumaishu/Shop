@@ -61,8 +61,10 @@ export default class MenuControl extends Component<Props, State>{
                     let itemWidth = 100 / menuNodes.length;
                     return (
                         <li key={i} style={{ width: `${itemWidth}%` }}>
-                            <i className={o.icon ? o.icon : EMPTY_ICON}></i>
-                            <a href={o.url}>{o.name}</a>
+                            <a href={o.url}>
+                                <i className={o.icon ? o.icon : EMPTY_ICON}></i>
+                                {o.name}
+                            </a>
                         </li>
                     );
                 })}

@@ -66,6 +66,9 @@ requirejs.config({
         um_config: 'scripts/umeditor/umeditor.config',
         um_zh: 'scripts/umeditor/lang/zh-cn/zh-cn',
 
+        knockout: 'scripts/knockout-3.2.0.debug',
+        'knockout.validation': 'scripts/knockout.validation',
+        
         'bezier-easing': 'scripts/bezier-easing',
         'jquery.fileupload': 'scripts/jQuery.FileUpload/jquery.fileupload',
         'jquery.validate': 'scripts/jquery.validate',

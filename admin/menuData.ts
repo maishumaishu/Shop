@@ -72,6 +72,9 @@ export let menuData: MenuNode[] = [
                 Title: "促销活动",
                 Icon: "icon-bullhorn",
                 Url: "shopping/promotion/activities",
+                Children: [
+                    { Title: "", Url: "shopping/promotion/ActivityEdit" }
+                ]
             },
             {
                 Icon: "icon-bullhorn",
@@ -117,9 +120,10 @@ export let menuData: MenuNode[] = [
                         Children: [{ Title: '运费设置', Url: 'Freight/FreightList' }]
                     },
                     // { Url: "Freight/ProductFreightList", Title: "产品运费" },
-                    { Url: 'freight/inCitySend', Title: '同城配送' }
+                    { Url: 'freight/inCitySend', Title: '同城配送' },
                 ]
             },
+            { Url: 'weixin/setting', Title: '微信设置' }
         ]
     },
     {

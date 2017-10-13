@@ -116,20 +116,30 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         // 将 pageData 中的所以控件找出来，放入到 controlDatas
         (pageData.views || []).forEach(view => controlDatas.push(...view.controls || []));
 
-        pageData.views = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.views));
-        var controls = pageData.views[0].controls;
-        for (let i = 0; i < controls.length; i++) {
-            let componet = (this.mobilePage.components.filter(c => c.controlId == controls[i].controlId)[0]) as any as Control<any, any>;
-            console.assert(componet != null);
-
-            let keys = componet.persistentMembers || [];
-            let data = {};
-            for (let i = 0; i < keys.length; i++) {
-                let key = keys[i];
-                data[key] = componet.state[key];
-            }
-            controls[i].data = data;
+        pageData.views = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.views || []));
+        for (let i = 0; i < pageData.views.length; i++) {
+            setControlValues(this.mobilePage, pageData.views[i].controls);
         }
+
+        if (pageData.footer) {
+            setControlValues(this.mobilePage, pageData.footer.controls);
+        }
+
+        function setControlValues(mobilePage: MobilePage, controls: ControlDescrtion[]) {
+            for (let i = 0; i < controls.length; i++) {
+                let componet = (mobilePage.components.filter(c => c.controlId == controls[i].controlId)[0]) as any as Control<any, any>;
+                console.assert(componet != null);
+
+                let keys = componet.persistentMembers || [];
+                let data = {};
+                for (let i = 0; i < keys.length; i++) {
+                    let key = keys[i];
+                    data[key] = componet.state[key];
+                }
+                controls[i].data = data;
+            }
+        }
+
 
         // controlDatas.forEach(o => {
         //     let control = (this.mobilePage.components.filter(c => c.controlId == o.controlId)[0]) as any as Control<any, any>;
@@ -227,7 +237,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             <div className="pull-left" style={{ paddingTop: 4, paddingRight: 10 }}>
                                 显示导航菜单
                             </div>
-                            <label className="pull-left">
+                            <label className="pull-left switch">
                                 <input type="checkbox" className="ace ace-switch ace-switch-5"
                                     ref={(e: HTMLInputElement) => {
                                         if (!e) return;

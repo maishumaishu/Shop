@@ -5,7 +5,8 @@
 // })
 
 import weixin from 'services/weixin';
-import bootbox = require('bootbox');
+// import bootbox = require('bootbox');
+import * as ui from 'ui';
 
 function page_load(page: chitu.Page, args) {
 
@@ -16,7 +17,8 @@ function page_load(page: chitu.Page, args) {
             obj[this.name] = this.value;
         });
         weixin.saveSetting(obj).done(function () {
-            bootbox.alert('修改成功');
+            // bootbox.alert('修改成功');
+            ui.alert('修改成功')
         });
     };
 

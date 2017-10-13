@@ -83,7 +83,7 @@ export class StationService extends Service {
     savePageData(pageData: PageData) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
         // let _pageData = this.trimPageData(pageData);
-        return Service.postByJson(url, { pageData }).then((data) => {
+        return this.postByJson(url, { pageData }).then((data) => {
             Object.assign(pageData, data);
             return data;
         });
@@ -91,35 +91,35 @@ export class StationService extends Service {
     pageData(pageId: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let query = { _id: pageId };
-        return Service.getByJson<PageData>(url, { query });
+        return this.getByJson<PageData>(url, { query });
     }
     pageDataByName(name: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let query = { name };
-        return Service.getByJson<PageData>(url, { query }).then(o => {
+        return this.getByJson<PageData>(url, { query }).then(o => {
             return o;
         });
     }
     pageDataByTemplate(templateId: string): Promise<PageData> {
         // let url = `${Service.config.siteUrl}Page/GetPageDataByTemplate`;
         // let data = { templateId };
-        // return Service.get<PageData>(url, data).then(o => this.fillPageData(o));
+        // return this.get<PageData>(url, data).then(o => this.fillPageData(o));
         var pageData = templates.filter(o => o._id == templateId).map(o => o.pageData)[0];
         return Promise.resolve(pageData);
     }
     pageDatas() {
         let url = this.url('Page/GetPageDatas');
-        return Service.get<PageData[]>(url).then(o => {
+        return this.get<PageData[]>(url).then(o => {
             return o || [];
         });
     }
     deletePageData(pageId: string) {
         let url = this.url('Page/DeletePage');
-        return Service.deleteByJson(url, { pageId });
+        return this.deleteByJson(url, { pageId });
     }
     setDefaultPage(pageId: string) {
         let url = this.url('Page/SetDefaultPage');
-        return Service.putByJson(url, { pageId });
+        return this.putByJson(url, { pageId });
     }
     async pageTemplates(): Promise<TemplatePageData[]> {
         return Promise.resolve(templates);
@@ -208,7 +208,7 @@ export class StationService extends Service {
      */
     saveImage(imageBase64: string): Promise<{ _id: string }> {
         let url = `${Service.config.siteUrl}Page/SaveImage`;
-        return Service.postByJson<{ _id: string }>(url, { name, image: imageBase64 });
+        return this.postByJson<{ _id: string }>(url, { name, image: imageBase64 });
     }
 
     /**
@@ -217,7 +217,7 @@ export class StationService extends Service {
      */
     getImageBase64(name: string, maxWidth?: number): Promise<string> {
         let url = `${Service.config.siteUrl}Page/GetImage`;
-        return Service.get<string>(url, { name, maxWidth });
+        return this.get<string>(url, { name, maxWidth });
     }
     imageUrl(pageId: string, fileName: string) {
         let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-key=${Service.appToken}`;
@@ -225,7 +225,7 @@ export class StationService extends Service {
     }
     removeImage(_id: string) {
         let url = `${Service.config.siteUrl}Page/RemoveImage`;
-        return Service.deleteByJson(url, { _id });
+        return this.deleteByJson(url, { _id });
     }
     // getImageNameFromUrl(imageUrl: string) {
     //     var arr = imageUrl.split('?');
@@ -244,12 +244,12 @@ export class StationService extends Service {
     //============================================================
     controlData(name: string) {
         let url = this.url('Page/GetControlData');
-        return Service.get<ControlDescrtion>(url, { query: JSON.stringify({ controlName: name }) });
+        return this.get<ControlDescrtion>(url, { query: JSON.stringify({ controlName: name }) });
     }
     saveControlData(data: ControlDescrtion, name: string) {
         let url = this.url('Page/SaveControlData');
         (data as any).name = name;
-        return Service.postByJson(url, { data }).then(result => {
+        return this.postByJson(url, { data }).then(result => {
             Object.assign(data, result);
         });
     }

@@ -23,6 +23,7 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
     private picture: HTMLImageElement & { value: string };
     private control: CategoriesControl;
     private currentItem: Category;
+    private showIconsInput: HTMLInputElement;
 
     constructor(props) {
         super(props)
@@ -106,6 +107,12 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
                 rule: new Rule(this.picture, checkPicture.bind(this.validator), "图片不允许为空"),
             }
         )
+
+        this.showIconsInput.checked = this.state.showIcons;
+        this.showIconsInput.onchange = () => {
+            this.state.showIcons = this.showIconsInput.checked;
+            this.setState(this.state);
+        }
     }
     onFileChanged(e: HTMLInputElement) {
         if (!e.files[0]) {
@@ -128,29 +135,12 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
         return (
             <div>
                 <div className="well">
-                    {/* <div className="pull-left" style={{ paddingTop: 4, paddingRight: 10 }}>
-                        使用二级菜单
-                    </div>
-                    <label className="pull-left">
-                        <input type="checkbox" className="ace ace-switch ace-switch-5"
-                            ref={(e: HTMLInputElement) => {
-                                if (!e) return;
-                            }} />
-                        <span className="lbl middle"></span>
-                    </label> */}
                     <div className="pull-left" style={{ paddingTop: 4, paddingRight: 10, paddingLeft: 10 }}>
                         显示图标
                     </div>
-                    <label className="pull-left">
+                    <label className="pull-left switch">
                         <input type="checkbox" className="ace ace-switch ace-switch-5"
-                            ref={(e: HTMLInputElement) => {
-                                if (!e) return;
-                                e.checked = this.state.showIcons;
-                                e.onchange = () => {
-                                    this.state.showIcons = e.checked;
-                                    this.setState(this.state);
-                                }
-                            }} />
+                            ref={(e: HTMLInputElement) => this.showIconsInput = e || this.showIconsInput} />
                         <span className="lbl middle"></span>
                     </label>
                     <div className="pull-right">

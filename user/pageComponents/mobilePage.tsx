@@ -164,9 +164,8 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
     renderRuntimeViews(pageData: PageData) {
         return (pageData.views || []).map((o, i) => (
-            <section className="page-view" key={i}>
+            <section className="page-view" key={i} style={{ paddingBottom: pageData.showMenu ? menuHeight : null }}>
                 {this.renderControls(o.controls)}
-                {pageData.showMenu ? <div style={{ height: menuHeight }} className="menu-placeholder"></div> : null}
             </section>
         ));
     }
@@ -200,9 +199,9 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         }
 
         return (pageData.views || []).map((o, i) => (
-            <section key={i} ref={(e: HTMLElement) => e != null ? sortableElement(e, i) : null}>
+            <section key={i} ref={(e: HTMLElement) => e != null ? sortableElement(e, i) : null}
+                style={{ paddingBottom: pageData.showMenu ? menuHeight : null }}>
                 {this.renderControls(o.controls)}
-                {pageData.showMenu ? <div style={{ height: menuHeight }} className="menu-placeholder"></div> : null}
             </section>
         ));
     }

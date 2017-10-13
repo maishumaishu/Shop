@@ -29,7 +29,7 @@ export default function (page: chitu.Page) {
                     new wz.CommandField({
                         leftButtons(dataItem) {
                             return [
-                                <a className="btn btn-minier btn-info" href={`#Shopping/Promotion/ActivityEdit?id=${dataItem.Id}`}>
+                                <a className="btn btn-minier btn-info" href={`#shopping/promotion/ActivityEdit?id=${dataItem.Id}`}>
                                     <i className="icon-pencil" />
                                 </a>
                             ];

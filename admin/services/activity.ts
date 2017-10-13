@@ -10,23 +10,35 @@
 // })(function () {
 import { default as Service } from 'services/service';
 
+
+
+let headers = {};
+if (Service.token)
+    headers['user-token'] = Service.token;
+
+if (location.search) {
+    headers['application-key'] = location.search.substr(1);
+}
+
+$.ajaxSettings.headers = headers;
+
 var baseUrl = Service.config.shopUrl + 'PromotionActivity/';
 let JData = window['JData'];
 export class ActivityService extends Service {
     // activities = new JData.WebDataSource(baseUrl + 'GetActivities', baseUrl + 'AddActivity', null, baseUrl + 'DeleteActivity');
     addActivity(item) {
         let url = baseUrl + 'AddActivity';
-        return Service.postByJson(url, item);
+        return this.postByJson(url, item);
     }
     getActivity(id: string): Promise<any> {
-        return Service.get(baseUrl + 'GetActivity', { id }); //$.ajax({ url: baseUrl + 'GetActivity', method: 'post', data: { id: id } });
+        return this.get(baseUrl + 'GetActivity', { id }); //$.ajax({ url: baseUrl + 'GetActivity', method: 'post', data: { id: id } });
     }
     deleteActivity(item): Promise<any> {
         let url = baseUrl + 'DeleteActivity';
-        return Service.deleteByJson(url, item);
+        return this.deleteByJson(url, item);
     }
     activities(): Promise<any> {
-        return Service.get(baseUrl + 'GetActivities');
+        return this.get(baseUrl + 'GetActivities');
     }
     addPromotion(activityId, type, method) {
         /// <returns type="jQuery.Deferred"/>

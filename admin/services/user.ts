@@ -29,14 +29,14 @@ export interface UserInfo {
     UserId: string,
 }
 
-export class UserService {
+export class UserService extends Service {
     private url(path: string) {
         let url = `https://${Service.config.serviceHost}/${path}`;
         return url;
     }
     login(username, password) {
         let url = `https://${Service.config.serviceHost}/admin/login`;
-        return Service.get<{ token: string, userId: string, appToken: string }>(url, { username, password }).then((o) => {
+        return this.get<{ token: string, userId: string, appToken: string }>(url, { username, password }).then((o) => {
             Service.token = o.token;
             Service.userId = o.userId;
             Service.username.value = username;
@@ -46,7 +46,7 @@ export class UserService {
     async register(model: RegisterModel) {
         (model.user as any).group = 'owner';
         let url = `https://${Service.config.serviceHost}/admin/register`;
-        return Service.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
+        return this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
             .then((result) => {
                 // Service.appToken = result.appToken;
                 Service.token = result.token;
@@ -55,51 +55,51 @@ export class UserService {
     }
     private createApplication() {
         let url = `https://${Service.config.serviceHost}/application/add`;
-        return Service.postByJson<{ token: string }>(url, { name: guid() });
+        return this.postByJson<{ token: string }>(url, { name: guid() });
     }
     isMobileRegister(mobile: string) {
         let url = `https://${Service.config.serviceHost}/admin/isMobileRegister`;
-        return Service.get<boolean>(url, { mobile });
+        return this.get<boolean>(url, { mobile });
     }
     sendVerifyCode(mobile: string) {
         let url = `https://${Service.config.serviceHost}/sms/sendVerifyCode`;
-        return Service.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
+        return this.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
     }
     applications(): Promise<Array<Application>> {
         // let url = this.url(`application/list`);
         let url = this.url('admin/applications')
-        return Service.get<Application[]>(url);
+        return this.get<Application[]>(url);
     }
     addApplication(app: Application) {
         let url = this.url('admin/addApplication');
-        return Service.postByJson(url, { app }).then(data => {
+        return this.postByJson(url, { app }).then(data => {
             Object.assign(app, data);
             return data;
         });
     }
     updateApplication(app: Application) {
         let url = this.url('application/update');
-        return Service.putByJson(url, { app });
+        return this.putByJson(url, { app });
     }
     deleteApplication(app: Application) {
         console.assert(app != null)
         let url = this.url('admin/deleteApplication');
-        return Service.deleteByJson(url, { appId: app._id });
+        return this.deleteByJson(url, { appId: app._id });
     }
     recharge(userId: string, amount: number):Promise<{Balance:number}> {
         let url = Service.config.accountUrl + 'Account/Recharge';
-        return Service.putByJson(url, { userId, amount });
+        return this.putByJson(url, { userId, amount });
     }
     async members(args: wuzhui.DataSourceSelectArguments) {
 
-        let membersResult = await Service.get<wuzhui.DataSourceSelectResult<UserInfo>>(
+        let membersResult = await this.get<wuzhui.DataSourceSelectResult<UserInfo>>(
             Service.config.memberUrl + 'Member/List',
             args
         );
 
         let members = membersResult.dataItems;
         let ids = members.map(o => o.Id);
-        let memberBalances = await Service.get<Array<{ MemberId: string, Balance: number }>>(
+        let memberBalances = await this.get<Array<{ MemberId: string, Balance: number }>>(
             Service.config.accountUrl + 'Account/GetAccountBalances',
             { userIds: ids.join(',') }
         );

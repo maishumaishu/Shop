@@ -138,7 +138,7 @@ export class ShoppingService extends Service {
     product(productId: string) {
         let url = Service.config.shopUrl + 'Product/GetProduct';
         let data = { productId: productId };
-        return Service.get<Product>(url, data).then((data) => {
+        return this.get<Product>(url, data).then((data) => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
 
@@ -147,18 +147,18 @@ export class ShoppingService extends Service {
     }
     products(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
-        return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
+        return this.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
     }
     productsByIds(productIds: string[]) {
         var url = this.url('Product/GetProductsByIds');
-        return Service.getByJson<Product[]>(url, { ids: productIds }).then(items => {
+        return this.getByJson<Product[]>(url, { ids: productIds }).then(items => {
             // items.forEach(o => o.ImagePath = imageUrl(o.ImagePath, 100));
             return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);
         });
     }
     deleteProduct(id: string) {
         var url = this.url('Product/DeleteProduct');
-        return Service.deleteByJson(url, { id });
+        return this.deleteByJson(url, { id });
     }
     queryProducts(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
 
@@ -170,7 +170,7 @@ export class ShoppingService extends Service {
         var maximumRows = 10;
         var start = pageIndex * maximumRows;
         var args = { StartRowIndex: start, MaximumRows: maximumRows };
-        return Service.get<any>(url, args).then(function (result) {
+        return this.get<any>(url, args).then(function (result) {
             for (var i = 0; i < result.DataItems.length; i++) {
                 // result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);
             }
@@ -181,7 +181,7 @@ export class ShoppingService extends Service {
     productChildren(parentId: string) {
         var url = this.url('Product/GetProducts');
         var args = { filter: `ParentId == Guid"${parentId}"` } as wuzhui.DataSourceSelectArguments;
-        return Service.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
+        return this.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
     }
     commonProduct(product) {
         alert(product.Id());
@@ -196,77 +196,77 @@ export class ShoppingService extends Service {
 
         if (!obj.Id) {
             product.Id = undefined;
-            return Service.postByJson(Service.config.shopUrl + 'Product/AddProduct', obj);
+            return this.postByJson(Service.config.shopUrl + 'Product/AddProduct', obj);
         }
         else {
-            return Service.putByJson(Service.config.shopUrl + 'Product/UpdateProduct', obj);
+            return this.putByJson(Service.config.shopUrl + 'Product/UpdateProduct', obj);
         }
     }
     removeProduct(productId) {
         let url = Service.config.shopUrl + 'Product/DeleteProduct';
-        return Service.deleteByJson(url, { id: productId });
+        return this.deleteByJson(url, { id: productId });
     }
     onShelve(productId) {
         //return services.callMethod('Product/OnShelve', { productId: productId });
-        return Service.putByJson(this.url('Product/OnShelve'), { productId });
+        return this.putByJson(this.url('Product/OnShelve'), { productId });
     }
     offShelve(productId) {
-        return Service.putByJson(this.url('Product/OffShelve'), { productId });
+        return this.putByJson(this.url('Product/OffShelve'), { productId });
         //return services.callMethod('Product/OffShelve', { productId: productId });
     }
     categories() {
         let url = this.url('Product/GetProductCategories');
 
-        return Service.get<Category[]>(url);
+        return this.get<Category[]>(url);
     }
     addCategory(item: Category) {
         let url = this.url('Product/AddProductCategory');
-        return Service.postByJson(url, { model: item })
+        return this.postByJson(url, { model: item })
     }
     updateCategory(item: Category) {
         let url = this.url('Product/UpdateProductCategory');
-        return Service.putByJson(url, { model: item })
+        return this.putByJson(url, { model: item })
     }
     deleteCategory(id: string): Promise<any> {
         let url = this.url('Product/DeleteProductCategory');
-        return Service.deleteByJson(url, { id });
+        return this.deleteByJson(url, { id });
     }
     //==========================================
     // 品牌
     brands(args?: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Product/GetBrands');
-        return Service.get<wuzhui.DataSourceSelectResult<Brand>>(url, args).then(o => {
+        return this.get<wuzhui.DataSourceSelectResult<Brand>>(url, args).then(o => {
             return o.dataItems;
         });
     }
     addBrand(brand: Brand) {
         let url = this.url('Product/AddBrand');
-        return Service.postByJson(url, { model: brand });
+        return this.postByJson(url, { model: brand });
     }
     updateBrand(brand: Brand) {
         let url = this.url('Product/UpdateBrand');
-        return Service.postByJson(url, { model: brand });
+        return this.postByJson(url, { model: brand });
     }
     deleteBrand(brand: Brand) {
         let url = this.url('Product/DeleteBrand');
-        return Service.deleteByJson(url, { id: brand.Id });
+        return this.deleteByJson(url, { id: brand.Id });
     }
     //==========================================
     setStock(productId, quantity) {
         let url = this.url('Product/SetStock');
-        return Service.putByJson<any>(url, { productId: productId, quantity: quantity });
+        return this.putByJson<any>(url, { productId: productId, quantity: quantity });
     }
     getProductStocks(productIds: string[]) {
         let url = this.url('Product/GetProductStocks');
-        return Service.get<Array<{ ProductId: string, Quantity: number }>>(url, { productIds: productIds });
+        return this.get<Array<{ ProductId: string, Quantity: number }>>(url, { productIds: productIds });
     }
     getBuyLimitedNumbers(productIds: string[]) {
         let url = this.url('Product/GetBuyLimitedNumbers');
-        return Service.get<Array<{ ProductId: string, LimitedNumber: number }>>(url, { productIds: productIds });
+        return this.get<Array<{ ProductId: string, LimitedNumber: number }>>(url, { productIds: productIds });
     }
     buyLimited(productId, quantity) {
         let url = this.url('Product/SetBuyLimitedQuantity');
-        return Service.putByJson(url, { productId: productId, quantity: quantity });
+        return this.putByJson(url, { productId: productId, quantity: quantity });
     }
     // couponDataSource = new JData.WebDataSource(Service.config.shopUrl + 'ShoppingData/Select?source=Coupons&selection=Id,Title,Discount,Amount,ValidBegin,ValidEnd,ReceiveBegin,ReceiveEnd,\
     //                                                                      Remark,Picture,BrandNames,CategoryNames,ProductNames',
@@ -278,26 +278,26 @@ export class ShoppingService extends Service {
     // 优惠劵
     coupons() {
         let url = this.url('Coupon/GetCoupons');
-        return Service.get<Coupon[]>(url);
+        return this.get<Coupon[]>(url);
     }
     addCoupon(coupon: Coupon) {
         let url = this.url('Coupon/AddCoupon');
-        return Service.postByJson(url, coupon).then(data => {
+        return this.postByJson(url, coupon).then(data => {
             Object.assign(coupon, data);
             return data;
         });
     }
     updateCoupon(coupon: Coupon) {
         let url = this.url('Coupon/UpdateCoupon');
-        return Service.putByJson(url, coupon);
+        return this.putByJson(url, coupon);
     }
     deleteCoupon(coupon: Coupon) {
         let url = this.url('Coupon/DeleteCoupon');
-        return Service.deleteByJson(url, { id: coupon.Id });
+        return this.deleteByJson(url, { id: coupon.Id });
     }
     couponCodes(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Coupon/GetCouponCodes');
-        return Service.get<wuzhui.DataSourceSelectResult<any>>(url, args).then(result => {
+        return this.get<wuzhui.DataSourceSelectResult<any>>(url, args).then(result => {
             result.dataItems.forEach(o => {
                 if (o.UsedDateTime)
                     o.UsedDateTime = new Date(o.UsedDateTime);
@@ -310,49 +310,49 @@ export class ShoppingService extends Service {
     }
     generateCouponCode(couponId: string, count: number) {
         let url = this.url('Coupon/GenerateCouponCode');
-        return Service.postByJson(url, { couponId, count });
+        return this.postByJson(url, { couponId, count });
     }
     //===================================================
     getDefineProperties(defineId) {
-        return Service.get('Product/GetDefineProperties', { defineId: defineId });
+        return this.get('Product/GetDefineProperties', { defineId: defineId });
     }
     getProductArguments(argumentId) {
-        return Service.get('Product/GetProductArguments', { argumentId: argumentId });
+        return this.get('Product/GetProductArguments', { argumentId: argumentId });
     }
     //================================================================
     // 运费
     freightSolutions() {
-        return Service.get<Array<FreightSolution>>(this.url('Freight/GetFreightSolutions'));
+        return this.get<Array<FreightSolution>>(this.url('Freight/GetFreightSolutions'));
     }
     deleteFreightSolution(dataItem) {
-        return Service.deleteByJson(this.url('Freight/DeleteFreightSolution'), dataItem);
+        return this.deleteByJson(this.url('Freight/DeleteFreightSolution'), dataItem);
     }
     updateFreightSolution(dataItem) {
-        return Service.putByJson(this.url('Freight/UpdateFreightSolution'), dataItem);
+        return this.putByJson(this.url('Freight/UpdateFreightSolution'), dataItem);
     }
     regionFreights(solutionId) {
         let url = `${Service.config.shopUrl}Freight/GetRegionFreights`
-        return Service.get<Array<RegionFreight>>(url, { solutionId: solutionId });
+        return this.get<Array<RegionFreight>>(url, { solutionId: solutionId });
     }
     setRegionFreight(id, freight, freeAmount) {
         let url = this.url('Freight/SetRegionFreight');
-        return Service.putByJson(url, { id: id, freight: freight, freeAmount: freeAmount });
+        return this.putByJson(url, { id: id, freight: freight, freeAmount: freeAmount });
     }
     productFreights(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Freight/GetProductFreights');
-        return Service.get<wuzhui.DataSourceSelectResult<ProductFreight>>(url, args);
+        return this.get<wuzhui.DataSourceSelectResult<ProductFreight>>(url, args);
     }
     addProductFreight(productId: string, solutionId: string) {
         let url = this.url('Freight/AddProductFreight');
-        return Service.postByJson(url, { productId, solutionId });
+        return this.postByJson(url, { productId, solutionId });
     }
     cityFreight() {
         let url = this.url('Freight/GetCityFreight');
-        return Service.get<CityFreight>(url);
+        return this.get<CityFreight>(url);
     }
     updateCityFreight(item: CityFreight) {
         let url = this.url('Freight/UpdateCityFreight');
-        return Service.putByJson(url, { model: item });
+        return this.putByJson(url, { model: item });
     }
     //================================================================
     // 订单
@@ -375,7 +375,7 @@ export class ShoppingService extends Service {
     }
     orders(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Order/GetOrders');
-        return Service.get<wuzhui.DataSourceSelectResult<Order>>(url, args).then(result => {
+        return this.get<wuzhui.DataSourceSelectResult<Order>>(url, args).then(result => {
             result.dataItems.forEach(c => c.StatusText = this.orderStatusText(c.Status));
             return result;
         });
@@ -383,7 +383,7 @@ export class ShoppingService extends Service {
     // orderDetails(orderId: string) {
     //     let url = this.url('Order/GetOrderDetails');
     //     debugger;
-    //     return Service.get<OrderDetail[]>(url, { orderId });
+    //     return this.get<OrderDetail[]>(url, { orderId });
     // }
     //================================================================
 }
