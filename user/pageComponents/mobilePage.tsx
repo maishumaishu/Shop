@@ -1,6 +1,11 @@
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 import MenuControl from 'pageComponents/menu/control';
 
+
+// type DesignTime = (args: {
+//     controlSelected: { (control: React.Component<any, any>, controlType: React.ComponentClass<any>): void }
+// }) => void;
+
 export interface Props extends React.Props<MobilePage> {
     pageData: PageData;
     designTime?: {

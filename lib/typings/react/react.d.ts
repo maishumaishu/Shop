@@ -131,7 +131,7 @@ declare module React {
     // ----------------------------------------------------------------------
 
     // Base component for plain JS classes
-     class Component<P, S> implements ComponentLifecycle<P, S> {
+    class Component<P, S> implements ComponentLifecycle<P, S> {
         constructor(props?: P, context?: any);
         setState(f: (prevState: S, props: P) => S, callback?: () => any): void;
         setState(state: S, callback?: () => any): void;
@@ -172,7 +172,7 @@ declare module React {
     // ----------------------------------------------------------------------
 
     interface ComponentClass<P> {
-        new (props?: P, context?: any): Component<P, any>;
+        new(props?: P, context?: any): Component<P, any>;
         propTypes?: ValidationMap<P>;
         contextTypes?: ValidationMap<any>;
         childContextTypes?: ValidationMap<any>;
@@ -180,7 +180,7 @@ declare module React {
     }
 
     interface ClassicComponentClass<P> extends ComponentClass<P> {
-        new (props?: P, context?: any): ClassicComponent<P, any>;
+        new(props?: P, context?: any): ClassicComponent<P, any>;
         getDefaultProps?(): P;
         displayName?: string;
     }
@@ -404,8 +404,8 @@ declare module React {
         opacity?: number;
         order?: number;
         orphans?: number;
-        overflowX?: 'scroll' | 'hidden';
-        overflowY?: 'scroll' | 'hidden';
+        overflowX?: 'scroll' | 'hidden' | 'auto';
+        overflowY?: 'scroll' | 'hidden' | 'auto';
 
         widows?: number;
         zIndex?: number;

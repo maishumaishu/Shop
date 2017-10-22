@@ -21,7 +21,9 @@ export interface Props extends React.Props<MobilePageDesigner> {
 
 export interface State {
     editors: React.ReactElement<any>[],
-    pageData: PageData
+    pageData: PageData,
+    selectedComponentDisplayName?: string,
+    selectedControlId?: string
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
@@ -140,22 +142,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             }
         }
 
-
-        // controlDatas.forEach(o => {
-        //     let control = (this.mobilePage.components.filter(c => c.controlId == o.controlId)[0]) as any as Control<any, any>;
-        //     console.assert(control != null);
-
-        //     let keys = control.persistentMembers || [];
-        //     let data = {};
-        //     for (let i = 0; i < keys.length; i++) {
-        //         let key = keys[i];
-        //         data[key] = control.state[key];
-        //     }
-
-        //     o.data = data;
-        // });
-
-
         let save = this.props.save;
         return save(pageData).then(data => {
             this.saved.fire(this, { pageData })
@@ -203,6 +189,37 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             let editorReactElement = React.createElement(editorType, { control });
             ReactDOM.render(editorReactElement, editorElement);
         })
+
+        this.state.selectedControlId = control.id;
+        this.state.selectedComponentDisplayName =
+            components.filter(o => o.name == controlName).map(o => o.displayName)[0] || controlName;
+
+        this.setState(this.state);
+    }
+
+    removeControl(controlId: string) {
+        let pageData = this.state.pageData;
+        if (pageData.header != null && pageData.header.controls) {
+            pageData.header.controls = pageData.header.controls.filter(o => o.controlId != controlId);
+        }
+
+        if (pageData.views != null) {
+            for (let i = 0; i < pageData.views.length; i++) {
+                if (pageData.views[i].controls == null)
+                    continue;
+
+                pageData.views[i].controls = pageData.views[i].controls.filter(o => o.controlId != controlId);
+            }
+        }
+
+        if (pageData.footer != null && pageData.footer.controls != null) {
+            pageData.footer.controls = pageData.footer.controls.filter(o => o.controlId != controlId);
+        }
+
+        this.state.selectedComponentDisplayName = null;
+        this.state.selectedControlId = null;
+        this.setState(this.state);
+        return Promise.resolve();
     }
 
     preview() {
@@ -217,8 +234,9 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
-        let pageData = this.state.pageData;
+        let { pageData, selectedComponentDisplayName, selectedControlId } = this.state;
         let { showComponentPanel } = this.props;
+
         return (
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
@@ -301,7 +319,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                         </div>
                     </div>
 
-
                     <div className="form-group">
                         <hr style={{ display: this.props.showPageEditor == true ? 'block' : 'none' }} />
                         <h5 style={{ display: showComponentPanel == true ? 'block' : 'none' }}>页面组件</h5>
@@ -324,9 +341,32 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             })}
                             <li className="clearfix"></li>
                         </ul>
+                    </div>
+
+                    {showComponentPanel && selectedControlId != null ?
+                        <div className="form-group">
+                            <div className="singleColumnProductEditor well">
+                                <i className="icon-remove" style={{ cursor: 'pointer' }}
+                                    ref={(e: HTMLElement) => {
+                                        if (e == null) return;
+                                        e.onclick = ui.buttonOnClick(
+                                            () => this.removeControl(selectedControlId),
+                                            {
+                                                confirm: `确定要移除控件'${selectedComponentDisplayName}'吗？`
+                                            });
+
+                                    }}></i>
+                                <span style={{ paddingLeft: 8 }}>{selectedComponentDisplayName}</span>
+                                <hr style={{ marginTop: 14 }} />
+                                <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
+                                </div>
+                            </div>
+                        </div> :
                         <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
                         </div>
-                    </div>
+                    }
+
+
                 </div>
                 <div className="clearfix">
                 </div>

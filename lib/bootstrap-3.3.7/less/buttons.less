@@ -95,10 +95,11 @@
   color: @link-color;
   font-weight: normal;
   border-radius: 0;
+  cursor: pointer;
 
   &,
-  &:active,
-  &.active,
+  // &:active,
+  // &.active,
   &[disabled],
   fieldset[disabled] & {
     background-color: transparent;
@@ -110,20 +111,20 @@
   &:active {
     border-color: transparent;
   }
-  &:hover,
-  &:focus {
-    color: @link-hover-color;
-    text-decoration: @link-hover-decoration;
-    background-color: transparent;
-  }
-  &[disabled],
-  fieldset[disabled] & {
-    &:hover,
-    &:focus {
-      color: @btn-link-disabled-color;
-      text-decoration: none;
-    }
-  }
+  // &:hover,
+  // &:focus {
+  //   color: @link-hover-color;
+  //   text-decoration: @link-hover-decoration;
+  //   background-color: transparent;
+  // }
+  // &[disabled],
+  // fieldset[disabled] & {
+  //   &:hover,
+  //   &:focus {
+  //     color: @btn-link-disabled-color;
+  //     text-decoration: none;
+  //   }
+  // }
 }
 
 

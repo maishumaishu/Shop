@@ -36,7 +36,8 @@ namespace ui {
                 ctx.fillStyle = "#999";
 
                 let textWidth = fontSize * imageText.length;
-                let startX = Math.floor((canvasWidth - textWidth) / 2);
+                let startX = Math.floor((canvasWidth - textWidth) * 0.5);
+                let startY = Math.floor((canvasHeight - options.fontSize) * 0.3);
                 // 设置字体内容，以及在画布上的位置
                 ctx.fillText(imageText, startX, Math.floor(canvasHeight * 0.6));
             }

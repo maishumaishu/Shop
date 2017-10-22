@@ -157,11 +157,14 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
 
     render() {
         let productSourceType = this.state.productSourceType;
-        let productIds = this.state.productIds;
+        let productIds = this.state.productIds || [];
         let listType = this.state.listType;
 
         return (
-            <div className="singleColumnProductEditor well">
+            <div>
+                {/* <i className=" icon-remove" style={{ display: 'table-cell' }}></i>
+                <h5 style={{ display: 'table-cell', paddingLeft: 8 }}>商品列表</h5>
+                <hr style={{ marginTop: 18 }} /> */}
                 <div className="form-group">
                     <label className="pull-left">数据来源</label>
                     <span>

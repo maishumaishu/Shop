@@ -25,10 +25,16 @@ let links: Link[] = [
     { text: '会员主页', url: '#user_index' }
 ]
 
+let icons = [
+    "icon-home", "icon-shopping-cart", "icon-user", "icon-comment",
+    "icon-rss", "icon-truck", "icon-reorder", "icon-calendar"
+]
+
 export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>{ //Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>
     private itemDialogELement: HTMLElement;
     private nameInput: HTMLInputElement;
     private validator: FormValidator;
+    private iconsElement: HTMLElement;
 
     constructor(props) {
         super(props);
@@ -93,6 +99,11 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
     toggleDisplayIcon() {
         this.state.showIcon = this.state.showIcon ? false : true;
         this.setState(this.state);
+    }
+    toggleIconsPanel() {
+        this.iconsElement.style.display ?
+            this.iconsElement.style.removeProperty('display') :
+            this.iconsElement.style.display = 'none';
     }
     render() {
         let menuNodes = this.state.menuNodes || [];
@@ -210,24 +221,48 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                                             }} />
                                     </div>
                                 </div>
-                                <div className="form-group">
-                                    <label className="col-sm-2 control-label">图标</label>
-                                    <div className="col-sm-10">
-                                        <div className="input-group">
-                                            <input name="icon" type="text" className="form-control" placeholder="请输入菜单项图标"
-                                                ref={(e: HTMLInputElement) => {
-                                                    if (!e) return;
-                                                    e.value = currentItem.icon || ''
-                                                    e.onchange = () => {
-                                                        currentItem.icon = e.value;
-                                                    }
-                                                }} />
-                                            <div className="input-group-addon">
-                                                <i className="icon-cog" style={{ cursor: 'pointer' }} />
+                                {
+                                    this.state.showIcon ?
+                                        <div className="form-group">
+                                            <label className="col-sm-2 control-label">图标</label>
+                                            <div className="col-sm-10">
+                                                <div className="input-group">
+                                                    <input name="icon" type="text" className="form-control" placeholder="请输入菜单项图标"
+                                                        ref={(e: HTMLInputElement) => {
+                                                            if (!e) return;
+                                                            e.value = currentItem.icon || ''
+                                                            e.onchange = () => {
+                                                                currentItem.icon = e.value;
+                                                            }
+                                                        }} />
+                                                    <div className="input-group-addon"
+                                                        onClick={() => this.toggleIconsPanel()}>
+                                                        <i className="icon-cog" style={{ cursor: 'pointer' }} />
+                                                    </div>
+                                                    <div ref={(e: HTMLElement) => this.iconsElement = e || this.iconsElement} style={{
+                                                        position: 'absolute', height: 100, width: '100%', background: 'white',
+                                                        zIndex: 10, left: 0, top: 35, border: 'solid 1px #ccc', overflowY: 'auto',
+                                                        display: 'none'
+                                                    }}>
+                                                        <div style={{ position: 'absolute', width: '100%', borderBottom: 'solid 1px #ccc', padding: '4px 6px', background: 'white' }}>
+                                                            <span>请选择图标</span>
+                                                            <i className="icon-remove" style={{ position: 'absolute', right: 6, top: 6 }}
+                                                                onClick={() => this.toggleIconsPanel()} />
+                                                        </div>
+                                                        <div style={{ padding: '30px 6px 6px 6px' }}>
+                                                            {icons.map(o =>
+                                                                <i className={o} style={{ display: 'table-cell', padding: 10, fontSize: 20 }}
+                                                                    onClick={() => {
+                                                                        currentItem.icon = o;
+                                                                        this.toggleIconsPanel();
+                                                                    }} />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </div> : null
+                                }
                                 <div className="form-group">
                                     <label className="col-sm-2 control-label">链接</label>
                                     <div className="col-sm-10">

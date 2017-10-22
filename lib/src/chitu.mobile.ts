@@ -1,4 +1,4 @@
-/// <reference path="../typings/chitu.d.ts"/>
+/// <reference path="../chitu.d.ts"/>
 
 import * as chitu from 'chitu';
 /**

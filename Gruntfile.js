@@ -47,6 +47,9 @@ module.exports = function (grunt) {
         },
         less: {
             admin: {
+                options: {
+                    sourceMap: true
+                },
                 files: [
                     {
                         expand: true,
