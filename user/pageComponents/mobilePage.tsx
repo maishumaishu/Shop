@@ -1,6 +1,6 @@
-import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
+// import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 import MenuControl from 'pageComponents/menu/control';
-
+import { Control } from 'mobileComponents/common';
 
 // type DesignTime = (args: {
 //     controlSelected: { (control: React.Component<any, any>, controlType: React.ComponentClass<any>): void }
@@ -9,9 +9,10 @@ import MenuControl from 'pageComponents/menu/control';
 export interface Props extends React.Props<MobilePage> {
     pageData: PageData;
     designTime?: {
-        controlSelected: (
+        controlSelected?: (
             control: React.Component<any, any>,
-            controlType: React.ComponentClass<any>) => void
+            controlType: React.ComponentClass<any>
+        ) => void
     };
 }
 
@@ -39,9 +40,17 @@ export interface PageData {
     }[];
 }
 
+type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
 const menuHeight = 50;
 export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     private screenElement: HTMLElement;
+    private selecteControl: ControlPair;
+
+    private headerControlsCount: number = 0;
+    private footerControlsCount: number = 0;
+    private viewControlsCount: number = 0;
+    private createdControlCount: number = 0;
+
     components: (React.Component<any, any> & { controlId: string, controlName: string })[];
 
     constructor(props) {
@@ -54,12 +63,12 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         return (element as any).mobilePage;
     }
 
-    static async createControlInstance(controlData: ControlDescription, element: HTMLElement) {
+    static async createControlInstance(controlData: ControlDescription, element: HTMLElement): Promise<ControlPair> {
         let { controlId, controlName, data, selected } = controlData;
         let types = await MobilePage.getControlType(controlName);
 
         let reactElement = React.createElement(types.Control, data);
-        let control = ReactDOM.render(reactElement, element);
+        let control: Control<any, any> = ReactDOM.render(reactElement, element);
         control.id = controlId;
         return { control, controlType: types.Control };
     }
@@ -70,6 +79,16 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                 resolve({ Control: exports.default, Props: exports.Props });
             })
         })
+    }
+
+    controlCreated(control: Control<any, any>, controlType: React.ComponentClass<any>) {
+        this.createdControlCount = this.createdControlCount + 1;
+        var total = this.headerControlsCount + this.footerControlsCount + this.viewControlsCount;
+        if (this.createdControlCount == total && this.selecteControl != null &&
+            this.props.designTime.controlSelected != null) {
+            let c = this.selecteControl;
+            this.props.designTime.controlSelected(c.control, c.controlType);
+        }
     }
 
     renderControls(controls: ControlDescription[]) {
@@ -114,25 +133,30 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             <div id={o.controlId} key={o.controlId}
                 ref={async (e: HTMLElement) => {
                     if (!e) return;
-                    MobilePage.createControlInstance(o, e)
-                        .then(data => {
-                            if (o.selected != 'disabled') {
-                                e.onclick = (event) => {
-                                    for (let i = 0; i < controls.length; i++) {
-                                        controls[i].selected = controls[i].controlId == o.controlId;
-                                    }
-                                    this.setState(this.state);
-                                }
-                            }
+                    // MobilePage.createControlInstance(o, e)
+                    //     .then(data => {
 
-                            if (o.selected == true && this.props.designTime.controlSelected) {
-                                this.props.designTime.controlSelected(data.control, data.controlType)
-                            }
-                        });
+                    //     });
 
                     var c = await MobilePage.createControlInstance(o, e);
                     var componet = Object.assign(c.control, { controlId: o.controlId, controlName: o.controlName });
                     this.components.push(componet);
+
+                    if (o.selected != 'disabled') {
+                        e.onclick = (event) => {
+                            for (let i = 0; i < controls.length; i++) {
+                                controls[i].selected = controls[i].controlId == o.controlId;
+                            }
+                            // this.setState(this.state);
+                            this.props.designTime.controlSelected(c.control, c.controlType)
+                        }
+                    }
+
+                    if (o.selected == true) {
+                        this.selecteControl = c;
+                    }
+
+                    this.controlCreated(c.control, c.controlType);
                 }} />
         );
     }
@@ -141,15 +165,18 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         if (!pageData.header)
             return null;
 
+        let headerControls = (pageData.header || { controls: [] }).controls || [];
+        this.headerControlsCount = headerControls.length;
         return (
             <header className="page-header">
-                {this.renderControls(pageData.header.controls)}
+                {this.renderControls(headerControls)}
             </header>
         )
     }
 
     renderFooter(pageData: PageData): JSX.Element {
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
+        this.footerControlsCount = footerControls.length;
         return (
             <footer className="page-footer">
                 {this.renderControls(footerControls)}
@@ -159,6 +186,12 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
 
     renderViews(pageData: PageData) {
+        let views = pageData.views || [];
+        this.viewControlsCount = 0;
+        for (let i = 0; i < views.length; i++) {
+            this.viewControlsCount = this.viewControlsCount + (views[i].controls || []).length;
+        }
+
         let designMode = this.props.designTime;
         if (designMode) {
             return this.renderDesigntimeViews(pageData);
@@ -168,7 +201,8 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     }
 
     renderRuntimeViews(pageData: PageData) {
-        return (pageData.views || []).map((o, i) => (
+        let views = pageData.views || [];
+        return views.map((o, i) => (
             <section className="page-view" key={i} style={{ paddingBottom: pageData.showMenu ? menuHeight : null }}>
                 {this.renderControls(o.controls)}
             </section>
@@ -216,12 +250,10 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let pageData = this.state.pageData;
 
         return (
-            <div>
-                <PageComponent>
-                    {this.renderHeader(pageData)}
-                    {this.renderViews(pageData)}
-                    {this.renderFooter(pageData)}
-                </PageComponent>
+            <div className="page">
+                {this.renderHeader(pageData)}
+                {this.renderViews(pageData)}
+                {this.renderFooter(pageData)}
             </div>
         );
     }

@@ -2,7 +2,7 @@ import components from 'mobileComponents/componentDefines';
 import StyleControl from 'mobileComponents/style/control';
 import { VirtualMobile } from 'mobilePage';
 import { MobilePage } from 'mobileComponents/mobilePage';
-import { Component as Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
+import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { PageData, ControlDescrtion, guid, StationService } from 'services/station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
@@ -22,8 +22,8 @@ export interface Props extends React.Props<MobilePageDesigner> {
 export interface State {
     editors: React.ReactElement<any>[],
     pageData: PageData,
-    selectedComponentDisplayName?: string,
-    selectedControlId?: string
+    // selectedComponentDisplayName?: string,
+    // selectedControlId?: string
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
@@ -33,6 +33,9 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private _element: HTMLElement;
     private selectedContainer: HTMLElement;
     private mobilePage: MobilePage;
+    private selectedControlId: string;
+    private editorNameElement: HTMLElement;
+    private editorName: string;
 
     saved: chitu.Callback<MobilePageDesigner, { pageData: PageData }>;
 
@@ -161,6 +164,17 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         let editorId = `editor-${control.id}`;
         let editorElement = this.editorsElement.querySelector(`[id='${editorId}']`) as HTMLElement;
 
+        this.selectedControlId = control.id;
+        this.editorName =
+            components.filter(o => o.name == controlName).map(o => o.displayName)[0] || controlName;
+        this.editorNameElement.innerHTML = this.editorName;
+
+        // this.state.selectedControlId = control.id;
+        // this.state.selectedComponentDisplayName =
+        //     components.filter(o => o.name == controlName).map(o => o.displayName)[0] || controlName;
+
+        // this.setState(this.state);
+
         if (this.currentEditor == editorElement && editorElement != null) {
             return;
         }
@@ -190,11 +204,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             ReactDOM.render(editorReactElement, editorElement);
         })
 
-        this.state.selectedControlId = control.id;
-        this.state.selectedComponentDisplayName =
-            components.filter(o => o.name == controlName).map(o => o.displayName)[0] || controlName;
 
-        this.setState(this.state);
     }
 
     removeControl(controlId: string) {
@@ -216,8 +226,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             pageData.footer.controls = pageData.footer.controls.filter(o => o.controlId != controlId);
         }
 
-        this.state.selectedComponentDisplayName = null;
-        this.state.selectedControlId = null;
+        // this.state.selectedComponentDisplayName = null;
+        // this.state.selectedControlId = null;
         this.setState(this.state);
         return Promise.resolve();
     }
@@ -234,7 +244,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
-        let { pageData, selectedComponentDisplayName, selectedControlId } = this.state;
+        let { pageData } = this.state;// selectedComponentDisplayName, 
+        let selectedControlId = this.selectedControlId;
         let { showComponentPanel } = this.props;
 
         return (
@@ -343,7 +354,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                         </ul>
                     </div>
 
-                    {showComponentPanel && selectedControlId != null ?
+                    {showComponentPanel ?
                         <div className="form-group">
                             <div className="singleColumnProductEditor well">
                                 <i className="icon-remove" style={{ cursor: 'pointer' }}
@@ -352,11 +363,14 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                         e.onclick = ui.buttonOnClick(
                                             () => this.removeControl(selectedControlId),
                                             {
-                                                confirm: `确定要移除控件'${selectedComponentDisplayName}'吗？`
+                                                confirmText: () => {
+                                                    return `确定要移除控件'${this.editorNameElement.innerHTML}'吗？`
+                                                }
                                             });
 
                                     }}></i>
-                                <span style={{ paddingLeft: 8 }}>{selectedComponentDisplayName}</span>
+                                <span style={{ paddingLeft: 8 }}
+                                    ref={(e: HTMLElement) => this.editorNameElement = e || this.editorNameElement} />
                                 <hr style={{ marginTop: 14 }} />
                                 <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
                                 </div>
