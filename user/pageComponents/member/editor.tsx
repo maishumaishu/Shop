@@ -1,10 +1,16 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control } from 'mobileComponents/member/control';
+import { StationService } from 'services/station';
+import { imageUrl } from 'services/service';
+
 requirejs(['css!mobileComponents/member/editor.css']);
 
 export interface EditorState extends Partial<ControlState> {
 
 }
+
+let station = new StationService();
+//station.saveImage()
 
 export default class MemberEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
@@ -14,18 +20,33 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
     render() {
         return (
             <div className="member-editor well">
-                <div className="bg">
-                    <label>
+                <div className="bg" style={{ display: 'table-row' }}>
+                    <label style={{ display: 'table-cell' }}>
                         背景图
                     </label>
-                    <span>
-                        <img src="../user/pageComponents/member/images/bg_user.png" />
-                        <a href="">修改图片</a>
+                    <span style={{ display: 'table-cell', width: 120, height: 66, textAlign: 'center', cursor: 'pointer' }}>
+                        <img src="../user/pageComponents/member/images/bg_user.png" style={{ width: '100%', height: '100%' }} />
                     </span>
+                    <input type="file" title="点击修改背景图" multiple={false}
+                        style={{
+                            display: 'table-cell', width: 120, height: 66,
+                            position: 'relative', left: -120, opacity: 0
+                        }}
+                        ref={(e: HTMLInputElement) => {
+                            if (!e) return;
+                            e.onchange = async () => {
+                                if (e.files[0]) {
+                                    let { base64 } = await ui.imageFileToBase64(e.files[0]);
+                                    let { _id } = await station.saveImage(base64);
+                                    this.state.bg = _id;
+                                    this.setState(this.state);
+                                }
+                            }
+                        }} />
                 </div>
-                <div>
-                    <label>余额</label>
-                    <span>
+                <div style={{ display: 'table-row' }}>
+                    <label style={{ display: 'table-cell' }}>余额</label>
+                    <span style={{ display: 'table-cell' }}>
                         <input type="checkbox"
                             ref={(e: HTMLInputElement) => {
                                 if (!e) return;
@@ -37,7 +58,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                             }} />显示余额
                     </span>
                 </div>
-                <div>
+                {/* <div>
                     <label>积分</label>
                     <span>
                         <input type="checkbox"
@@ -50,8 +71,8 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                 }
                             }} />显示积分
                     </span>
-                </div>
-                <div>
+                </div> */}
+                {/* <div>
                     <label>等级</label>
                     <span>
                         <input type="checkbox"
@@ -64,8 +85,8 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                 }
                             }} />显示等级
                     </span>
-                </div>
-                <div>
+                </div> */}
+                {/* <div>
                     <label>销售员中心</label>
                     <span>
                         <label>
@@ -91,7 +112,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                 }} />只对销售员显示
                         </label>
                     </span>
-                </div>
+                </div> */}
             </div>
         );
     }

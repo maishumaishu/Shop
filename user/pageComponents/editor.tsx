@@ -1,11 +1,11 @@
-import { componentsDir, Component } from 'mobileComponents/common'
+import { componentsDir, Control } from 'mobileComponents/common'
 
 export interface MobiePageDesigner {
     loadEditor();
 }
 
 export interface EditorProps {
-    control: Component<any, any>
+    control: Control<any, any>
 }
 
 export abstract class Editor<P extends EditorProps, S> extends React.Component<P, S>{

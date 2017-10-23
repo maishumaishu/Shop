@@ -1,4 +1,4 @@
-import { Component, componentsDir } from 'mobileComponents/common';
+import { Control, componentsDir } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, imageUrl } from 'userServices';
 import * as ui from 'ui';
 
@@ -67,7 +67,7 @@ export interface State {
     displayTitle?: boolean,
 }
 
-export default class SingleColumnProductControl extends Component<Props, State> {
+export default class SingleColumnProductControl extends Control<Props, State> {
     get persistentMembers(): (keyof State)[] {
         return [
             'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',

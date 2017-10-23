@@ -1,4 +1,4 @@
-import { componentsDir, Component, editor, ControlState } from 'mobileComponents/common';
+import { componentsDir, Control, editor, ControlState } from 'mobileComponents/common';
 export interface MenuNode {
     name: string,
     url: string,
@@ -17,7 +17,7 @@ export interface State {
 requirejs(['css!mobileComponents/menu/control.css']);
 
 const EMPTY_ICON = 'icon-check-empty';
-export default class MenuControl extends Component<Props, State>{
+export default class MenuControl extends Control<Props, State>{
     get persistentMembers(): (keyof State)[] {
         return ["menuNodes", "showIcon"];
     }

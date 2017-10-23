@@ -2,24 +2,25 @@ export const componentsDir = 'mobileComponents';
 export const pageClassName = 'mobile-page';
 
 export interface IMobilePageDesigner {
-    selecteControl(control: Component<any, any>, controlType: React.ComponentClass<any>);
+    selecteControl(control: Control<any, any>, controlType: React.ComponentClass<any>);
     isDesignMode?: boolean;
 }
 
 //==============================================================    
-export interface ComponentProp<T> extends React.Props<T> {
+lib/src/uiexport interface ComponentProp<T> extends React.Props<T> {
     onClick?: (event: MouseEvent, control: T) => void,
     // mode?: Mode,
     createElement?: (type, props, ...children) => JSX.Element,
 }
-export interface ComponentConstructor {
-    new(props): Component<any, any>
+export interface ControlConstructor {
+    new(props): Control<any, any>
 }
-export abstract class Component<P, S> extends React.Component<P, S> {
+export abstract class Control<P, S> extends React.Component<P, S> {
     private _element: HTMLElement;
     static contextTypes = { designer: React.PropTypes.object };
     context: { designer: IMobilePageDesigner };
-
+    id: string;
+    
     constructor(props) {
         super(props);
     }
@@ -64,7 +65,7 @@ export abstract class Component<P, S> extends React.Component<P, S> {
         return this._render(React.createElement);
     }
 
-    static loadEditor(controlName: string, control: Component<any, any>, editorElement: HTMLElement) {
+    static loadEditor(controlName: string, control: Control<any, any>, editorElement: HTMLElement) {
         let editorPathName = `pageComponent/${controlName}/editor`; //Editor.path(controlName);
         requirejs([editorPathName], (exports) => {
             let editorType = exports.default;
@@ -74,13 +75,13 @@ export abstract class Component<P, S> extends React.Component<P, S> {
         })
     }
 
-    static createStandElement(type, props: ComponentProp<any>, ...children) {
-        let args = [type, props];
-        for (let i = 2; i < arguments.length; i++) {
-            args[i] = arguments[i];
-        }
-        return React.createElement.apply(React, args);
-    }
+    // static createStandElement(type, props: ComponentProp<any>, ...children) {
+    //     let args = [type, props];
+    //     for (let i = 2; i < arguments.length; i++) {
+    //         args[i] = arguments[i];
+    //     }
+    //     return React.createElement.apply(React, args);
+    // }
 
     private get isDesignMode() {
         let screenElement = this.findScreenElement(this.element);
@@ -116,7 +117,7 @@ export function createDesignTimeElement(type: string | React.ComponentClass<any>
     if (typeof type == 'string')
         props.onClick = () => { };
     else if (typeof type != 'string') {
-        props.onClick = (event, control: Component<any, any>) => {
+        props.onClick = (event, control: Control<any, any>) => {
             if (control.context != null) {
                 control.context.designer.selecteControl(control, type);
             }

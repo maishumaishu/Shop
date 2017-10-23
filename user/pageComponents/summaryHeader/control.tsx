@@ -13,7 +13,7 @@ export interface Props {
 export interface State {
 }
 
-export default class SummaryHeaderControl extends common.Component<Props, State>{
+export default class SummaryHeaderControl extends common.Control<Props, State>{
 
     constructor(props) {
         super(props);

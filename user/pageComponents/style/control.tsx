@@ -1,11 +1,11 @@
-import { componentsDir, Component } from 'mobileComponents/common';
+import { componentsDir, Control } from 'mobileComponents/common';
 export type StyleType = 'default' | 'red';
 export interface Props extends React.Props<StyleControl> {
 }
 export interface State {
     style?: StyleType;
 }
-export default class StyleControl extends Component<Props, State>{
+export default class StyleControl extends Control<Props, State>{
 
     get persistentMembers(): (keyof State)[] {
         return ['style'];

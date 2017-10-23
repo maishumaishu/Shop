@@ -1,11 +1,11 @@
-import { Component } from 'pageComponents/common';
+import { Control } from 'pageComponents/common';
 export interface Props extends React.Props<ControlsContainer> {
 
 }
 export interface State extends Props {
     components: Array<{ name: string, props: any }>;
 }
-export default class ControlsContainer extends Component<Props, State> {
+export default class ControlsContainer extends Control<Props, State> {
     persistentMembers = [];
 
     constructor(props) {

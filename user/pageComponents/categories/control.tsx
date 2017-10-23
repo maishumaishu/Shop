@@ -1,4 +1,4 @@
-import { componentsDir, Component } from 'mobileComponents/common';
+import { componentsDir, Control } from 'mobileComponents/common';
 import { StationService } from 'services/station';
 import { ShoppingService, Category } from 'services/shopping';
 
@@ -13,7 +13,7 @@ export interface State {
     showIcons?: boolean,
 }
 
-export default class CategoriesControl extends Component<any, State> {
+export default class CategoriesControl extends Control<any, State> {
     constructor(props) {
         super(props);
         this.state = { showIcons: false };

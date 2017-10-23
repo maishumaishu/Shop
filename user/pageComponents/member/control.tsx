@@ -1,6 +1,6 @@
-import { componentsDir, Component } from 'mobileComponents/common';
+import { componentsDir, Control } from 'mobileComponents/common';
 import { PageComponent, PageView } from 'mobileControls';
-import { MemberService, Service, UserInfo, userData } from 'userServices';
+import { MemberService, Service, UserInfo, userData, imageUrl } from 'userServices';
 
 let member = Service.createService(MemberService);
 
@@ -17,13 +17,14 @@ export interface State {
     balance: number,
     score: number,
     userInfo: UserInfo,
+    bg?: string,
     showBalance?: boolean,// = false;
     showLevel?: boolean,// = false;
     showScore?: boolean,// = false;
     sellsCenter?: 'showToMember' | 'showToSells',// = 'showToMember';
 }
 
-export default class MemberControl extends Component<Props, State>{
+export default class MemberControl extends Control<Props, State>{
 
     get persistentMembers(): (keyof State)[] {
         return ["showBalance", "showLevel", "showScore", "sellsCenter"];
@@ -51,11 +52,28 @@ export default class MemberControl extends Component<Props, State>{
     _render(h) {
         // let balance = this.state.balance;
         //let userInfo = this.state.userInfo || {} as UserInfo;
-        let { balance, userInfo, showBalance, showLevel, sellsCenter, showScore } = this.state;
+        let { balance, userInfo, showBalance, showLevel, sellsCenter, showScore, bg } = this.state;
+        // bg = bg ? imageUrl(bg) : 'images/bg_user.png';
         userInfo = userInfo || {} as UserInfo;
         return (
             <div className="memberControl">
-                <div className="mobile-user-info">
+                <div className="mobile-user-info text-center" style={{ background: bg ? `url(${imageUrl()})` : null }}>
+                    <a href="#user_userInfo">
+                        <img src={userInfo.HeadImageUrl} className="img-circle img-full"
+                            title="上传头像" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+                    </a>
+                    <div className="nick-name">
+                        {userInfo.NickName == null ? '未填写' : userInfo.NickName}
+                    </div>
+
+                    {showBalance ?
+                        <div className="balance text-right">
+                            <span>余额</span>
+                            <span className="price">￥{(balance || 0).toFixed(2)}</span>
+                        </div> : null}
+
+                </div>
+                {/* <div className="mobile-user-info">
                     <a href="#user_userInfo" className="pull-left" style={{ margin: '0 20px 0px 0px' }}>
                         <img className="img-circle img-full" title="上传头像"
                             src={'userInfo.HeadImageUrl'}
@@ -99,7 +117,7 @@ export default class MemberControl extends Component<Props, State>{
                         </div>
                     </div>
                     <div className="clearfix"></div>
-                </div>
+                </div> */}
                 <div className="order-bar">
                     <div className="col-xs-3">
                         <a href="#shopping_orderList" style={{ color: 'black' }}>
@@ -152,12 +170,12 @@ export default class MemberControl extends Component<Props, State>{
                         <strong>我的优惠券</strong>
                     </a>
                 </div>
-                <div className="list-group">
+                {/* <div className="list-group">
                     <a className="list-group-item">
                         <span className="icon-chevron-right pull-right"></span>
                         <strong>销售员中心</strong>
                     </a>
-                </div>
+                </div> */}
                 <div className="list-group">
                     <a className="list-group-item" href="#user_accountSecurity_index">
                         <span className="icon-chevron-right pull-right"></span>

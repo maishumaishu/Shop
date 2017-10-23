@@ -1,4 +1,4 @@
-import { componentsDir, Component, component } from 'mobileComponents/common';
+import { componentsDir, Control, component } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, userData, ValueStore } from 'userServices';
 import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, Panel, PageHeader, PageFooter, PageView } from 'mobileControls';
 import * as ui from 'ui';
@@ -13,7 +13,7 @@ export interface State extends Props {
 }
 
 // @component("product")
-export default class ProductControl extends Component<Props, State>{
+export default class ProductControl extends Control<Props, State>{
     private productView: ProductView;
 
     persistentMembers = [];
