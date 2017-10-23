@@ -1,8 +1,9 @@
 import { Control, componentsDir } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, imageUrl } from 'userServices';
+import { app } from 'site';
 import * as ui from 'ui';
 
-let { ImageBox } = controls;
+// let { ImageBox } = controls;
 // requirejs([`css!${componentsDir}/singleColumnProduct/control`]);
 export class Data {
     private _product: Product;
@@ -185,7 +186,8 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
-                    <div key={o.Id} className="product double col-xs-6">
+                    <div key={o.Id} className="product double col-xs-6"
+                        onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                         <div>
                             <img src={imageUrl(o.ImagePath, 200)} title="高州风味"
                                 ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 200, height: 200 } }) : null} />

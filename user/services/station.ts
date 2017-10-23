@@ -106,12 +106,12 @@ namespace userServices {
             pageData.footer = pageData.footer || { controls: [] };
             pageData.footer.controls = pageData.footer.controls || [];
 
-            let menuControlData = pageData.footer.controls.filter(o => o.controlName == 'menu')[0];
-            if (!menuControlData && pageData.showMenu == true) {
-                menuControlData = await this.menuControlData();
-                menuControlData.selected = 'disabled';
-                pageData.footer.controls.push(menuControlData);
-            }
+            // let menuControlData = pageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+            // if (!menuControlData && pageData.showMenu == true) {
+            //     menuControlData = await this.menuControlData();
+            //     menuControlData.selected = 'disabled';
+            //     pageData.footer.controls.push(menuControlData);
+            // }
 
             // let styleControlData = pageData.footer.controls.filter(o => o.controlName == 'style')[0];
             // if (!styleControlData) {
@@ -126,7 +126,8 @@ namespace userServices {
         pageData(pageId: string) {
             let url = this.url('Page/GetPageData');
             let data = { pageId };
-            return this.get<PageData>(url, { pageId }).then(pageData => this.fillPageData(pageData));
+            return this.getByJson<PageData>(url, { query: { _id: pageId } })
+                .then(pageData => this.fillPageData(pageData));
         }
         defaultPageData() {
             let url = this.url('Page/GetDefaultPageData');
@@ -174,6 +175,88 @@ namespace userServices {
             }
             return member;
         }
+
+        pageDataByName(name: string) {
+            let url = this.url('Page/GetPageData');
+            let query = { name };
+            return this.getByJson<PageData>(url, { query }).then(o => {
+                return o;
+            });
+        }
+
+        private defaultPages = {
+            member: <PageData>{
+                name: '*member',
+                views: [{ controls: [{ controlId: guid(), controlName: 'member', selected: true }] }]
+            },
+            menu: <PageData>{
+                name: '*menu',
+                footer: { controls: [{ controlId: guid(), controlName: 'menu', selected: true }] }
+            },
+            style: <PageData>{
+                name: '*style',
+                footer: { controls: [{ controlId: guid(), controlName: 'style', selected: true }] }
+            },
+            categories: <PageData>{
+                name: '*categories',
+                views: [{ controls: [{ controlId: guid(), controlName: 'categories', selected: true }] }]
+            },
+            home: <PageData>{
+                name: '*home',
+                views: [{ controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }]
+            }
+        };
+
+        homePage(): Promise<PageData> {
+            const pageName = this.defaultPages.home.name;
+            return this.pageDataByName(pageName).then(pageData => {
+                if (pageData == null) {
+                    pageData = this.defaultPages.home;
+                }
+                return pageData;
+            });
+        }
+
+        memberPage(): Promise<PageData> {
+            const pageName = this.defaultPages.member.name;
+            return this.pageDataByName(pageName).then(pageData => {
+                if (pageData == null) {
+                    pageData = this.defaultPages.member;
+                }
+                return pageData;
+            });
+        }
+
+        menuPage(): Promise<PageData> {
+            const pageName = this.defaultPages.menu.name;
+            return this.pageDataByName(pageName).then(pageData => {
+                if (pageData == null) {
+                    pageData = this.defaultPages.menu;
+                }
+                return pageData;
+            });
+        }
+
+        stylePage(): Promise<PageData> {
+            const pageName = this.defaultPages.style.name;
+            return this.pageDataByName(pageName).then(pageData => {
+                if (pageData == null)
+                    pageData = this.defaultPages.style;
+
+                return pageData;
+            });
+        }
+
+        categoriesPage(): Promise<PageData> {
+            const pageName = this.defaultPages.categories.name;
+            return this.pageDataByName(pageName).then(pageData => {
+                if (pageData == null)
+                    pageData = this.defaultPages.categories;
+
+                return pageData;
+            });
+        }
+
         //============================================================
     }
 }

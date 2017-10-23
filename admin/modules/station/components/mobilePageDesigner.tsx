@@ -167,7 +167,9 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         this.selectedControlId = control.id;
         this.editorName =
             components.filter(o => o.name == controlName).map(o => o.displayName)[0] || controlName;
-        this.editorNameElement.innerHTML = this.editorName;
+
+        if (this.editorNameElement)
+            this.editorNameElement.innerHTML = this.editorName;
 
         // this.state.selectedControlId = control.id;
         // this.state.selectedComponentDisplayName =
@@ -343,10 +345,14 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                     <li key={c.name} data-controlName={c.name}
                                         style={{
                                             float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
-                                            textAlign: 'center', paddingTop: 20, backgroundColor: 'white', zIndex: 100
+                                            textAlign: 'center', paddingTop: 8, backgroundColor: 'white', zIndex: 100
                                         }} >
-                                        <img src={c.icon} />
-                                        {c.displayName}
+                                        <div>
+                                            <i className={c.icon} style={{ fontSize: 44 }} />
+                                        </div>
+                                        <div>
+                                            {c.displayName}
+                                        </div>
                                     </li>
                                 )
                             })}
@@ -363,7 +369,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                         e.onclick = ui.buttonOnClick(
                                             () => this.removeControl(selectedControlId),
                                             {
-                                                confirmText: () => {
+                                                confirm: () => {
                                                     return `确定要移除控件'${this.editorNameElement.innerHTML}'吗？`
                                                 }
                                             });

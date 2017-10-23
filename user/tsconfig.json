@@ -23,7 +23,7 @@
     },
     "exclude": [
         "user",
-        "components",
+        // "components",
         "pageComponents",
         "controls",
         "services"

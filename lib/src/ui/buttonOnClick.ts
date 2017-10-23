@@ -1,6 +1,6 @@
 namespace ui {
     export type Callback = (event: MouseEvent) => Promise<any>;
-    export type Arguments = { confirmText?: string | (() => string), toast?: string | HTMLElement };
+    export type Arguments = { confirm?: string | (() => string), toast?: string | HTMLElement };
 
     export let dialogContainer = document.body;
     export function setDialogContainer(value: HTMLElement) {
@@ -36,7 +36,7 @@ namespace ui {
             let confirmPromise: Promise<any>;
             let confirmDialogElment: HTMLElement;
 
-            if (!args.confirmText) {
+            if (!args.confirm) {
                 execute(event);
                 return;
             }
@@ -75,9 +75,9 @@ namespace ui {
             let modalBody = confirmDialogElment.querySelector('.modal-body');
             let modalFooter = confirmDialogElment.querySelector('.modal-footer');
 
-            let text = typeof args.confirmText == 'string' ?
-                args.confirmText :
-                args.confirmText();
+            let text = typeof args.confirm == 'string' ?
+                args.confirm :
+                args.confirm();
 
             modalBody.innerHTML = `<h5>${text}</h5>`;
 

@@ -1,8 +1,10 @@
 import { componentsDir, Control, component } from 'mobileComponents/common';
 import { ShoppingCartService, ShoppingService, userData, ValueStore } from 'userServices';
-import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, Panel, PageHeader, PageFooter, PageView } from 'mobileControls';
+// import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, Panel, PageHeader, PageFooter, PageView } from 'mobileControls';
 import * as ui from 'ui';
 import { app } from 'site';
+import { Panel } from 'components/panel';
+
 requirejs(['css!mobileComponents/product/control.css']);
 
 export interface Props {
@@ -75,7 +77,7 @@ interface ProductPageState {
 class ProductPanel extends React.Component<{ product: Product, parent: ProductView, shop: ShoppingService } & React.Props<ProductPanel>,
     { product: Product, count: number }> {
 
-    private panel: controls.Panel;
+    private panel: Panel;
     constructor(props) {
         super(props);
         this.state = { product: this.props.product, count: this.props.parent.state.count };
@@ -223,13 +225,13 @@ interface ProductViewProps extends React.Props<ProductView> {
 
 class ProductView extends React.Component<ProductViewProps, ProductPageState>{
 
-    private productView: controls.PageView;
-    private header: controls.PageHeader;
-    private introduceView: controls.PageView;
+    private productView: HTMLElement;
+    private header: HTMLElement;
+    private introduceView: HTMLElement;
     private productPanel: ProductPanel;
     private isShowIntroduceView = false;
     private isShowProductView = false;
-    private pageComponent: PageComponent;
+    private pageComponent: HTMLElement;
 
     constructor(props) {
         super(props);
@@ -287,15 +289,15 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
             });
         }
 
-        this.productView.slide('up');
-        this.introduceView.slide('origin');
+        // this.productView.slide('up');
+        // this.introduceView.slide('origin');
     }
 
     componentDidMount() {
-        let buttons = this.header.element.querySelectorAll('nav button');
-        let title = this.header.element.querySelector('nav.bg-primary') as HTMLElement;
+        let buttons = this.header.querySelectorAll('nav button');
+        let title = this.header.querySelector('nav.bg-primary') as HTMLElement;
 
-        this.productView.element.addEventListener('scroll', function (event) {
+        this.productView.addEventListener('scroll', function (event) {
             let p = this.scrollTop / 100;
             p = p > 1 ? 1 : p;
 
@@ -327,8 +329,8 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
     }
 
     private showProductView() {
-        this.productView.slide('origin');
-        this.introduceView.slide('down');
+        // this.productView.slide('origin');
+        // this.introduceView.slide('down');
     }
 
     addToShoppingCart() {
@@ -352,14 +354,14 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
 
     get element(): HTMLElement {
         console.assert(this.pageComponent != null);
-        return this.pageComponent.element;
+        return this.element;
     }
     render() {
         let p = this.state.product;
         let { productsCount, couponsCount } = this.state;
         return (
-            <PageComponent className="mobile-page product-control" ref={(e) => this.pageComponent = e || this.pageComponent}>
-                <PageHeader ref={(o) => this.header = o}>
+            <div className="mobile-page product-control" ref={(e: HTMLElement) => this.pageComponent = e || this.pageComponent}>
+                <header ref={(o: HTMLElement) => this.header = o || this.header}>
                     <nav className="bg-primary"></nav>
                     <nav>
                         <button className="leftButton" onClick={() => app.back()}>
@@ -374,8 +376,8 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
                             <i className="icon-heart" style={{ display: this.state.isFavored ? 'block' : 'none' }}></i>
                         </button>
                     </nav>
-                </PageHeader>
-                <PageView ref={(o) => this.productView = o}>
+                </header>
+                <section ref={(o: HTMLElement) => this.productView = this.productView || o}>
                     <div name="productImages" className="swiper-container">
                         <div className="swiper-wrapper">
                             {p.ImagePaths.map((o, i) => (
@@ -419,7 +421,7 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
                         </li>
 
                         {p.Promotions.length > 0 ?
-                            <li className="list-group-item" style={{ padding: '10px 0px 10px 0px' }}>
+                            <li className="list-group-item">
                                 {p.Promotions.map((o, i) => (
                                     <PromotionComponent key={i} promotion={o}></PromotionComponent>
                                 ))}
@@ -455,8 +457,8 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
                         </div>
                     </div>
                     <hr />
-                </PageView>
-                <PageFooter>
+                </section>
+                <footer>
                     <nav>
                         <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
                             <i className="icon-shopping-cart"></i>
@@ -467,9 +469,9 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
                         </a>
                         <button ref={(e: HTMLButtonElement) => ui.buttonOnClick(() => this.addToShoppingCart())} className="btn btn-primary pull-right" >加入购物车</button>
                     </nav>
-                </PageFooter>
+                </footer>
                 <ProductPanel ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.props.shop} />
-            </PageComponent>
+            </div>
 
 
         );

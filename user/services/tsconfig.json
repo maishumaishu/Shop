@@ -11,6 +11,7 @@
         "../../lib/typings/fetch.d.ts",
         "../../lib/typings/wuzhui.d.ts",
         
+        "../../lib/chitu.d.ts",
         "../../share/*.ts",
 
         "*.ts"

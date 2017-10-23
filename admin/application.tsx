@@ -149,35 +149,33 @@ class Page extends React.Component<any, {
                     </ul>
                 </div>
                 <div className={secondLevelNodes.length == 0 ? "main hideSecond" : 'main'} >
-                    {secondLevelNodes.length > 0 ?
-                        <nav className="navbar navbar-default">
-                            <div className="container-fluid">
-                                <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
-                                    <ul className="nav navbar-nav" style={{ width: '100%' }}>
-                                        {thirdLevelNodes.map((o, i) =>
-                                            <li key={i} className={thirdLevelNode == o ? "active" : ""} style={{ cursor: 'pointer' }}
-                                                onClick={() => app.redirect(o.Url)}>
-                                                <a> {o.Title}</a>
-                                            </li>
-                                        )}
-                                        <li className="light-blue pull-right">
-                                            <a data-toggle="dropdown" href="#" className="dropdown-toggle">
-                                                <span name="username" style={{ paddingRight: 10 }}>{this.state.username}</span>
-                                                <i className="icon-caret-down"></i>
-                                            </a>
-                                            <ul className="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                                                <li>
-                                                    <a href="#User/Logout">
-                                                        <i className="icon-off"></i>退出
-                                                </a>
-                                                </li>
-                                            </ul>
+                    <nav className="navbar navbar-default">
+                        <div className="container-fluid">
+                            <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+                                <ul className="nav navbar-nav" style={{ width: '100%' }}>
+                                    {/* {thirdLevelNodes.map((o, i) =>
+                                        <li key={i} className={thirdLevelNode == o ? "active" : ""} style={{ cursor: 'pointer' }}
+                                            onClick={() => app.redirect(o.Url)}>
+                                            <a> {o.Title}</a>
                                         </li>
-                                    </ul>
-                                </div>
+                                    )} */}
+                                    <li className="light-blue pull-right">
+                                        <a data-toggle="dropdown" href="#" className="dropdown-toggle">
+                                            <span name="username" style={{ paddingRight: 10 }}>{this.state.username}</span>
+                                            <i className="icon-caret-down"></i>
+                                        </a>
+                                        <ul className="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                                            <li>
+                                                <a href="#User/Logout">
+                                                    <i className="icon-off"></i>退出
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
                             </div>
-                        </nav> : null}
-
+                        </div>
+                    </nav>
                     <div style={{ padding: 20 }}
                         ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
                     </div>
@@ -192,46 +190,46 @@ document.body.insertBefore(element, document.body.children[0]);
 ReactDOM.render(<Page />, element);
 
 class Application extends chitu.Application {
-    
-        constructor() {
-            super();
-    
-            this.pageCreated.add((app, page) => {
-                page.load.add((sender, args) => {
-                    let element = sender.element.querySelector('admin-pc');
-                    if (element == null) {
-                        sender.element.className = (sender.element.className || '') + ' admin-pc';
-                    }
-                });
-            })
-        }
-    
-        protected createPageElement(routeData: chitu.RouteData): HTMLElement {
-            let element = document.createElement('div');
-            console.assert(viewContainer != null, 'view container cannt be null.');
-            let className = routeData.pageName.split('.').join('-');
-            element.className = className;
-            viewContainer.appendChild(element);
-    
-            return element;
-        }
-    
-        run() {
-    
-    
-    
-            super.run();
-        }
+
+    constructor() {
+        super();
+
+        this.pageCreated.add((app, page) => {
+            page.load.add((sender, args) => {
+                let element = sender.element.querySelector('admin-pc');
+                if (element == null) {
+                    sender.element.className = (sender.element.className || '') + ' admin-pc';
+                }
+            });
+        })
     }
-    
-    var app = new Application();
-    
-    if (service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
-        app.redirect('user/login');
+
+    protected createPageElement(routeData: chitu.RouteData): HTMLElement {
+        let element = document.createElement('div');
+        console.assert(viewContainer != null, 'view container cannt be null.');
+        let className = routeData.pageName.split('.').join('-');
+        element.className = className;
+        viewContainer.appendChild(element);
+
+        return element;
     }
-    
-    window['app'] = app;
-    export = app;
+
+    run() {
+
+
+
+        super.run();
+    }
+}
+
+var app = new Application();
+
+if (service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
+    app.redirect('user/login');
+}
+
+window['app'] = app;
+export = app;
 
 
 

@@ -40,7 +40,7 @@ export interface PageData {
     }[];
 }
 
-type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
+export type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
 const menuHeight = 50;
 export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     private screenElement: HTMLElement;
@@ -70,7 +70,8 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let reactElement = React.createElement(types.Control, data);
         let control: Control<any, any> = ReactDOM.render(reactElement, element);
         control.id = controlId;
-        return { control, controlType: types.Control };
+        let result: ControlPair = { control, controlType: types.Control };
+        return result;
     }
 
     static getControlType(controlName: string): Promise<{ Control: React.ComponentClass<any>, Props: { new() } }> {
@@ -133,10 +134,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             <div id={o.controlId} key={o.controlId}
                 ref={async (e: HTMLElement) => {
                     if (!e) return;
-                    // MobilePage.createControlInstance(o, e)
-                    //     .then(data => {
-
-                    //     });
 
                     var c = await MobilePage.createControlInstance(o, e);
                     var componet = Object.assign(c.control, { controlId: o.controlId, controlName: o.controlName });
@@ -147,7 +144,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                             for (let i = 0; i < controls.length; i++) {
                                 controls[i].selected = controls[i].controlId == o.controlId;
                             }
-                            // this.setState(this.state);
                             this.props.designTime.controlSelected(c.control, c.controlType)
                         }
                     }

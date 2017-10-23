@@ -45,17 +45,18 @@ export let menuData: MenuNode[] = [
     {
         Title: "商品",
         Icon: "icon-gift",
-        Children: [
-            {
-                Url: "shopping/productList", Title: "商品列表",
-                Children: [
-                    { Url: 'shopping/product/productEdit', Visible: false }
-                ]
-            },
-            { Url: "shopping/productCategoryList", Title: "商品类别" },
-            { Url: "shopping/brandList", Title: "品牌管理" },
+        Url: "shopping/productList"
+        // Children: [
+        //     {
+        //         Url: "shopping/productList", Title: "商品列表",
+        //         Children: [
+        //             { Url: 'shopping/product/productEdit', Visible: false }
+        //         ]
+        //     },
+        //     { Url: "shopping/productCategoryList", Title: "商品类别" },
+        //     { Url: "shopping/brandList", Title: "品牌管理" },
 
-        ]
+        // ]
     },
     {
         Title: "订单",

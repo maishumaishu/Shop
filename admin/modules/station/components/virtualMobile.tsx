@@ -1,6 +1,6 @@
 import { default as station, PageData, ControlDescrtion } from 'services/station';
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
-import { Component as Control, ComponentProp as ControlProp } from 'mobileComponents/common';
+import { Control } from 'mobileComponents/common';
 import { default as StyleControl } from 'mobileComponents/style/control';
 requirejs(['css!content/devices.css']);
 

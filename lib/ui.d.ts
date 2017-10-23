@@ -1,7 +1,7 @@
 declare namespace ui {
     type Callback = (event: MouseEvent) => Promise<any>;
     type Arguments = {
-        confirm?: string;
+        confirm?: string | (() => string);
         toast?: string | HTMLElement;
     };
     let dialogContainer: HTMLElement;

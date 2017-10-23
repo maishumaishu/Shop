@@ -7,7 +7,7 @@ export interface IMobilePageDesigner {
 }
 
 //==============================================================    
-lib/src/uiexport interface ComponentProp<T> extends React.Props<T> {
+export interface ComponentProp<T> extends React.Props<T> {
     onClick?: (event: MouseEvent, control: T) => void,
     // mode?: Mode,
     createElement?: (type, props, ...children) => JSX.Element,

@@ -18,6 +18,9 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
         this.state = {};
     }
     render() {
+        let bg = this.state.bg ? imageUrl(this.state.bg) :
+            '../user/pageComponents/member/images/bg_user.png';
+
         return (
             <div className="member-editor well">
                 <div className="bg" style={{ display: 'table-row' }}>
@@ -25,7 +28,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                         背景图
                     </label>
                     <span style={{ display: 'table-cell', width: 120, height: 66, textAlign: 'center', cursor: 'pointer' }}>
-                        <img src="../user/pageComponents/member/images/bg_user.png" style={{ width: '100%', height: '100%' }} />
+                        <img src={bg} style={{ width: '100%', height: '100%' }} />
                     </span>
                     <input type="file" title="点击修改背景图" multiple={false}
                         style={{

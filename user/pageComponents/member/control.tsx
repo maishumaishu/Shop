@@ -57,7 +57,7 @@ export default class MemberControl extends Control<Props, State>{
         userInfo = userInfo || {} as UserInfo;
         return (
             <div className="memberControl">
-                <div className="mobile-user-info text-center" style={{ background: bg ? `url(${imageUrl()})` : null }}>
+                <div className="mobile-user-info text-center" style={{ background: bg ? `url(${imageUrl(bg)})` : null }}>
                     <a href="#user_userInfo">
                         <img src={userInfo.HeadImageUrl} className="img-circle img-full"
                             title="上传头像" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
