@@ -1,6 +1,6 @@
 namespace ui {
     export type Callback = (event: MouseEvent) => Promise<any>;
-    export type Arguments = { confirm?: string, toast?: string | HTMLElement };
+    export type Arguments = { confirmText?: string | (() => string), toast?: string | HTMLElement };
 
     export let dialogContainer = document.body;
     export function setDialogContainer(value: HTMLElement) {
@@ -36,7 +36,7 @@ namespace ui {
             let confirmPromise: Promise<any>;
             let confirmDialogElment: HTMLElement;
 
-            if (!args.confirm) {
+            if (!args.confirmText) {
                 execute(event);
                 return;
             }
@@ -75,7 +75,11 @@ namespace ui {
             let modalBody = confirmDialogElment.querySelector('.modal-body');
             let modalFooter = confirmDialogElment.querySelector('.modal-footer');
 
-            modalBody.innerHTML = `<h5>${args.confirm}</h5>`;
+            let text = typeof args.confirmText == 'string' ?
+                args.confirmText :
+                args.confirmText();
+
+            modalBody.innerHTML = `<h5>${text}</h5>`;
 
             let cancelButton = modalFooter.querySelector('[name="cancel"]') as HTMLButtonElement;
             let okButton = modalFooter.querySelector('[name="ok"]') as HTMLButtonElement;
