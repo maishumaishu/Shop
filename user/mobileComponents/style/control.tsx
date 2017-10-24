@@ -17,9 +17,10 @@ export default class StyleControl extends Control<Props, State>{
     }
 
     _render(h) {
-        console.assert(this.state != null);
-        let style = this.state.style || 'default'; //(this.state || { style: 'default' }).style;
-        let path = `../user/mobileComponents/style/style_${style}.css`;
-        return <link rel="stylesheet" href={path}></link>
+        // console.assert(this.state != null);
+        // let style = this.state.style || 'default'; //(this.state || { style: 'default' }).style;
+        // let path = `../user/mobileComponents/style/style_${style}.css`;
+        // return <link rel="stylesheet" href={path}></link>
+        return <div></div>;
     }
 } 
