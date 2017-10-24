@@ -1,6 +1,6 @@
 import { componentsDir, Control } from 'mobileComponents/common';
-import { StationService } from 'services/station';
-import { ShoppingService, Category } from 'services/shopping';
+import { StationService } from 'userServices/stationService';
+import { ShoppingService } from 'userServices/shoppingService';
 
 import * as ui from 'ui';
 

@@ -10,7 +10,7 @@ import {
     PageComponent, PageHeader, PageFooter, PageView, Dialog
 } from 'mobileControls';
 
-import { MobilePage } from 'pageComponents/mobilePage'
+import { MobilePage } from 'mobilePage'
 
 
 export default function (page: Page, hideMenu: boolean = false) {

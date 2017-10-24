@@ -1,8 +1,10 @@
 import { componentsDir, Control } from 'mobileComponents/common';
 import { PageComponent, PageView } from 'mobileControls';
-import { MemberService, Service, UserInfo, userData, imageUrl } from 'userServices';
+import { MemberService } from 'userServices/memberService';
+import { userData } from 'userServices/userData';
+import { imageUrl } from 'userServices/service';
 
-let member = Service.createService(MemberService);
+let member = new MemberService();
 
 requirejs([`css!${componentsDir}/member/control`]);
 import * as ui from 'ui';

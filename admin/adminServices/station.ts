@@ -1,5 +1,5 @@
-﻿import { default as Service } from 'services/service';
-import templates from 'services/data/templates'
+﻿import { default as Service } from 'adminServices/service';
+import templates from 'adminServices/data/templates'
 
 export interface ControlDescrtion {
     controlId: string, controlName: string, data?: any,

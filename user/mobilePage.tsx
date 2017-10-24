@@ -1,4 +1,6 @@
-// import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
 import MenuControl from 'pageComponents/menu/control';
 import { Control } from 'mobileComponents/common';
 

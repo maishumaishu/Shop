@@ -1,8 +1,8 @@
-import { Editor, EditorProps } from 'mobileComponents/editor';
-import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control';
-import { ShoppingService, Category } from 'services/shopping';
-import { StationService } from 'services/station';
-import { imageUrl } from 'services/service';
+import { Editor, EditorProps } from 'pageComponents/editor';
+import { State as ControlState, Props as ControlProps, default as Control } from 'pageComponents/singleColumnProduct/control';
+import { ShoppingService } from 'adminServices/shopping';
+import { StationService } from 'adminServices/station';
+import { imageUrl } from 'adminServices/service';
 
 export interface EditorState extends ControlState {
 
@@ -118,7 +118,7 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
         let productIds = this.state.productIds || [];
         let exists = productIds.indexOf(product.Id) >= 0;
         if (exists) {
-            ui.alert({ title: "提示", message: '该商品已选择' })
+            ui.alert({ title: "提示", message: '该商品已选择' });
             return false;
         }
         productIds.push(product.Id);

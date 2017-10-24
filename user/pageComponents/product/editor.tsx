@@ -1,5 +1,5 @@
-import { Editor, EditorProps } from 'mobileComponents/editor';
-import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/product/control';
+import { Editor, EditorProps } from 'pageComponents/editor';
+import { State as ControlState, Props as ControlProps, default as Control } from 'pageComponents/product/control';
 let h = React.createElement;
 export interface EditorState {
 

@@ -1,6 +1,6 @@
 ﻿
 // import Product = require('models/Product');
-import { Service as Service } from 'services/service';
+import { Service as Service } from 'adminServices/service';
 // import mapping = require('knockout.mapping');
 
 // let JData = window['JData'];
@@ -389,16 +389,16 @@ export class ShoppingService extends Service {
 }
 
 
-module outlet {
-    export var dataSource = function () {
-        return new JData.WebDataSource(
-            Service.config.shopUrl + 'ShoppingData/Select?source=Outlets',
-            Service.config.shopUrl + 'ShoppingData/Insert?source=Outlets',
-            Service.config.shopUrl + 'ShoppingData/Update?source=Outlets',
-            Service.config.shopUrl + 'ShoppingData/Delete?source=Outlets'
-        );
-    }
-};
+// module outlet {
+//     export var dataSource = function () {
+//         return new JData.WebDataSource(
+//             Service.config.shopUrl + 'ShoppingData/Select?source=Outlets',
+//             Service.config.shopUrl + 'ShoppingData/Insert?source=Outlets',
+//             Service.config.shopUrl + 'ShoppingData/Update?source=Outlets',
+//             Service.config.shopUrl + 'ShoppingData/Delete?source=Outlets'
+//         );
+//     }
+// };
 
 var shopping = new ShoppingService();
 export default shopping;

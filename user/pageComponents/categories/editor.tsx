@@ -1,6 +1,6 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { State as ControlState, default as CategoriesControl } from 'mobileComponents/categories/control';
-import { ShoppingService, Category } from 'services/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import * as ui from 'ui';
 import { FormValidator, rules, Rule, InputElement } from 'dilu';
 

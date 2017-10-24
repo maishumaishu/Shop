@@ -1,8 +1,10 @@
-// import { Service, ShoppingCartService, AjaxError, userData, ValueStore, StationService } from 'userServices';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
 import { StationService } from 'userServices/stationService';
 
 import { Application as BaseApplication } from 'chitu.mobile';
-import { MobilePage } from 'pageComponents/mobilePage'
+import { MobilePage } from 'mobilePage'
 
 import * as chitu from 'maishu-chitu';
 
@@ -268,7 +270,7 @@ export class Application extends BaseApplication {
     protected parseRouteString(routeString: string) {
         let routeData = new chitu.RouteData(this.fileBasePath, routeString, '_');
         return routeData;
-    }
+    }   
 
     protected createPage(routeData: chitu.RouteData) {
         let page = super.createPage(routeData);// as Page;

@@ -8,9 +8,9 @@
 //     }
 
 // })(function () {
-import { default as Service } from 'services/service';
+import { default as Service } from 'adminServices/service';
 
-
+//HELLO
 
 let headers = {};
 if (Service.token)

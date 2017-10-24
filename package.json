@@ -2,13 +2,18 @@
   "name": "chitu-admin",
   "version": "1.0.0",
   "devDependencies": {
+    "babel-polyfill": "~6.0.16",
+    "babel-preset-latest": "^6",
     "grunt": "^1.0.1",
     "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-less": "~1.0.0",
+    "grunt-contrib-requirejs": "^1.0.0",
     "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-stylus": "~1.2.0",
     "grunt-contrib-uglify": "~1.0.1",
     "grunt-shell": "^2.1.0",
+    "require-css": "^0.1.10",
+    "requirejs": "^2.3.5",
     "typescript": "^2.3.4"
   }
 }

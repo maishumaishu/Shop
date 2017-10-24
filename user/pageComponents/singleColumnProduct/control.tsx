@@ -1,7 +1,9 @@
-import { Control, componentsDir } from 'mobileComponents/common';
-import { ShoppingCartService, ShoppingService, imageUrl } from 'userServices';
+import { Control, componentsDir } from 'pageComponents/common';
+import { imageUrl } from 'userServices/service';
+import { ShoppingCartService } from 'userServices/shoppingCartService';
+import { ShoppingService } from 'userServices/shoppingService';
+
 import { app } from 'site';
-import * as ui from 'ui';
 
 // let { ImageBox } = controls;
 // requirejs([`css!${componentsDir}/singleColumnProduct/control`]);

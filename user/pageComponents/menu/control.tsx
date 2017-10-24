@@ -1,4 +1,4 @@
-import { componentsDir, Control, editor, ControlState } from 'mobileComponents/common';
+import { componentsDir, Control, editor, ControlState } from 'pageComponents/common';
 export interface MenuNode {
     name: string,
     url: string,
@@ -14,7 +14,7 @@ export interface State {
     menuNodes?: MenuNode[];
     showIcon?: boolean;
 }
-requirejs(['css!mobileComponents/menu/control.css']);
+requirejs(['css!pageComponents/menu/control.css']);
 
 const EMPTY_ICON = 'icon-check-empty';
 export default class MenuControl extends Control<Props, State>{

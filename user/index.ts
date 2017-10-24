@@ -1,42 +1,3 @@
-
-/** 是否为 APP */
-var isCordovaApp = location.protocol === 'file:';
-/** 判断是否经 babel 转换为 es5 */
-let isBabelES5 = false;
-class testClass {
-}
-isBabelES5 = window['_classCallCheck'] != null;
-/** 判断是否使用 uglify 压缩 */
-let isUglify = testClass.name != 'testClass';
-
-var browser = function () {
-    var browser = {
-        msie: false, firefox: false, opera: false, safari: false,
-        chrome: false, netscape: false, appname: 'unknown',
-        version: 0
-    };
-    var userAgent = window.navigator.userAgent.toLowerCase();
-    if (/(msie|firefox|opera|chrome|netscape)\D+(\d[\d.]*)/.test(userAgent)) {
-        browser[RegExp.$1] = true;
-        browser.appname = RegExp.$1;
-        browser.version = new Number(RegExp.$2.split('.')[0]).valueOf();
-    } else if (/version\D+(\d[\d.]*).*safari/.test(userAgent)) { // safari 
-        browser.safari = true;
-        browser.appname = 'safari';
-        browser.version = new Number(RegExp.$1.split('.')[0]).valueOf();
-    }
-
-    return browser;
-}();
-
-
-var modulesPath = 'modules';
-var services_deps = [];
-
-if (!window['fetch']) {
-    services_deps.push('fetch');
-}
-
 requirejs.config({
     shim: {
         fetch: {
@@ -54,9 +15,6 @@ requirejs.config({
             init: function () {
                 debugger;
             }
-        },
-        services: {
-            deps: services_deps
         },
         controls: {
             deps: ['react-dom', 'react']
@@ -90,27 +48,41 @@ requirejs.config({
         // controls: 'controls',
         'chitu.mobile': 'scripts/chitu.mobile',
         carousel: 'scripts/carousel',
-        modules: modulesPath,
         services: 'userServices',
         mobileComponents: 'pageComponents',
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
-        ui: 'scripts/ui'
+        ui: 'scripts/ui',
+        'maishu-chitu': 'scripts/chitu'
     }
 });
 
-requirejs(['react', 'react-dom'], function (React, ReactDOM) {
+requirejs(['react', 'react-dom', 'site', 'ui'], function (React, ReactDOM, site) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
 
-    requirejs(['site'], function (site) {
-        site.app.run();
-
-    })
-    // requirejs(['css!mobileComponents/style/style_default.css']);
+    site.app.run();
 
 })
 
+// import * as React from 'react';
+// import * as ReactDOM from 'react-dom';
+// import 'babel-polyfill';
+
+// import * as chitu from 'maishu-chitu';
+// import { app } from 'site';
+
+// // import 'requirejs'
+// // import 'require-css';
+
+// window['React'] = React;
+// window['ReactDOM'] = ReactDOM;
+// window['chitu'] = chitu;
+
+// window['h'] = React.createElement;
+// // window['requirejs'] = window['require'];
 
 
+
+// app.run();

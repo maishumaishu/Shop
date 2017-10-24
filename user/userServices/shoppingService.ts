@@ -92,7 +92,7 @@ export class ShoppingService extends Service {
         let url = this.url('Product/GetCategory');
         return this.get<ProductCategory>(url, { categoryId });
     }
-    cateories() {
+    categories() {
         let url = this.url('Product/GetCategories');
         return this.get<ProductCategory[]>(url).then(items => {
             items.forEach(o => o.ImagePath = imageUrl(o.ImagePath));

@@ -21,7 +21,7 @@
 //     return services;
 // });
 
-import { default as Service } from 'services/service';
+import { Service } from 'adminServices/service';
 
 let headers = {};
 if (Service.token)

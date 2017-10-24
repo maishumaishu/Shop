@@ -1,7 +1,7 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control } from 'mobileComponents/member/control';
-import { StationService } from 'services/station';
-import { imageUrl } from 'services/service';
+import { StationService } from 'adminServices/station';
+import { imageUrl } from 'userServices/service';
 
 requirejs(['css!mobileComponents/member/editor.css']);
 

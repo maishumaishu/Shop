@@ -1,4 +1,4 @@
-import { componentsDir, Control, component } from 'mobileComponents/common';
+import { componentsDir, Control, component } from 'pageComponents/common';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { ShoppingService } from 'userServices/shoppingService';
 import { userData } from 'userServices/userData';
@@ -7,7 +7,7 @@ import * as ui from 'ui';
 import { app } from 'site';
 import { Panel } from 'components/panel';
 
-requirejs(['css!mobileComponents/product/control.css']);
+requirejs(['css!pageComponents/product/control.css']);
 
 export interface Props {
     productId?: string

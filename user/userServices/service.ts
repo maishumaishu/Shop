@@ -1,4 +1,5 @@
 // import { userData} from 'user/services/userData'
+import * as chitu from 'maishu-chitu';
 
 export interface DataSourceSelectArguments {
     startRowIndex: number;
@@ -279,7 +280,7 @@ export let config = {
 chitu.Service.settings.headers = {
     'application-key': tokens.appToken,
     'content-type': 'application/json',
-    'user-token': tokens.userToken.value
+    'user-token': tokens.userToken.value || ''
 }
 
 tokens.userToken.add((value) => {
