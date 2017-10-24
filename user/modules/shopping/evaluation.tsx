@@ -1,6 +1,7 @@
 import { Page, Menu, defaultNavBar, app } from 'site';
-import { ShoppingCartService, ShoppingService, ProductComent } from 'userServices';
-import {PageComponent, PageHeader, PageFooter, PageView, Dialog, Tabs, DataList, ImageBox } from 'mobileControls';
+import { ShoppingService } from 'userServices/shoppingService';
+import { ShoppingCartService } from 'userServices/shoppingCartService';
+import { PageComponent, PageHeader, PageFooter, PageView, Dialog, Tabs, DataList, ImageBox } from 'mobileControls';
 
 export default function (page: Page) {
     let shop = page.createService(ShoppingService);

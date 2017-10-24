@@ -1,9 +1,9 @@
 import { Page, defaultNavBar } from 'site';
-import { UserInfo, MemberService } from 'userServices';
+import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 import FormValidator from 'formValidator';
-import WizardComponent = require('modules/user/accountSecurity/wizard');
-import VerifyCodeButton = require('components/verifyCodeButton');
+import WizardComponent from 'modules/user/accountSecurity/wizard';
+import VerifyCodeButton from 'components/verifyCodeButton';
 
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 export interface MobileBindingPageArguments {
@@ -30,7 +30,7 @@ export default function (page: Page) {
         changeMobile() {
             let mobile = this.mobileInput.value;
             let verifyCode = this.verifyCodeInput.value;
-            return member.changeMobile(mobile, this.smsId, verifyCode).then(()=>{
+            return member.changeMobile(mobile, this.smsId, verifyCode).then(() => {
                 if (args.mobileChanged) {
                     args.mobileChanged(mobile);
                 }

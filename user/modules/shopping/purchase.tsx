@@ -1,5 +1,6 @@
 import { Page, defaultNavBar, app, formatDate } from 'site';
-import { ShoppingService, AccountService, Order } from 'userServices';
+import { ShoppingService } from 'userServices/shoppingService';
+import { AccountService } from 'userServices/accountService';
 import * as ui from 'ui';
 
 import { PageComponent, PageHeader, PageFooter, PageView, Dialog } from 'mobileControls';

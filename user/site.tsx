@@ -1,8 +1,10 @@
-import { Service, ShoppingCartService, AjaxError, userData, ValueStore, StationService } from 'userServices';
+// import { Service, ShoppingCartService, AjaxError, userData, ValueStore, StationService } from 'userServices';
+import { StationService } from 'userServices/stationService';
+
 import { Application as BaseApplication } from 'chitu.mobile';
 import { MobilePage } from 'pageComponents/mobilePage'
 
-import * as chitu from 'chitu';
+import * as chitu from 'maishu-chitu';
 
 /** 是否为 APP */
 let isCordovaApp = location.protocol === 'file:';
@@ -87,7 +89,7 @@ export let config = {
 //     }
 // }
 
-let station = Service.createService(StationService);
+let station = new StationService();
 
 export class Menu extends React.Component<{ pageName?: string }, { itemsCount?: number }>{
     render() {
@@ -191,13 +193,13 @@ export class Page extends chitu.Page {
         return <header>{(navBar)}</header>;
     }
 
-    createService<T extends Service>(serviceType: { new (): T }): T {
-        let result = new serviceType();
-        result.error.add((sender, error) => {
-            this.processError(error);
-        })
-        return result;
-    }
+    // createService<T extends Service>(serviceType: { new (): T }): T {
+    //     let result = new serviceType();
+    //     result.error.add((sender, error) => {
+    //         this.processError(error);
+    //     })
+    //     return result;
+    // }
 
     private showLoginPage = false;
     private processError(err: Error) {
@@ -360,7 +362,7 @@ export function formatDate(date: Date | string) {
 }
 
 
-export function subscribe<T>(component: React.Component<any, any>, item: ValueStore<T>, callback: (value: T) => void) {
+export function subscribe<T>(component: React.Component<any, any>, item: chitu.ValueStore<T>, callback: (value: T) => void) {
     let func = item.add(callback);
     let componentWillUnmount = (component as any).componentWillUnmount as () => void;
     (component as any).componentWillUnmount = function () {

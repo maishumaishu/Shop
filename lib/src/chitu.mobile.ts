@@ -1,6 +1,6 @@
 /// <reference path="../chitu.d.ts"/>
 
-import * as chitu from 'chitu';
+import * as chitu from 'maishu-chitu';
 /**
  * 说明：页面中元素的获取，都是实时 DOM 查询，而不是保存在一个变量中，是因为
  * 某些MVVM框架，可能会用到虚拟 DOM，把页面中的元素改写了。
@@ -36,8 +36,8 @@ export class Application extends chitu.Application {
 
     }
 
-    protected createPage(routeData: chitu.RouteData) {
-        let page = super.createPage(routeData);
+    protected createPage(routeData: chitu.RouteData, actionArguments: any) {
+        let page = super.createPage(routeData, actionArguments);
         //(page as Page).app = this;
         this.pageShown.fire(this, { page });
 

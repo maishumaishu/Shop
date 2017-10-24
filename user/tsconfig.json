@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "module": "amd",
+        "target": "es2017",
+        // "module": "amd",
         "sourceMap": false,
-        "outDir": "../www/user",
+        "outDir": "../app/user",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
@@ -16,17 +16,19 @@
             ],
             "formValidator": [
                 "lib/formValidator.d.ts"
+            ],
+            "userServices/*":[
+                "user/services/*"
             ]
         },
         "experimentalDecorators": true,
-        "declaration": true
+        "declaration": false
     },
     "exclude": [
         "user",
         // "components",
         "pageComponents",
-        "controls",
-        "services"
+        "controls"
     ],
     "include": [
         "../lib/typings/fetch.d.ts",
@@ -36,8 +38,10 @@
         "../lib/typings/react-dom/*.*",
         "../lib/typings/require.d.ts",
         "../lib/*.d.ts",
+        
         "../share/*.ts",
-        "../www/user/userServices.d.ts",
+        "../share/**/*.ts",
+        // "../www/user/userServices.d.ts",
 
         "*.tsx",
         "**/*.tsx",

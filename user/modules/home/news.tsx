@@ -1,5 +1,5 @@
 import { Page, Menu, defaultNavBar } from 'site';
-import { StationService, News } from 'userServices';
+import { StationService } from 'userServices/stationService';
 import * as site from 'site';
 
 let { PageComponent, PageHeader, PageFooter, PageView, HtmlView } = controls;

@@ -1,6 +1,6 @@
-import { Service, MemberService, VerifyCodeType } from 'userServices';
+import { MemberService, VerifyCodeType } from 'userServices/memberService';
 
-let member = Service.createService(MemberService);
+let member = new MemberService();
 
 class VerifyCodeButton extends React.Component<
     React.Props<VerifyCodeButton> & { get_mobile: () => string, set_smsId: (value: string) => void, type: VerifyCodeType }, { letfSeconds: number }>{
@@ -49,4 +49,4 @@ class VerifyCodeButton extends React.Component<
     }
 }
 
-export = VerifyCodeButton;
+export default VerifyCodeButton;

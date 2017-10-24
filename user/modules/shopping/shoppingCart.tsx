@@ -1,5 +1,9 @@
 import { Page, Menu, defaultNavBar, app } from 'site';
-import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'userServices';
+// import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'userServices';
+import { ShoppingCartService } from 'userServices/shoppingCartService';
+import { ShoppingService } from 'userServices/shoppingService';
+import { StationService } from 'userServices/stationService';
+import { userData } from 'userServices/userData';
 
 import {
     loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
@@ -29,8 +33,8 @@ export default function (page: Page, hideMenu: boolean = false) {
 
         constructor(props) {
             super(props);
-            this.setStateByItems(userData.shoppingCartItems.value || []);
-            userData.shoppingCartItems.add(items => {
+            this.setStateByItems(ShoppingCartService.items.value || []);
+            ShoppingCartService.items.add(items => {
                 this.setStateByItems(items);
             })
         }

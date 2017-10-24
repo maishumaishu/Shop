@@ -1,12 +1,12 @@
 import { Page, defaultNavBar } from 'site';
 import * as ui from 'ui';
-import * as services from 'userServices';
+import { MemberService } from 'userServices/memberService';
 import { app } from 'site';
 import FormValidator from 'formValidator';
 let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 
 export default function (page: Page) {
-    let member = page.createService(services.MemberService);
+    let member = page.createService(MemberService);
     let usernameInput: HTMLInputElement;
     let passwordInput: HTMLInputElement;
     let formElement: HTMLFormElement;

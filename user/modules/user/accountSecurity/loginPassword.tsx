@@ -1,8 +1,8 @@
 import { Page, defaultNavBar } from 'site';
-import { UserInfo, MemberService } from 'userServices';
 import * as ui from 'ui';
 import FormValidator from 'formValidator';
-import WizardComponent = require('modules/user/accountSecurity/wizard');
+import WizardComponent from 'modules/user/accountSecurity/wizard';
+import { MemberService } from 'userServices/memberService';
 
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 export default function (page: Page) {

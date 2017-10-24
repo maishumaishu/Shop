@@ -25,6 +25,9 @@
             ],
             "mobileComponents/*": [
                 "user/pageComponents/*"
+            ],
+            "userServices/*":[
+                "user/services/*"
             ]
         },
         "declaration": false,

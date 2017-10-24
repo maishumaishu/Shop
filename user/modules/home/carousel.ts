@@ -384,4 +384,4 @@ function removeClassName(element: HTMLElement, ...classNames: string[]) {
         element.className = element.className.replace(classNames[i], '');
 }
 
-export = Carousel;
+export default Carousel;

@@ -1,4 +1,4 @@
-import { PageData, ControlData, StationService, guid, Service } from 'userServices';
+import { StationService } from 'userServices/stationService';
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 import { Page } from 'site';
 import { MobilePage } from 'pageComponents/mobilePage';
@@ -6,7 +6,7 @@ import { MobilePage } from 'pageComponents/mobilePage';
 export default async function (page: chitu.Page) {
 
     let { pageId } = page.routeData.values;
-    let station = Service.createService(StationService);
+    let station = page.createService(StationService);
     let pageData = await station.pageData(pageId);
 
     let mobilePage: MobilePage;

@@ -1,9 +1,9 @@
 import { Page, defaultNavBar } from 'site';
-import { UserInfo, MemberService } from 'userServices';
+import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 
 import FormValidator from 'formValidator';
-import VerifyCodeButton = require('components/verifyCodeButton');
+import VerifyCodeButton from 'components/verifyCodeButton';
 
 let member = new MemberService();
 requirejs(['css!content/app/user/accountSecurity/wizard']);
@@ -128,4 +128,4 @@ class WizardComponent extends React.Component<{ userInfo: UserInfo } & React.Pro
     }
 }
 
-export = WizardComponent;
+export default WizardComponent;

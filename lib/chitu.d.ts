@@ -30,13 +30,13 @@ declare namespace chitu {
         private page_stack;
         private cachePages;
         fileBasePath: string;
-        backFail: Callback<Application, {}>;
+        backFail: Callback<Application, null>;
         constructor();
         protected parseRouteString(routeString: string): RouteData;
         private on_pageCreated(page);
         readonly currentPage: Page;
         readonly pages: Array<Page>;
-        protected createPage(routeData: RouteData): Page;
+        protected createPage(routeData: RouteData, actionArguments: any): Page;
         protected createPageElement(routeData: chitu.RouteData): HTMLElement;
         protected hashchange(): void;
         run(): void;
@@ -86,16 +86,18 @@ declare namespace chitu {
         fire(sender: S, args: A): void;
     }
     function Callbacks<S, A>(): Callback<S, A>;
-    function fireCallback<S, A>(callback: Callback<S, A>, sender: S, args: A): void;
+    class ValueStore<T> {
+        private funcs;
+        private _value;
+        constructor(value?: T);
+        add(func: (value: T) => any): (args: T) => any;
+        remove(func: (value: T) => any): void;
+        fire(value: T): void;
+        value: T;
+    }
 }
 
 declare namespace chitu {
-    interface PageActionConstructor {
-        new (args: Page): any;
-    }
-    interface PageConstructor {
-        new (args: PageParams): Page;
-    }
     interface PageDisplayConstructor {
         new (app: Application): PageDisplayer;
     }
@@ -109,6 +111,7 @@ declare namespace chitu {
         element: HTMLElement;
         displayer: PageDisplayer;
         previous?: Page;
+        actionArguments: any;
     }
     class Page {
         private animationTime;
@@ -118,26 +121,30 @@ declare namespace chitu {
         private _app;
         private _routeData;
         private _displayer;
+        private _actionArguments;
         static tagName: string;
-        allowCache: boolean;
-        load: Callback<this, any>;
-        showing: Callback<this, {}>;
-        shown: Callback<this, {}>;
-        hiding: Callback<this, {}>;
-        hidden: Callback<this, {}>;
-        closing: Callback<this, {}>;
-        closed: Callback<this, {}>;
+        error: Callback<Page, Error>;
+        load: Callback<this, null>;
+        loadComplete: Callback<this, null>;
+        showing: Callback<this, null>;
+        shown: Callback<this, null>;
+        hiding: Callback<this, null>;
+        hidden: Callback<this, null>;
+        closing: Callback<this, null>;
+        closed: Callback<this, null>;
         constructor(params: PageParams);
-        on_load(args: any): void;
-        on_showing(): void;
-        on_shown(): void;
-        on_hiding(): void;
-        on_hidden(): void;
-        on_closing(): void;
-        on_closed(): void;
+        private on_load();
+        private on_loadComplete();
+        private on_showing();
+        private on_shown();
+        private on_hiding();
+        private on_hidden();
+        private on_closing();
+        private on_closed();
         show(): Promise<any>;
         hide(): Promise<any>;
         close(): Promise<any>;
+        createService<T extends Service>(type: ServiceConstructor<T>): T;
         readonly element: HTMLElement;
         previous: Page;
         readonly routeData: RouteData;
@@ -145,9 +152,46 @@ declare namespace chitu {
         private loadPageAction();
         reload(): Promise<void>;
     }
-    class PageDisplayerImplement implements PageDisplayer {
-        show(page: Page): Promise<void>;
-        hide(page: Page): Promise<void>;
+}
+interface PageActionConstructor {
+    new (page: chitu.Page): any;
+}
+interface PageConstructor {
+    new (args: chitu.PageParams): chitu.Page;
+}
+declare class PageDisplayerImplement implements chitu.PageDisplayer {
+    show(page: chitu.Page): Promise<void>;
+    hide(page: chitu.Page): Promise<void>;
+}
+
+interface ServiceError extends Error {
+    method?: string;
+}
+declare function ajax<T>(url: string, options: RequestInit): Promise<T>;
+declare namespace chitu {
+    interface ServiceConstructor<T extends Service> {
+        new (): T;
+    }
+    abstract class Service {
+        error: Callback<Service, Error>;
+        static settings: {
+            ajaxTimeout: number;
+            headers: {
+                [key: string]: string;
+            };
+        };
+        constructor();
+        ajax<T>(url: string, options: RequestInit): Promise<T>;
+        getByJson<T>(url: string, data?: any): Promise<T>;
+        postByJson<T>(url: string, data?: Object): Promise<T>;
+        deleteByJson<T>(url: string, data?: Object): Promise<T>;
+        putByJson<T>(url: string, data?: Object): Promise<T>;
+        get<T>(url: string, data?: any): Promise<T>;
+        post<T>(url: string, data?: any): Promise<T>;
+        put<T>(url: string, data?: any): Promise<T>;
+        delete<T>(url: string, data?: any): Promise<T>;
+        private ajaxByForm<T>(url, data, method);
+        private ajaxByJSON<T>(url, data, method);
     }
 }
 
@@ -155,6 +199,6 @@ declare namespace chitu {
     function combinePath(path1: string, path2: string): string;
     function loadjs(path: any): Promise<any>;
 }
-declare module "chitu" { 
+declare module "maishu-chitu" { 
             export = chitu; 
         }

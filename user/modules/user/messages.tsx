@@ -1,8 +1,7 @@
-import { Page } from 'chitu';
 import { defaultNavBar } from 'site';
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     class MessagePage extends React.Component<{}, {}>{
         render() {
             let messags = [

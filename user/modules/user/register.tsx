@@ -1,11 +1,12 @@
 import { Page, defaultNavBar, app, config } from 'site';
 let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 import FormValidator from 'formValidator';
-import * as services from 'userServices';
+// import * as services from 'userServices';
+import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 
 export default function (page: Page) {
-    let member = page.createService(services.MemberService);  //new services.MemberService();
+    let member = page.createService(MemberService);  //new services.MemberService();
     class RegisterPage extends React.Component<{}, { letfSeconds: number }> {
         private validator: FormValidator;
         private formElement: HTMLFormElement;

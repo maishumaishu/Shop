@@ -1,5 +1,5 @@
 import { Page, defaultNavBar, app, formatDate } from 'site';
-import { AccountService, ScoreDetail } from 'userServices';
+import { AccountService } from 'userServices/accountService';
 
 let { PageComponent, PageHeader, PageView, DataList } = controls;
 

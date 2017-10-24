@@ -1,6 +1,8 @@
 import { componentsDir, Control, component } from 'mobileComponents/common';
-import { ShoppingCartService, ShoppingService, userData, ValueStore } from 'userServices';
-// import { loadImage, PageComponent, ImageBox, PullDownIndicator, PullUpIndicator, Panel, PageHeader, PageFooter, PageView } from 'mobileControls';
+import { ShoppingCartService } from 'userServices/shoppingCartService';
+import { ShoppingService } from 'userServices/shoppingService';
+import { userData } from 'userServices/userData';
+
 import * as ui from 'ui';
 import { app } from 'site';
 import { Panel } from 'components/panel';
@@ -60,7 +62,7 @@ export default class ProductControl extends Control<Props, State>{
 }
 
 
-let productStore = new ValueStore<Product>();
+let productStore = new chitu.ValueStore<Product>();
 
 interface ProductPageState {
     productSelectedText: string,

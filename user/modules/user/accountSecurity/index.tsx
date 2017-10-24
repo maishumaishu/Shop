@@ -1,13 +1,13 @@
 import { Page } from 'site';
 import { defaultNavBar, app } from 'site';
-import * as services from 'userServices';
+// import * as services from 'userServices';
 import { MobileBindingPageArguments } from 'modules/user/accountSecurity/mobileBinding';
-
+import { MemberService } from 'userServices/memberService';
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 
 
 export default function (page: Page) {
-    class IndexPage extends React.Component<{ userInfo: services.UserInfo }, { userInfo: services.UserInfo }>{
+    class IndexPage extends React.Component<{ userInfo: UserInfo }, { userInfo: UserInfo }>{
         constructor(props) {
             super(props);
             this.state = { userInfo: this.props.userInfo };
@@ -37,7 +37,7 @@ export default function (page: Page) {
                                     {/*<span data-bind="visible:!passwordSetted()" className="pull-right text-primary" style={{ paddingRight: 10 }}>未设置</span>*/}
                                     <div style={{ paddingTop: 10 }}>设置登录密码，可以使用手机和密码登录</div>
                                 </a>
-                                <a href="javascript:" className="list-group-item   row" onClick={()=>this.showMobileBindingPage()}>
+                                <a href="javascript:" className="list-group-item   row" onClick={() => this.showMobileBindingPage()}>
                                     <strong className="name">手机绑定</strong>
                                     <i className="icon-chevron-right pull-right"></i>
                                     <span className={userInfo.Mobile ? 'pull-right' : "pull-right text-primary"} style={{ paddingRight: 10 }}>
@@ -62,7 +62,7 @@ export default function (page: Page) {
     }
 
 
-    let member = new services.MemberService();
+    let member = new MemberService();
     member.userInfo().then(userInfo => {
         ReactDOM.render(<IndexPage userInfo={userInfo} />, page.element);
     })

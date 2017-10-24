@@ -1,5 +1,5 @@
 import { Page, searchNavBar, app } from 'site';
-import { StationService } from 'userServices';
+import { StationService } from 'userServices/stationService';
 
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 

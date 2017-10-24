@@ -1,5 +1,6 @@
 import { Page, defaultNavBar, app } from 'site';
-import { ShoppingService, Order, MemberService, UserInfo } from 'userServices';
+import { ShoppingService } from 'userServices/shoppingService';
+import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 let { PageComponent, PageHeader, PageView, DataList, PageFooter, ImageBox } = controls;
 
@@ -102,7 +103,7 @@ export default async function (page: Page) {
                     var blob = new Blob([event.target['result']]);
                     var blobURL = URL.createObjectURL(blob);
                     var image = new Image();
-                    
+
                     let width = 100;
                     let height = 100;
 

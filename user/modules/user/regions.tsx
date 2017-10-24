@@ -1,5 +1,5 @@
 import { Page, defaultNavBar, app } from 'site';
-import { ShoppingService, Region } from 'userServices';
+import { ShoppingService } from 'userServices/shoppingService';
 let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 
 export interface RegionsPageRouteValues {
