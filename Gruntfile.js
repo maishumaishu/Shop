@@ -140,7 +140,7 @@ module.exports = function (grunt) {
                     baseUrl: 'www/user',
                     include: [
                         'index', 'css', 'userServices/service', 'userServices/shoppingService',
-                        'pageComponents/common', 'modules/page'
+                        'mobileComponents/common', 'modules/page','polyfill'
                     ], 
                     out: 'www/user/build.js',
                     optimize: 'none',
@@ -157,7 +157,7 @@ module.exports = function (grunt) {
                         // 'chitu.mobile': 'scripts/chitu.mobile',
                         carousel: 'scripts/carousel',
                         services: 'userServices',
-                        mobileComponents: 'pageComponents',
+                        // mobileComponents: 'pageComponents',
                         formValidator: 'scripts/formValidator',
                         mobileControls: 'scripts/mobileControls',
                         ui: 'scripts/ui',

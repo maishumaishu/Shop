@@ -1,4 +1,4 @@
-import { Control } from 'pageComponents/common';
+import { Control } from 'mobileComponents/common';
 export interface Props extends React.Props<ControlsContainer> {
 
 }

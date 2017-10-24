@@ -1,5 +1,5 @@
-import { Editor, EditorProps } from 'pageComponents/editor';
-import { State as ControlState, Props as ControlProps, default as Control } from 'pageComponents/singleColumnProduct/control';
+import { Editor, EditorProps } from 'mobileComponents/editor';
+import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control';
 import { ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'adminServices/service';

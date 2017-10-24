@@ -34,10 +34,10 @@ let componets: Array<ComponentDefine> = [
 ];
 
 function controlPath(name: string) {
-    return `pageComponents/${name}/control`;
+    return `mobileComponents/${name}/control`;
 }
 function editorPath(name: string) {
-    return `pageComponents/${name}/control`;
+    return `mobileComponents/${name}/control`;
 }
 
 export default componets;

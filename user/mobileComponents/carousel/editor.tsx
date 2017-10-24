@@ -1,5 +1,5 @@
-import { Editor, EditorProps, guid } from 'pageComponents/editor';
-import { default as Control, Props as ControlProps, State as ControlState, CarouselItem } from 'pageComponents/carousel/control';
+import { Editor, EditorProps, guid } from 'mobileComponents/editor';
+import { default as Control, Props as ControlProps, State as ControlState, CarouselItem } from 'mobileComponents/carousel/control';
 // import site = require('Site');
 import { StationService } from 'userServices/stationService';
 // import { ImagePreview } from 'common/ImagePreview';

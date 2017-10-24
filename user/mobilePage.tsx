@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import MenuControl from 'pageComponents/menu/control';
+import MenuControl from 'mobileComponents/menu/control';
 import { Control } from 'mobileComponents/common';
 
 // type DesignTime = (args: {

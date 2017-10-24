@@ -49,7 +49,7 @@ requirejs.config({
         'chitu.mobile': 'scripts/chitu.mobile',
         carousel: 'scripts/carousel',
         services: 'userServices',
-        mobileComponents: 'pageComponents',
+        // mobileComponents: 'pageComponents',
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
         ui: 'scripts/ui',

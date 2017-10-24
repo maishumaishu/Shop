@@ -1,4 +1,4 @@
-import { componentsDir } from 'pageComponents/common'
+import { componentsDir } from 'mobileComponents/common'
 // import { ImageBox } from 'mobile/controls';
 let { ImageBox } = controls;
 

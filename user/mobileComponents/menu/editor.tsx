@@ -1,7 +1,7 @@
-import { Editor, EditorProps } from 'pageComponents/editor';
-import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'pageComponents/menu/control';
+import { Editor, EditorProps } from 'mobileComponents/editor';
+import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'mobileComponents/menu/control';
 import { FormValidator } from 'formValidator';
-requirejs(['css!pageComponents/menu/editor.css']);
+requirejs(['css!mobileComponents/menu/editor.css']);
 let h = React.createElement;
 
 export interface MenuEditorState extends Partial<ControlState> {

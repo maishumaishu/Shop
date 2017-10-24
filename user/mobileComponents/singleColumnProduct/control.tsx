@@ -1,4 +1,4 @@
-import { Control, componentsDir } from 'pageComponents/common';
+import { Control, componentsDir } from 'mobileComponents/common';
 import { imageUrl } from 'userServices/service';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { ShoppingService } from 'userServices/shoppingService';

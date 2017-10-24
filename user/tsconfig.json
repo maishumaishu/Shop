@@ -11,12 +11,12 @@
             "chitu.mobile": [
                 "lib/chitu.mobile"
             ],
-            "mobileComponents/*": [
-                "user/pageComponents/*"
-            ],
-            "pageComponents/*": [
-                "user/pageComponents/*"
-            ],
+            // "mobileComponents/*": [
+            //     "user/pageComponents/*"
+            // ],
+            // "pageComponents/*": [
+            //     "user/pageComponents/*"
+            // ],
             "formValidator": [
                 "lib/formValidator.d.ts"
             ]
