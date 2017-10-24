@@ -1,5 +1,5 @@
 
-import { default as activity } from 'services/activity';
+import { default as activity } from 'adminServices/activity';
 import site = require('site');
 import FormValidator from 'formValidator';
 import * as wz from 'myWuZhui';

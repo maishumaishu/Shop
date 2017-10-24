@@ -1,5 +1,5 @@
-import { default as shopping } from 'services/shopping';
-import station from 'services/station';
+import { default as shopping } from 'adminServices/shopping';
+import station from 'adminServices/station';
 import app = require('application');
 import bootbox = require('bootbox');
 import { default as site } from 'site';

@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { StationService } from 'userServices/stationService';
 
 import { Application as BaseApplication } from 'chitu.mobile';
-import { MobilePage } from 'mobilePage'
+import { MobilePage } from 'mobileComponents/mobilePage'
 
 import * as chitu from 'maishu-chitu';
 

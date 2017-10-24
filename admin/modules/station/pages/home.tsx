@@ -1,6 +1,6 @@
 import { ComponentDesigner } from 'componentDesigner';
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { default as station } from 'services/station';
+import { default as station } from 'adminServices/station';
 export default function (page: chitu.Page) {
     station.homePage().then(pageData => {
         ReactDOM.render(

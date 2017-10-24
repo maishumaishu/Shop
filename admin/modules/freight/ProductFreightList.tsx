@@ -1,5 +1,5 @@
-﻿import Service = require('services/service');
-import { default as shopping, FreightSolution, ProductFreight } from 'services/shopping';
+﻿import { Service } from 'adminServices/service';
+import { default as shopping, FreightSolution, ProductFreight } from 'adminServices/shopping';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 

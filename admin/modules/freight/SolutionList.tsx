@@ -1,5 +1,5 @@
 
-import { default as shopping } from 'services/shopping';
+import { default as shopping } from 'adminServices/shopping';
 import site = require('site');
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';

@@ -1,7 +1,7 @@
-﻿import { default as shopping } from 'services/shopping'
+﻿import { default as shopping } from 'adminServices/shopping'
 import ko = require('knockout');
 import validation = require('knockout.validation');
-import { default as sv_activity } from 'services/activity';
+import { default as sv_activity } from 'adminServices/activity';
 
 
 var promotionMethods = {

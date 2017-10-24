@@ -1,6 +1,6 @@
-// import { default as Service } from 'services/service';
+// import { default as Service } from 'adminServices/service';
 // import site = require('site');
-// import { default as system } from 'services/system';
+// import { default as system } from 'adminServices/system';
 // import validation = require('knockout.validation');
 
 // let JData = window['JData'];

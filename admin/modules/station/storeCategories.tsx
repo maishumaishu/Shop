@@ -1,5 +1,5 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { StationService } from 'services/station';
+import { StationService } from 'adminServices/station';
 
 var station = new StationService();
 export default function (page: chitu.Page) {

@@ -1,4 +1,4 @@
-import { default as services } from 'services/service';
+import { default as services } from 'adminServices/service';
 import app = require('application');
 
 

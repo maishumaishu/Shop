@@ -1,4 +1,4 @@
-﻿import { default as Service } from 'services/service'
+﻿import { default as Service } from 'adminServices/service'
 
 let bootbox = window['bootbox'];
 

@@ -6,7 +6,7 @@
 
 // });
 
-// import adminService = require('services/ShopAdmin');
+// import adminService = require('adminServices/ShopAdmin');
 
 // class PageModel {
 //     private validation: KnockoutValidationErrors;
@@ -53,8 +53,8 @@
 //     ko.applyBindings(model, page.element);
 // }
 
-import { Service } from 'services/service';
-import { UserService } from 'services/user';
+import { Service } from 'adminServices/service';
+import { UserService } from 'adminServices/user';
 import site from 'site';
 
 let userService = new UserService();

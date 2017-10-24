@@ -12,23 +12,30 @@
                 "lib/*"
             ],
             "mobileComponents/*": [
-                "user/pageComponents/*"
-            ],
-            "componentDesigner/*": [
-                "user/componentDesigner/*"
+                "user/mobileComponents/*"
             ]
+            // "componentDesigner/*": [
+            //     "user/componentDesigner/*"
+            // ]
         },
         "experimentalDecorators": true
     },
     "exclude": [],
     "include": [
-        "../lib/typings",
+
         "../lib/*.d.ts",
+        "../lib/typings/*.d.ts",
+        "../lib/typings/**/*.d.ts",
+
         "../share/*.d.ts",
-        "../www/user/userServices.d.ts",
-        "services/*",
+
+        // "../www/user/userServices.d.ts",
+        // "services/*",
         "references.d.ts",
+
         // "application.tsx"
+
+        "user/mobileComponents/*",
 
         "modules/station/components/virtualMobile",
         "modules/station/components/mobilePageDesigner",

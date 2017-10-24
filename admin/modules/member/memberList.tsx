@@ -1,4 +1,4 @@
-﻿import { default as memberService, UserInfo } from 'services/user';
+﻿import { default as memberService } from 'adminServices/user';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import FormValidator from 'formValidator';

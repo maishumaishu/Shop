@@ -22,12 +22,6 @@ export interface Application {
     token: string,
 }
 
-export interface UserInfo {
-    Id: string,
-    Balance: number,
-    Gender: string,
-    UserId: string,
-}
 
 export class UserService extends Service {
     private url(path: string) {

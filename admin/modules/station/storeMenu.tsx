@@ -1,6 +1,6 @@
 import { ComponentDesigner } from 'componentDesigner';
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { StationService } from 'services/station';
+import { StationService } from 'adminServices/station';
 
 let station = new StationService();
 export default function (page: chitu.Page) {

@@ -1,4 +1,4 @@
-﻿import { default as userService } from 'services/user';
+﻿import { default as userService } from 'adminServices/user';
 import app = require('application');
 import { default as site } from 'site';
 import FormValidator from 'formValidator';

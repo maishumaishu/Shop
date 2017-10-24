@@ -87,7 +87,7 @@ requirejs.config({
         ueditor: 'ueditor',
         'ue': 'ueditor',
         'wuzhui': 'scripts/wuzhui',
-        // service: 'services/service',
+        // service: 'adminServices/service',
         userServices: '../user/userServices',
         componentDesigner: 'modules/station/components/componentDesigner',
         mobileComponents: '../user/pageComponents',
@@ -96,9 +96,9 @@ requirejs.config({
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
-requirejs(references, function (ReactClass, ReactDOMClass, app, ui) {
-    window['React'] = ReactClass;
-    window['ReactDOM'] = ReactDOMClass;
+requirejs(references, function (React, ReactDOM, app, ui) {
+    window['React'] = React;
+    window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
 
 
@@ -107,9 +107,6 @@ requirejs(references, function (ReactClass, ReactDOMClass, app, ui) {
 
 
     // requirejs(['ace'], function () { });
-
-
-
 
 });
 

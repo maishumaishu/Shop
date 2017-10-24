@@ -1,4 +1,4 @@
-﻿import weixin from 'services/weixin';
+﻿import weixin from 'adminServices/weixin';
 
 export default function (page: chitu.Page) {
 

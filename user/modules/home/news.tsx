@@ -1,6 +1,7 @@
 import { Page, Menu, defaultNavBar } from 'site';
 import { StationService } from 'userServices/stationService';
 import * as site from 'site';
+import * as React from 'react';
 
 let { PageComponent, PageHeader, PageFooter, PageView, HtmlView } = controls;
 
@@ -15,20 +16,22 @@ export default function (page: Page) {
         render() {
             let news = this.props.news;
             return (
-                <PageComponent>
-                    <PageHeader>
+                <div>
+                    <header>
                         {defaultNavBar({ title: '资讯详情' })}
-                    </PageHeader>
-                    <PageView>
+                    </header>
+                    <section>
                         <div className="container">
                             <h2>{news.Title}</h2>
                             <div className="small">
                                 {news.Date.toLocaleDateString()}
                             </div>
-                            <HtmlView content={news.Content} />
+                            {/* <HtmlView content={news.Content} /> */}
+                            <div dangerouslySetInnerHTML={{ __html: news.Content }}>
+                            </div>
                         </div>
-                    </PageView>
-                </PageComponent>
+                    </section>
+                </div>
             );
         }
     }

@@ -168,8 +168,10 @@ interface UserInfo {
     Gender: string;
     UserId: string;
     CreateDateTime: string;
-    Mobile: string
+    Mobile: string,
+    Balance: number,
 }
+
 
 interface RegisterModel {
     user: { mobile: string, password: string },

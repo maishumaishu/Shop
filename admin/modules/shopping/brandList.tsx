@@ -1,8 +1,8 @@
 import { default as site } from 'site';
 import { CommandField, createGridView, GridViewItemPopupEditor } from 'myWuZhui';
 import FormValidator from 'formValidator';
-import { default as shopping } from 'services/shopping'
-import { default as activity } from 'services/activity'
+import { default as shopping } from 'adminServices/shopping'
+import { default as activity } from 'adminServices/activity'
 export default function (page: chitu.Page) {
 
     class BrandListPage extends React.Component<{}, {}>{

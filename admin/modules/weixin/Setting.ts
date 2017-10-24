@@ -4,7 +4,7 @@
 
 // })
 
-import weixin from 'services/weixin';
+import weixin from 'adminServices/weixin';
 // import bootbox = require('bootbox');
 import * as ui from 'ui';
 

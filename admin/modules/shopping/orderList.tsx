@@ -1,6 +1,6 @@
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
-import { default as shopping, Order, OrderDetail } from 'services/shopping';
+import { default as shopping, Order, OrderDetail } from 'adminServices/shopping';
 
 export default function (page: chitu.Page) {
     page.element.className = 'admin-pc';
