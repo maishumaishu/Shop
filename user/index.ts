@@ -33,7 +33,7 @@ requirejs.config({
             exports: 'ui'
         },
         site: {
-            deps: ['react']
+            deps: ['react', 'chitu']
         }
     },
     paths: {
@@ -52,8 +52,7 @@ requirejs.config({
         // mobileComponents: 'pageComponents',
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
-        ui: 'scripts/ui',
-        'maishu-chitu': 'scripts/chitu'
+        ui: 'scripts/ui'
     }
 });
 

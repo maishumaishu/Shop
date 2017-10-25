@@ -1,5 +1,4 @@
 // import { userData} from 'user/services/userData'
-import * as chitu from 'maishu-chitu';
 
 export interface DataSourceSelectArguments {
     startRowIndex: number;

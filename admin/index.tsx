@@ -68,7 +68,7 @@ requirejs.config({
 
         knockout: 'scripts/knockout-3.2.0.debug',
         'knockout.validation': 'scripts/knockout.validation',
-        
+
         'bezier-easing': 'scripts/bezier-easing',
         'jquery.fileupload': 'scripts/jQuery.FileUpload/jquery.fileupload',
         'jquery.validate': 'scripts/jquery.validate',
@@ -78,21 +78,15 @@ requirejs.config({
 
         ace: 'assets/js/uncompressed/ace',
 
-        custom: 'Custom',
-        mod: 'modules',
-        modules: 'modules',
-        content: 'content',
-        com: 'common',
-        //app: 'App',
-        ueditor: 'ueditor',
         'ue': 'ueditor',
         'wuzhui': 'scripts/wuzhui',
         // service: 'adminServices/service',
         userServices: '../user/userServices',
         componentDesigner: 'modules/station/components/componentDesigner',
-        mobileComponents: '../user/pageComponents',
+        mobileComponents: '../user/mobileComponents',
         mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
-        mobilePage: 'modules/station/components/virtualMobile',
+        virtualMobile: 'modules/station/components/virtualMobile',
+        'maishu-chitu': 'scripts/chitu'
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];

@@ -1,5 +1,4 @@
 ﻿// import $ = require('jquery');
-import * as chitu from 'maishu-chitu';
 
 interface ServiceError extends Error {
     handled: boolean;

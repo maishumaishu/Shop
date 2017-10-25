@@ -6,7 +6,6 @@ import { StationService } from 'userServices/stationService';
 import { Application as BaseApplication } from 'chitu.mobile';
 import { MobilePage } from 'mobileComponents/mobilePage'
 
-import * as chitu from 'maishu-chitu';
 
 /** 是否为 APP */
 let isCordovaApp = location.protocol === 'file:';
@@ -259,11 +258,11 @@ export class Application extends BaseApplication {
 
         //==================================================
         // 添加样式
-        let styleElement = document.createElement("div");
-        document.body.appendChild(styleElement);
-        station.styleControlData().then(controlData => {
-            MobilePage.createControlInstance(controlData, styleElement);
-        })
+        // let styleElement = document.createElement("div");
+        // document.body.appendChild(styleElement);
+        // station.styleControlData().then(controlData => {
+        //     MobilePage.createControlInstance(controlData, styleElement);
+        // })
         //==================================================
     }
 
