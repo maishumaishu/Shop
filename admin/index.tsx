@@ -20,7 +20,7 @@ requirejs.config({
             // deps: ['jquery.cookie', 'bootbox']
         },
         application: {
-            deps: ['chitu']
+            deps: ['maishu-chitu']
         },
         mobileControls: {
             exports: 'controls',
@@ -51,7 +51,7 @@ requirejs.config({
     },
     paths: {
         bootstrap: 'scripts/bootstrap',
-        chitu: 'scripts/chitu',
+        // chitu: 'scripts/chitu',
         css: 'scripts/css',
         dilu: 'scripts/dilu',
         formValidator: 'scripts/formValidator',
@@ -86,7 +86,8 @@ requirejs.config({
         mobileComponents: '../user/mobileComponents',
         mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
         virtualMobile: 'modules/station/components/virtualMobile',
-        'maishu-chitu': 'scripts/chitu'
+        'maishu-chitu': 'scripts/chitu',
+        'user': '../user'
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
