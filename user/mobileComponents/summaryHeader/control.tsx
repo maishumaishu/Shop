@@ -6,7 +6,7 @@ export class Data {
 
 }
 
-export interface Props {
+export interface Props extends common.ControlProps<SummaryHeaderControl> {
 
 }
 

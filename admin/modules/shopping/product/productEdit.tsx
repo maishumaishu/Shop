@@ -1,7 +1,7 @@
 ﻿import app = require('application')
 import { default as shopping } from 'adminServices/shopping';
 import { StationService, guid } from 'adminServices/station';
-import { Service, ValueStore, imageUrl } from 'adminServices/service';
+import { Service, imageUrl } from 'adminServices/service';
 
 import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';

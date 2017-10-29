@@ -1,6 +1,6 @@
-import { componentsDir, Control } from 'mobileComponents/common';
+import { componentsDir, Control, ControlProps } from 'mobileComponents/common';
 export type StyleType = 'default' | 'red';
-export interface Props extends React.Props<StyleControl> {
+export interface Props extends ControlProps<StyleControl> {
 }
 export interface State {
     style?: StyleType;

@@ -4,7 +4,7 @@ import { PageComponent, PageView, PageFooter } from 'mobileControls';
 import { MobilePage } from 'mobileComponents/mobilePage';
 export default async function (page: Page) {
     let station = page.createService(StationService);
-    let pageData = await station.memberPageData();
+    let pageData = await station.fullPage(station.memberPage);
     ReactDOM.render(
         <MobilePage pageData={pageData} />
         , page.element);

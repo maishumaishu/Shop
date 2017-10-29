@@ -24,6 +24,10 @@ export let menuData: MenuNode[] = [
                 Url: 'station/storeMenu'
             },
             {
+                Title: '购物车',
+                Url: 'station/shoppingCart'
+            },
+            {
                 Title: '店铺风格',
                 Url: 'station/storeStyle'
             },
@@ -45,18 +49,18 @@ export let menuData: MenuNode[] = [
     {
         Title: "商品",
         Icon: "icon-gift",
-        Url: "shopping/productList"
-        // Children: [
-        //     {
-        //         Url: "shopping/productList", Title: "商品列表",
-        //         Children: [
-        //             { Url: 'shopping/product/productEdit', Visible: false }
-        //         ]
-        //     },
-        //     { Url: "shopping/productCategoryList", Title: "商品类别" },
-        //     { Url: "shopping/brandList", Title: "品牌管理" },
+        Url: "shopping/productList",
+        Children: [
+            {
+                Url: "shopping/productList", Title: "商品列表",
+                Children: [
+                    { Url: 'shopping/product/productEdit', Title: "", Visible: false }
+                ]
+            },
+            // { Url: "shopping/productCategoryList", Title: "商品类别" },
+            // { Url: "shopping/brandList", Title: "品牌管理" },
 
-        // ]
+        ]
     },
     {
         Title: "订单",

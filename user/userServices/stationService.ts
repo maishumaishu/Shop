@@ -220,4 +220,32 @@ export class StationService extends Service {
     }
 
     //============================================================
+
+    async fullPage(page: () => Promise<PageData>) {
+        let result = await Promise.all([page.bind(this)(), this.stylePage(), this.menuPage()]);
+        let pageData = result[0] as PageData;
+        let stylePageData = result[1];
+        let menuPageData = result[2];
+
+        pageData.footer = pageData.footer || {} as any;
+        pageData.footer.controls = pageData.footer.controls || [];
+        
+        // let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
+        // if (!existsStyleControl) {
+        //     // station.stylePage().then(stylePageData => {
+        //     let styleControl = stylePageData.footer.controls[0];
+        //     console.assert(styleControl != null && styleControl.controlName == 'style');
+        //     pageData.footer.controls.push(styleControl);
+        //     // })
+        // }
+
+        let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
+        if (!existsMenuControl && pageData.showMenu) {
+            let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+            console.assert(menuControlData != null);
+            pageData.footer.controls.push(menuControlData);
+        }
+
+        return pageData;
+    }
 }

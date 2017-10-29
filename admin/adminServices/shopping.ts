@@ -163,13 +163,16 @@ export class ShoppingService extends Service {
     queryProducts(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
 
         var url = this.url('Product/GetProducts');
-        if (searchText) {
-            url = url + '?searchText=' + encodeURI(searchText);
-        }
+        // if (searchText) {
+        //     url = url + '?searchText=' + encodeURI(searchText);
+        // }
 
         var maximumRows = 10;
         var start = pageIndex * maximumRows;
         var args = { StartRowIndex: start, MaximumRows: maximumRows };
+        if (searchText)
+            args['searchText'] = encodeURI(searchText);
+
         return this.get<any>(url, args).then(function (result) {
             for (var i = 0; i < result.DataItems.length; i++) {
                 // result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);

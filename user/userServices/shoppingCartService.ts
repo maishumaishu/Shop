@@ -1,77 +1,213 @@
-import { Service, config, imageUrl, tokens } from 'userServices/service';
+import { Service, config, imageUrl, tokens, guid } from 'userServices/service';
 // import { userData } from 'user/services/userData';
 
 
 
-export class ShoppingCartService extends Service {
-    static items = new chitu.ValueStore<ShoppingCartItem[]>();
 
-    private url(path: string) {
-        return `${config.service.shop}${path}`;
+export class ShoppingCartService extends Service {
+
+    private static _items = new chitu.ValueStore<ShoppingCartItem[]>([]);
+
+
+    private SHOPPING_CART_STORAGE_NAME = 'shoppingCart';
+    private isLogin: boolean;
+    // private remote: ShoppingCart;
+    // private local: ShoppingCart;
+    // private shoppingCart: ShoppingCart;
+
+    private timeids = {} as { [key: string]: number };
+
+
+
+
+    constructor() {
+        super();
     }
-    private processShoppingCartItems(items: ShoppingCartItem[]) {
-        for (let i = 0; i < items.length; i++) {
-            items[i].ImageUrl = imageUrl(items[i].ImageUrl);
-            if (items[i].Remark) {
-                Object.assign(items[i], JSON.parse(items[i].Remark));
+
+
+    static calculateProdusCount(items: ShoppingCartItem[]) {
+        let count = 0;
+        items.filter(o => o.IsGiven != true && o.Selected == true )
+             .forEach(o => count = count + o.Count);
+        
+        return count;
+    }
+
+
+    private url(method: string) {
+        return `${config.service.shop}ShoppingCart/${method}`;
+    }
+
+    addItem(item: ShoppingCartItem): Promise<any> {
+        let url = this.url("AddItem");
+        return this.post(url, { item });
+    }
+
+    private _setItemCount(itemId: string, count: number) {
+        if (count <= 0) {
+            let url = this.url('RemoveItem');
+            return this.delete(url, { itemId });
+        }
+        let url = this.url('UpdateItem');
+        let item = { Id: itemId, Count: count } as ShoppingCartItem;
+        return this.put(url, { item });
+    }
+
+    /**
+    * 设置购物车中商品数量
+    * @param product 要设置的商品 
+    * @param count 商品数量
+    */
+    async setItemCount(itemId: string, count: number) {
+        return new Promise((resolve, rejct) => {
+            //================================================================
+            // 采用延时更新，减轻服务器负荷
+            let setItemCountTimeoutId = this.timeids[itemId];
+            if (setItemCountTimeoutId != null) {
+                window.clearTimeout(setItemCountTimeoutId);
             }
+
+            this.timeids[itemId] = setTimeout(() => {
+
+                this._setItemCount(itemId, count)
+                    .then(() => resolve())
+                    .catch(err => rejct(err));
+
+            }, 1000 * 3); // 延迟 3 秒更新
+            //================================================================
+        })
+    }
+
+    async setItemsCount(itemIds: string[], counts: number[]) {
+        let url = this.url('SetItemsCount');
+        for (let i = 0; i < itemIds.length; i++) {
+            ShoppingCartService.items.value.filter(o => o.Id == itemIds[i])[0].Count = counts[i];
+        }
+        ShoppingCartService.items.fire(ShoppingCartService.items.value);
+        return this.put(url, { ids: itemIds, counts });
+    }
+
+    private async setItemCountByItem(item: ShoppingCartItem, count: number) {
+        await this.setItemCount(item.Id, count);
+        var shoopingCartItem = ShoppingCartService.items.value.filter(o => o.Id == item.Id)[0];
+        console.assert(shoopingCartItem != null);
+        shoopingCartItem.Count = count;
+        ShoppingCartService.items.fire(ShoppingCartService.items.value);
+    }
+    private async setItemCountByProduct(product: Product, count: number): Promise<any> {
+        let shoppingCartItems = ShoppingCartService.items.value;
+        let shoppingCartItem = shoppingCartItems.filter(o => o.ProductId == product.Id && o.Type == null)[0];
+        let result: Promise<any>;
+        if (shoppingCartItem == null) {
+            shoppingCartItem = {
+                Id: guid(),
+                Amount: product.Price * count,
+                Count: count,
+                ImagePath: product.ImagePath,
+                Name: product.Name,
+                ProductId: product.Id,
+                Selected: true,
+                Price: product.Price,
+            };
+            result = this.addItem(shoppingCartItem);
+            shoppingCartItems.push(shoppingCartItem);
+        }
+        else {
+            result = this.setItemCount(shoppingCartItem.Id, count);
+            shoppingCartItem.Count = count;
         }
 
-        return items;
+        ShoppingCartService.items.value = shoppingCartItems;
+        return result;
     }
 
-    addItem(productId: string, count?: number) {
-        count = count || 1;
-        return this.post<ShoppingCartItem[]>(this.url('ShoppingCart/AddItem'), { productId, count })
-            .then((result) => this.processShoppingCartItems(result))
-            .then((result) => ShoppingCartService.items.value = result);
+    static get items() {
+        return ShoppingCartService._items;
     }
 
-    updateItem(productId: string, count: number, selected: boolean) {
-        let data = { productId: productId, count: count, selected: selected };
-        return this.post<ShoppingCartItem[]>(this.url('ShoppingCart/UpdateItem'), data)
-            .then(items => this.processShoppingCartItems(items))
-            .then((result) => ShoppingCartService.items.value = result);
+    onChanged(component: React.Component<any, any>, callback: (value: ShoppingCartItem[]) => void) {
+        let func = ShoppingCartService.items.add(callback);
+        let componentWillUnmount = (component as any).componentWillUnmount as () => void;
+        let items = ShoppingCartService.items;
+        (component as any).componentWillUnmount = function () {
+            items.remove(func);
+            componentWillUnmount();
+        }
     }
 
-    updateItems(productIds: string[], quantities: number[]) {
-        let data = { productIds, quantities };
-        return this.post<ShoppingCartItem[]>(this.url('ShoppingCart/UpdateItems'), data)
-            .then(items => this.processShoppingCartItems(items))
-            .then(items => ShoppingCartService.items.value = items);
+    async selectItem(itemId: string) {
+        let url = this.url('UpdateItem');
+        let item = { Id: itemId, Selected: true } as ShoppingCartItem;
+        await this.put(url, { item });
+
+        ShoppingCartService.items.value.filter(o => o.Id == itemId)[0].Selected = true;
+        ShoppingCartService.items.fire(ShoppingCartService.items.value);
     }
 
-    items() {
-        return this.get<ShoppingCartItem[]>(this.url('ShoppingCart/GetItems'))
-            .then(items => this.processShoppingCartItems(items));
+    async  unselectItem(itemId: string) {
+        let url = this.url('UpdateItem');
+        let item = { Id: itemId, Selected: false } as ShoppingCartItem;
+        await this.put(url, { item });
+
+        ShoppingCartService.items.value.filter(o => o.Id == itemId)[0].Selected = false;
+        ShoppingCartService.items.fire(ShoppingCartService.items.value);
     }
 
-    selectAll = () => {
-        return this.post<ShoppingCartItem[]>(this.url('ShoppingCart/SelectAll'))
-            .then(items => this.processShoppingCartItems(items))
-            .then(items => ShoppingCartService.items.value = items);
+    selectAll() {
+        let url = this.url('SelecteAll');
+        ShoppingCartService.items.value.forEach(o => o.Selected = true);
+        ShoppingCartService.items.fire(ShoppingCartService.items.value);
+        return this.put(url);
     }
 
-    unselectAll = () => {
-        return this.post<ShoppingCartItem[]>(this.url('ShoppingCart/UnselectAll'))
-            .then(items => this.processShoppingCartItems(items))
-            .then(items => ShoppingCartService.items.value = items);
+    unselectAll() {
+        // let shoppingCartItems = this._items.value;
+        // shoppingCartItems.forEach(o => o.Selected = false);
+        // this._items.value = shoppingCartItems;
+        // return this.save();
+        let url = this.url('UnselecteAll');
+        ShoppingCartService.items.value.forEach(o => o.Selected = false);
+        ShoppingCartService.items.fire(ShoppingCartService.items.value);
+        return this.put(url);
+    }
+
+    get productsCount() {
+        let count = 0;
+        ShoppingCartService.items.value.forEach(o => count = count + o.Count);
+        return count;
+    }
+
+    get selectedCount() {
+        let count = 0;
+        ShoppingCartService.items.value.filter(o => o.Selected).forEach(o => count = count + o.Count);
+        return count;
     }
 
     /*移除购物车中的多个产品*/
-    removeItems(productIds: string[]): Promise<any> {
-        var result = this.post<ShoppingCartItem[]>(this.url('ShoppingCart/RemoveItems'), { productIds })
-            .then(items => this.processShoppingCartItems(items))
-            .then(items => ShoppingCartService.items.value = items);
+    async removeItems(itemIds: string[]): Promise<any> {
+        await this.removeItems(itemIds);
+        let items = ShoppingCartService.items.value.filter(o => itemIds.indexOf(o.Id) < 0);
+        ShoppingCartService.items.value = items;
+    }
 
+    async calculateShoppingCartItems() {
+        let url = this.url('Calculate'); //`${config.service.shop}ShoppingCart/Calculate`;
+        let result = await this.get<ShoppingCartItem[]>(url);
         return result;
     }
+
+    async items() {
+        let url = this.url("Get");
+        return this.get<ShoppingCartItem[]>(url);
+    }
+
+
 }
 
 
 if (tokens.userToken.value) {
     let shoppingCart = new ShoppingCartService();
-    shoppingCart.items().then((value) => {
-        ShoppingCartService.items.value = value;
-    })
+    shoppingCart.items().then(items => {
+        ShoppingCartService.items.value = items;
+    });
 }

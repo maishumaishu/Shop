@@ -2,7 +2,7 @@ import components from 'mobileComponents/componentDefines';
 import bootbox = require('bootbox');
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { componentsDir } from 'mobileComponents/common';
-import { default as station, PageData, ControlDescrtion } from 'adminServices/station';
+import { default as station, ControlDescrtion } from 'adminServices/station';
 // import { Button } from 'common/controls';
 import app = require('application');
 import FormValidator from 'formValidator';

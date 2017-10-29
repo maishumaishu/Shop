@@ -42,6 +42,7 @@ requirejs.config({
         css: 'scripts/css',
         fetch: 'scripts/fetch',
         hammer: 'scripts/hammer',
+        ping: 'scripts/ping',
         react: 'scripts/react',
         'react-dom': 'scripts/react-dom',
         text: 'scripts/text',
@@ -52,16 +53,21 @@ requirejs.config({
         // mobileComponents: 'pageComponents',
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
-        ui: 'scripts/ui'
+        ui: 'scripts/ui',
+        'user': '.'
     }
 });
 
-requirejs(['react', 'react-dom', 'site', 'ui'], function (React, ReactDOM, site) {
+requirejs(['react', 'react-dom', 'site', 'ui', 'ping'], function (React, ReactDOM, site) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
 
+
+
+
     site.app.run();
+
 
 })
 

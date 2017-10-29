@@ -23,31 +23,32 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
 
         return (
             <div className="member-editor well">
-                <div className="bg" style={{ display: 'table-row' }}>
+                <div className="bg" style={{ height: 66 }}>
                     <label style={{ display: 'table-cell' }}>
                         背景图
                     </label>
                     <span style={{ display: 'table-cell', width: 120, height: 66, textAlign: 'center', cursor: 'pointer' }}>
                         <img src={bg} style={{ width: '100%', height: '100%' }} />
-                    </span>
-                    <input type="file" title="点击修改背景图" multiple={false}
-                        style={{
-                            display: 'table-cell', width: 120, height: 66,
-                            position: 'relative', left: -120, opacity: 0
-                        }}
-                        ref={(e: HTMLInputElement) => {
-                            if (!e) return;
-                            e.onchange = async () => {
-                                if (e.files[0]) {
-                                    let { base64 } = await ui.imageFileToBase64(e.files[0]);
-                                    let { _id } = await station.saveImage(base64);
-                                    this.state.bg = _id;
-                                    this.setState(this.state);
+                        <input type="file" title="点击修改背景图" multiple={false}
+                            style={{
+                                display: 'table-cell', width: 120, height: 66,
+                                position: 'relative', top: -66, opacity: 0
+                            }}
+                            ref={(e: HTMLInputElement) => {
+                                if (!e) return;
+                                e.onchange = async () => {
+                                    if (e.files[0]) {
+                                        let { base64 } = await ui.imageFileToBase64(e.files[0]);
+                                        let { _id } = await station.saveImage(base64);
+                                        this.state.bg = _id;
+                                        this.setState(this.state);
+                                    }
                                 }
-                            }
-                        }} />
+                            }} />
+                    </span>
+
                 </div>
-                <div style={{ display: 'table-row' }}>
+                <div>
                     <label style={{ display: 'table-cell' }}>余额</label>
                     <span style={{ display: 'table-cell' }}>
                         <input type="checkbox"
@@ -61,9 +62,9 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                             }} />显示余额
                     </span>
                 </div>
-                {/* <div>
-                    <label>积分</label>
-                    <span>
+                <div>
+                    <label style={{ display: 'table-cell' }}>积分</label>
+                    <span style={{ display: 'table-cell' }}>
                         <input type="checkbox"
                             ref={(e: HTMLInputElement) => {
                                 if (!e) return;
@@ -74,7 +75,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                 }
                             }} />显示积分
                     </span>
-                </div> */}
+                </div>
                 {/* <div>
                     <label>等级</label>
                     <span>

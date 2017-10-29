@@ -1,6 +1,6 @@
 import { default as site } from 'site';
 import app = require('application');
-import { PageData, StationService, TemplatePageData } from 'adminServices/station';
+import { StationService, TemplatePageData } from 'adminServices/station';
 // import { Button } from 'common/controls';
 import { RouteValue } from 'modules/station/page';
 import * as wz from 'myWuZhui';

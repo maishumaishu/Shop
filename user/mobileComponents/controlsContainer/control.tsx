@@ -1,12 +1,14 @@
-import { Control } from 'mobileComponents/common';
-export interface Props extends React.Props<ControlsContainer> {
+import { Control,ControlProps } from 'mobileComponents/common';
+export interface Props extends ControlProps<ControlsContainer> {
 
 }
-export interface State extends Props {
+export interface State  {
     components: Array<{ name: string, props: any }>;
 }
 export default class ControlsContainer extends Control<Props, State> {
-    persistentMembers = [];
+    get persistentMembers(){
+        return []
+    }
 
     constructor(props) {
         super(props);

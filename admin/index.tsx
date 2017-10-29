@@ -61,6 +61,7 @@ requirejs.config({
         mobileControls: 'scripts/mobileControls',
         move: 'scripts/move',
         text: 'scripts/text',
+        ping: 'scripts/ping',
         ui: 'scripts/ui',
         um: 'scripts/umeditor/umeditor',
         um_config: 'scripts/umeditor/umeditor.config',
@@ -90,7 +91,7 @@ requirejs.config({
         'user': '../user'
     }
 });
-var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
+var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap', 'ping'];
 requirejs(references, function (React, ReactDOM, app, ui) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;

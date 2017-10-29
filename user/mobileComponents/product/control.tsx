@@ -1,15 +1,16 @@
-import { componentsDir, Control, component } from 'mobileComponents/common';
+import { componentsDir, Control, component, ControlProps } from 'mobileComponents/common';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { ShoppingService } from 'userServices/shoppingService';
 import { userData } from 'userServices/userData';
+import { imageUrl, guid } from 'userServices/service';
 
 import { app } from 'site';
 import { Panel } from 'components/panel';
 
-requirejs(['css!mobileComponents/product/control.css']);
 
-export interface Props {
-    productId?: string
+export interface Props extends ControlProps<ProductControl> {
+    // productId?: string,
+    product: Product
 }
 export interface State extends Props {
 
@@ -23,6 +24,7 @@ export default class ProductControl extends Control<Props, State>{
 
     constructor(props) {
         super(props);
+        this.loadControlCSS();
     }
     get element() {
         return this.productView.element;
@@ -31,31 +33,34 @@ export default class ProductControl extends Control<Props, State>{
         let shopping = new ShoppingService();
         let shoppingCart = new ShoppingCartService();
 
-        let product: Product;
+        let product: Product = this.props.product;
         let designer = this.context.designer;
         // if (designer == null || !designer.isDesignMode) {
 
         // }
         // else {
-        product = {
-            Id: 'abc', Name: "Product", ImagePath: "ABC_200_200", ImagePaths: ["ABC_200_200"],
-            Price: 100, MemberPrice: 100, Promotions: [], Arguments: [],
-            CustomProperties: []
-        } as Product;
+
+        // product = {
+        //     Id: 'abc', Name: "Product", ImagePath: "ABC_200_200", ImagePaths: ["ABC_200_200"],
+        //     Price: 100, MemberPrice: 100, Promotions: [], Arguments: [],
+        //     CustomProperties: []
+        // } as Product;
+
         // }
 
         return (
-            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product}
-                ref={async (e) => {
-                    if (!e || !this.props.productId) return;
-                    let p = await shopping.product(this.props.productId);
-                    p.ImagePath = p.ImagePath || 'empty_300_300';
-                    if (!p.ImagePaths || p.ImagePaths.length == 0) {
-                        p.ImagePaths = [p.ImagePath];
-                    }
-                    e.state.product = p;
-                    e.setState(e.state);
-                }} />
+            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} />
+            // ref={async (e) => {
+            //     if (!e || !this.props.productId) return;
+            //     let p = await shopping.product(this.props.productId);
+            //     // p.ImagePath = p.ImagePath || 'empty_300_300';
+            //     // if (!p.ImagePaths || p.ImagePaths.length == 0) {
+            //     //     p.ImagePaths = [p.ImagePath];
+            //     // }
+
+            //     e.state.product = p;
+            //     e.setState(e.state);
+            // }} />
         );
     }
 }
@@ -139,13 +144,11 @@ class ProductPanel extends React.Component<{ product: Product, parent: ProductVi
             }}
                 header={
                     <div>
-                        <nav>
-                            <ul className="nav nav-tabs">
-                                <li className="text-left" style={{ width: '30%' }}>
-                                    <button onClick={() => this.panel.hide()} style={{ border: 'none', padding: 10, backgroundColor: 'inherit' }}>关闭</button>
-                                </li>
-                            </ul>
-                        </nav>
+                        <ul className="nav nav-tabs bg-primary">
+                            <li className="text-left" style={{ width: '30%' }}>
+                                <button onClick={() => this.panel.hide()}>关闭</button>
+                            </li>
+                        </ul>
                         <div style={{ paddingTop: "10px" }}>
                             <div className="pull-left" style={{ width: 80, height: 80, marginLeft: 10 }}>
                                 {/*<ImageBox src={p.ImageUrl} className="img-responsive" />*/}
@@ -337,7 +340,21 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
     addToShoppingCart() {
         let shoppingCart = this.props.shoppingCart;
         let id = this.props.product.Id;
-        return shoppingCart.addItem(id, this.state.count);
+        let product = this.props.product;
+        let count = this.state.count;
+
+        let shoppingCartItem = {
+            Id: guid(),
+            Amount: product.Price * count,
+            Count: count,
+            ImagePath: product.ImagePath,
+            Name: product.Name,
+            ProductId: product.Id,
+            Selected: true,
+            Price: product.Price,
+        };
+
+        return shoppingCart.addItem(shoppingCartItem);
     }
 
     updateProductCount(value) {
@@ -379,11 +396,11 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
                     </nav>
                 </header>
                 <section ref={(o: HTMLElement) => this.productView = this.productView || o}>
-                    <div name="productImages" className="swiper-container">
-                        <div className="swiper-wrapper">
+                    <div name="productImages" className="carousel slide">
+                        <div className="carousel-inner">
                             {p.ImagePaths.map((o, i) => (
-                                <div key={i} className="swiper-slide" style={{ textAlign: "center" }}>
-                                    <img src={o} className="img-responsive-100 img-full" title="牛牛店宝"
+                                <div key={i} className={i == 0 ? "item active" : "item"} style={{ textAlign: "center" }}>
+                                    <img src={imageUrl(o)} className="img-responsive-100 img-full" title="牛牛店宝"
                                         ref={(e: HTMLImageElement) => {
                                             if (!e) return;
                                             ui.renderImage(e)

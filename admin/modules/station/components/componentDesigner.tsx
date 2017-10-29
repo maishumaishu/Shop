@@ -1,5 +1,5 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { PageData, ControlDescrtion, guid, default as station } from 'adminServices/station'
+import { ControlDescrtion, guid, default as station } from 'adminServices/station'
 import { default as StyleControl } from 'mobileComponents/style/control';
 
 interface Props extends React.Props<ComponentDesigner> {

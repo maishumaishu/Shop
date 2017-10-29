@@ -13,6 +13,9 @@
             ],
             "mobileComponents/*": [
                 "user/mobileComponents/*"
+            ],
+            "virtualMobile": [
+                "modules/station/components/virtualMobile"
             ]
             // "componentDesigner/*": [
             //     "user/componentDesigner/*"

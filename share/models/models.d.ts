@@ -128,16 +128,16 @@ interface ShoppingCartItem {
     Id: string,
     Amount: number,
     Count: number,
-    ImageUrl: string,
-    IsGiven: boolean,
+    ImagePath: string,
+    IsGiven?: boolean,
     Name: string,
     ProductId: string,
-    Remark: string,
-    Score: number,
+    Remark?: string,
+    Score?: number,
     Selected: boolean,
-    Unit: number,
+    Unit?: number,
     Price: number,
-    Type: 'Reduce' | 'Discount'
+    Type?: 'Reduce' | 'Discount'
 }
 
 interface Province {
@@ -192,6 +192,7 @@ interface PageData {
     // controls?: Array<ControlData>,
     isDefault?: boolean,
     showMenu?: boolean,
+    className?: string,
     header?: { controls: ControlData[] },
     footer?: { controls: ControlData[] },
     views?: { controls: ControlData[] }[]

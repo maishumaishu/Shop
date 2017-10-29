@@ -4,7 +4,7 @@ import { VirtualMobile } from 'virtualMobile';
 import { MobilePage } from 'mobileComponents/mobilePage';
 import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
-import { PageData, ControlDescrtion, guid, StationService } from 'adminServices/station';
+import { ControlDescrtion, guid, StationService } from 'adminServices/station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 import * as ui from 'ui';
 
@@ -132,7 +132,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         function setControlValues(mobilePage: MobilePage, controls: ControlDescrtion[]) {
             for (let i = 0; i < controls.length; i++) {
-                let componet = (mobilePage.components.filter(c => c.controlId == controls[i].controlId)[0]) as any as Control<any, any>;
+                let componet = (mobilePage.controls.filter(c => c.controlId == controls[i].controlId)[0]) as any as Control<any, any>;
                 console.assert(componet != null);
 
                 let keys = componet.persistentMembers || [];

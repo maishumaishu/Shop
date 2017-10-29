@@ -1,3 +1,4 @@
+import { MobilePage } from 'mobileComponents/mobilePage';
 export const componentsDir = 'mobileComponents';
 export const pageClassName = 'mobile-page';
 
@@ -12,20 +13,34 @@ export interface ComponentProp<T> extends React.Props<T> {
     // mode?: Mode,
     createElement?: (type, props, ...children) => JSX.Element,
 }
+export interface ControlProps<T> extends React.Props<T> {
+    // mobilePage: MobilePage
+}
 export interface ControlConstructor {
     new(props): Control<any, any>
 }
-export abstract class Control<P, S> extends React.Component<P, S> {
+export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
     private _element: HTMLElement;
+    private _page: MobilePage;
+
     static contextTypes = { designer: React.PropTypes.object };
     context: { designer: IMobilePageDesigner };
     id: string;
-    
+
     constructor(props) {
         super(props);
     }
+
     abstract get persistentMembers(): (keyof S)[];
     abstract _render(h): JSX.Element;
+
+    get mobilePage() {
+        return this._page;
+    }
+    set mobilePage(value: MobilePage) {
+        this._page = value;
+    }
+
     get element(): HTMLElement {
         return this._element;
     }
@@ -33,6 +48,7 @@ export abstract class Control<P, S> extends React.Component<P, S> {
         console.assert(value != null, 'value can not null.');
         this._element = value;
     }
+
     get state(): S {
         return super.state;
     }
@@ -109,7 +125,19 @@ export abstract class Control<P, S> extends React.Component<P, S> {
         requirejs([`css!${componentsDir}/${typeName}/control`]);
     }
 
+    subscribe<T>(item: chitu.ValueStore<T>, callback: (value: T) => void) {
+        let func = item.add(callback);
+        let componentWillUnmount = (this as any).componentWillUnmount as () => void;
+        (this as any).componentWillUnmount = function () {
+            item.remove(func);
+            componentWillUnmount();
+        }
+    }
+
+
 }
+
+
 
 
 export function createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {

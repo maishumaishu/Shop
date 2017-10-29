@@ -13,7 +13,7 @@ container.appendChild(alertElement);
 services.error.add((sender, error) => {
     //724
 
-    if (error.name == 'NotLogin' || error.status == 724) {
+    if (error.name == 'NotLogin' || error.name == `724`) {
         services.token = '';
         // location.search = '';
         // app.redirect('user/login');
@@ -24,7 +24,7 @@ services.error.add((sender, error) => {
     //========================================
     // 延迟处理错误，让其它模块先处理
     let timeoutId = setTimeout(() => {
-        if (!error.handled) {
+        if (!error['handled']) {
             ui.alert({
                 title: '错误',
                 message: error.message

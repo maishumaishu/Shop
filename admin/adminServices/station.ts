@@ -6,17 +6,6 @@ export interface ControlDescrtion {
     selected?: boolean | 'disabled'
 }
 
-export interface PageData {
-    _id?: string,
-    name?: string,
-    remark?: string,
-    // controls?: Array<ControlData>,
-    isDefault?: boolean,
-    showMenu?: boolean,
-    header?: { controls: ControlDescrtion[] },
-    footer?: { controls: ControlDescrtion[] },
-    views?: { controls: ControlDescrtion[] }[]
-}
 
 export interface TemplatePageData {
     _id: string;
@@ -145,6 +134,13 @@ export class StationService extends Service {
         home: <PageData>{
             name: '*home',
             views: [{ controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }]
+        },
+        shoppingCart: <PageData>{
+            name: '*shoppingCart',
+            className: 'shoppingCart',
+            header: { controls: [{ controlId: guid(), controlName: 'shoppingCart.Header', selected: 'disabled' }] },
+            views: [{ controls: [{ controlId: guid(), controlName: 'shoppingCart', selected: true }] }],
+            footer: { controls: [{ controlId: guid(), controlName: 'shoppingCart.Footer', selected: 'disabled' }] }
         }
     };
 
@@ -198,6 +194,16 @@ export class StationService extends Service {
         });
     }
 
+    shoppingCartPage(): Promise<PageData> {
+        const pageName = this.defaultPages.shoppingCart.name;
+        return this.pageDataByName(pageName).then(pageData => {
+            if (pageData == null)
+                return this.defaultPages.shoppingCart;
+
+            return pageData;
+        })
+    }
+
     //=================================================================
     // 和图片相干的接口
 
@@ -227,12 +233,6 @@ export class StationService extends Service {
         let url = `${Service.config.siteUrl}Page/RemoveImage`;
         return this.deleteByJson(url, { _id });
     }
-    // getImageNameFromUrl(imageUrl: string) {
-    //     var arr = imageUrl.split('?');
-    //     console.assert(arr.length == 2);
-    //     var params = this.pareeUrlQuery(arr[1]);
-    //     return params.name;
-    // }
     private pareeUrlQuery(query): any {
         let match, pl = /\+/g, search = /([^&=]+)=?([^&]*)/g, decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
         let urlParams = {};

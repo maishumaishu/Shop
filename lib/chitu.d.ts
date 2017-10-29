@@ -99,7 +99,7 @@ declare namespace chitu {
 
 declare namespace chitu {
     interface PageDisplayConstructor {
-        new (app: Application): PageDisplayer;
+        new(app: Application): PageDisplayer;
     }
     interface PageDisplayer {
         show(page: Page): Promise<any>;
@@ -154,10 +154,10 @@ declare namespace chitu {
     }
 }
 interface PageActionConstructor {
-    new (page: chitu.Page): any;
+    new(page: chitu.Page): any;
 }
 interface PageConstructor {
-    new (args: chitu.PageParams): chitu.Page;
+    new(args: chitu.PageParams): chitu.Page;
 }
 declare class PageDisplayerImplement implements chitu.PageDisplayer {
     show(page: chitu.Page): Promise<void>;
@@ -170,7 +170,7 @@ interface ServiceError extends Error {
 declare function ajax<T>(url: string, options: RequestInit): Promise<T>;
 declare namespace chitu {
     interface ServiceConstructor<T extends Service> {
-        new (): T;
+        new(): T;
     }
     abstract class Service {
         error: Callback<Service, Error>;
@@ -199,6 +199,6 @@ declare namespace chitu {
     function combinePath(path1: string, path2: string): string;
     function loadjs(path: any): Promise<any>;
 }
-declare module "maishu-chitu" { 
-            export = chitu; 
-        }
+declare module "maishu-chitu" {
+    export = chitu;
+}

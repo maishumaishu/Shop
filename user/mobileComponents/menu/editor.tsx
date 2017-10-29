@@ -1,6 +1,8 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'mobileComponents/menu/control';
 import { FormValidator } from 'formValidator';
+import { StationService } from 'userServices/stationService';
+
 requirejs(['css!mobileComponents/menu/editor.css']);
 let h = React.createElement;
 
@@ -17,6 +19,8 @@ type Link = {
     text: string,
     url: string
 }
+
+// let station = new StationService();
 
 let links: Link[] = [
     { text: '请选择链接', url: '' },
@@ -251,7 +255,7 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                                                         </div>
                                                         <div style={{ padding: '30px 6px 6px 6px' }}>
                                                             {icons.map(o =>
-                                                                <i className={o} style={{ display: 'table-cell', padding: 10, fontSize: 20 }}
+                                                                <i key={o} className={o} style={{ display: 'table-cell', padding: 10, fontSize: 20 }}
                                                                     onClick={() => {
                                                                         currentItem.icon = o;
                                                                         this.toggleIconsPanel();

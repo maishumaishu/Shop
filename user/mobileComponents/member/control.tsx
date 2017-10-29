@@ -1,4 +1,4 @@
-import { componentsDir, Control } from 'mobileComponents/common';
+import { componentsDir, Control, ControlProps } from 'mobileComponents/common';
 import { PageComponent, PageView } from 'mobileControls';
 import { MemberService } from 'userServices/memberService';
 import { userData } from 'userServices/userData';
@@ -8,7 +8,7 @@ let member = new MemberService();
 
 requirejs([`css!${componentsDir}/member/control`]);
 import * as ui from 'ui';
-export interface Props {
+export interface Props extends ControlProps<MemberControl> {
     // showBalance?: boolean,// = false;
     // showLevel?: boolean,// = false;
     // showScore?: boolean,// = false;
@@ -54,7 +54,7 @@ export default class MemberControl extends Control<Props, State>{
     _render(h) {
         // let balance = this.state.balance;
         //let userInfo = this.state.userInfo || {} as UserInfo;
-        let { balance, userInfo, showBalance, showLevel, sellsCenter, showScore, bg } = this.state;
+        let { balance, userInfo, showBalance, showLevel, sellsCenter, showScore, bg, score } = this.state;
         // bg = bg ? imageUrl(bg) : 'images/bg_user.png';
         userInfo = userInfo || {} as UserInfo;
         return (
@@ -160,17 +160,20 @@ export default class MemberControl extends Control<Props, State>{
                         <strong>我的收藏</strong>
                     </a>
 
-                    <a className="list-group-item" href="#user_scoreList">
-                        <span className="icon-chevron-right pull-right"></span>
-                        <span className="pull-right value" style={{ display: 'none' }}>0</span>
-                        <strong>我的积分</strong>
-                    </a>
-
                     <a className="list-group-item" href="#user_coupon">
                         <span className="icon-chevron-right pull-right"></span>
                         <span className="pull-right value" style={{ display: 'none' }}>undefined</span>
                         <strong>我的优惠券</strong>
                     </a>
+
+                    {
+                        showScore ?
+                            <a className="list-group-item" href="#user_scoreList">
+                                <span className="icon-chevron-right pull-right"></span>
+                                <span className="pull-right value price" style={{ paddingRight: 8 }}>{score || 0}</span>
+                                <strong>我的积分</strong>
+                            </a> : null
+                    }
                 </div>
                 {/* <div className="list-group">
                     <a className="list-group-item">

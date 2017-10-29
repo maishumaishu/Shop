@@ -1,174 +1,7 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
 
-interface ServiceError extends Error {
-    handled: boolean;
-    status: number;
-}
-
-function ajax<T>(url: string, options: RequestInit): Promise<T> {
-
-    let config = {
-        /** 调用服务接口超时时间，单位为秒 */
-        ajaxTimeout: 30,
-        pageSize: 10
-    }
-
-    //==========================================================
-    // 错误处理模块
-    // class AjaxError implements Error {
-    //     name: string;
-    //     message: string;
-    //     method: 'get' | 'post';
-
-    //     constructor(method) {
-    //         this.name = 'ajaxError';
-    //         this.message = 'Ajax Error';
-    //         this.method = method;
-    //     }
-    // }
-
-    //==============================================================
-    // 将 json 对象格式化
-    let datePattern = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;;
-    function travelJSON(result: any) {
-        // var prefix = this.datePrefix;
-        if (typeof result === 'string' && result.match(datePattern)) {
-            return new Date(result);
-        }
-        var stack = new Array();
-        stack.push(result);
-        while (stack.length > 0) {
-            var item = stack.pop();
-            for (var key in item) {
-                var value = item[key];
-                if (value == null)
-                    continue;
-
-                if (value instanceof Array) {
-                    for (var i = 0; i < value.length; i++) {
-                        stack.push(value[i]);
-                    }
-                    continue;
-                }
-                if (typeof value == 'object') {
-                    stack.push(value);
-                    continue;
-                }
-                if (typeof value == 'string' && value.match(datePattern)) {
-                    item[key] = new Date(value);
-                }
-            }
-        }
-        return result;
-    }
-    //==============================================================
-
-    let _ajax = async (url: string, options: RequestInit): Promise<T> => {
-
-        options = options || {};
-        options.method = options.method || 'get';
-
-        let response = await fetch(url, options);
-        let responseText = response.text();
-        let p: Promise<string>;
-        if (typeof responseText == 'string') {
-            p = new Promise<string>((reslove, reject) => {
-                reslove(responseText);
-            })
-        }
-        else {
-            p = responseText as Promise<string>;
-        }
-
-        let text = await responseText;
-        let contentType = response.headers.get('Content-Type') || '';
-        let textObject: any;
-        if (contentType.indexOf('json') >= 0) {
-            textObject = JSON.parse(text);
-        }
-        else {
-            textObject = text;
-        }
-
-        let err = response.status >= 300 ? textObject : null;
-        if (typeof err == 'string') {
-            let ajaxError = new Error() as ServiceError;//(options.method);
-            ajaxError.name = `${response.status}`;
-            ajaxError.message = response.statusText;
-
-            err = ajaxError;
-        }
-
-        if (err) {
-            (err as ServiceError).status = response.status;
-            throw err;
-        }
-
-        textObject = travelJSON(textObject);
-        return textObject;
-    }
-
-
-    return new Promise<T>((reslove, reject) => {
-        let timeId: number;
-        if (options.method == 'get') {
-            timeId = window.setTimeout(() => {
-                let err = new Error() as ServiceError;
-                err.name = 'timeout';
-                reject(err);
-                // this.error.fire(this, err);
-                clearTimeout(timeId);
-
-            }, config.ajaxTimeout * 1000)
-        }
-
-        _ajax(url, options)
-            .then(data => {
-                reslove(data);
-                if (timeId)
-                    clearTimeout(timeId);
-            })
-            .catch(err => {
-                reject(err);
-
-                if (timeId)
-                    clearTimeout(timeId);
-            });
-
-    })
-}
-
-/** 实现数据的存储，以及数据修改的通知 */
-export class ValueStore<T> {
-    private funcs = new Array<(args: T) => void>();
-    private _value: T;
-
-    constructor() {
-    }
-    add(func: (value: T) => any): (args: T) => any {
-        this.funcs.push(func);
-        return func;
-    }
-    remove(func: (value: T) => any) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    fire(value: T) {
-        this.funcs.forEach(o => o(value));
-    }
-    get value(): T {
-        return this._value;
-    }
-    set value(value: T) {
-        if (this._value == value)
-            return;
-
-        this._value = value;
-        this.fire(value);
-    }
-}
-
-let username = new ValueStore<string>();
+let username = new chitu.ValueStore<string>();
 username.value = localStorage['username'];
 username.add((value) => {
     localStorage['username'] = value;
@@ -199,7 +32,7 @@ export function imageUrl(path: string, width?: number) {
     return url;
 }
 
-export class Service {
+export class Service extends chitu.Service {
     static error = chitu.Callbacks<Service, ServiceError>()
     static config = {
         serviceHost: remote_service_host,
@@ -211,122 +44,32 @@ export class Service {
         imageUrl: `https://${remote_service_host}/UserServices/Site/`
     }
 
-    // ajax<T>(options: { url: string, data: any, method?: string, headers?: any }) {
-    //     return Service.ajax<T>(options);
-    // }
-
-    ajax<T>(options: { url: string, data?: any, method?: string, headers?: any }): Promise<T> {
-        let { data, method, headers, url } = options;
-
-        headers = headers || {};
+    ajax<T>(url: string, options: RequestInit): Promise<T> {
+        options = options || {} as RequestInit;
+        options.headers = options.headers || {};
         if (Service.token)
-            headers['user-token'] = Service.token;
+            options.headers['user-token'] = Service.token;
 
-        if (location.search) {
-            headers['application-key'] = location.search.substr(1);
-        }
+        if (location.search)
+            options.headers['application-key'] = location.search.substr(1);
 
-        return ajax<T>(url, { body: data, method, headers })
-            .then(data => {
-                if (data != null && data['Type'] == 'DataSourceSelectResult') {
-                    let result = {};
-                    for (let key in data) {
-                        let name = key[0].toLowerCase() + key.substr(1);
-                        result[name] = data[key];
-                    }
-                    return result as T;
+
+        return super.ajax<T>(url, options).then(data => {
+            if (data != null && data['DataItems'] != null && data['TotalRowCount'] != null) {
+                let d: any = {};
+                let keys = Object.keys(data);
+                for (let i = 0; i < keys.length; i++) {
+                    let key = keys[i];
+                    let k = (key as string)[0].toLowerCase() + (key as string).substr(1);
+                    d[k] = data[key];
                 }
-                return data as T;
-            })
-            .catch((error: ServiceError) => {
-                Service.error.fire(this, error);
-                throw error;
-            });
-    }
 
-    get<T>(url: string, data?) {
-        let urlParams = '';
-        for (let key in data) {
-            urlParams = urlParams + `&${key}=${data[key]}`;
-        }
-        if (urlParams)
-            urlParams = urlParams.substr(1);
+                return d;
+            }
 
-        if (urlParams)
-            url = url.indexOf('?') < 0 ? url + '?' + urlParams : url + '&' + urlParams;
-
-        return this.ajax<T>({ url: url, data: data, method: 'get' });
-    }
-
-    getByJson<T>(url: string, data?) {
-        // let _url = url + '?' + JSON.stringify(data);
-        data = data || {};
-
-        // let _data = {};
-        // for (let key in data) {
-        //     _data[key] = JSON.stringify(data[key]);
-        // }
-        console.assert(url.indexOf('?') < 0);
-        if (data) {
-            url = url + '?' + JSON.stringify(data);
-        }
-        return this.ajax<T>({
-            headers: {
-                'content-type': 'application/json'
-            },
-            url: url, method: 'get'
+            return data;
         });
     }
-
-    putByJson<T>(url: string, data) {
-        return this.ajax<T>({
-            headers: {
-                'content-type': 'application/json'
-            },
-            url: url, data: JSON.stringify(data),
-            method: 'put'
-        });
-    }
-
-    postByJson<T>(url: string, data) {
-        return this.ajax<T>({
-            headers: {
-                'content-type': 'application/json'
-            },
-            url: url, data: JSON.stringify(data),
-            method: 'post'
-        });
-    }
-
-    // static post<T>(url: string, data) {
-    //     return Service.ajax<T>({
-    //         url: url, data,
-    //         method: 'post'
-    //     });
-    // }
-
-    // static put<T>(url: string, data) {
-    //     return Service.ajax<T>({
-    //         url: url, data,
-    //         method: 'put'
-    //     });
-    // }
-
-    delete(url: string, data) {
-        return this.ajax({
-            url, data, method: 'delete'
-        })
-    }
-
-    deleteByJson(url: string, data) {
-        return this.ajax({
-            headers: {
-                'content-type': 'application/json'
-            },
-            url, data: JSON.stringify(data), method: 'delete'
-        })
-    }
-
 
 
     static get appToken() {

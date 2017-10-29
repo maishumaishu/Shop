@@ -1,4 +1,4 @@
-import { TemplatePageData, PageData, guid } from 'adminServices/station';
+import { TemplatePageData, guid } from 'adminServices/station';
 
 let templates: (TemplatePageData & { pageData: PageData })[] = [
     {
