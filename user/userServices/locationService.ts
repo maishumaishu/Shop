@@ -3,7 +3,7 @@ import { Service, config } from 'userServices/service';
 
 export class LocationService extends Service {
     private url(path: string) {
-        return `${config.service.shop}${path}`;
+        return `UserShop/${path}`;
     }
 
     getLocation = (data) => {

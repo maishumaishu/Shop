@@ -6,12 +6,12 @@ export let userInfo = new chitu.ValueStore<UserInfo>();
 export class MemberService extends Service {
 
     private url(path: string) {
-        return `${config.service.member}${path}`;
+        return `UserMember/${path}`;
     }
 
     userInfo(): Promise<UserInfo> {
         let url1 = this.url('Member/CurrentUserInfo');
-        let url2 = `https://${config.service.host}/user/userInfo`;
+        let url2 = `user/userInfo`;
         return Promise.all([this.get<UserInfo>(url1), this.get<{ mobile }>(url2)])
             .then((data) => {
                 data[0].Mobile = data[1].mobile;
@@ -30,12 +30,12 @@ export class MemberService extends Service {
 
     sentVerifyCode(mobile: string, type: VerifyCodeType): Promise<{ smsId: string }> {
         console.assert(mobile != null);
-        let url = `https://${config.service.host}/sms/sendVerifyCode`;
+        let url = `sms/sendVerifyCode`;
         return this.get(url, { mobile, type });
     }
 
     checkVerifyCode(smsId: string, verifyCode: string) {
-        let url = `https://${config.service.host}/sms/checkVerifyCode`;
+        let url = `sms/checkVerifyCode`;
         return this.get(url, { smsId, verifyCode });
     }
 
@@ -51,7 +51,7 @@ export class MemberService extends Service {
     /** 用户注册 */
     register(data: RegisterModel) {
         console.assert(data != null);
-        let url = `https://${config.service.host}/user/register`;
+        let url = `user/register`;
         return this.postByJson<{ token: string, userId: string }>(url, data).then((data) => {
             tokens.userToken.value = data.token;
             return data;
@@ -59,7 +59,7 @@ export class MemberService extends Service {
     }
 
     login(username: string, password: string): Promise<{ token: string, userId: string }> {
-        let url = `https://${config.service.host}/user/login`;
+        let url = `user/login`;
         return this.post<{ token: string, userId: string }>(url, { username, password }).then((result) => {
             tokens.userToken.value = result.token;
             return result;
@@ -67,7 +67,7 @@ export class MemberService extends Service {
     }
 
     resetPassword(mobile: string, password: string, smsId: string, verifyCode: string) {
-        let url = `https://${config.service.host}/user/resetPassword`;
+        let url = `user/resetPassword`;
         return this.put(url, { mobile, password, smsId, verifyCode }).then(data => {
             debugger;
             return data;
@@ -75,7 +75,7 @@ export class MemberService extends Service {
     }
 
     changePassword(password: string, smsId: string, verifyCode: string) {
-        let url = `https://${config.service.host}/user/changePassword`;
+        let url = `user/changePassword`;
         return this.put(url, { password, smsId, verifyCode }).then(data => {
             debugger;
             return data;
@@ -83,7 +83,7 @@ export class MemberService extends Service {
     }
 
     changeMobile(mobile: string, smsId: string, verifyCode: string) {
-        let url = `https://${config.service.host}/user/changeMobile`;
+        let url = `user/changeMobile`;
         return this.put(url, { mobile, smsId, verifyCode });
     }
 

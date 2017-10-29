@@ -5,7 +5,7 @@ export class ShoppingService extends Service {
         super();
     }
     private url(path: string) {
-        return `${config.service.shop}${path}`;
+        return `UserShop/${path}`;
     }
     /**
      * 获取单个商品

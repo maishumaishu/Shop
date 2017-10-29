@@ -8,7 +8,7 @@ export class StationService extends Service {
     }
 
     private url(path) {
-        return `${config.service.site}${path}`;
+        return `UserSite/${path}`;
     }
 
     newsList(pageIndex: number) {

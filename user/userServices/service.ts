@@ -13,72 +13,27 @@ export let tokens = {
     }
 }
 
-const REMOTE_HOST = 'service.alinq.cn';
+// const REMOTE_HOST = 'service.alinq.cn';
 export let config = {
-    service: {
-        host: REMOTE_HOST,
-        shop: `UserShop/`,
-        site: `UserSite/`,
-        member: `UserMember/`,
-        weixin: `UserWeiXin/`,
-        account: `UserAccount/`,
-    },
     /** 调用服务接口超时时间，单位为秒 */
     ajaxTimeout: 30,
     pageSize: 10
 }
 
+// let host: string;
 let protocol = location.protocol;
-let allServiceHosts = [`${protocol}//service.alinq.cn/`, `${protocol}//service1.alinq.cn/`, `${protocol}//service4.alinq.cn/`];
-function serviceHost(): Promise<string> {
-    let serviceHost = sessionStorage['serviceHost'];
-    if (serviceHost)
-        return Promise.resolve(serviceHost);
-
-    let promise = new Promise<string>((resolve, reject) => {
-        let result: string;
-        for (let i = 0; i < allServiceHosts.length; i++) {
-            hostPing(allServiceHosts[i]).then(o => {
-                console.log(`ping: ${allServiceHosts[i]} ${o}`);
-
-                if (!result) {
-                    result = allServiceHosts[i];
-                    resolve(result);
-                }
-            });
-        }
-    });
-
-    promise.then((host) => {
-        sessionStorage['serviceHost'] = host;
-    })
-
-    return promise;
-}
-
-function hostPing(host: string): Promise<number> {
-    var p = new Ping({ favicon: 'UserShop/Home/Index' });
-
-    function ping(host): Promise<number> {
-        return new Promise((resolve, reject) => {
-            p.ping(host, (err: object, ping: number) => {
-                resolve(ping);
-            });
-        })
-    }
-
-    return Promise.all([ping(host), ping(host), ping(host)]).then((arr) => {
-        let num = (arr[0] + arr[1] + arr[2]) / 3;
-        return num;
-    });
-}
+let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.cn`];
 
 
 export abstract class Service extends chitu.Service {
+    private static host;
     async ajax<T>(url: string, options: RequestInit) {
 
-        let urlBase = await serviceHost();
-        url = `${urlBase}` + url;
+        if (!Service.host) {
+            await Service.setServiceHost();
+        }
+
+        url = `${protocol}//${Service.host}/` + url;
 
 
         options = options || {};
@@ -102,6 +57,43 @@ export abstract class Service extends chitu.Service {
     delete<T>(url: string, data?: any): Promise<T> {
         return super.deleteByJson(url, data);
     }
+    private static hostPing(host: string): Promise<number> {
+        var p = new Ping({ favicon: 'UserShop/Home/Index' });
+
+        function ping(host): Promise<number> {
+            return new Promise((resolve, reject) => {
+                p.ping(`${protocol}//${host}/`, (err: object, ping: number) => {
+                    resolve(ping);
+                });
+            })
+        }
+
+        return Promise.all([ping(host), ping(host), ping(host)]).then((arr) => {
+            let num = (arr[0] + arr[1] + arr[2]) / 3;
+            return num;
+        });
+    }
+    private static async setServiceHost(): Promise<string> {
+        if (Service.host)
+            return Promise.resolve(Service.host);
+
+        Service.host = await new Promise<string>((resolve, reject) => {
+            let result: string;
+            for (let i = 0; i < allServiceHosts.length; i++) {
+                Service.hostPing(allServiceHosts[i]).then(o => {
+                    console.log(`ping: ${allServiceHosts[i]} ${o}`);
+
+                    if (!result) {
+                        result = allServiceHosts[i];
+                        resolve(result);
+                    }
+                });
+            }
+        });
+
+        return Service.host;
+    }
+
 }
 
 export function imageUrl(path: string, width?: number) {
