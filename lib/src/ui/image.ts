@@ -82,6 +82,10 @@ namespace ui {
         if (!element) throw errors.argumentNull('element');
 
         let imageUrl = element.src || '';
+        if (imageUrl.indexOf('data:image/png;base64') == 0) {
+            return;
+        }
+
         //====================================================
         // 通过 URL 设置图片大小
         if (imageUrl && !options.imageSize) {
