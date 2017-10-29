@@ -1,9 +1,12 @@
 /** 同城配送 页面*/
 import FormValidator from 'formValidator';
-import { default as shopping, CityFreight, } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
+    
     class InCitySendPage extends React.Component<{ cityFreight: CityFreight }, { cityFreight: CityFreight }>{
         validator: FormValidator;
         formElement: HTMLFormElement;

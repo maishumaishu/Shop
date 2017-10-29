@@ -2,10 +2,13 @@
 import { default as site } from 'site';
 import { customField } from 'myWuZhui';
 import FormValidator from 'formValidator';
-import { default as shopping, Category } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
+
     class Page extends React.Component<{}, { rows?: Array<any> }>{
         private dialogElement: HTMLFormElement;
         private tableElement: HTMLTableElement;

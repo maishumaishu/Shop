@@ -1,11 +1,14 @@
 
 import app = require('application');
 import val = require('knockout.validation');
-import { default as shopping, RegionFreight } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {
-page.element.className = 'admin-pc';
+
+    let shopping = page.createService(ShoppingService);
+
+    page.element.className = 'admin-pc';
     let tabbable = document.createElement('div');
     tabbable.className = 'tabbable';
     page.element.appendChild(tabbable);

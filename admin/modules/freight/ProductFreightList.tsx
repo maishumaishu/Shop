@@ -1,9 +1,11 @@
 ﻿import { Service } from 'adminServices/service';
-import { default as shopping, FreightSolution, ProductFreight } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
 
     let freightSolutions: FreightSolution[];
     let tabbable = document.createElement('div');

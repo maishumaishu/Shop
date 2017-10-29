@@ -1,6 +1,6 @@
 import app = require('application');
 import site = require('site');
-import { default as shopping, Coupon } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import UE = require('ue.ext');
 import FormValidator from 'formValidator';
 import * as ui from 'myWuZhui';
@@ -8,6 +8,8 @@ import { buttonOnClick } from 'ui';
 export default function (page: chitu.Page) {
 
     // requirejs([`css!${page.routeData.actionPath}.css`], function () { });
+
+    let shopping = page.createService(ShoppingService);
 
     interface CouponEditPageState {
         coupon: Coupon

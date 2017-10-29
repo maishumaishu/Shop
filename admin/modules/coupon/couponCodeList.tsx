@@ -1,9 +1,12 @@
 import * as ui from 'myWuZhui';
 import { buttonOnClick } from 'ui';
-import { default as shopping, CouponCode, Coupon } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import FormValidator from 'formValidator';
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
+
     page.element.className = 'admin-pc';
     type Status = 'all' | 'used' | 'canUse' | 'expired';
     interface PageState {

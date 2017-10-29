@@ -1,8 +1,11 @@
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
-import { default as shopping, Order, OrderDetail } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
+
     page.element.className = 'admin-pc';
     let tabbable = document.createElement('div');
     page.element.appendChild(tabbable);

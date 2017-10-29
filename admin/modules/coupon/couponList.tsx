@@ -1,9 +1,12 @@
 
-import { default as shopping, Coupon } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import site = require('site');
 import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
+
     page.element.className = 'admin-pc';
     class CouponListPage extends React.Component<{}, {}>{
         private couponsTable: HTMLTableElement;
