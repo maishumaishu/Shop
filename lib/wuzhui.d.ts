@@ -71,11 +71,11 @@ declare namespace wuzhui {
         private processError(exc, method);
     }
     class DataSourceSelectArguments {
-        startRowIndex: number;
-        totalRowCount: number;
-        maximumRows: number;
-        sortExpression: string;
-        filter: string;
+        startRowIndex?: number;
+        totalRowCount?: number;
+        maximumRows?: number;
+        sortExpression?: string;
+        filter?: string;
         constructor();
     }
     type DataSourceArguments<T> = {

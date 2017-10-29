@@ -1,5 +1,5 @@
 
-import { default as activity } from 'adminServices/activity';
+import { ActivityService } from 'adminServices/activity';
 import site = require('site');
 import FormValidator from 'formValidator';
 import * as wz from 'myWuZhui';
@@ -8,7 +8,10 @@ import { GridViewItemPopupEditor } from 'myWuZhui';
 let JData = window['JData'];
 
 export default function (page: chitu.Page) {
-     page.element.className = 'admin-pc';
+
+    let activity = page.createService(ActivityService);
+
+    page.element.className = 'admin-pc';
     class ActivitiesPage extends React.Component<{}, {}>{
         private dataSource: wuzhui.DataSource<any>;
         private itemEditor: GridViewItemPopupEditor;

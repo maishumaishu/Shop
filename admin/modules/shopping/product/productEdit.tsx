@@ -40,8 +40,10 @@ export default function (page: chitu.Page) {
                 this.state.categories = o;
                 this.setState(this.state);
             });
-            shopping.brands().then(o => {
-                this.state.brands = o;
+
+            let args: wuzhui.DataSourceSelectArguments = { maximumRows: 100 };
+            shopping.brands(args).then(o => {
+                this.state.brands = o.dataItems;
                 this.setState(this.state);
             })
         }

@@ -1,43 +1,7 @@
 ﻿
 // import Product = require('models/Product');
 import { Service as Service } from 'adminServices/service';
-// import mapping = require('knockout.mapping');
 
-// let JData = window['JData'];
-
-
-// export interface Product {
-//     Id: string;
-//     BuyLimitedNumber: number;
-//     // ChildrenCount: number;
-//     Name: string;
-//     Unit: string;
-//     OffShelve: boolean;
-//     OldPrice: string;
-//     Price: number;
-//     CostPrice: string;
-//     Introduce: string;
-//     ImagePath: string;
-//     ImagePaths: string[];
-//     ImageCover: string;
-//     Score: number;
-//     ProductCategoryId: string,
-//     BrandId: string,
-//     SKU: string,
-//     Stock: number;
-//     ParentId: string,
-//     Fields: { key: string, value: string }[],
-//     Arguments: { key: string, value: string }[],
-//     Title: string
-// }
-
-
-
-//===============================================
-// 运费
-
-
-//===============================================
 
 export class ShoppingService extends Service {
     url(path: string) {
@@ -71,9 +35,6 @@ export class ShoppingService extends Service {
     queryProducts(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
 
         var url = this.url('Product/GetProducts');
-        // if (searchText) {
-        //     url = url + '?searchText=' + encodeURI(searchText);
-        // }
 
         var maximumRows = 10;
         var start = pageIndex * maximumRows;
@@ -146,9 +107,10 @@ export class ShoppingService extends Service {
     // 品牌
     brands(args?: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Product/GetBrands');
-        return this.get<wuzhui.DataSourceSelectResult<Brand>>(url, args).then(o => {
-            return o.dataItems;
-        });
+        return this.get<wuzhui.DataSourceSelectResult<Brand>>(url, args);
+        // .then(o => {
+        //     return o.dataItems;
+        // });
     }
     addBrand(brand: Brand) {
         let url = this.url('Product/AddBrand');
@@ -291,11 +253,6 @@ export class ShoppingService extends Service {
             return result;
         });
     }
-    // orderDetails(orderId: string) {
-    //     let url = this.url('Order/GetOrderDetails');
-    //     debugger;
-    //     return this.get<OrderDetail[]>(url, { orderId });
-    // }
     //================================================================
 }
 

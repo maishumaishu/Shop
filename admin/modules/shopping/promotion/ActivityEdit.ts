@@ -372,7 +372,7 @@ class AmountPromotionContentRule extends PromotionContentRule {
         this.givenValue = ko.computed(() => this.reduceAmount() == null ? '' : this.reduceAmount().toString());
         this.description = ko.computed(() => {
             // let str = new Number(this.reduceAmount())['toFormattedString']('￥{0:C2}');
-            let str = `￥${new Number(this.reduceAmount()).toFixed(2)}`; 
+            let str = `￥${new Number(this.reduceAmount()).toFixed(2)}`;
             var given_text = `即减 ${str} 元`;
             return getConditionText(this) + given_text;
         });
@@ -619,8 +619,9 @@ function page_load(page: chitu.Page, args) {
         model.categories(data);
     });
 
-    shopping.brands().then((data: Array<any>) => {
-        data.unshift({ Name: '请选择品牌', Id: '' })
+    shopping.brands().then(result => {
+        let data = result.dataItems;
+        data.unshift({ Name: '请选择品牌', Id: '' });
         model.brands(data);
     })
 

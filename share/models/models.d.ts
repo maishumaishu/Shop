@@ -1,7 +1,7 @@
 interface Brand {
     Id: string;
     Name: string;
-    Image: string;
+    Image?: string;
 }
 
 
@@ -150,13 +150,7 @@ interface Citie {
     Name: string,
 }
 
-interface DataSourceSelectArguments {
-    startRowIndex: number;
-    totalRowCount: number;
-    maximumRows: number;
-    sortExpression: string;
-    filter: string;
-}
+
 
 interface UserInfo {
     Id: string;

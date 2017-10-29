@@ -58,7 +58,7 @@ export let menuData: MenuNode[] = [
                 ]
             },
             // { Url: "shopping/productCategoryList", Title: "商品类别" },
-            // { Url: "shopping/brandList", Title: "品牌管理" },
+            { Url: "shopping/brandList", Title: "商品品牌" },
 
         ]
     },

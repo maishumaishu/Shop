@@ -46,7 +46,7 @@ export class ShoppingService extends Service {
         }
 
         let url = this.url('Product/GetProducts');
-        var args = { startRowIndex: pageIndex * 20 } as DataSourceSelectArguments;
+        var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;
         if (categoryId != null) {
             args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
         }
@@ -74,7 +74,7 @@ export class ShoppingService extends Service {
      * @param count 要获取商品的最多数量
      */
     productsByCategory(count: number, categoryId?: string) {
-        var args = { startRowIndex: 0, maximumRows: count } as DataSourceSelectArguments;
+        var args = { startRowIndex: 0, maximumRows: count } as wuzhui.DataSourceSelectArguments;
         if (categoryId != null) {
             args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
         }
@@ -144,7 +144,7 @@ export class ShoppingService extends Service {
         return result;
     }
     myOrderList(pageIndex, type?: 'WaitingForPayment' | 'Send') {
-        let args = {} as DataSourceSelectArguments;
+        let args = {} as wuzhui.DataSourceSelectArguments;
         args.startRowIndex = config.pageSize * pageIndex;
         args.maximumRows = config.pageSize;
         if (type)
