@@ -19,7 +19,7 @@ export class Data {
 }
 
 let shopping = new ShoppingService();
-// let shoppingCart = new ShoppingCartService();
+let shoppingCart = new ShoppingCartService();
 
 
 // type ProductExt = Product & { Count: number };
@@ -68,6 +68,10 @@ export interface State {
      * 显示商品标题，仅单列显示商品有效
      */
     displayTitle?: boolean,
+
+    // shoppingCartItems: ShoppingCartItem[],
+
+    productCounts?: { [key: string]: number }
 }
 
 export default class SingleColumnProductControl extends Control<Props, State> {
@@ -79,7 +83,29 @@ export default class SingleColumnProductControl extends Control<Props, State> {
     }
     constructor(args) {
         super(args);
-        this.state = { products: [], productSourceType: 'category', prodcutsCount: 1 };
+
+        let productCounts: { [key: string]: number } = {};
+        for (let i = 0; i < ShoppingCartService.items.value.length; i++) {
+            let item = ShoppingCartService.items.value[i];
+            productCounts[item.ProductId] = item.Count;
+        }
+
+        this.state = {
+            products: [], productSourceType: 'category', prodcutsCount: 1,
+            productCounts: {}
+        };
+
+
+        this.subscribe(ShoppingCartService.items, (shoppingCartItems) => {
+            // this.state.shoppingCartItems = value;
+            for (let i = 0; i < shoppingCartItems.length; i++) {
+                this.state.productCounts[shoppingCartItems[i].ProductId] = shoppingCartItems[i].Count;
+            }
+            this.setState(this.state);
+        })
+
+
+
         this.loadControlCSS();
         Promise.all([shopping.products(0)]).then(data => {
             let products = data[0];// as (Product & { Count: number })[];
@@ -98,15 +124,14 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         });
     }
 
-    addProduct(product: Product & { Count: number }) {
-        // let count = product.Count + 1;
-        // return shoppingCart.updateItem(product.Id, count, true).then(items => {
-        //     product.Count = count;
-        //     this.setState(this.state);
-        // });
+    addProduct(product: Product) {
+        let productCount = this.state.productCounts[product.Id] || 0;
+        this.state.productCounts[product.Id] = productCount;
     }
 
-    removeProduct(product: Product & { Count: number }) {
+    removeProduct(product: Product) {
+        let productCount = this.state.productCounts[product.Id] || 0;
+
         // let count = product.Count - 1;
         // if (count < 0) {
         //     return;
@@ -141,10 +166,13 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         );
     }
 
+
+
     async renderSingleColumn(): Promise<JSX.Element> {
 
         var products = await this.products();
         let showProductTitle = this.state.displayTitle;
+        var productCounts = this.state.productCounts;
 
         let leftClassName = showProductTitle ? 'col-xs-4' : 'col-xs-3';
         let rightClassName = showProductTitle ? 'col-xs-8' : 'col-xs-9';
@@ -152,13 +180,13 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
-                    <div key={o.Id} className="product single" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
-                        <div className={leftClassName}>
+                    <div key={o.Id} className="product single">
+                        <div className={leftClassName} onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                             <img className="image img-responsive" src={imageUrl(o.ImagePath, 100)} title="高州风味"
                                 ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 100, height: 100 } }) : null} />
                         </div>
                         <div className={`content ${rightClassName}`}>
-                            <div className="name interception">
+                            <div className="name interception" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                                 {o.Name}
                             </div>
                             {showProductTitle ?
@@ -169,9 +197,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
                                 <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
                                 </span>
-                                <div className="pull-right">
-                                    <i className="icon-plus-sign" />
-                                </div>
+                                <ProductCount key={o.Id} product={o} count={productCounts[o.Id]} />
                             </div>
 
                         </div>
@@ -185,24 +211,23 @@ export default class SingleColumnProductControl extends Control<Props, State> {
 
     async renderDoubleColumn(): Promise<JSX.Element> {
         var products = await this.products();
+        var productCounts = this.state.productCounts;
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
-                    <div key={o.Id} className="product double col-xs-6"
-                        onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
+                    <div key={o.Id} className="product double col-xs-6">
                         <div>
                             <img src={imageUrl(o.ImagePath, 200)} title="高州风味"
+                                onClick={() => app.redirect(`home_product?id=${o.Id}`)}
                                 ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 200, height: 200 } }) : null} />
-                            <div className="name">
+                            <div className="name" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                                 {o.Name}
                             </div>
                             <div className="price">
                                 <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
                                 </span>
-                                <div className="pull-right">
-                                    <i className="icon-plus-sign" />
-                                </div>
+                                <ProductCount key={o.Id} product={o} count={productCounts[o.Id]} />
                             </div>
                         </div>
                         <div className="clearfix"></div>
@@ -226,4 +251,50 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         return products;
     }
 
+
+
+}
+
+class ProductCount extends React.Component<
+    { product: Product, count: number } & React.Props<Product>,
+    {}>
+{
+    constructor(props) {
+        super(props);
+
+        this.state = { count: this.props.count || 0 };
+    }
+
+    async increaseCount(product: Product) {
+        let count = (this.props.count || 0) + 1;
+        await shoppingCart.setItemCount(product, count);
+    }
+    async decreaseCount(product: Product) {
+        let count = (this.props.count || 0);
+        if (count <= 0)
+            return;
+
+        await shoppingCart.setItemCount(product, count);
+    }
+    render() {
+        let product = this.props.product;
+        let count = this.props.count;
+        return (
+            <div className="productCout pull-right">
+                <i className="icon-plus-sign pull-right" onClick={() => this.increaseCount(product)} />
+                {count ? [
+                    <input key={0} className="pull-right" value={`${count}`}
+                        onChange={(e) => {
+                            if (!e) return;
+                            var value = Number.parseInt((e.target as HTMLInputElement).value);
+                            if (!value)
+                                return;
+
+                            shoppingCart.setItemCount(product, value);
+                        }} />,
+                    <i key={1} className="icon-minus-sign pull-right" onClick={() => this.decreaseCount(product)} />
+                ] : null}
+            </div>
+        );
+    }
 }

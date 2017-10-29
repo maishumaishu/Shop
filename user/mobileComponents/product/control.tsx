@@ -343,18 +343,18 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
         let product = this.props.product;
         let count = this.state.count;
 
-        let shoppingCartItem = {
-            Id: guid(),
-            Amount: product.Price * count,
-            Count: count,
-            ImagePath: product.ImagePath,
-            Name: product.Name,
-            ProductId: product.Id,
-            Selected: true,
-            Price: product.Price,
-        };
+        // let shoppingCartItem = {
+        //     Id: guid(),
+        //     Amount: product.Price * count,
+        //     Count: count,
+        //     ImagePath: product.ImagePath,
+        //     Name: product.Name,
+        //     ProductId: product.Id,
+        //     Selected: true,
+        //     Price: product.Price,
+        // };
 
-        return shoppingCart.addItem(shoppingCartItem);
+        return shoppingCart.setItemCount(product, count);
     }
 
     updateProductCount(value) {

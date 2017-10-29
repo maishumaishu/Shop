@@ -27,18 +27,18 @@ export class ShoppingCartService extends Service {
 
     static calculateProdusCount(items: ShoppingCartItem[]) {
         let count = 0;
-        items.filter(o => o.IsGiven != true && o.Selected == true )
-             .forEach(o => count = count + o.Count);
-        
+        items.filter(o => o.IsGiven != true && o.Selected == true)
+            .forEach(o => count = count + o.Count);
+
         return count;
     }
 
 
     private url(method: string) {
-        return `${config.service.shop}ShoppingCart/${method}`;
+        return `UserShop/ShoppingCart/${method}`;
     }
 
-    addItem(item: ShoppingCartItem): Promise<any> {
+    private addItem(item: ShoppingCartItem): Promise<any> {
         let url = this.url("AddItem");
         return this.post(url, { item });
     }
@@ -55,10 +55,17 @@ export class ShoppingCartService extends Service {
 
     /**
     * 设置购物车中商品数量
-    * @param product 要设置的商品 
-    * @param count 商品数量
     */
-    async setItemCount(itemId: string, count: number) {
+    async setItemCount(item: ShoppingCartItem, count: number);
+    async setItemCount(product: Product, count: number);
+    async setItemCount(item: Product | ShoppingCartItem, count: number) {
+        if ((item as ShoppingCartItem).ProductId != null)
+            return this.setItemCountByItem(item as ShoppingCartItem, count);
+
+        return this.setItemCountByProduct(item as Product, count);
+    }
+
+    private async setItemCountByItemId(itemId: string, count: number) {
         return new Promise((resolve, rejct) => {
             //================================================================
             // 采用延时更新，减轻服务器负荷
@@ -80,15 +87,16 @@ export class ShoppingCartService extends Service {
 
     async setItemsCount(itemIds: string[], counts: number[]) {
         let url = this.url('SetItemsCount');
+        await this.put(url, { ids: itemIds, counts });
+
         for (let i = 0; i < itemIds.length; i++) {
             ShoppingCartService.items.value.filter(o => o.Id == itemIds[i])[0].Count = counts[i];
         }
         ShoppingCartService.items.fire(ShoppingCartService.items.value);
-        return this.put(url, { ids: itemIds, counts });
     }
 
     private async setItemCountByItem(item: ShoppingCartItem, count: number) {
-        await this.setItemCount(item.Id, count);
+        await this.setItemCountByItemId(item.Id, count);
         var shoopingCartItem = ShoppingCartService.items.value.filter(o => o.Id == item.Id)[0];
         console.assert(shoopingCartItem != null);
         shoopingCartItem.Count = count;
@@ -97,7 +105,7 @@ export class ShoppingCartService extends Service {
     private async setItemCountByProduct(product: Product, count: number): Promise<any> {
         let shoppingCartItems = ShoppingCartService.items.value;
         let shoppingCartItem = shoppingCartItems.filter(o => o.ProductId == product.Id && o.Type == null)[0];
-        let result: Promise<any>;
+        let result: any;
         if (shoppingCartItem == null) {
             shoppingCartItem = {
                 Id: guid(),
@@ -109,11 +117,11 @@ export class ShoppingCartService extends Service {
                 Selected: true,
                 Price: product.Price,
             };
-            result = this.addItem(shoppingCartItem);
+            result = await this.addItem(shoppingCartItem);
             shoppingCartItems.push(shoppingCartItem);
         }
         else {
-            result = this.setItemCount(shoppingCartItem.Id, count);
+            result = await this.setItemCountByItemId(shoppingCartItem.Id, count);
             shoppingCartItem.Count = count;
         }
 
@@ -144,7 +152,7 @@ export class ShoppingCartService extends Service {
         ShoppingCartService.items.fire(ShoppingCartService.items.value);
     }
 
-    async  unselectItem(itemId: string) {
+    async unselectItem(itemId: string) {
         let url = this.url('UpdateItem');
         let item = { Id: itemId, Selected: false } as ShoppingCartItem;
         await this.put(url, { item });
