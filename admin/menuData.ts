@@ -49,7 +49,6 @@ export let menuData: MenuNode[] = [
     {
         Title: "商品",
         Icon: "icon-gift",
-        Url: "shopping/productList",
         Children: [
             {
                 Url: "shopping/productList", Title: "商品列表",
