@@ -10,8 +10,6 @@ namespace ui {
         dialogContainer = value;
     }
 
-
-
     export function buttonOnClick(callback: Callback, args?: Arguments): (event: Event) => void {
         args = args || {};
         let execute = async (event) => {
@@ -33,72 +31,11 @@ namespace ui {
         }
 
         return function (event: Event) {
-            let confirmPromise: Promise<any>;
-            let confirmDialogElment: HTMLElement;
-
-            if (!args.confirm) {
-                execute(event);
-                return;
-            }
-
-            confirmDialogElment = document.createElement('div');
-            confirmDialogElment.className = 'modal fade';
-            confirmDialogElment.style.marginTop = '20px'
-            console.assert(dialogContainer != null, 'dialog container is null');
-
-            dialogContainer.appendChild(confirmDialogElment);
-            confirmDialogElment.innerHTML = `
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                                    </button>
-                                    <h4 class="modal-title">确认</h4>
-                                </div>
-                                <div class="modal-body form-horizontal">
-                                   
-                                </div>
-                                <div class="modal-footer">
-                                    <button name="cancel" type="button" class="btn btn-default">
-                                        取消
-                                    </button>
-                                    <button name="ok" type="button" class="btn btn-primary">
-                                        确定
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-            let modalHeader = confirmDialogElment.querySelector('.modal-header');
-            let modalBody = confirmDialogElment.querySelector('.modal-body');
-            let modalFooter = confirmDialogElment.querySelector('.modal-footer');
-
             let text = typeof args.confirm == 'string' ?
                 args.confirm :
                 args.confirm();
 
-            modalBody.innerHTML = `<h5>${text}</h5>`;
-
-            let cancelButton = modalFooter.querySelector('[name="cancel"]') as HTMLButtonElement;
-            let okButton = modalFooter.querySelector('[name="ok"]') as HTMLButtonElement;
-            let closeButton = modalHeader.querySelector('.close') as HTMLElement;
-
-            closeButton.onclick = cancelButton.onclick = function () {
-                ui.hideDialog(confirmDialogElment).then(() => {
-                    confirmDialogElment.remove();
-                });
-            }
-            okButton.onclick = function () {
-                execute(event)
-                    .then(() => ui.hideDialog(confirmDialogElment))
-                    .then(() => {
-                        confirmDialogElment.remove();
-                    });
-            }
-
-            ui.showDialog(confirmDialogElment);
+            ui.confirm({ message: text, confirm: (event) => execute(event) });
         }
     }
 

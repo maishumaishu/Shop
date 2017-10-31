@@ -6,6 +6,8 @@ import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/co
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { ControlDescrtion, guid, StationService } from 'adminServices/station';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
+import { PropTypes } from 'prop-types';
+
 import * as ui from 'ui';
 
 
@@ -86,7 +88,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         this.setState(this.state);
     }
 
-    static childContextTypes = { designer: React.PropTypes.object };
+    static childContextTypes = { designer: PropTypes.object };
 
     getChildContext(): { designer: IMobilePageDesigner } {
         return { designer: this }

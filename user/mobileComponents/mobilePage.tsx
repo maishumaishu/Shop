@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { PropTypes } from 'prop-types';
 
 import MenuControl from 'mobileComponents/menu/control';
 import { Control } from 'mobileComponents/common';
@@ -53,6 +54,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let reactElement = React.createElement(types.Control, data);
         let control: Control<any, any> = ReactDOM.render(reactElement, element);
         control.mobilePage = this;
+
         control.id = controlId;
         let result: ControlPair = { control, controlType: types.Control };
         return result;
@@ -70,6 +72,12 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                 resolve({ Control: exports[name], Props: exports.Props });
             })
         })
+    }
+
+    static childContextTypes = { mobilePage: PropTypes.object };
+
+    getChildContext(): { mobilePage: MobilePage } {
+        return { mobilePage: this }
     }
 
     controlCreated(control: Control<any, any>, controlType: React.ComponentClass<any>) {

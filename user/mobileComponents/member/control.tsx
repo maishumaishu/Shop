@@ -170,7 +170,7 @@ export default class MemberControl extends Control<Props, State>{
                         showScore ?
                             <a className="list-group-item" href="#user_scoreList">
                                 <span className="icon-chevron-right pull-right"></span>
-                                <span className="pull-right value price" style={{ paddingRight: 8 }}>{score || 0}</span>
+                                <span className="pull-right value price" style={{ paddingRight: 8, display: score ? null : 'none' }}>{score || 0}</span>
                                 <strong>我的积分</strong>
                             </a> : null
                     }

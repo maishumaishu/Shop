@@ -9,12 +9,6 @@ declare namespace ui {
     function buttonOnClick(callback: Callback, args?: Arguments): (event: Event) => void;
 }
 declare namespace ui {
-    class Dialog {
-        private element;
-        constructor(element: HTMLElement);
-        show(): void;
-        hide(): Promise<any>;
-    }
     /** 弹窗
      * @param element bootstrap 的 modal 元素
      */
@@ -23,6 +17,12 @@ declare namespace ui {
     function alert(args: string | {
         title: string;
         message: string;
+    }): void;
+    function confirm(args: {
+        title?: string;
+        message: string;
+        cancle?: () => void;
+        confirm: (event: Event) => Promise<any>;
     }): void;
 }
 declare namespace ui {

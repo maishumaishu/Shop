@@ -1,6 +1,7 @@
 import { MobilePage } from 'mobileComponents/mobilePage';
 export const componentsDir = 'mobileComponents';
 export const pageClassName = 'mobile-page';
+import { PropTypes } from 'prop-types';
 
 export interface IMobilePageDesigner {
     selecteControl(control: Control<any, any>, controlType: React.ComponentClass<any>);
@@ -23,7 +24,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     private _element: HTMLElement;
     private _page: MobilePage;
 
-    static contextTypes = { designer: React.PropTypes.object };
+    static contextTypes = { designer: PropTypes.object };
     context: { designer: IMobilePageDesigner };
     id: string;
 

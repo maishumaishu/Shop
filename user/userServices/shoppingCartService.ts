@@ -117,11 +117,11 @@ export class ShoppingCartService extends Service {
                 Selected: true,
                 Price: product.Price,
             };
-            result = await this.addItem(shoppingCartItem);
+            this.addItem(shoppingCartItem);
             shoppingCartItems.push(shoppingCartItem);
         }
         else {
-            result = await this.setItemCountByItemId(shoppingCartItem.Id, count);
+            this.setItemCountByItemId(shoppingCartItem.Id, count);
             shoppingCartItem.Count = count;
         }
 
@@ -169,10 +169,6 @@ export class ShoppingCartService extends Service {
     }
 
     unselectAll() {
-        // let shoppingCartItems = this._items.value;
-        // shoppingCartItems.forEach(o => o.Selected = false);
-        // this._items.value = shoppingCartItems;
-        // return this.save();
         let url = this.url('UnselecteAll');
         ShoppingCartService.items.value.forEach(o => o.Selected = false);
         ShoppingCartService.items.fire(ShoppingCartService.items.value);
@@ -193,7 +189,8 @@ export class ShoppingCartService extends Service {
 
     /*移除购物车中的多个产品*/
     async removeItems(itemIds: string[]): Promise<any> {
-        await this.removeItems(itemIds);
+        let url = this.url('RemoveItems');
+        await this.delete(url, { itemIds });
         let items = ShoppingCartService.items.value.filter(o => itemIds.indexOf(o.Id) < 0);
         ShoppingCartService.items.value = items;
     }

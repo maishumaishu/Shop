@@ -34,6 +34,9 @@ requirejs.config({
         },
         site: {
             deps: ['react', 'chitu']
+        },
+        'prop-types': {
+            deps: ['react']
         }
     },
     paths: {
@@ -49,22 +52,24 @@ requirejs.config({
         // controls: 'controls',
         'chitu.mobile': 'scripts/chitu.mobile',
         carousel: 'scripts/carousel',
-        services: 'userServices',
         // mobileComponents: 'pageComponents',
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
+        'prop-types': 'scripts/prop-types',
+
+        services: 'userServices',
         ui: 'scripts/ui',
-        'user': '.'
+        'user': '.',
     }
 });
 
-requirejs(['react', 'react-dom', 'site', 'ui', 'ping'], function (React, ReactDOM, site) {
+requirejs(['react', 'react-dom', 'site', 'ui', 'ping', 'prop-types'], function (React, ReactDOM, site) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
 
 
-
+    ui.setDialogContainer(document.getElementById('dialogContainer'));
 
     site.app.run();
 

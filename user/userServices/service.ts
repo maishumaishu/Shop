@@ -1,6 +1,6 @@
 
-let userToken = new chitu.ValueStore<string>();
-userToken.value = localStorage.getItem('userToken');
+let userToken = new chitu.ValueStore<string>(localStorage.getItem('userToken'));
+// userToken.value = localStorage.getItem('userToken');
 export let tokens = {
     get appToken() {
         let search = location.search;
@@ -12,6 +12,14 @@ export let tokens = {
         return userToken;
     }
 }
+
+userToken.add((value) => {
+    if (!value) {
+        localStorage.removeItem('userToken');
+        return;
+    }
+    localStorage.setItem('userToken', value);
+})
 
 // const REMOTE_HOST = 'service.alinq.cn';
 export let config = {
@@ -26,14 +34,14 @@ let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.
 
 
 export abstract class Service extends chitu.Service {
-    private static host;
+    // private static host;
     async ajax<T>(url: string, options: RequestInit) {
 
-        if (!Service.host) {
-            await Service.setServiceHost();
-        }
+        // if (!Service.host) {
+        let host = await Service.setServiceHost();
+        // }
 
-        url = `${protocol}//${Service.host}/` + url;
+        url = `${protocol}//${host}/` + url;
 
 
         options = options || {};
@@ -74,10 +82,11 @@ export abstract class Service extends chitu.Service {
         });
     }
     private static async setServiceHost(): Promise<string> {
-        if (Service.host)
-            return Promise.resolve(Service.host);
+        let host = localStorage['ServiceHost'];
+        if (host)
+            return Promise.resolve(host);
 
-        Service.host = await new Promise<string>((resolve, reject) => {
+        host = await new Promise<string>((resolve, reject) => {
             let result: string;
             for (let i = 0; i < allServiceHosts.length; i++) {
                 Service.hostPing(allServiceHosts[i]).then(o => {
@@ -91,7 +100,8 @@ export abstract class Service extends chitu.Service {
             }
         });
 
-        return Service.host;
+        localStorage['ServiceHost'] = host;
+        return host;
     }
 
 }

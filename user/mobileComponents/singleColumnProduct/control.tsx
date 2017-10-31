@@ -92,7 +92,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
 
         this.state = {
             products: [], productSourceType: 'category', prodcutsCount: 1,
-            productCounts: {}
+            productCounts
         };
 
 
@@ -122,24 +122,6 @@ export default class SingleColumnProductControl extends Control<Props, State> {
             this.state.products = products;
             this.setState(this.state);
         });
-    }
-
-    addProduct(product: Product) {
-        let productCount = this.state.productCounts[product.Id] || 0;
-        this.state.productCounts[product.Id] = productCount;
-    }
-
-    removeProduct(product: Product) {
-        let productCount = this.state.productCounts[product.Id] || 0;
-
-        // let count = product.Count - 1;
-        // if (count < 0) {
-        //     return;
-        // }
-        // return shoppingCart.updateItem(product.Id, count, true).then(items => {
-        //     product.Count = count;
-        //     this.setState(this.state);
-        // });
     }
 
     _render() {
@@ -274,6 +256,7 @@ class ProductCount extends React.Component<
         if (count <= 0)
             return;
 
+        count = count - 1;
         await shoppingCart.setItemCount(product, count);
     }
     render() {

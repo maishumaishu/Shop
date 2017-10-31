@@ -76,6 +76,7 @@ requirejs.config({
         'jquery-ui': 'scripts/jquery-ui',
         'jquery.ui.widget': 'scripts/jquery.ui.widget',
         'react-dom': 'scripts/react-dom',
+        'prop-types': 'scripts/prop-types',
 
         ace: 'assets/js/uncompressed/ace',
 
@@ -88,7 +89,7 @@ requirejs.config({
         mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
         virtualMobile: 'modules/station/components/virtualMobile',
         'maishu-chitu': 'scripts/chitu',
-        'user': '../user'
+        'user': '../user',
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap', 'ping'];

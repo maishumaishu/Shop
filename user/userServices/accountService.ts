@@ -2,7 +2,7 @@ import { Service, config } from 'userServices/service';
 
 export class AccountService extends Service {
     private url(path: string) {
-        return `UserMember/${path}`;
+        return `UserAccount/${path}`;
     }
 
     // /**

@@ -7,12 +7,20 @@ import { userData } from 'userServices/userData';
 import { app, defaultNavBar } from 'user/site';
 
 
-export class Header extends Control<any, { status: string }> {
-    private shoppingCart: ShoppingCartControl;
+type ControlStatus = 'normal' | 'edit'
+let status = new chitu.ValueStore<ControlStatus>('normal');
+let deleteItemsCount = new chitu.ValueStore<number>(0);
+
+export class Header extends Control<any, { status: ControlStatus }> {
+    private _shoppingCart: ShoppingCartControl;
 
     constructor(props) {
         super(props);
-        this.state = { status: 'normal' };
+        this.state = { status: status.value };
+        this.subscribe(status, (value) => {
+            this.state.status = value;
+            this.setState(this.state);
+        })
     }
 
     get persistentMembers() {
@@ -21,18 +29,30 @@ export class Header extends Control<any, { status: string }> {
     componentDidMount() {
     }
     private edit() {
-        if (this.shoppingCart == null) {
+        this.shoppingCart.edit();
+    }
+    get shoppingCart(): ShoppingCartControl {
+        if (this._shoppingCart == null) {
             let c = this.mobilePage.controls.filter(o => o instanceof ShoppingCartControl)[0];
             console.assert(c != null);
-            this.shoppingCart = c as any as ShoppingCartControl;
+            this._shoppingCart = c as any as ShoppingCartControl;
         }
-        this.shoppingCart.edit();
+
+        return this._shoppingCart;
+    }
+    private cancle() {
+        this.shoppingCart.cancel();
     }
     _render() {
         let { status } = this.state;
         return defaultNavBar({
-            title: '购物车',
+            left: (
+                status == 'edit' ? <button className="left-button" style={{ width: 'unset' }} onClick={() => this.cancle()}>
+                    取消
+                </button> : null
+            ),
             showBackButton: false,
+
             right:
             <button className="right-button" style={{ width: 'unset' }}
                 onClick={async () => {
@@ -43,75 +63,98 @@ export class Header extends Control<any, { status: string }> {
                 {status == 'normal' ? '编辑' : '完成'}
             </button>
 
-        })
+        });
     }
 }
 
-//onClick={this.onEditClick.bind(this)} 
+interface FooterStatus {
+    items?: ShoppingCartItem[],
+    status?: ControlStatus,
+    deleteItemsCount?: number
+}
+export class Footer extends Control<any, FooterStatus>{
 
-export class Footer extends Control<any, { items?: ShoppingCartItem[], status?: string }>{
-
-    private shoppingCart: ShoppingCartControl;
+    private _shoppingCart: ShoppingCartControl;
 
     constructor(props) {
         super(props);
-        this.state = { items: ShoppingCartService.items.value, status: 'normal' };
+        this.state = { items: ShoppingCartService.items.value, status: status.value };
+        this.subscribe(status, (value) => {
+            this.state.status = value;
+            this.setState(this.state);
+        })
         this.subscribe(ShoppingCartService.items, (value) => {
             this.state.items = value;
             this.setState(this.state);
         })
+        this.subscribe(deleteItemsCount, (value) => {
+            this.state.deleteItemsCount = deleteItemsCount.value;
+            this.setState(this.state);
+        })
+    }
+
+    get shoppingCart(): ShoppingCartControl {
+        if (this._shoppingCart == null) {
+            let c = this.mobilePage.controls.filter(o => o instanceof ShoppingCartControl)[0];
+            console.assert(c != null);
+            this._shoppingCart = c as any as ShoppingCartControl;
+        }
+
+        return this._shoppingCart;
     }
 
     get persistentMembers() {
         return [];
     }
-    buy() {
-
-    }
-    deleteSelectedItems() {
-        return Promise.resolve();
-    }
     deleteConfirmText(items) {
         return "";
     }
     isCheckedAll() {
-        let value = true;
-        let items = this.state.items;
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].Selected != true) {
-                value = false;
-                break;
+        if (this.state.status == 'normal') {
+            let value = true;
+            let items = this.state.items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].Selected != true) {
+                    value = false;
+                    break;
+                }
             }
+            return value;
         }
-        return value;
+
+        return this.state.deleteItemsCount == this.state.items.length;
+
     }
     checkAll() {
         if (this.isCheckedAll()) {
-            return shoppingCart.unselectAll();
+            return this.shoppingCart.uncheckAll();
         }
-        return shoppingCart.selectAll();
+        return this.shoppingCart.checkAll();
     }
-    _render() {
 
-        let shoppingCart = this.shoppingCart;
-        let selectedCount = 0;
-        let deleteItems = [];
+    _render() {
+        let selectedItems = this.state.items.filter(o => o.Selected);
+        let selectedCount = selectedItems.length;
+        let deleteItemsCount = this.state.deleteItemsCount;
         let totalAmount = 0;
+        selectedItems.forEach(o => totalAmount = totalAmount + o.Amount);
+
+        let items = this.state.status == 'normal' ? this.state.items.length : this.state.deleteItemsCount;
+
         return (<div className="settlement" style={{ bottom: this.props.hideMenu ? 0 : null, paddingLeft: 0 }}>
             <div className="pull-right">
                 {this.state.status == 'normal' ?
-                    <button className="btn btn-primary" onClick={() => this.buy()} disabled={selectedCount == 0}>
+                    <button className="btn btn-primary" onClick={() => this.shoppingCart.buy()} disabled={selectedCount == 0}>
                         {selectedCount > 0 ? `结算（${selectedCount}）` : '结算'}
                     </button>
                     :
-                    <button className="btn btn-primary" disabled={deleteItems.length == 0}
+                    <button className="btn btn-primary" disabled={deleteItemsCount == 0}
                         ref={(e: HTMLButtonElement) => {
                             if (!e) return;
-                            e.onclick = ui.buttonOnClick(o => this.deleteSelectedItems(), {
-                                confirm: this.deleteConfirmText(deleteItems)
+                            e.onclick = ui.buttonOnClick(o => this.shoppingCart.removeSelectedItems(), {
+                                confirm: this.shoppingCart.removeConfirmText()
                             });
-                        }}
-                    >
+                        }}>
                         删除
                 </button>
                 }
@@ -137,18 +180,17 @@ export class Footer extends Control<any, { items?: ShoppingCartItem[], status?: 
     }
 }
 
-// type MyShoppingCartItem = ShoppingCartItem & { InputCount: number };
 export interface ShoppingCartState {
-    items?: ShoppingCartItem[], status?: 'normal' | 'edit',
+    items?: ShoppingCartItem[], status?: ControlStatus,
     totalAmount?: number, selectedCount?: number,
     deleteItems: Array<ShoppingCartItem>,
     inputCounts: { [key: string]: number }
 
 }
 
-let shoppingCart = new ShoppingCartService(); //page.createService(ShoppingCartService);
-let shop = new ShoppingService();  //page.createService(ShoppingService);
-let station = new StationService(); //page.createService(StationService);
+let shoppingCart = new ShoppingCartService();
+let shop = new ShoppingService();
+let station = new StationService();
 
 export interface ShoppingCartlProps extends ControlProps<ShoppingCartControl> {
     hideMenu: boolean, pageName: string,
@@ -157,19 +199,15 @@ export default class ShoppingCartControl extends Control<
     ShoppingCartlProps,
     ShoppingCartState>{
 
-    // private dialog: controls.Dialog;
-
     constructor(props) {
         super(props);
-        // this.setStateByItems(ShoppingCartService.items.value || []);
-        // ShoppingCartService.items.add(items => {
-        //     this.setStateByItems(items);
-        // })
+
         this.state = {
             status: 'normal',
             items: ShoppingCartService.items.value,
             deleteItems: [], inputCounts: {}
-        };//.map(o => Object.assign(o, { InputCount: 0 }));
+        };
+
         this.subscribe(ShoppingCartService.items, (items) => {
             this.state.items = items;
             this.setState(this.state);
@@ -184,12 +222,12 @@ export default class ShoppingCartControl extends Control<
     private async selectItem(item: ShoppingCartItem) {
         if (this.state.status == 'edit') {
             let itemIndex = this.state.deleteItems.indexOf(item);
-            if (itemIndex >= 0)
-                this.state.deleteItems = this.state.deleteItems.filter((o, i) => i != itemIndex);
-            else
-                this.state.deleteItems.push(item);
 
-            this.setState(this.state);
+            let deleteItems = itemIndex >= 0 ?
+                this.state.deleteItems.filter((o, i) => i != itemIndex) :
+                this.state.deleteItems.concat([item]);
+
+            this.setDeleteItems(deleteItems);
             return;
         }
 
@@ -198,31 +236,29 @@ export default class ShoppingCartControl extends Control<
         else
             await shoppingCart.unselectItem(item.Id);
 
-        //shoppingCart.updateItem(item.ProductId, item.Count, !item.Selected);
-        // showDialog(this.dialog, p);
-        // return p;
     }
-    private deleteSelectedItems() {
+    async removeSelectedItems() {
         let items: ShoppingCartItem[] = this.state.deleteItems;
-        return shoppingCart.removeItems(items.map(o => o.ProductId));
-        // .then(items => {
-        //     this.setStateByItems(items);
-        //     this.state.deleteItems = [];
-        //     this.setState(this.state);
-        // });
+        await shoppingCart.removeItems(items.map(o => o.Id));
+        this.setDeleteItems([]);
     }
     private decreaseCount(item: ShoppingCartItem) {
         let itemCount = this.state.inputCounts[item.Id] || item.Count;
         if (itemCount <= 1) {
+            ui.confirm({
+                message: `确定要删除'${item.Name}'吗？`,
+                confirm: async () => {
+                    await shoppingCart.removeItems([item.Id]);
+                    let deleteItems = this.state.deleteItems.filter(o => o.Id != item.Id);
+                    this.setDeleteItems(deleteItems);
+                }
+            })
             return;
         }
-        // item.Count = item.Count - 1;
-        // this.setState(this.state);
         this.changeItemCount(item, `${(itemCount) - 1}`);
     }
     private increaseCount(item: ShoppingCartItem) {
         let itemCount = (this.state.inputCounts[item.Id] || item.Count) + 1;
-        // this.setState(this.state);
         this.changeItemCount(item, `${itemCount}`);
     }
     private changeItemCount(item: ShoppingCartItem, value: string) {
@@ -233,10 +269,19 @@ export default class ShoppingCartControl extends Control<
         this.setState(this.state);
     }
 
+
+    cancel() {
+        this.state.status = 'normal';
+        status.value = this.state.status;
+        this.setState(this.state);
+    }
+
     edit() {
         if (this.state.status == 'normal') {
             this.state.status = 'edit';
+            status.value = this.state.status;
             this.setState(this.state);
+
             return Promise.resolve();
         }
 
@@ -254,8 +299,7 @@ export default class ShoppingCartControl extends Control<
 
         let result: Promise<any>;
         if (itemIds.length > 0) {
-            result = shoppingCart.setItemsCount(itemIds, quantities); //shoppingCart.updateItems(productIds, quantities);
-            // showDialog(this.dialog, result);
+            result = shoppingCart.setItemsCount(itemIds, quantities);
         }
         else {
             result = Promise.resolve({});
@@ -263,42 +307,38 @@ export default class ShoppingCartControl extends Control<
 
         result.then(o => {
             this.state.status = 'normal';
+            status.value = this.state.status;
             this.setState(this.state);
         });
 
         return result;
     }
-    private checkAll() {
+    checkAll() {
         if (this.state.status == 'normal') {
-            let p: Promise<any>;
-            if (this.isCheckedAll()) {
-                p = shoppingCart.unselectAll();
-            }
-            else {
-                p = shoppingCart.selectAll();
-            }
-
-            // p.then((items) => {
-            //     this.setStateByItems(items);
-            // })
-
-            // showDialog(this.dialog, p);
-            return p;
+            return shoppingCart.selectAll();
         }
 
-        if (this.isCheckedAll()) {
-            this.state.deleteItems = [];
+        this.setDeleteItems(this.state.items);
+    }
+
+    uncheckAll() {
+        if (this.state.status == 'normal') {
+            return shoppingCart.unselectAll();
         }
-        else {
-            this.state.deleteItems = this.state.items;
-        }
+
+        this.setDeleteItems([]);
+    }
+
+    private setDeleteItems(items: ShoppingCartItem[]) {
+        this.state.deleteItems = items;
         this.setState(this.state);
 
+        deleteItemsCount.value = items.length;
     }
-    private buy() {
+
+    buy() {
         if (this.state.selectedCount <= 0)
             return;
-
 
         var items = this.state.items.filter(o => o.Selected);
         var productIds = items.map(o => o.ProductId);
@@ -311,36 +351,14 @@ export default class ShoppingCartControl extends Control<
 
         return result;
     }
-    // private setStateByItems(items: ShoppingCartItem[]) {
 
-    //     let state: ShoppingCartState = this.state || { status: 'normal', deleteItems: [] };// as ShoppingCartState;
-
-    //     let selectItems = items.filter(o => o.Selected);
-
-    //     state.selectedCount = 0;
-    //     selectItems.filter(o => !o.IsGiven).forEach(o => state.selectedCount = state.selectedCount + o.Count);
-    //     state.items = items.map(o => {
-    //         let i = o as MyShoppingCartItem;
-    //         i.InputCount = i.Count;
-    //         return i;
-    //     });
-
-    //     state.totalAmount = 0;
-    //     selectItems.forEach(o => {
-    //         state.totalAmount = state.totalAmount + o.Amount;
-    //     })
-
-    //     if (this.state == null)
-    //         this.state = state;
-    //     else
-    //         this.setState(state);
-    // }
     private isChecked(item: ShoppingCartItem) {
         if (this.state.status == 'normal') {
             return item.Selected;
         }
         return this.state.deleteItems.indexOf(item) >= 0;
     }
+
     private isCheckedAll() {
         if (this.state.status == 'normal') {
             let selectedItems = this.state.items.filter(o => o.Selected);
@@ -349,13 +367,16 @@ export default class ShoppingCartControl extends Control<
 
         return this.state.deleteItems.length == this.state.items.length;
     }
-    private deleteConfirmText(items: ShoppingCartItem[]) {
+
+    removeConfirmText() {
+        let items: ShoppingCartItem[] = this.state.deleteItems;
         let str = "是否要删除？<br/> " + items.map(o => '<br/>' + o.Name);
         return str;
     }
 
     _render() {
         let inputCounts = this.state.inputCounts;
+
         return (
             this.state.items.length > 0 ?
                 <div className="container">
@@ -376,7 +397,7 @@ export default class ShoppingCartControl extends Control<
                                             ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />}
 
                                 </a>
-                                <div style={{ marginLeft: 110 }}>
+                                <div style={{ marginLeft: 100 }}>
                                     <a href={`#home_product?id=${o.ProductId}`} >{o.Name}</a>
                                     <div style={{ height: 42, paddingTop: 4 }}>
                                         <div className="price pull-left" style={{ marginTop: 10 }}>￥{o.Price.toFixed(2)}</div>

@@ -7,8 +7,8 @@ import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
 
 export default async function (page: Page) {
 
-    let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
-        PageComponent, PageHeader, PageFooter, PageView, Dialog } = controls;
+    // let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
+    //     PageComponent, PageHeader, PageFooter, PageView, Dialog } = controls;
 
     let shop = page.createService(ShoppingService);
     let shoppingCart = page.createService(ShoppingCartService)
@@ -57,16 +57,16 @@ export default async function (page: Page) {
             // let balance = this.props.balance;
 
             return (
-                <PageComponent>
-                    <PageHeader>
+                <div>
+                    <header>
                         {defaultNavBar({ title: '确认订单', back: () => app.back() })}
-                    </PageHeader>
-                    <PageFooter>
+                    </header>
+                    <footer>
                         <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>
                             <button onClick={() => this.confirmOrder()} className="btn btn-block btn-primary">提交订单</button>
                         </div>
-                    </PageFooter>
-                    <PageView>
+                    </footer>
+                    <section>
                         <div className="container">
                             <h4 className="text-primary">收货信息</h4>
                             <a style={{ minHeight: 40, display: order.ReceiptAddress ? 'none' : 'block' }}
@@ -94,7 +94,7 @@ export default async function (page: Page) {
                                 {order.OrderDetails.map((o, i) => (
                                     <li key={i} data-bind="visible:ko.unwrap(Price) >= 0" className="list-group-item">
                                         <div className="pull-left" style={{ width: 60, height: 60 }}>
-                                            <ImageBox src={o.ImageUrl} className="img-responsive" />
+                                            <img src={o.ImageUrl} className="img-responsive" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                                         </div>
                                         <div style={{ marginLeft: 70 }}>
                                             <div style={{ marginBottom: 10 }}>
@@ -190,8 +190,8 @@ export default async function (page: Page) {
                                 </div>
                             </div>
                         </div>
-                    </PageView >
-                </PageComponent>
+                    </section >
+                </div>
             );
         }
     }

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+let h = React.createElement;
 
 export { app, defaultNavBar, Page, Menu, searchNavBar, config } from 'user/application';
 

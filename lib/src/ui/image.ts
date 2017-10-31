@@ -9,7 +9,6 @@ namespace ui {
 
     let config = loadImageConfig;
 
-
     type CanvasDraw = (ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) => void
 
     let draws = {
@@ -82,7 +81,7 @@ namespace ui {
         if (!element) throw errors.argumentNull('element');
 
         let imageUrl = element.src || '';
-        if (imageUrl.indexOf('data:image/png;base64') == 0) {
+        if (imageUrl.indexOf('data:image/png;base64') == 0 ||  element['rendered']) {
             return;
         }
 
@@ -123,12 +122,14 @@ namespace ui {
                     })
                     .then((base64) => {
                         element.src = base64;
+                        element['rendered'] = true;
                     })
             }
             else {
                 var image: HTMLImageElement = new Image();
                 image.onload = function () {
                     element.src = (this as HTMLImageElement).src;
+                    element['rendered'] = true;
                     resolve(element.src);
                 };
                 image.src = imageUrl;

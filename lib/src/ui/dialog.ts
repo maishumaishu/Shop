@@ -21,30 +21,6 @@ namespace ui {
         element.className = itemsRemain.join(' ');
     }
 
-    export class Dialog {
-        private element: HTMLElement;
-        constructor(element: HTMLElement) {
-            this.element = element;
-        }
-        show() {
-            this.element.style.display = 'block';
-
-            removeClassName(this.element, 'out');
-            addClassName(this.element, 'modal fade in');
-        }
-        hide(): Promise<any> {
-            removeClassName(this.element, 'in');
-            addClassName(this.element, 'modal fade out');
-
-            this.element.style.removeProperty('display');
-            return new Promise((reslove, reject) => {
-                setTimeout(() => {
-                    reslove();
-                }, 1000);
-            });
-        }
-    }
-
     /** 弹窗
      * @param element bootstrap 的 modal 元素
      */
@@ -119,5 +95,90 @@ namespace ui {
         let okButton = modalFooter.querySelector('[name="ok"]') as HTMLButtonElement;
         okButton.onclick = () => ui.hideDialog(element);//dialog.hide()
 
+    }
+
+    export function confirm(args: {
+        title?: string, message: string, cancle?: () => void,
+        confirm: (event: Event) => Promise<any>,
+        container?: HTMLElement
+    }) {
+
+        // if (typeof args == 'string')
+        //     args = { title: args };
+        let title: string;
+        let message: string;
+        let execute = args.confirm;
+        let container = args.container || document.body;
+        
+        if (typeof args == 'string') {
+            message = args;
+        }
+        else {
+            title = args.title;
+            message = args.message;
+        }
+
+        let confirmDialogElment: HTMLElement;
+
+        confirmDialogElment = document.createElement('div');
+        confirmDialogElment.className = 'modal fade';
+        confirmDialogElment.style.marginTop = '20px'
+        console.assert(dialogContainer != null, 'dialog container is null');
+
+        dialogContainer.appendChild(confirmDialogElment);
+        confirmDialogElment.innerHTML = `
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title">确认</h4>
+                            </div>
+                            <div class="modal-body form-horizontal">
+                               
+                            </div>
+                            <div class="modal-footer">
+                                <button name="cancel" type="button" class="btn btn-default">
+                                    取消
+                                </button>
+                                <button name="ok" type="button" class="btn btn-primary">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+        let modalHeader = confirmDialogElment.querySelector('.modal-header');
+        let modalBody = confirmDialogElment.querySelector('.modal-body');
+        let modalFooter = confirmDialogElment.querySelector('.modal-footer');
+
+
+
+        modalBody.innerHTML = `<h5>${message}</h5>`;
+        if (title) {
+            modalHeader.querySelector('h4').innerHTML = title;
+        }
+
+        let cancelButton = modalFooter.querySelector('[name="cancel"]') as HTMLButtonElement;
+        let okButton = modalFooter.querySelector('[name="ok"]') as HTMLButtonElement;
+        let closeButton = modalHeader.querySelector('.close') as HTMLElement;
+
+        closeButton.onclick = cancelButton.onclick = function () {
+            ui.hideDialog(confirmDialogElment).then(() => {
+                confirmDialogElment.remove();
+            });
+        }
+
+        okButton.onclick = function (event) {
+            execute(event)
+                .then(() => ui.hideDialog(confirmDialogElment))
+                .then(() => {
+                    confirmDialogElment.remove();
+                });
+        }
+
+        ui.showDialog(confirmDialogElment);
     }
 }

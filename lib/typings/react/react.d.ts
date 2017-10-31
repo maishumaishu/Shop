@@ -123,7 +123,7 @@ declare module React {
         componentOrElement: Component<any, any> | Element): Element;
 
     var DOM: ReactDOM;
-    var PropTypes: ReactPropTypes;
+    // var PropTypes: ReactPropTypes;
     var Children: ReactChildren;
 
     //

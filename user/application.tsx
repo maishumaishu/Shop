@@ -242,20 +242,22 @@ if (!location.hash) {
 
 //============================================================
 // ui
-export function defaultNavBar(options?: { title?: string, showBackButton?: boolean, right?: JSX.Element, back?: () => void }) {
+export function defaultNavBar(options?: { title?: string, showBackButton?: boolean, right?: JSX.Element, back?: () => void, left?: JSX.Element }) {
     options = options || {};
     let title = options.title || '';
     let showBackButton = options.showBackButton == null ? true : options.showBackButton;
     let back = options.back || (() => app.back());
+
+    if (showBackButton && options.left == null) {
+        options.left = <button name="back-button" onClick={() => back()} className="left-button" style={{ opacity: 1 }}>
+            <i className="icon-chevron-left"></i>
+        </button>;
+    }
+
     return (
         <nav className="bg-primary">
             <div className="col-xs-3" style={{ padding: 0 }}>
-                {showBackButton ?
-                    <button name="back-button" onClick={() => back()} className="left-button" style={{ opacity: 1 }}>
-                        <i className="icon-chevron-left"></i>
-                    </button> :
-                    <span></span>
-                }
+                {options.left ? options.left : null}
             </div>
             <div className="col-xs-6" style={{ padding: 0 }}>
                 <h4>
