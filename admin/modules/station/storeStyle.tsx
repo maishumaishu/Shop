@@ -19,7 +19,7 @@ export default function (page: chitu.Page) {
     station.stylePage().then(pageData => {
         ReactDOM.render(
             <MobilePageDesigner pageData={pageData}
-                save={station.savePageData.bind(station)} >
+                save={station.savePageData.bind(station)}  elementPage={page}>
             </MobilePageDesigner>, page.element);
     })
 }

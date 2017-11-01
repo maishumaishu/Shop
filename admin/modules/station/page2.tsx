@@ -73,8 +73,8 @@ export default async function (page: chitu.Page) {
             let elements = this.selectedContainer.querySelectorAll('li');
             let controls = [];
             for (let i = 0; i < elements.length; i++) {
-                let controlId = elements[i].getAttribute('data-controlId');
-                let controlName = elements[i].getAttribute('data-controlName');
+                let controlId = elements[i].getAttribute('data-control-id');
+                let controlName = elements[i].getAttribute('data-control-name');
                 if (controlId == null || controlName == null)
                     continue;
 
@@ -128,12 +128,12 @@ export default async function (page: chitu.Page) {
             ($([this.selectedContainer]) as any).sortable({
                 // revert: true,
                 receive(event: Event & { toElement: HTMLElement }, ui: { item: JQuery, placeholder: JQuery, helper: JQuery }) {
-                    let controlName = ui.item.attr('data-controlName');
+                    let controlName = ui.item.attr('data-control-name');
                     console.assert(controlName != null);
 
                     let element = ui.helper[0];
                     element.removeAttribute('style');
-                    let controlId = element.getAttribute('data-controlId');
+                    let controlId = element.getAttribute('data-control-id');
                     console.assert(controlId == null);
 
                     self.loadControlInstance(guid(), controlName, element);
@@ -174,13 +174,13 @@ export default async function (page: chitu.Page) {
 
         async loadControlInstance(controlId: string, controlName: string, controlHTMLElement: HTMLElement, controlData?: any) {
 
-            controlHTMLElement.setAttribute('data-controlName', controlName);
-            controlHTMLElement.setAttribute('data-controlId', controlId);
+            controlHTMLElement.setAttribute('data-control-name', controlName);
+            controlHTMLElement.setAttribute('data-control-id', controlId);
 
             let editorHTMLElement = document.createElement('div');
             editorHTMLElement.className = 'editor';
-            editorHTMLElement.setAttribute('data-controlName', controlName);
-            editorHTMLElement.setAttribute('data-controlId', controlId);
+            editorHTMLElement.setAttribute('data-control-name', controlName);
+            editorHTMLElement.setAttribute('data-control-id', controlId);
             page.element.querySelector('.editors').appendChild(editorHTMLElement);
 
             let controlType = await this.getControlType(controlName);
@@ -232,7 +232,7 @@ export default async function (page: chitu.Page) {
 
         activeControl(controlName: string) {
             this.clearTowPanels();
-            $(`.all li[data-controlName=${controlName}]`).addClass('active');
+            $(`.all li[data-control-name=${controlName}]`).addClass('active');
         }
 
         showComponentIntroduce(componentElement: HTMLElement) {
@@ -241,30 +241,30 @@ export default async function (page: chitu.Page) {
 
         activeControlInstance(controlElement: HTMLElement) {
 
-            let controlName = $(controlElement).attr('data-controlName');
-            let controlId = $(controlElement).attr('data-controlId');
+            let controlName = $(controlElement).attr('data-control-name');
+            let controlId = $(controlElement).attr('data-control-id');
             console.assert(!!controlName);
 
             // 将组件图标设为激活状态
-            let icon = this.allContainer.querySelector(`li[data-controlName=${controlName}]`);
+            let icon = this.allContainer.querySelector(`li[data-control-name=${controlName}]`);
             console.assert(icon != null);
             $(this.allContainer).find('li.active').removeClass('active');
             $(icon).addClass('active');
 
             // 将编辑器设为激活状态
             $(page.element).find('.all .editor').removeClass('active');
-            $(page.element).find(`.all .editor[data-controlId=${controlId}]`).addClass('active');
+            $(page.element).find(`.all .editor[data-control-id=${controlId}]`).addClass('active');
 
             $(this.selectedContainer).find('li').addClass('mask');
             $(controlElement).removeClass('mask').addClass('active');
         }
 
         deactiveControl(controlElement: HTMLElement) {
-            let controlName: string = $(controlElement).attr('data-controlname');
+            let controlName: string = $(controlElement).attr('data-control-name');
             console.assert(!!controlName);
 
 
-            $(`li[data-controlName=${controlName}]`).removeClass('active');
+            $(`li[data-control-name=${controlName}]`).removeClass('active');
             $(page.element).find(`.all .editor.active`).removeClass('active');
 
             $(this.selectedContainer).find('li.mask').removeClass('mask');
@@ -339,7 +339,7 @@ export default async function (page: chitu.Page) {
                                 <div className="selected">
                                     <ul ref={(o: HTMLElement) => this.selectedContainer = o}>
                                         {selectedComponents.map((o, i) => (
-                                            <li key={o.controlId} data-controlId={o.controlId}
+                                            <li key={o.controlId} data-control-id={o.controlId}
                                                 ref={(e: HTMLElement) => {
                                                     if (e == null) {
                                                         return;
@@ -393,7 +393,7 @@ export default async function (page: chitu.Page) {
                             <h5>页面组件</h5>
                             <ul className="components-panel" ref={(e: HTMLElement) => this.allContainer = e}>
                                 {components.map((c, i) => (
-                                    <li key={c.name} data-controlName={c.name}
+                                    <li key={c.name} data-control-name={c.name}
                                         ref={(element) => {
                                             ($(element) as any).draggable({
                                                 connectToSortable: $(this.selectedContainer),
@@ -412,7 +412,7 @@ export default async function (page: chitu.Page) {
                                 <div className="editors">
                                 </div>
                                 {components.map((c, i) => (
-                                    <div key={c.name} className="introduce" data-controlName={c.name} dangerouslySetInnerHTML={{ __html: c.introduce }}>
+                                    <div key={c.name} className="introduce" data-control-name={c.name} dangerouslySetInnerHTML={{ __html: c.introduce }}>
                                     </div>
                                 ))}
                             </div>

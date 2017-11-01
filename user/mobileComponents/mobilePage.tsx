@@ -3,10 +3,11 @@ import * as ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
 
 import MenuControl from 'mobileComponents/menu/control';
-import { Control } from 'mobileComponents/common';
+import { Control, ControlProps } from 'mobileComponents/common';
 
 export interface Props extends React.Props<MobilePage> {
     pageData: PageData;
+    elementPage: chitu.Page;
     designTime?: {
         controlSelected?: (
             control: React.Component<any, any>,
@@ -49,11 +50,12 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let { controlId, controlName, data, selected } = controlData;
         let types = await MobilePage.getControlType(controlName);
 
-        // data = data || {};
-        // data.mobilePage = this;
-        let reactElement = React.createElement(types.Control, data);
+        let props: ControlProps<any> = Object.assign({}, data || {});
+        props.mobilePage = this;
+        console.assert(this.props.elementPage != null);
+        let reactElement = React.createElement(types.Control, props);
         let control: Control<any, any> = ReactDOM.render(reactElement, element);
-        control.mobilePage = this;
+        // control.mobilePage = this;
 
         control.id = controlId;
         let result: ControlPair = { control, controlType: types.Control };
@@ -222,7 +224,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                 receive: (event: Event, ui: UI) => {
                     let element = ui.helper[0] as HTMLElement;
                     element.removeAttribute('style');
-                    let controlName = ui.item.attr('data-controlName');
+                    let controlName = ui.item.attr('data-control-name');
                     console.assert(controlName != null);
                     ui.helper.remove();
                     pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });

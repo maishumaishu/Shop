@@ -27,8 +27,8 @@ export default async function (page: chitu.Page) {
         }
         async loadControlInstance(controlId: string, controlName: string, controlHTMLElement: HTMLElement, controlData?: any) {
 
-            controlHTMLElement.setAttribute('data-controlName', controlName);
-            controlHTMLElement.setAttribute('data-controlId', controlId);
+            controlHTMLElement.setAttribute('data-control-name', controlName);
+            controlHTMLElement.setAttribute('data-control-id', controlId);
             let controlType = await this.getControlType(controlName);
             let controlReactElement = React.createElement(controlType, controlData);
             let control: React.Component<any, any> = ReactDOM.render(controlReactElement, controlHTMLElement);
@@ -53,7 +53,9 @@ export default async function (page: chitu.Page) {
         render() {
             return (
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
-                    save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true}>
+                    save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true} 
+                    // TODO: elementPage 应该为移动端的 chitu.Page 
+                    elementPage={page}>
                 </MobilePageDesigner>
             );
         }

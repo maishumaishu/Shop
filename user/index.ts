@@ -20,7 +20,7 @@ requirejs.config({
             deps: ['react-dom', 'react']
         },
         application: {
-            deps: ['chitu']
+            deps: ['maishu-chitu']
         },
         mobileControls: {
             exports: 'controls',
@@ -33,7 +33,7 @@ requirejs.config({
             exports: 'ui'
         },
         site: {
-            deps: ['react', 'chitu']
+            deps: ['react', 'maishu-chitu']
         },
         'prop-types': {
             deps: ['react']
@@ -41,7 +41,8 @@ requirejs.config({
     },
     paths: {
         'bezier-easing': 'scripts/bezier-easing',
-        chitu: 'scripts/chitu',
+        // chitu: 'scripts/chitu',
+        'maishu-chitu': 'scripts/chitu',
         css: 'scripts/css',
         fetch: 'scripts/fetch',
         hammer: 'scripts/hammer',

@@ -15,7 +15,7 @@ export interface ComponentProp<T> extends React.Props<T> {
     createElement?: (type, props, ...children) => JSX.Element,
 }
 export interface ControlProps<T> extends React.Props<T> {
-    // mobilePage: MobilePage
+    mobilePage: MobilePage
 }
 export interface ControlConstructor {
     new(props): Control<any, any>
@@ -23,6 +23,7 @@ export interface ControlConstructor {
 export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
     private _element: HTMLElement;
     private _page: MobilePage;
+    private _elementPage: chitu.Page;
 
     static contextTypes = { designer: PropTypes.object };
     context: { designer: IMobilePageDesigner };
@@ -30,6 +31,8 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
 
     constructor(props) {
         super(props);
+        this._page = this.props.mobilePage;
+        this._elementPage = this.props.mobilePage.props.elementPage;
     }
 
     abstract get persistentMembers(): (keyof S)[];
@@ -38,8 +41,8 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     get mobilePage() {
         return this._page;
     }
-    set mobilePage(value: MobilePage) {
-        this._page = value;
+    get elementPage() {
+        return this._elementPage;
     }
 
     get element(): HTMLElement {

@@ -24,16 +24,4 @@ export function subscribe<T>(component: React.Component<any, any>, item: chitu.V
     }
 }
 
-//===================================================
-// 生成样式
 
-import { MobilePage } from 'mobileComponents/mobilePage';
-import { StationService } from 'userServices/stationService';
-
-let station = new StationService();
-let element = document.createElement('div');
-document.body.appendChild(element);
-station.stylePage().then(pageData => {
-    ReactDOM.render(<MobilePage pageData={pageData} />, element);
-})
-//===================================================

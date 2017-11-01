@@ -174,7 +174,7 @@ class PageDisplayImplement implements chitu.PageDisplayer {
         }
 
         let maxZIndex = 1;
-        let pageElements = document.getElementsByClassName('page');
+        let pageElements = document.getElementsByClassName('mobile-page');
         for (let i = 0; i < pageElements.length; i++) {
             let zIndex = new Number((pageElements.item(i) as HTMLElement).style.zIndex || '0').valueOf();
             if (zIndex > maxZIndex) {

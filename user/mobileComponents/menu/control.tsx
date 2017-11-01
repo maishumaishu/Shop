@@ -85,7 +85,7 @@ export default class MenuControl extends Control<Props, State>{
 
                     var routeData = app.parseRouteString(routeString);
                     let isShoppingCart = routeData.pageName == 'shopping.shoppingCart'
-                    let isActive = app.currentPage != null && app.currentPage.name == routeData.pageName;
+                    let isActive =  this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
                     return (
                         <li key={i} style={{ width: `${itemWidth}%` }}>
                             <div onClick={() => app.redirect(routeString)} className={isActive ? 'text-primary' : null}>

@@ -31,10 +31,15 @@ namespace ui {
         }
 
         return function (event: Event) {
+
+            if (!args.confirm) {
+                execute(event);
+                return;
+            }
+
             let text = typeof args.confirm == 'string' ?
                 args.confirm :
                 args.confirm();
-
             ui.confirm({ message: text, confirm: (event) => execute(event) });
         }
     }

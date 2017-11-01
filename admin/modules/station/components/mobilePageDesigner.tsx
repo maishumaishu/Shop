@@ -18,7 +18,8 @@ export interface Props extends React.Props<MobilePageDesigner> {
     showComponentPanel?: boolean,
     showPageEditor?: boolean,
     showMenuSwitch?: boolean,
-    save: (pageData: PageData) => Promise<any>
+    save: (pageData: PageData) => Promise<any>,
+    elementPage: chitu.Page
 }
 
 export interface State {
@@ -173,12 +174,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         if (this.editorNameElement)
             this.editorNameElement.innerHTML = this.editorName;
 
-        // this.state.selectedControlId = control.id;
-        // this.state.selectedComponentDisplayName =
-        //     components.filter(o => o.name == controlName).map(o => o.displayName)[0] || controlName;
-
-        // this.setState(this.state);
-
         if (this.currentEditor == editorElement && editorElement != null) {
             return;
         }
@@ -230,8 +225,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             pageData.footer.controls = pageData.footer.controls.filter(o => o.controlId != controlId);
         }
 
-        // this.state.selectedComponentDisplayName = null;
-        // this.state.selectedControlId = null;
         this.setState(this.state);
         return Promise.resolve();
     }
@@ -248,7 +241,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
-        let { pageData } = this.state;// selectedComponentDisplayName, 
+        let { pageData } = this.state;
         let selectedControlId = this.selectedControlId;
         let { showComponentPanel } = this.props;
 
@@ -257,6 +250,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                 <div style={{ position: 'absolute' }}>
                     <VirtualMobile >
                         <MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
+                            elementPage={this.props.elementPage}
                             designTime={{
                                 controlSelected: (a, b) => this.selecteControl(a, b)
                             }} />
@@ -344,7 +338,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             }}>
                             {components.map((c, i) => {
                                 return (
-                                    <li key={c.name} data-controlName={c.name}
+                                    <li key={c.name} data-control-name={c.name}
                                         style={{
                                             float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
                                             textAlign: 'center', paddingTop: 8, backgroundColor: 'white', zIndex: 100

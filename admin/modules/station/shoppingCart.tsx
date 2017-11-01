@@ -8,6 +8,6 @@ export default async function (page: chitu.Page) {
     let pageData = await station.shoppingCartPage();
     ReactDOM.render(
         <MobilePageDesigner pageData={pageData} showMenuSwitch={true}
-            save={station.savePageData.bind(station)} >
+            save={station.savePageData.bind(station)} elementPage={page} >
         </MobilePageDesigner>, page.element);
 }

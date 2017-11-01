@@ -9,7 +9,7 @@ export default async function (page: Page) {
     let station = page.createService(StationService);
     let pageData = await station.fullPage(station.homePage);
     ReactDOM.render(
-        <MobilePage pageData={pageData} />
+        <MobilePage pageData={pageData} elementPage={page} />
         , page.element);
 }
 

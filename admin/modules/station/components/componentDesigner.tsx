@@ -4,7 +4,8 @@ import { default as StyleControl } from 'mobileComponents/style/control';
 
 interface Props extends React.Props<ComponentDesigner> {
     controlName: string,
-    target?: 'header' | 'footer' | 'default'
+    target?: 'header' | 'footer' | 'default',
+    elementPage: chitu.Page
 }
 
 interface State {
@@ -72,7 +73,7 @@ export class ComponentDesigner extends React.Component<Props, State>{
     render() {
         let pageData = this.state.pageData;
         return (
-            <MobilePageDesigner pageData={pageData} save={(pageData) => this.save(pageData)}>
+            <MobilePageDesigner pageData={pageData} save={(pageData) => this.save(pageData)} elementPage={this.props.elementPage} >
                 {this.props.children}
             </MobilePageDesigner>
         );

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+window['h'] = window['h'] || React.createElement;
 
 import { StationService } from 'userServices/stationService';
 
-import { Application as BaseApplication } from 'user/chitu.mobile';
+import { Application as BaseApplication } from 'chitu.mobile';
 import { MobilePage } from 'mobileComponents/mobilePage'
 
 /** 是否为 APP */
@@ -198,6 +199,8 @@ export class Application extends BaseApplication {
         //     MobilePage.createControlInstance(controlData, styleElement);
         // })
         //==================================================
+
+
     }
 
     public parseRouteString(routeString: string) {
@@ -205,11 +208,24 @@ export class Application extends BaseApplication {
         return routeData;
     }
 
+    private styleloaded: boolean;
     protected createPage(routeData: chitu.RouteData, actionArguments) {
         let page = super.createPage(routeData, actionArguments);// as Page;
         let path = routeData.actionPath.substr(routeData.basePath.length);
         let cssPath = `css!modules` + path;
         requirejs([cssPath]);
+
+        //===================================================
+        // 生成样式
+        if (!this.styleloaded) {
+            let element = document.createElement('div');
+            document.body.appendChild(element);
+            station.stylePage().then(pageData => {
+                ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, element);
+            })
+            this.styleloaded = true;
+        }
+        //===================================================
 
         return page;
     }
@@ -226,7 +242,6 @@ export class Application extends BaseApplication {
         }
         return element;
     }
-
 }
 
 export let app = new Application();
@@ -290,4 +305,14 @@ export function searchNavBar() {
         </nav>
     );
 }
-//============================================================
+
+//===================================================
+// 生成样式
+// let element = document.createElement('div');
+// document.body.appendChild(element);
+// let stylePage = app.stylePage;
+// station.stylePage().then(pageData => {
+//     ReactDOM.render(<MobilePage pageData={pageData} elementPage={stylePage} />, element);
+// })
+
+//===================================================

@@ -208,15 +208,20 @@ export default class ShoppingCartControl extends Control<
             deleteItems: [], inputCounts: {}
         };
 
-        this.subscribe(ShoppingCartService.items, (items) => {
-            this.state.items = items;
-            this.setState(this.state);
-        })
         this.loadControlCSS();
+        this.updateItems();
+        
     }
 
     get persistentMembers() {
         return [];
+    }
+
+    private updateItems() {
+        shoppingCart.calculateShoppingCartItems().then((items) => {
+            this.state.items = items;
+            this.setState(this.state);
+        })
     }
 
     private async selectItem(item: ShoppingCartItem) {
@@ -308,7 +313,8 @@ export default class ShoppingCartControl extends Control<
         result.then(o => {
             this.state.status = 'normal';
             status.value = this.state.status;
-            this.setState(this.state);
+            // this.setState(this.state);
+            this.updateItems();
         });
 
         return result;
@@ -374,6 +380,10 @@ export default class ShoppingCartControl extends Control<
         return str;
     }
 
+    componentDidMount() {
+        this.elementPage.showing.add(() => this.updateItems());
+    }
+
     _render() {
         let inputCounts = this.state.inputCounts;
 
@@ -383,7 +393,7 @@ export default class ShoppingCartControl extends Control<
                     <ul className="list-group">
                         {this.state.items.map(o =>
                             <li key={o.Id} className="list-group-item row">
-                                {!o.IsGiven ?
+                                {o.Type == null ?
                                     <button onClick={() => this.selectItem(o)} className="pull-left icon">
                                         <i className={this.isChecked(o) ? 'icon-ok-sign' : 'icon-circle-blank'}></i>
                                     </button> : null}
@@ -402,10 +412,10 @@ export default class ShoppingCartControl extends Control<
                                     <div style={{ height: 42, paddingTop: 4 }}>
                                         <div className="price pull-left" style={{ marginTop: 10 }}>￥{o.Price.toFixed(2)}</div>
                                         <div className="pull-right" style={{ marginTop: 4 }}>
-                                            {this.state.status == 'normal' || o.IsGiven ?
+                                            {this.state.status == 'normal' || o.Type != null ?
                                                 <div style={{ paddingLeft: 6 }}>X {o.Count}</div>
                                                 :
-                                                <div className="input-group" style={{ width: 120, display: o.IsGiven ? 'none' : 'table' }}>
+                                                <div className="input-group" style={{ width: 120, display: 'table' }}>
                                                     <span onClick={() => this.decreaseCount(o)} className="input-group-addon">
                                                         <i className="icon-minus"></i>
                                                     </span>

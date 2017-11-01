@@ -23,6 +23,7 @@ declare namespace ui {
         message: string;
         cancle?: () => void;
         confirm: (event: Event) => Promise<any>;
+        container?: HTMLElement;
     }): void;
 }
 declare namespace ui {

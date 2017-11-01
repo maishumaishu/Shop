@@ -6,7 +6,7 @@ export default function (page: chitu.Page) {
     station.categoriesPage().then(pageData => {
         ReactDOM.render(
             <MobilePageDesigner pageData={pageData} showMenuSwitch={true}
-                save={station.savePageData.bind(station)} >
+                save={station.savePageData.bind(station)} elementPage={page} >
             </MobilePageDesigner>, page.element);
     })
 }

@@ -1,11 +1,14 @@
 import { Page, Menu, defaultNavBar, app } from 'site';
+// import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'userServices';
 import { StationService } from 'userServices/stationService';
-import { PageComponent, PageView, PageFooter } from 'mobileControls';
 import { MobilePage } from 'mobileComponents/mobilePage';
+import * as ReactDOM from 'react-dom';
+
+
 export default async function (page: Page) {
     let station = page.createService(StationService);
-    let pageData = await station.fullPage(station.memberPage);
+    let pageData = await station.stylePage();
     ReactDOM.render(
-        <MobilePage pageData={pageData} elementPage={page}/>
+        <MobilePage pageData={pageData} elementPage={page} />
         , page.element);
 }
