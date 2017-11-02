@@ -101,7 +101,7 @@ requirejs(references, function (React, ReactDOM, app, ui) {
     window['h'] = React.createElement;
 
 
-    app.run()
+    app.default.run()
 
 
 

@@ -1,4 +1,4 @@
-import app = require('application');
+import app from 'application';
 import site = require('site');
 import { ShoppingService } from 'adminServices/shopping';
 import UE = require('ue.ext');
@@ -7,7 +7,6 @@ import * as ui from 'myWuZhui';
 import { buttonOnClick } from 'ui';
 export default function (page: chitu.Page) {
 
-    // requirejs([`css!${page.routeData.actionPath}.css`], function () { });
 
     let shopping = page.createService(ShoppingService);
 
@@ -98,7 +97,10 @@ export default function (page: chitu.Page) {
                     <div className="tabbable">
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
-                                <a className="btn btn-sm btn-primary" href="#Coupon/CouponList">返回</a>
+                                <button className="btn btn-sm btn-primary" onClick={() => app.back()}>
+                                    <i className="icon-reply"/>
+                                    <span>返回</span>
+                                </button>
                             </li>
                             <li className="pull-right">
                                 <button className="btn btn-sm btn-primary"
@@ -107,7 +109,10 @@ export default function (page: chitu.Page) {
                                         o.onclick = buttonOnClick(
                                             () => this.save(),
                                             { toast: '保存优惠劵成功' })
-                                    }}>保存</button>
+                                    }}>
+                                    <i className="icon-save"/>
+                                    <span>保存</span>
+                                </button>
                             </li>
                         </ul>
                     </div>

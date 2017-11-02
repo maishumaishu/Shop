@@ -226,7 +226,7 @@ if (service.token == null && location.hash != '#user/register' && location.hash 
 }
 
 window['app'] = app;
-export = app;
+export default app;
 
 
 

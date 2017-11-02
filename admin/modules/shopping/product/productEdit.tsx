@@ -1,4 +1,4 @@
-﻿import app = require('application')
+﻿import app from 'application';
 import { default as shopping } from 'adminServices/shopping';
 import { StationService, guid } from 'adminServices/station';
 import { Service, imageUrl } from 'adminServices/service';

@@ -32,41 +32,32 @@ export default function (page: chitu.Page) {
     };
 
 
-    function showDialog(dlg: HTMLElement, title, ok_callback: (element: HTMLElement) => any) {
-        //var $dlg = $(event.target).parents('div[name="promotion"]').find('[name="' + name + '"]');
-        //var $dlg = $(page.node()).find('[name="' + name + '"]');
+    function showDialog(dlg: HTMLElement, title, ok_callback: (element: HTMLElement) => void | Promise<any>) {
         if (title)
-            dlg.querySelector('.modal-title').innerHTML = title; //$dlg.find('.modal-title').text(title);
-
+            dlg.querySelector('.modal-title').innerHTML = title;
         (dlg.querySelector('[name="btnOK"]') as HTMLElement).onclick = function () {
             var result = ok_callback(dlg);
-            if (result != null && $.isFunction(result.done)) {
-                result.done(function () {
-                    //$dlg.modal('hide');
+            if (result instanceof Promise) {
+                result.then(function () {
                     ui.hideDialog(dlg);
                 });
             }
             else {
-                // $dlg.modal('hide')
                 ui.hideDialog(dlg);
             }
         };
 
-        // $dlg.find('.modal-footer').css('margin-top', '0px');
-
-        // $dlg.modal();
         ui.showDialog(dlg);
-        window.setTimeout(function () {
-            var ctrl = dlg.querySelector('input:visible,select:visible') as HTMLInputElement; //.first();
-            if (ctrl.type != 'readio')
-                ctrl.focus();
+        // window.setTimeout(function () {
+        //     var ctrl = dlg.querySelector('input:visible,select:visible') as HTMLInputElement; //.first();
+        //     if (ctrl.type != 'readio')
+        //         ctrl.focus();
 
-        }, 500);
+        // }, 500);
     }
 
-    function showInputDialog(name, title, ok_callback) {
+    function showInputDialog(name: string, title: string, ok_callback: (element: HTMLElement) => void | Promise<any>) {
         let dialogElement = page.element.querySelector(`[name=${name}]`) as HTMLElement;
-        let $dlg = $(dialogElement);
         showDialog(dialogElement, title, ok_callback);
     }
 
@@ -181,14 +172,14 @@ export default function (page: chitu.Page) {
         newBuyGiven(promotion: PromotionContent) {
 
             promotion.val1.showAllMessages(false);
-            showInputDialog('dlg_productGiven', '满赠', () => {
+            showInputDialog('dlg_productGiven', '满赠', (): Promise<any> => {
 
                 if (!promotion.productGivenRule['isValid']()) {
                     promotion.val1.showAllMessages();
                     for (var i = 0; i < promotion.productGivenVals.length; i++) {
                         promotion.productGivenVals[i].showAllMessages();
                     }
-                    return $.Deferred().reject();
+                    return Promise.reject({});
                 }
 
                 var ids = '';
@@ -226,14 +217,14 @@ export default function (page: chitu.Page) {
          */
         newBuyReduce(promotion: PromotionContent) {
             promotion.val2.showAllMessages(false);
-            showInputDialog('dlg_amountReduce', '满减', () => {
+            showInputDialog('dlg_amountReduce', '满减', (): Promise<any> => {
                 if (!this.amountReduceRule['isValid']()) {
                     promotion.val2.showAllMessages();
-                    return $.Deferred().reject();
+                    return Promise.reject({});
                 }
 
                 promotion.addRule(promotion.amountReduceRule);
-                return $.Deferred().resolve();
+                return Promise.resolve();
             });
         }
 
@@ -242,11 +233,11 @@ export default function (page: chitu.Page) {
             showInputDialog('dlg_amountDiscount', '满折', function () {
                 if (!promotion.amountDiscountRule.isValid()) {
                     promotion.val3.showAllMessages();
-                    return $.Deferred().reject();
+                    return Promise.reject({});
                 }
 
                 promotion.addRule(promotion.amountDiscountRule);
-                return $.Deferred().resolve();
+                return Promise.resolve();
             });
         }
 
@@ -450,10 +441,10 @@ export default function (page: chitu.Page) {
         }
         newProductRule = (self) => {
             this.product_val.showAllMessages(false);
-            showInputDialog('dlg_product', '添加商品', () => {
+            showInputDialog('dlg_product', '添加商品', (): Promise<any> => {
                 if (!self.product.isValid()) {
                     self.product_val.showAllMessages();
-                    return $.Deferred().reject();
+                    return Promise.reject({});
                 }
                 return shopping.product(self.product.id()).then((product) => {
                     var name = ko.unwrap(product.Name)
@@ -469,7 +460,7 @@ export default function (page: chitu.Page) {
             showInputDialog('dlg_brand', '添加品牌', () => {
                 if (!this.brand.isValid()) {
                     this.brand_val.showAllMessages();
-                    return $.Deferred().reject();
+                    return Promise.reject({});
                 }
 
                 var brandName;
@@ -491,7 +482,7 @@ export default function (page: chitu.Page) {
             showInputDialog('dlg_category', '添加类别', () => {
                 if (!this.category.isValid()) {
                     this.category_val.showAllMessages();
-                    return $.Deferred().reject();
+                    return Promise.reject({});
                 }
 
                 var categoryName;
@@ -527,7 +518,7 @@ export default function (page: chitu.Page) {
             this.type = _type
             this.objectId = objectId;
             this.objectName = objectName;
-            this.typeText = _type == 'Product' ? '商品' : '类别',
+            this.typeText = _type == 'Product' ? '商品' : _type == 'Brand' ? '品牌' : '类别',
                 this.isInclude = ko.observable<boolean>(collectionType == 'Include');
             this.collectionType = ko.observable<string>(collectionType);
 

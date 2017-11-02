@@ -4,7 +4,7 @@ import { Editor, EditorProps } from 'mobileComponents/editor';
 import { componentsDir } from 'mobileComponents/common';
 import { default as station, ControlDescrtion } from 'adminServices/station';
 // import { Button } from 'common/controls';
-import app = require('application');
+import app from 'application';
 import FormValidator from 'formValidator';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';

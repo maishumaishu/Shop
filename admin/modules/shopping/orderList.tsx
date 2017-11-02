@@ -88,6 +88,10 @@ export default function (page: chitu.Page) {
         renderTabs(status)
     }
 
+    function exportData(){
+
+    }
+
     function renderTabs(status?: string) {
         ReactDOM.render(<ul id="myTab" className="nav nav-tabs">
             <li className={!status ? "active" : ""}
@@ -119,7 +123,7 @@ export default function (page: chitu.Page) {
                 <a href="javascript:">已收货</a>
             </li>
             <li className="pull-right">
-                <a data-bind="click: exportData" href="javascript:" className="btn btn-sm btn-primary" data-toggle="dropdown">导出发货单</a>
+                <button onClick={() => exportData()} className="btn btn-sm btn-primary" data-toggle="dropdown">导出发货单</button>
                 <div className="form-horizontal" style={{ display: 'none' }} data-role="export">
                     <div className="form-group">
                         <label className="col-sm-3 control-label">开始时间</label>
@@ -141,7 +145,10 @@ export default function (page: chitu.Page) {
                 </div>
             </li>
             <li className="pull-right">
-                <button data-bind="click: search" className="btn btn-primary btn-sm">搜索</button>
+                <button data-bind="click: search" className="btn btn-primary btn-sm">
+                    <i className="icon-search" />
+                    <span>搜索</span>
+                </button>
             </li>
             <li className="pull-right">
                 <input type="text" data-bind="value: searchText" className="form-control" style={{ width: 300 }} placeholder="请输入系统订单号或微信订单号或付款人" />

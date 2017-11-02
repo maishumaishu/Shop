@@ -1,5 +1,5 @@
 import { default as services } from 'adminServices/service';
-import app = require('application');
+import app from 'application';
 
 
 let container = document.createElement('div');

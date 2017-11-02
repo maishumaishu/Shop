@@ -142,7 +142,7 @@ export default function (page: chitu.Page) {
                                 <a data-toggle="tab" href="#" onClick={() => this.switchTab('expired')}>已过期</a>
                             </li>
                             <li className="pull-right">
-                                <a href="/ExportExcel.aspx?type=couponCodes" className="btn btn-sm btn-primary">导出</a>
+                                <button href="/ExportExcel.aspx?type=couponCodes" className="btn btn-sm btn-primary">导出</button>
                             </li>
                             <li className="pull-right">
                                 <button className="btn btn-sm btn-primary"

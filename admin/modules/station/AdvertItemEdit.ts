@@ -1,6 +1,6 @@
 
 import val = require('knockout.validation');
-import app = require('application');
+import app from 'application';
 import { default as site } from 'site';
 
 class PageModel {

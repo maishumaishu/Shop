@@ -3,7 +3,7 @@ import * as ui from 'ui';
 
 type GridViewItemPopupEditorProps = React.Props<GridViewItemPopupEditor> & {
     saveDataItem: (dataItem: any) => Promise<any>,
-    name: string
+    name?: string
 };
 
 
@@ -25,7 +25,7 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
         this.state = { title: '' };
     }
     show(dataItem?: any) {
-        this.state.title = (dataItem ? '编辑' : '添加') + this.props.name;;
+        this.state.title = (dataItem ? '编辑' : '添加') + (this.props.name || '');;
         this.setState(this.state);
         debugger;
         this.dataItem = dataItem = dataItem || {};
@@ -34,13 +34,27 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
             if (inputField == null)
                 continue;
 
-            inputField.value = dataItem[key];
+            inputField.value = this.formatValue(dataItem[key]);
         }
 
         $(this.element).modal();
     }
     hide() {
         $(this.element).modal('hide');
+    }
+    formatValue(value): string {
+        if (value instanceof Date) {
+            var date = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()}`;
+            let hours = value.getHours();
+            let minutes = value.getMinutes();
+            let seconds = value.getSeconds();
+            if (hours == 0 && minutes == 0 && seconds == 0)
+                return date;
+
+            return `${date} ${hours}:${minutes}:${seconds}`;
+        }
+
+        return value;
     }
     private ok() {
         let validator = this.validator;
@@ -81,6 +95,7 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
             return data;
         });
     }
+
     render() {
         var children = [];
         if (this.props.children instanceof Array) {
@@ -125,22 +140,23 @@ export class CommandField extends wuzhui.CustomField {
             var cell: wuzhui.GridViewCell = new wuzhui.GridViewCell();
             let self = this as CommandField;
 
+            let buttons = new Array<HTMLElement>();
             let leftButtons = params.leftButtons != null ? params.leftButtons(dataItem) : null;
             if (leftButtons) {
-                leftButtons.map(o => {
+                leftButtons.map((o, i) => {
                     let element = document.createElement('span');
                     element.style.marginRight = '4px';
                     ReactDOM.render(o, element);
                     return element;
 
-                }).forEach(item => cell.element.appendChild(item));
+                }).forEach(item => buttons.push(item));//cell.element.appendChild(item)
             }
 
             if (params.itemEditor) {
                 var editButton = document.createElement('button');
                 editButton.className = 'btn btn-minier btn-info';
                 editButton.innerHTML = '<i class="icon-pencil"></i>';
-                cell.appendChild(editButton);
+                // cell.appendChild(editButton);
 
                 editButton.onclick = (event) => {
                     var rowElement = self.findParnet(event.target as HTMLElement, 'TR');
@@ -149,13 +165,22 @@ export class CommandField extends wuzhui.CustomField {
                     debugger;
                     params.itemEditor.show(row.dataItem);
                 }
+
+                buttons.push(editButton);
             }
 
             var deleteButton = document.createElement('button');
             deleteButton.className = 'btn btn-minier btn-danger';
             deleteButton.innerHTML = '<i class="icon-trash"></i>';
-            deleteButton.style.marginLeft = '4px';
-            cell.appendChild(deleteButton);
+            buttons.push(deleteButton);
+            // deleteButton.style.marginRight = '4px';
+
+            for (let i = 0; i < buttons.length; i++) {
+                if (i < buttons.length - 1)
+                    buttons[i].style.marginRight = '4px';
+
+                cell.appendChild(buttons[i]);
+            }
 
             deleteButton.onclick = ui.buttonOnClick(() => {
                 let row = wuzhui.Control.getControlByElement(cell.element.parentElement) as wuzhui.GridViewDataRow;

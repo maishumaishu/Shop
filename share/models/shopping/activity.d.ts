@@ -32,3 +32,10 @@ interface PromotionRangeRule {
     PromotionId: string,
 }
 
+interface PromotionActivity {
+    Id: string,
+    Name: string,
+    BeginDate: Date,
+    EndDate: Date,
+}
+

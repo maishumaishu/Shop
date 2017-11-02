@@ -1,6 +1,6 @@
 import { default as shopping } from 'adminServices/shopping';
 import station from 'adminServices/station';
-import app = require('application');
+import app from 'application';
 import bootbox = require('bootbox');
 import { default as site } from 'site';
 import * as wz from 'myWuZhui';
@@ -355,9 +355,15 @@ class Page extends React.Component<{}, PageState>{
 
                         </li>
                         <li data-bind="visible:tabs.current() == 'all'" className="pull-right">
-                            <a href="#shopping/product/productEdit" className="btn btn-primary btn-sm pull-right">添加</a>
+                            <button onClick={()=>app.redirect('shopping/product/productEdit')} className="btn btn-primary btn-sm pull-right">
+                                <i className="icon-plus"/>
+                                <span>添加</span>
+                            </button>
                             <button className="btn btn-primary btn-sm pull-right"
-                                onClick={() => this.search()}>搜索</button>
+                                onClick={() => this.search()}>
+                                <i className="icon-search" />
+                                <span>搜索</span>
+                            </button>
                             <input type="text" className="form-control" style={{ width: 300 }} placeholder="请输入SKU或名称、类别"
                                 value={this.state.searchText}
                                 onChange={(e) => {

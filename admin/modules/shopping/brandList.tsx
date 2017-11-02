@@ -53,8 +53,10 @@ export default function (page: chitu.Page) {
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
                                 <button href="#Shopping/BrandEdit" className="btn btn-sm btn-primary"
-                                    onClick={() => this.itemEditor.show()}
-                                >添加</button>
+                                    onClick={() => this.itemEditor.show()} >
+                                    <i className="icon-plus"/>
+                                    <span>添加</span>
+                                </button>
                             </li>
                         </ul>
                     </div>

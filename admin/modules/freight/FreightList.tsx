@@ -1,5 +1,5 @@
 
-import app = require('application');
+import app from 'application';
 import val = require('knockout.validation');
 import { ShoppingService } from 'adminServices/shopping';
 import * as ui from 'myWuZhui';

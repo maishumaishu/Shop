@@ -30,17 +30,22 @@ export class ActivityService extends Service {
     }
     addActivity(item) {
         // let url = baseUrl + 'AddActivity';
-        let url = this.url('AddActivity');
-        return this.postByJson(url, item);
+        let url = this.url('SaveActivity');
+        return this.post(url, item);
+    }
+    updateActivity(item) {
+        // let url = baseUrl + 'AddActivity';
+        let url = this.url('SaveActivity');
+        return this.post(url, item);
     }
     getActivity(id: string): Promise<any> {
         let url = this.url('GetActivity');//baseUrl + 'GetActivity'
         return this.get(url, { id }); //$.ajax({ url: baseUrl + 'GetActivity', method: 'post', data: { id: id } });
     }
-    deleteActivity(item): Promise<any> {
+    deleteActivity(item: PromotionActivity): Promise<any> {
         // let url = baseUrl + 'DeleteActivity';
         let url = this.url('DeleteActivity');
-        return this.deleteByJson(url, item);
+        return this.deleteByJson(url, { id: item.Id });
     }
     activities(): Promise<any> {
         let url = this.url('GetActivities');

@@ -1,6 +1,7 @@
 
 import { ActivityService } from 'adminServices/activity';
-import site = require('site');
+import site from 'site';
+import app from 'application';
 import FormValidator from 'formValidator';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
@@ -17,11 +18,12 @@ export default function (page: chitu.Page) {
         private itemEditor: GridViewItemPopupEditor;
 
         componentDidMount() {
-            let dataSource = this.dataSource = new wuzhui.WebDataSource({
+            let dataSource = this.dataSource = new wuzhui.DataSource<PromotionActivity>({
                 primaryKeys: ['Id'],
                 select: () => activity.activities(),
                 insert: (dataItem) => activity.addActivity(dataItem),
                 delete: (dataItem) => activity.deleteActivity(dataItem),
+                update: (dataItem) => activity.updateActivity(dataItem)
             })
             wz.appendGridView(page.element, {
                 dataSource,
@@ -32,18 +34,29 @@ export default function (page: chitu.Page) {
                     new wz.CommandField({
                         leftButtons(dataItem) {
                             return [
-                                <a className="btn btn-minier btn-info" href={`#shopping/promotion/ActivityEdit?id=${dataItem.Id}`}>
-                                    <i className="icon-pencil" />
-                                </a>
+                                <button className="btn btn-minier btn-info" onClick={()=>app.redirect(`shopping/promotion/activityEdit?id=${dataItem.Id}`)}>
+                                    <i className="icon-cog" />
+                                    <span>设置</span>
+                                </button>,
+                                // <a className="btn btn-minier btn-info" href={`#shopping/promotion/ActivityEdit?id=${dataItem.Id}`}>
+                                //     <i className="icon-pencil" />
+                                // </a>,
                             ];
                         },
-                        itemStyle: { width: '100px' } as CSSStyleDeclaration
+                        itemStyle: { width: '130px' } as CSSStyleDeclaration,
+                        itemEditor: this.itemEditor
                     })
                 ]
             })
         }
         add() {
             this.itemEditor.show();
+        }
+        saveDataItem(dataItem: Promotion) {
+            if (dataItem.Id)
+                return this.dataSource.update(dataItem);
+
+            return this.dataSource.insert(dataItem);
         }
         render() {
             return (
@@ -55,7 +68,10 @@ export default function (page: chitu.Page) {
                                     ref={(e: HTMLAnchorElement) => {
                                         if (!e) return;
                                         e.onclick = () => this.add();
-                                    }} value="添加"/>
+                                    }}>
+                                    <i className="icon-plus"/>
+                                    <span>添加</span>
+                                </button>
                             </li>
                         </ul>
                     </div>

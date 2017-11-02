@@ -1,13 +1,13 @@
 
 import { ShoppingService } from 'adminServices/shopping';
-import site = require('site');
+import site from 'site';
+import app from 'application';
 import * as ui from 'myWuZhui';
 
 export default function (page: chitu.Page) {
 
     let shopping = page.createService(ShoppingService);
 
-    page.element.className = 'admin-pc';
     class CouponListPage extends React.Component<{}, {}>{
         private couponsTable: HTMLTableElement;
         private itemEditor: ui.GridViewItemPopupEditor;
@@ -63,7 +63,10 @@ export default function (page: chitu.Page) {
                                 <a>全部</a>
                             </li>
                             <li data-bind="visible:currentIndex()==0" className="pull-right">
-                                <a href="#Coupon/CouponEdit" className="btn btn-sm btn-primary" title="点击添加优惠券">添加</a>
+                                <button onClick={() => app.redirect('coupon/couponEdit')} className="btn btn-sm btn-primary" title="点击添加优惠券">
+                                    <i className="icon-plus" />
+                                    <span>添加</span>
+                                </button>
                             </li>
                         </ul>
                     </div>
