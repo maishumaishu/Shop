@@ -19,6 +19,9 @@
             // ],
             "formValidator": [
                 "lib/formValidator.d.ts"
+            ],
+            "adminComponents/*": [
+                "admin/components/*"
             ]
             // ,
             // "adminServices/*": [

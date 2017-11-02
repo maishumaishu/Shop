@@ -19,5 +19,5 @@ export default async function (page: chitu.Page) {
         ]
     } as PageData;
 
-    ReactDOM.render(<MobilePage pageData={pageData}></MobilePage>, page.element);
+    ReactDOM.render(<MobilePage pageData={pageData} elementPage={page}></MobilePage>, page.element);
 }

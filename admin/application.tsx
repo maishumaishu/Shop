@@ -15,11 +15,11 @@ class Page extends React.Component<any, {
 }> {
     constructor(props) {
         super(props);
-        window.addEventListener('hashchange', () => {
-            let url = (window.location.hash.substr(1) || '').split('?')[0];
-            this.state.currentNode = this.findNodeByUrl(url);
-            this.setState(this.state);
-        });
+        // window.addEventListener('hashchange', () => {
+        //     let url = (window.location.hash.substr(1) || '').split('?')[0];
+        //     this.state.currentNode = this.findNodeByUrl(url);
+        //     this.setState(this.state);
+        // });
 
         service.username.add((value) => {
             this.state.username = value;
@@ -64,6 +64,9 @@ class Page extends React.Component<any, {
         if (url) {
             app.redirect(url);
         }
+
+        this.state.currentNode = node;
+        this.setState(this.state);
     }
     render() {
         let currentNode = this.state.currentNode;
@@ -153,12 +156,6 @@ class Page extends React.Component<any, {
                         <div className="container-fluid">
                             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                                 <ul className="nav navbar-nav" style={{ width: '100%' }}>
-                                    {/* {thirdLevelNodes.map((o, i) =>
-                                        <li key={i} className={thirdLevelNode == o ? "active" : ""} style={{ cursor: 'pointer' }}
-                                            onClick={() => app.redirect(o.Url)}>
-                                            <a> {o.Title}</a>
-                                        </li>
-                                    )} */}
                                     <li className="light-blue pull-right">
                                         <a data-toggle="dropdown" href="#" className="dropdown-toggle">
                                             <span name="username" style={{ paddingRight: 10 }}>{this.state.username}</span>

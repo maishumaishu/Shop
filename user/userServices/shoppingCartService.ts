@@ -7,18 +7,10 @@ import { Service, config, imageUrl, tokens, guid } from 'userServices/service';
 export class ShoppingCartService extends Service {
 
     private static _items = new chitu.ValueStore<ShoppingCartItem[]>([]);
-
-
     private SHOPPING_CART_STORAGE_NAME = 'shoppingCart';
     private isLogin: boolean;
-    // private remote: ShoppingCart;
-    // private local: ShoppingCart;
-    // private shoppingCart: ShoppingCart;
 
     private timeids = {} as { [key: string]: number };
-
-
-
 
     constructor() {
         super();
@@ -80,7 +72,7 @@ export class ShoppingCartService extends Service {
                     .then(() => resolve())
                     .catch(err => rejct(err));
 
-            }, 1000 * 3); // 延迟 3 秒更新
+            }, 1000 * 2); // 延迟 3 秒更新
             //================================================================
         })
     }

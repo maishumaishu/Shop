@@ -29,7 +29,7 @@ export default async function (page: chitu.Page) {
         pageData.footer.controls.push(menuControlData);
     }
 
-    ReactDOM.render(<MobilePage pageData={pageData} />, page.element);
+    ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);
 
 }
 

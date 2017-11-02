@@ -242,8 +242,8 @@ class PageDisplayImplement implements chitu.PageDisplayer {
             }
             //============================================
 
-            page.element.style.transform = `translate(100%,0px)`;
             page.element.style.transition = `${this.animationTime / 1000}s`;
+            page.element.style.transform = `translate(100%,0px)`;
 
             if (page.previous) {
                 page.previous.element.style.display = 'block';

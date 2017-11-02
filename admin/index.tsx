@@ -90,6 +90,8 @@ requirejs.config({
         virtualMobile: 'modules/station/components/virtualMobile',
         'maishu-chitu': 'scripts/chitu',
         'user': '../user',
+        'chitu.mobile': 'scripts/chitu.mobile',
+        'adminComponents': 'components',
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap', 'ping'];

@@ -82,15 +82,21 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         return { mobilePage: this }
     }
 
+    //======================================================================================
+    // For Design Time
     controlCreated(control: Control<any, any>, controlType: React.ComponentClass<any>) {
         this.createdControlCount = this.createdControlCount + 1;
         var total = this.headerControlsCount + this.footerControlsCount + this.viewControlsCount;
         if (this.createdControlCount == total && this.selecteControl != null &&
             this.props.designTime.controlSelected != null) {
             let c = this.selecteControl;
-            this.props.designTime.controlSelected(c.control, c.controlType);
+            // 加上延时，否则编辑器有可能显示不出来
+            setTimeout(() => {
+                this.props.designTime.controlSelected(c.control, c.controlType);
+            }, 100);
         }
     }
+    //======================================================================================
 
     renderControls(controls: ControlDescription[]) {
         if (this.props.designTime) {

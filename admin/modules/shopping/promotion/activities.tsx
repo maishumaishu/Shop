@@ -5,7 +5,7 @@ import FormValidator from 'formValidator';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import { GridViewItemPopupEditor } from 'myWuZhui';
-let JData = window['JData'];
+// let JData = window['JData'];
 
 export default function (page: chitu.Page) {
 
@@ -51,11 +51,11 @@ export default function (page: chitu.Page) {
                     <div name="tabs" className="tabbable">
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
-                                <a href="javascript:" className="btn btn-primary btn-sm pull-right"
+                                <button href="javascript:" className="btn btn-primary btn-sm pull-right"
                                     ref={(e: HTMLAnchorElement) => {
                                         if (!e) return;
                                         e.onclick = () => this.add();
-                                    }}>添加</a>
+                                    }} value="添加"/>
                             </li>
                         </ul>
                     </div>

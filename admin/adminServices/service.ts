@@ -40,7 +40,7 @@ export class Service extends chitu.Service {
         weixinUrl: `https://${remote_service_host}/AdminWeiXin/`,
         siteUrl: `https://${remote_service_host}/AdminSite/`,
         memberUrl: `https://${remote_service_host}/AdminMember/`,
-        accountUrl: `https://${remote_service_host}/AdminAccountTest/`,
+        accountUrl: `https://${remote_service_host}/AdminAccount/`,
         imageUrl: `https://${remote_service_host}/UserServices/Site/`
     }
 
