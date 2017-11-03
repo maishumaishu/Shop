@@ -28,6 +28,14 @@ class Site {
 }
 
 
+export function formatDate(date: Date | string) {
+    if (typeof date == 'string' || date == null)
+        return date;
+
+    let d = date as Date;
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours() + 1}:${d.getMinutes()}`;
+}
+
 
 let site = new Site();
 export default site; 
