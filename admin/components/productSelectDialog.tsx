@@ -4,11 +4,12 @@ import { ShoppingService } from 'adminServices/shopping';
 requirejs(['css!adminComponents/productSelectDialog']);
 
 type ProductsDialogProps = { shopping: ShoppingService, selected: (product: Product) => boolean } & React.Props<ProductSelectDialog>;
-export class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[] }>{
+export class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[], searchText: string }>{
 
     private element: HTMLElement;
     private dataSource: wuzhui.DataSource<Product>;
     private pagingBarElement: HTMLElement;
+    private searchInput: HTMLInputElement;
 
     constructor(props) {
         super(props);
@@ -115,6 +116,11 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
         ui.renderImage(e);
     }
 
+    search(text: string) {
+        this.dataSource.selectArguments["searchText"] = text || '';
+        this.dataSource.select();
+    }
+
     render() {
         let products = this.state.products;
 
@@ -145,6 +151,21 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
                             <h4 className="modal-title">选择商品</h4>
                         </div>
                         <div className="modal-body">
+                            <div className="input-group">
+                                <input type="text" className="form-control pull-right" placeholder="请输入SKU或名称、类别" style={{ width: '100%' }}
+                                    onInput={(e) => {
+                                        this.state.searchText = (e.target as HTMLInputElement).value;
+                                        this.setState(this.state);
+                                    }}
+                                    ref={(e: HTMLInputElement) => this.searchInput = e || this.searchInput} />
+                                <span className="input-group-btn">
+                                    <button className="btn btn-primary btn-sm pull-right" onClick={() => this.search(this.searchInput.value)}>
+                                        <i className="icon-search"></i>
+                                        <span>搜索</span>
+                                    </button>
+                                </span>
+                            </div>
+                            <hr className="row" />
                             {status == 'loading' ?
                                 <div className="loading">
                                     数据正在加载中...
