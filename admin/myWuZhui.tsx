@@ -37,10 +37,12 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
             inputField.value = this.formatValue(dataItem[key]);
         }
 
-        $(this.element).modal();
+        // $(this.element).modal();
+        ui.showDialog(this.element);
     }
     hide() {
-        $(this.element).modal('hide');
+        // $(this.element).modal('hide');
+        ui.hideDialog(this.element);
     }
     formatValue(value): string {
         if (value instanceof Date) {
