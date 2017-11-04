@@ -26,12 +26,14 @@ let links: Link[] = [
     { text: '请选择链接', url: '' },
     { text: '店铺主页', url: '#home_index' },
     { text: '购物车', url: '#shopping_shoppingCart' },
-    { text: '会员主页', url: '#user_index' }
+    { text: '会员主页', url: '#user_index' },
+    { text: '商品类别', url: '#home_class' }
 ]
 
 let icons = [
     "icon-home", "icon-shopping-cart", "icon-user", "icon-comment",
-    "icon-rss", "icon-truck", "icon-reorder", "icon-calendar"
+    "icon-rss", "icon-truck", "icon-reorder", "icon-calendar",
+    "icon-th-large"
 ]
 
 export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>{ //Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>
