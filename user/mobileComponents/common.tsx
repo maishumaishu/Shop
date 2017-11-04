@@ -25,8 +25,8 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     private _page: MobilePage;
     private _elementPage: chitu.Page;
 
-    static contextTypes = { designer: PropTypes.object };
-    context: { designer: IMobilePageDesigner };
+    // static contextTypes = { designer: PropTypes.object };
+    // context: { designer: IMobilePageDesigner };
     id: string;
 
     constructor(props) {
@@ -79,7 +79,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     }
 
     render() {
-        if (this.context.designer != null)
+        if (this.mobilePage.props.designTime != null)
             return this._render(createDesignTimeElement);
 
         return this._render(React.createElement);
@@ -140,8 +140,6 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
 
 
 }
-
-
 
 
 export function createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
