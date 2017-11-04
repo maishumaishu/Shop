@@ -38,9 +38,9 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                 if (!e) return;
                                 e.onchange = async () => {
                                     if (e.files[0]) {
-                                        let { base64 } = await ui.imageFileToBase64(e.files[0]);
+                                        let { base64, width, height } = await ui.imageFileToBase64(e.files[0], { width: 316, height: 184 });
                                         let { _id } = await station.saveImage(base64);
-                                        this.state.bg = _id;
+                                        this.state.bg = `${_id}_${width}_${height}`;
                                         this.setState(this.state);
                                     }
                                 }
