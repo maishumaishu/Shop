@@ -10,29 +10,29 @@ export default async function (page: chitu.Page) {
     // ReactDOM.render(
     //     <ProductControl product={product} />, page.element);
 
-    let pageData = {
-        showMenu: true,
-        header: {
-            controls: [
-                { controlId: guid(), controlName: 'shoppingCart.Header' }
-            ]
-        },
-        views: [
-            {
-                controls: [
-                    { controlId: guid(), controlName: 'shoppingCart' }
-                ]
-            }
-        ],
-        footer: {
-            controls: [
-                { controlId: guid(), controlName: 'shoppingCart.Footer' }
-            ]
-        }
-    } as PageData;
+    // let pageData = {
+    //     showMenu: true,
+    //     header: {
+    //         controls: [
+    //             { controlId: guid(), controlName: 'shoppingCart.Header' }
+    //         ]
+    //     },
+    //     views: [
+    //         {
+    //             controls: [
+    //                 { controlId: guid(), controlName: 'shoppingCart' }
+    //             ]
+    //         }
+    //     ],
+    //     footer: {
+    //         controls: [
+    //             { controlId: guid(), controlName: 'shoppingCart.Footer' }
+    //         ]
+    //     }
+    // } as PageData;
 
     let station = page.createService(StationService);
-    pageData = await station.fullPage(() => Promise.resolve(pageData));
+    let pageData = await station.fullPage(() => station.pages.shoppingCart());
 
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} ></MobilePage>, page.element);
 }

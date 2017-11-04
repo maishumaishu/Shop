@@ -1,14 +1,112 @@
 import { Service, config, imageUrl, guid } from 'userServices/service';
 
 
+class Pages {
 
-export class StationService extends Service {
-    constructor() {
-        super();
+    private station: StationService;
+
+    constructor(station: StationService) {
+        this.station = station;
     }
 
-    private url(path) {
+    private defaultPages = {
+        member: <PageData>{
+            name: '*member',
+            views: [{ controls: [{ controlId: guid(), controlName: 'member', selected: true }] }]
+        },
+        menu: <PageData>{
+            name: '*menu',
+            footer: { controls: [{ controlId: guid(), controlName: 'menu', selected: true }] }
+        },
+        style: <PageData>{
+            name: '*style',
+            footer: { controls: [{ controlId: guid(), controlName: 'style', selected: true }] }
+        },
+        categories: <PageData>{
+            name: '*categories',
+            views: [{ controls: [{ controlId: guid(), controlName: 'categories', selected: true }] }]
+        },
+        home: <PageData>{
+            name: '*home',
+            views: [{ controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }]
+        },
+        shoppingCart: <PageData>{
+            name: '*shoppingCart',
+            showMenu: true,
+            header: {
+                controls: [
+                    { controlId: guid(), controlName: 'shoppingCart.Header' }
+                ]
+            },
+            views: [
+                {
+                    controls: [
+                        { controlId: guid(), controlName: 'shoppingCart' }
+                    ]
+                }
+            ],
+            footer: {
+                controls: [
+                    { controlId: guid(), controlName: 'shoppingCart.Footer' }
+                ]
+            }
+        }
+    };
+
+
+
+    private getPage(name: string) {
+        let pageName = `*${name}`;
+        return this.station.pageDataByName(pageName).then(pageData => {
+            if (pageData == null) {
+                pageData = this.defaultPages[name];
+            }
+            return pageData;
+        });
+    }
+
+
+    home(): Promise<PageData> {
+        return this.getPage('home');
+    }
+
+    member(): Promise<PageData> {
+        return this.getPage('member');
+    }
+
+    menu(): Promise<PageData> {
+        return this.getPage('menu');
+    }
+
+    style(): Promise<PageData> {
+        return this.getPage('style');
+    }
+
+    categories(): Promise<PageData> {
+        return this.getPage('categories');
+    }
+
+    shoppingCart(): Promise<PageData> {
+        return this.getPage('shoppingCart');
+    }
+}
+
+
+export class StationService extends Service {
+
+    private _pages: Pages;
+
+    constructor() {
+        super();
+        this._pages = new Pages(this);
+    }
+
+    url(path) {
         return `UserSite/${path}`;
+    }
+
+    get pages(): Pages {
+        return this._pages;
     }
 
     newsList(pageIndex: number) {
@@ -73,6 +171,10 @@ export class StationService extends Service {
         pageData.header = pageData.header || { controls: [] };
         return pageData;
     }
+
+    //============================================================
+    // PageData
+
     private async fillPageData(pageData: PageData): Promise<PageData> {
         if (pageData.views == null && pageData['controls'] != null) {
             pageData.views = [{ controls: pageData['controls'] }];
@@ -83,8 +185,7 @@ export class StationService extends Service {
 
         return pageData;
     }
-    //============================================================
-    // PageData
+    
     pageData(pageId: string) {
         let url = this.url('Page/GetPageData');
         let data = { pageId };
@@ -95,17 +196,16 @@ export class StationService extends Service {
         let url = this.url('Page/GetDefaultPageData');
         return this.get<PageData>(url).then(pageData => this.fillPageData(pageData));
     }
-    async memberPageData() {
-        let memberControlData = await this.memberControlData();
-        let pageData = {
-            showMenu: true,
-            views: [
-                { controls: [memberControlData] }
-            ]
-        } as PageData;
-        return this.fillPageData(pageData);
-    }
     //============================================================
+
+    pageDataByName(name: string) {
+        let url = this.url('Page/GetPageData');
+        let query = { name };
+        return this.getByJson<PageData>(url, { query }).then(o => {
+            return o;
+        });
+    }
+
     controlData(name: string) {
         let url = this.url('Page/GetControlData');
         return this.getByJson<ControlData>(url, { query: { controlName: name } });
@@ -116,120 +216,18 @@ export class StationService extends Service {
             Object.assign(data, result);
         });
     }
-    async menuControlData() {
-        let menuData = await this.controlData('menu');
-        if (menuData == null) {
-            menuData = { controlId: guid(), controlName: 'menu' };
-        }
-        return menuData;
-    }
-    async styleControlData() {
-        let styleData = await this.controlData('style');
-        if (styleData == null) {
-            styleData = { controlId: guid(), controlName: 'style', data: {} };
-        }
-        return styleData;
-    }
-    async memberControlData() {
-        let member = await this.controlData('member');
-        if (member == null) {
-            member = { controlId: guid(), controlName: 'member', data: {} };
-        }
-        return member;
-    }
-
-    pageDataByName(name: string) {
-        let url = this.url('Page/GetPageData');
-        let query = { name };
-        return this.getByJson<PageData>(url, { query }).then(o => {
-            return o;
-        });
-    }
-
-    private defaultPages = {
-        member: <PageData>{
-            name: '*member',
-            views: [{ controls: [{ controlId: guid(), controlName: 'member', selected: true }] }]
-        },
-        menu: <PageData>{
-            name: '*menu',
-            footer: { controls: [{ controlId: guid(), controlName: 'menu', selected: true }] }
-        },
-        style: <PageData>{
-            name: '*style',
-            footer: { controls: [{ controlId: guid(), controlName: 'style', selected: true }] }
-        },
-        categories: <PageData>{
-            name: '*categories',
-            views: [{ controls: [{ controlId: guid(), controlName: 'categories', selected: true }] }]
-        },
-        home: <PageData>{
-            name: '*home',
-            views: [{ controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }]
-        }
-    };
-
-    homePage(): Promise<PageData> {
-        const pageName = this.defaultPages.home.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null) {
-                pageData = this.defaultPages.home;
-            }
-            return pageData;
-        });
-    }
-
-    memberPage(): Promise<PageData> {
-        const pageName = this.defaultPages.member.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null) {
-                pageData = this.defaultPages.member;
-            }
-            return pageData;
-        });
-    }
-
-    menuPage(): Promise<PageData> {
-        const pageName = this.defaultPages.menu.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null) {
-                pageData = this.defaultPages.menu;
-            }
-            return pageData;
-        });
-    }
-
-    stylePage(): Promise<PageData> {
-        const pageName = this.defaultPages.style.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null)
-                pageData = this.defaultPages.style;
-
-            return pageData;
-        });
-    }
-
-    categoriesPage(): Promise<PageData> {
-        const pageName = this.defaultPages.categories.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null)
-                pageData = this.defaultPages.categories;
-
-            return pageData;
-        });
-    }
 
     //============================================================
 
     async fullPage(page: () => Promise<PageData>) {
-        let result = await Promise.all([page.bind(this)(), this.stylePage(), this.menuPage()]);
+        let result = await Promise.all([page.bind(this)(), this.pages.style(), this.pages.menu()]);
         let pageData = result[0] as PageData;
         let stylePageData = result[1];
         let menuPageData = result[2];
 
         pageData.footer = pageData.footer || {} as any;
         pageData.footer.controls = pageData.footer.controls || [];
-        
+
         // let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
         // if (!existsStyleControl) {
         //     // station.stylePage().then(stylePageData => {

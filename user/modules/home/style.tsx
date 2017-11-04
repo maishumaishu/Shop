@@ -7,7 +7,7 @@ import * as ReactDOM from 'react-dom';
 
 export default async function (page: Page) {
     let station = page.createService(StationService);
-    let pageData = await station.stylePage();
+    let pageData = await station.pages.style();
     ReactDOM.render(
         <MobilePage pageData={pageData} elementPage={page} />
         , page.element);
