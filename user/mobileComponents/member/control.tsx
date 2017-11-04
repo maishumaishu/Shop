@@ -29,7 +29,7 @@ export interface State {
 export default class MemberControl extends Control<Props, State>{
 
     get persistentMembers(): (keyof State)[] {
-        return ["showBalance", "showLevel", "showScore", "sellsCenter"];
+        return ["showBalance", "showLevel", "showScore", "sellsCenter", "bg"];
     }
 
     constructor(props) {
@@ -52,14 +52,11 @@ export default class MemberControl extends Control<Props, State>{
     }
 
     _render(h) {
-        // let balance = this.state.balance;
-        //let userInfo = this.state.userInfo || {} as UserInfo;
         let { balance, userInfo, showBalance, showLevel, sellsCenter, showScore, bg, score } = this.state;
-        // bg = bg ? imageUrl(bg) : 'images/bg_user.png';
         userInfo = userInfo || {} as UserInfo;
         return (
             <div className="memberControl">
-                <div className="mobile-user-info text-center" style={{ background: bg ? `url(${imageUrl(bg)})` : null }}>
+                <div className="mobile-user-info text-center" style={{ backgroundImage: bg ? `url(${imageUrl(bg)})` : null }}>
                     <a href="#user_userInfo">
                         <img src={userInfo.HeadImageUrl} className="img-circle img-full"
                             title="上传头像" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
