@@ -149,6 +149,10 @@ export class ShoppingService extends Service {
 
     //===================================================
     // 优惠劵
+    coupon(id) {
+        let url = this.url('Coupon/GetCoupon');
+        return this.get<Coupon>(url, { id });
+    }
     coupons() {
         let url = this.url('Coupon/GetCoupons');
         return this.get<Coupon[]>(url);
