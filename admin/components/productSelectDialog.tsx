@@ -3,8 +3,12 @@ import { ShoppingService } from 'adminServices/shopping';
 
 requirejs(['css!adminComponents/productSelectDialog']);
 
-type ProductsDialogProps = { shopping: ShoppingService, selected: (product: Product) => boolean } & React.Props<ProductSelectDialog>;
-export class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[], searchText: string }>{
+type ProductsDialogProps = {
+    shopping: ShoppingService,
+    selected: (product: Product) => Promise<any> | void
+} & React.Props<ProductSelectDialog>;
+
+export class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[] }>{
 
     private element: HTMLElement;
     private dataSource: wuzhui.DataSource<Product>;
@@ -33,15 +37,20 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
     }
 
     productSelected(p: Product) {
-        var isOK = true;
-        if (this.props.selected) {
-            isOK = this.props.selected(p);
-        }
-
-        if (!isOK)
+        if (!this.props.selected)
             return;
 
-        ui.hideDialog(this.element);
+        let result = this.props.selected(p) || Promise.resolve();
+        result.then(() => ui.hideDialog(this.element));
+        // var isOK = true;
+        // if (this.props.selected) {
+        // isOK = this.props.selected(p);
+        // }
+
+        // if (!isOK)
+        //     return;
+
+        // ui.hideDialog(this.element);
     }
 
     setPagingBar(e: HTMLElement) {
@@ -153,10 +162,6 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
                         <div className="modal-body">
                             <div className="input-group">
                                 <input type="text" className="form-control pull-right" placeholder="请输入SKU或名称、类别" style={{ width: '100%' }}
-                                    onInput={(e) => {
-                                        this.state.searchText = (e.target as HTMLInputElement).value;
-                                        this.setState(this.state);
-                                    }}
                                     ref={(e: HTMLInputElement) => this.searchInput = e || this.searchInput} />
                                 <span className="input-group-btn">
                                     <button className="btn btn-primary btn-sm pull-right" onClick={() => this.search(this.searchInput.value)}>
