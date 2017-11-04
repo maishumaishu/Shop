@@ -28,8 +28,11 @@ class Site {
 }
 
 
-export function formatDate(date: Date | string) {
-    if (typeof date == 'string' || date == null)
+export function formatDate(date: Date | string): string {
+    if (date == null)
+        return null;
+
+    if (typeof date == 'string')
         return date;
 
     let d = date as Date;
