@@ -27,7 +27,6 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
     show(dataItem?: any) {
         this.state.title = (dataItem ? '编辑' : '添加') + (this.props.name || '');;
         this.setState(this.state);
-        debugger;
         this.dataItem = dataItem = dataItem || {};
         for (let key in dataItem) {
             let inputField = this.element.querySelector(`[name="${key}"]`) as HTMLInputElement;
