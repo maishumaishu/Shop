@@ -1,9 +1,9 @@
 import { Page, defaultNavBar } from 'site';
 import { imageUrl } from 'userServices/service';
 import { ShoppingService } from 'userServices/shoppingService';
+import { DataList } from 'components/dataList';
+import { Tabs } from 'components/tabs';
 
-let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, DataList, Panel,
-    PageComponent, PageHeader, PageFooter, PageView, Tabs } = controls;
 
 export default function (page: Page) {
 
@@ -21,8 +21,8 @@ export default function (page: Page) {
         }
         render() {
             return (
-                <PageComponent>
-                    <PageHeader>
+                <div>
+                    {/* <header>
                         {defaultNavBar({ title: this.props.title })}
                         <Tabs className="tabs" scroller={() => this.dataView}>
                             <span className="active">综合</span>
@@ -32,12 +32,12 @@ export default function (page: Page) {
                                 <span className="icon-angle-up"></span>
                             </span>
                         </Tabs>
-                    </PageHeader>
-                    <PageView ref={(o) => o ? this.dataView = o.element : null}>
+                    </header> */}
+                    <section ref={(o: HTMLElement) => o ? this.dataView = o : null}>
                         <DataList className="products" scroller={() => this.dataView} loadData={this.loadProducts}
                             dataItem={(o: Product) => (
                                 <a key={o.Id} href={`#home_product?id=${o.Id}`} className="col-xs-6 text-center item">
-                                    <ImageBox src={imageUrl(o.ImagePath)} />
+                                    <img src={imageUrl(o.ImagePath, 100, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 100, height: 100 } }) : null} />
                                     <div className="bottom">
                                         <div className="interception">{o.Name}</div>
                                         <div>
@@ -46,8 +46,8 @@ export default function (page: Page) {
                                     </div>
                                 </a>
                             )} />
-                    </PageView>
-                </PageComponent>
+                    </section>
+                </div>
             );
         }
     }
@@ -74,7 +74,6 @@ export default function (page: Page) {
         }
     }
 
-    // ReactDOM.render(<ProductListView />, page.dataView);
     shop.category(categoryId).then(o => {
         ReactDOM.render(<ProductListView title={o.Name} />, page.element);
     })

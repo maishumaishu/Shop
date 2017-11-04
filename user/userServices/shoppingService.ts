@@ -51,9 +51,6 @@ export class ShoppingService extends Service {
             args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
         }
         return this.get<{ Products: Array<Product> }>(url, args).then(o => {
-            o.Products.forEach(o => {
-                o.ImagePath = imageUrl(o.ImagePath, 100);
-            });
             return o.Products;
         });
     }
@@ -94,10 +91,7 @@ export class ShoppingService extends Service {
     }
     categories() {
         let url = this.url('Product/GetCategories');
-        return this.get<ProductCategory[]>(url).then(items => {
-            items.forEach(o => o.ImagePath = imageUrl(o.ImagePath));
-            return items;
-        });
+        return this.get<ProductCategory[]>(url);
     }
     toCommentProducts() {
         var result = this.get<ProductComent[]>(this.url('Product/GetToCommentProducts'))

@@ -6,6 +6,11 @@ declare namespace ReactDOM {
         container?: Element,
         callback?: Function
     )
+    function render<P>(
+        element: React.ReactElement<any>[],
+        container?: Element,
+        callback?: Function
+    )
 }
 
 declare module 'react-dom' {

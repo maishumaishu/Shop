@@ -384,7 +384,7 @@ export default class ShoppingCartControl extends Control<
         this.elementPage.showing.add(() => this.updateItems());
     }
 
-    _render() {
+    _render(h) {
         let inputCounts = this.state.inputCounts;
 
         return (

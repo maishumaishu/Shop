@@ -124,7 +124,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         });
     }
 
-    _render() {
+    _render(h) {
         var products = new Array<Product>();
         return (
             <div
@@ -135,10 +135,10 @@ export default class SingleColumnProductControl extends Control<Props, State> {
                     switch (listType) {
                         case 'doubleColumn':
                         default:
-                            element = await this.renderDoubleColumn();
+                            element = await this.renderDoubleColumn(h);
                             break;
                         case 'singleColumn':
-                            element = await this.renderSingleColumn();
+                            element = await this.renderSingleColumn(h);
                             break;
                     }
                     ReactDOM.render(element, e);
@@ -150,7 +150,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
 
 
 
-    async renderSingleColumn(): Promise<JSX.Element> {
+    async renderSingleColumn(h): Promise<JSX.Element> {
 
         var products = await this.products();
         let showProductTitle = this.state.displayTitle;
@@ -191,7 +191,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         );
     }
 
-    async renderDoubleColumn(): Promise<JSX.Element> {
+    async renderDoubleColumn(h): Promise<JSX.Element> {
         var products = await this.products();
         var productCounts = this.state.productCounts;
         return (

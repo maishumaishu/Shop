@@ -1,4 +1,3 @@
-import { ComponentDesigner } from 'componentDesigner';
 import { MobilePageDesigner } from 'mobilePageDesigner';
 import { default as station, ControlDescrtion, guid } from 'adminServices/station';
 import { default as MemberPage } from 'mobileComponents/member/control';

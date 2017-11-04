@@ -77,6 +77,11 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             context = new mongodb.ObjectID(arr[0]);
             action = imageById;
         }
+        else if (/^\/[a-f\d]{24}$/i.test(path)) {
+            let p = path.substr(1);
+            context = new mongodb.ObjectID(p);
+            action = imageById;
+        } 
         else {
             throw errors.pathNotSupport(path);
         }

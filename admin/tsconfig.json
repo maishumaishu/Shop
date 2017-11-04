@@ -16,6 +16,9 @@
             ],
             "virtualMobile": [
                 "modules/station/components/virtualMobile"
+            ],
+            "adminComponents/*": [
+                "admin/components/*"
             ]
             // "componentDesigner/*": [
             //     "user/componentDesigner/*"

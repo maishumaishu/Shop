@@ -8,7 +8,7 @@ import { PropertiesComponent } from 'modules/shopping/product/properties';
 import FormValidator from 'formValidator';
 import * as ui from 'ui';
 import tips from 'tips';
-import ImageUpload from 'components/imageUpload';
+import ImageUpload from 'adminComponents/imageUpload';
 
 const station = new StationService();
 const imageThumbSize = 112;
@@ -112,15 +112,21 @@ export default function (page: chitu.Page) {
                     <div className="tabbable">
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
-                                <button className="btn btn-sm btn-primary" onClick={() => app.back()}>返回</button>
+                                <button className="btn btn-sm btn-primary" onClick={() => app.back()}>
+                                    <i className="icon-reply"/>
+                                    <span>返回</span>
+                                </button>
                             </li>
                             <li className="pull-right">
-                                <a href="javascript:" className="btn btn-sm btn-primary"
+                                <button href="javascript:" className="btn btn-sm btn-primary"
                                     ref={(e: HTMLAnchorElement) => {
                                         if (!e) return;
                                         e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存商品成功' });
 
-                                    }}>保存</a>
+                                    }}>
+                                        <i className="icon-save"/>
+                                        <span>保存</span>
+                                    </button>
                             </li>
                         </ul>
                     </div>

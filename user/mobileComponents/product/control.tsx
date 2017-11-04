@@ -49,7 +49,7 @@ export default class ProductControl extends Control<Props, State>{
         // }
 
         return (
-            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} />
+            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} mobilePage={this.mobilePage} />
             // ref={async (e) => {
             //     if (!e || !this.props.productId) return;
             //     let p = await shopping.product(this.props.productId);
@@ -222,12 +222,12 @@ class ProductPanel extends React.Component<{ product: Product, parent: ProductVi
     }
 }
 
-interface ProductViewProps extends React.Props<ProductView> {
+interface ProductViewProps extends ControlProps<ProductView> {
     product: Product, shop: ShoppingService,
     shoppingCart: ShoppingCartService
 }
 
-class ProductView extends React.Component<ProductViewProps, ProductPageState>{
+class ProductView extends Control<ProductViewProps, ProductPageState>{
 
     private productView: HTMLElement;
     private header: HTMLElement;
@@ -263,6 +263,10 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
         // subscribe(this, productStore, (value: Product) => {
         //     this.updateStateByProduct(value);
         // });
+    }
+
+    get persistentMembers() {
+        return [];
     }
 
     private showPanel() {
@@ -374,7 +378,7 @@ class ProductView extends React.Component<ProductViewProps, ProductPageState>{
         console.assert(this.pageComponent != null);
         return this.element;
     }
-    render() {
+    _render(h) {
         let p = this.state.product;
         let { productsCount, couponsCount } = this.state;
         return (

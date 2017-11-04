@@ -1,8 +1,8 @@
 @import "../../content/common.less";
 
 .home-productList {
-    @tab-height:50px; 
-     .padding-top(@tab-height);
+    // @tab-height:50px; 
+    //  .padding-top(@tab-height);
      .products {
         .item {
             padding-top: 16px;
@@ -51,5 +51,17 @@
         nav {
             // position: unset;
         }
+    }
+
+    .interception {
+        width: 100%;
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        -webkit-text-overflow: ellipsis;
+        -moz-binding: url("ellipsis.xml#ellipsis");
+        -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
     }
 }

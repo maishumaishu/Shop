@@ -1,19 +1,25 @@
 import app from 'application';
-import site = require('site');
+import { formatDate } from 'site';
+
 import { ShoppingService } from 'adminServices/shopping';
 import UE = require('ue.ext');
 import FormValidator from 'formValidator';
 import * as ui from 'myWuZhui';
 import { buttonOnClick } from 'ui';
-export default function (page: chitu.Page) {
 
+export default async function (page: chitu.Page) {
 
     let shopping = page.createService(ShoppingService);
 
     interface CouponEditPageState {
         coupon: Coupon
     }
-    class CouponEditPage extends React.Component<{ coupon?: Coupon }, CouponEditPageState>{
+
+    interface CouponEditPageProps extends React.Props<CouponEditPage> {
+        coupon?: Coupon
+    }
+
+    class CouponEditPage extends React.Component<CouponEditPageProps, CouponEditPageState>{
         private validator: FormValidator;
         private formElement: HTMLElement;
         private productTable: HTMLTableElement;
@@ -88,17 +94,16 @@ export default function (page: chitu.Page) {
                     }, 100);
                 }
             });
-
         }
         render() {
-            let coupon = this.state.coupon;
+            let coupon = this.state.coupon || {} as Coupon;
             return (
                 <div ref={(o: HTMLElement) => this.formElement = o || this.formElement} >
                     <div className="tabbable">
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
                                 <button className="btn btn-sm btn-primary" onClick={() => app.back()}>
-                                    <i className="icon-reply"/>
+                                    <i className="icon-reply" />
                                     <span>返回</span>
                                 </button>
                             </li>
@@ -110,7 +115,7 @@ export default function (page: chitu.Page) {
                                             () => this.save(),
                                             { toast: '保存优惠劵成功' })
                                     }}>
-                                    <i className="icon-save"/>
+                                    <i className="icon-save" />
                                     <span>保存</span>
                                 </button>
                             </li>
@@ -128,6 +133,7 @@ export default function (page: chitu.Page) {
                             <label className="item-label">标题</label>
                             <div className="item-input">
                                 <input name="title" className="form-control"
+                                    value={coupon.Title || ''}
                                     onChange={(e) => {
                                         coupon.Title = (e.target as HTMLInputElement).value;
                                         this.setState(this.state);
@@ -139,6 +145,7 @@ export default function (page: chitu.Page) {
                             <label className="item-label">抵扣金额</label>
                             <div className="item-input">
                                 <input name="discount" className="form-control"
+                                    value={`${coupon.Discount}` || ''}
                                     onChange={(e) => {
                                         coupon.Discount = Number.parseFloat((e.target as HTMLInputElement).value);
                                         this.setState(this.state);
@@ -150,6 +157,7 @@ export default function (page: chitu.Page) {
                             <label className="item-label">消费金额</label>
                             <div className="item-input">
                                 <input name="amount" className="form-control"
+                                    value={`${coupon.Amount}` || ''}
                                     onChange={(e) => {
                                         coupon.Amount = Number.parseFloat((e.target as HTMLInputElement).value);
                                         this.setState(this.state);
@@ -164,6 +172,7 @@ export default function (page: chitu.Page) {
                                 <div className="col-sm-6" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                     <input name="validBegin" className="form-control" placeholder="优惠券使用的开始日期"
                                         ref={(o: HTMLInputElement) => this.validBeginInput = o || this.validBeginInput}
+                                        value={formatDate(coupon.ValidBegin)}
                                         onChange={(e) => {
                                             coupon.ValidBegin = new Date((e.target as HTMLInputElement).value);
                                             this.setState(this.state);
@@ -172,6 +181,7 @@ export default function (page: chitu.Page) {
                                 <div className="col-sm-6" style={{ paddingRight: 0 }}>
                                     <input name="validEnd" className="form-control" placeholder="优惠券使用的结束日期"
                                         ref={(o: HTMLInputElement) => this.validEndInput = o || this.validEndInput}
+                                        value={formatDate(coupon.ValidEnd)}
                                         onChange={(e) => {
                                             coupon.ValidEnd = new Date((e.target as HTMLInputElement).value);
                                             this.setState(this.state);
@@ -254,7 +264,32 @@ export default function (page: chitu.Page) {
         }
     }
 
-    ReactDOM.render(<CouponEditPage />, page.element);
+    // let coupon: Coupon;
+    // if (page.routeData.values.id) {
+    //     shopping.coupon(page.routeData.values.id);
+    // }
+
+    // page.showing.add(() => {
+    //     let id = page.routeData.values.id;
+
+    // })
+
+
+
+    let couponEditPage: CouponEditPage;
+    ReactDOM.render(<CouponEditPage ref={(e) => couponEditPage = e} />, page.element);
+
+    function updatePageState() {
+        if (page.routeData.values.id) {
+            shopping.coupon(page.routeData.values.id).then(coupon => {
+                couponEditPage.state.coupon = coupon;
+                couponEditPage.setState(couponEditPage.state);
+            });
+        }
+    }
+
+    updatePageState();
+    page.showing.add(() => updatePageState());
 }
 
 // let JData = window['JData'];

@@ -106,7 +106,7 @@ export abstract class Service extends chitu.Service {
 
 }
 
-export function imageUrl(path: string, width?: number) {
+export function imageUrl(path: string, width?: number, height?: number) {
     if (!path) return path;
 
     let HTTP = 'http://'
@@ -123,6 +123,9 @@ export function imageUrl(path: string, width?: number) {
     let url = 'https://image.alinq.cn' + path;
     if (width) {
         url = url + '?width=' + width;
+        if (height) {
+            url = url + '&height=' + height;
+        }
     }
     return url;
 }

@@ -1,4 +1,3 @@
-import { ComponentDesigner } from 'componentDesigner';
 import { MobilePageDesigner } from 'mobilePageDesigner';
 import { default as station } from 'adminServices/station';
 export default function (page: chitu.Page) {

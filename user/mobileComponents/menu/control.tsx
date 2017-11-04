@@ -46,7 +46,7 @@ export default class MenuControl extends Control<Props, State>{
             <div className="menuControl" ref={(e: HTMLElement) => this.element = e || this.element}>
                 {menuNodes.length <= 0 ?
                     <ul className="menu noicon"></ul> :
-                    showIcon ? this.renderMenuWithIcon(menuNodes) : this.renderMenuWithoutIcon(menuNodes)
+                    showIcon ? this.renderMenuWithIcon(h, menuNodes) : this.renderMenuWithoutIcon(h, menuNodes)
                 }
             </div>
         );
@@ -60,7 +60,7 @@ export default class MenuControl extends Control<Props, State>{
         return false;
     }
 
-    private renderMenuWithoutIcon(menuNodes: MenuNode[]) {
+    private renderMenuWithoutIcon(h, menuNodes: MenuNode[]) {
         return (
             <ul className="menu noicon">
                 {menuNodes.map((o, i) => {
@@ -75,7 +75,7 @@ export default class MenuControl extends Control<Props, State>{
         );
     }
 
-    private renderMenuWithIcon(menuNodes: MenuNode[]) {
+    private renderMenuWithIcon(h, menuNodes: MenuNode[]) {
         let productsCount = this.state.productsCount || 0;
         return (
             <ul className="menu">
@@ -85,7 +85,7 @@ export default class MenuControl extends Control<Props, State>{
 
                     var routeData = app.parseRouteString(routeString);
                     let isShoppingCart = routeData.pageName == 'shopping.shoppingCart'
-                    let isActive =  this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
+                    let isActive = this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
                     return (
                         <li key={i} style={{ width: `${itemWidth}%` }}>
                             <div onClick={() => app.redirect(routeString)} className={isActive ? 'text-primary' : null}>

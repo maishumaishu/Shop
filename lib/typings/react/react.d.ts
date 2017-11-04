@@ -383,6 +383,7 @@ declare module React {
 
         background?: string;
         backgroundColor?: string;
+        backgroundImage?: string;
 
         border?: string;
         borderRadius?: number | string;

@@ -3,7 +3,7 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../www/user",
+        "outDir": "../www",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",

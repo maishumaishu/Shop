@@ -47,8 +47,14 @@ export default function (page: chitu.Page) {
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                     }),
                     new ui.CommandField({
-                        itemEditor: this.itemEditor,
-                        headerStyle: { width: '100px' } as CSSStyleDeclaration
+                        // itemEditor: this.itemEditor,
+                        leftButtons: (dataItem: Coupon) => [
+                            <button className="btn btn-minier btn-info"
+                                onClick={() => app.redirect(`coupon/couponEdit?id=${dataItem.Id}`)}>
+                                <i className="icon-pencil"></i>
+                            </button>
+                        ],
+                        headerStyle: { width: '100px' } as CSSStyleDeclaration,
                     })
                 ]
             })

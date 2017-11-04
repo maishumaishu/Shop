@@ -3,8 +3,6 @@ import { StationService } from 'userServices/stationService';
 import * as site from 'site';
 import * as React from 'react';
 
-let { PageComponent, PageHeader, PageFooter, PageView, HtmlView } = controls;
-
 // import Vue = require('vue');
 
 export default function (page: Page) {

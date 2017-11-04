@@ -220,7 +220,7 @@ export class Application extends BaseApplication {
         if (!this.styleloaded) {
             let element = document.createElement('div');
             document.body.appendChild(element);
-            station.stylePage().then(pageData => {
+            station.pages.style().then(pageData => {
                 ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, element);
             })
             this.styleloaded = true;

@@ -123,7 +123,10 @@ export default function (page: chitu.Page) {
                 <a href="javascript:">已收货</a>
             </li>
             <li className="pull-right">
-                <button onClick={() => exportData()} className="btn btn-sm btn-primary" data-toggle="dropdown">导出发货单</button>
+                <button onClick={() => exportData()} className="btn btn-sm btn-primary" data-toggle="dropdown">
+                    <i className="icon-download-alt"/>
+                    <span>导出发货单</span>
+                </button>
                 <div className="form-horizontal" style={{ display: 'none' }} data-role="export">
                     <div className="form-group">
                         <label className="col-sm-3 control-label">开始时间</label>

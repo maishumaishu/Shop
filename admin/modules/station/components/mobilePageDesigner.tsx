@@ -282,12 +282,17 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             </label>
                         </li> : null}
                         <li className="pull-right">
-                            <button className="btn btn-primary" style={{ marginLeft: 4 }}
-                                ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存页面成功' }) : null}>保存</button>
+                            <button className="btn btn-sm btn-primary"
+                                ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存页面成功' }) : null}>
+                                <i className="icon-save" />
+                                <span>保存</span>
+                            </button>
                         </li>
                         <li className="pull-right">
-                            <button className="btn btn-primary" style={{ marginLeft: 4 }}
-                                onClick={() => this.preview()}>预览</button>
+                            <button className="btn btn-sm btn-primary" onClick={() => this.preview()}>
+                                <i className="icon-eye-open" />
+                                <span>预览</span>
+                            </button>
                         </li>
                         <li className="clearfix">
                         </li>

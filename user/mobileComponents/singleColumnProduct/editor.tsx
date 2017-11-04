@@ -114,18 +114,18 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
         }
     }
 
-    productSelected(product: Product): boolean {
+    productSelected(product: Product): Promise<any> {
         let productIds = this.state.productIds || [];
         let exists = productIds.indexOf(product.Id) >= 0;
         if (exists) {
             ui.alert({ title: "提示", message: '该商品已选择' });
-            return false;
+            return Promise.reject({});
         }
         productIds.push(product.Id);
 
         this.state.productIds = productIds;
         this.setState(this.state);
-        return true;
+        return Promise.resolve();
     }
 
     async renderProducts(container: HTMLElement, productIds: string[]) {
