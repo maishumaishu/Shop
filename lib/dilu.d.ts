@@ -1,73 +1,54 @@
 declare namespace dilu {
     let errors: {
         argumentNull(parameterName: any): Error;
-        ruleNotExists(name: string): Error;
         elementValidateRuleNotSet(element: HTMLInputElement): Error;
+        fieldElementCanntNull(fieldIndex: any): Error;
     };
-}
-declare namespace dilu {
-    interface ValidateField {
-        rule: Rule;
-        display?: string;
-        message?: string;
-        depends?: (HTMLElement | (() => boolean))[];
-        errorElement?: HTMLElement;
-    }
-    class FormValidator {
-        private fields;
-        constructor(...fields: ValidateField[]);
-        clearErrors(): void;
-        clearElementError(element: HTMLInputElement): void;
-        check(): boolean;
-        checkElement(inputElement: HTMLInputElement): boolean;
-        private getElementValidators(element);
-    }
 }
 declare namespace dilu {
     type InputElement = HTMLElement & {
+        name: string;
         value: string;
-        name?: string;
     };
-    class Rule {
-        private _validate;
-        private _element;
-        private _errorElement;
-        private _errorMessage;
-        constructor(element: InputElement, validate: (value: string) => boolean, errorMessage: string, errorELement?: HTMLElement);
-        readonly element: HTMLElement & {
-            value: string;
-        };
-        readonly errorElement: HTMLElement;
-        readonly errorMessage: string;
-        check(): boolean;
-        showError(): void;
-        hideError(): void;
+    type ValidateField = {
+        element: InputElement;
+        rules: Rule[];
+        errorElement?: HTMLElement;
+        depends?: ((() => Promise<boolean>) | (() => boolean))[];
+    };
+    class FormValidator {
+        static errorClassName: string;
+        private fields;
+        constructor(...fields: ValidateField[]);
+        addFields(...fields: ValidateField[]): void;
+        clearErrors(): void;
+        clearElementError(element: HTMLInputElement): void;
+        check(): Promise<boolean>;
+        private checkField(field);
+        checkElement(inputElement: HTMLInputElement): Promise<boolean>;
     }
 }
 declare namespace dilu {
-    type Options = {
-        display?: string;
-        message?: string;
+    type RuleError = string;
+    type Validate = (value) => boolean | Promise<boolean>;
+    type RuleDepend = Rule | (() => boolean);
+    type Rule = {
+        validate: (value) => boolean | Promise<boolean>;
+        error?: RuleError;
     };
     let rules: {
-        required: (element: InputElement, options?: Options) => Rule;
-        matches: (element: InputElement, otherElement: InputElement, options?: Options) => Rule;
-        email: (element: InputElement, options?: Options) => Rule;
-        minLength: (element: InputElement, length: number, options?: Options) => Rule;
-        maxLength: (element: InputElement, length: number, options?: Options) => Rule;
-        greaterThan: (element: InputElement, value: number | Date, options: Options) => Rule;
-        lessThan: (element: InputElement, value: string | number | Date, options: Options) => Rule;
-        equal: (element: InputElement, value: string | number | Date, options?: Options) => Rule;
-        ip: (element: InputElement, options: Options) => Rule;
-        url: (element: InputElement, options?: Options) => Rule;
-        mobile: (element: InputElement, options?: Options) => {
-            name: string;
-            element: InputElement;
-            display: string;
-            messages: {
-                'mobile': string;
-            };
-            rules: string[];
-        };
+        required(error?: string): Rule;
+        matches: (otherElement: InputElement, error?: string) => Rule;
+        email: (error?: string) => Rule;
+        minLength: (length: number, error?: string) => Rule;
+        maxLength: (length: number, error?: string) => Rule;
+        greaterThan: (value: number | Date, error: string) => Rule;
+        lessThan: (value: string | number | Date, error: string) => Rule;
+        equal: (value: string | number | Date, error?: string) => Rule;
+        ip: (error: string) => Rule;
+        url: (error?: string) => Rule;
+        mobile: (error?: string) => Rule;
+        numeric: (error?: string) => Rule;
+        custom: (validate: (value: any) => boolean | Promise<boolean>, error: string) => Rule;
     };
 }
