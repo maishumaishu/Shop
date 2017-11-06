@@ -60,7 +60,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             path = path.substr(0, path.length - 1);
         }
 
-        db = await mongodb.MongoClient.connect(settings.mongodb_conn);
+        db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
 
         let action: Action;
         let context: any;
@@ -81,7 +81,10 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             let p = path.substr(1);
             context = new mongodb.ObjectID(p);
             action = imageById;
-        } 
+        }
+        else if (path = '/upload') {
+            action = upload;
+        }
         else {
             throw errors.pathNotSupport(path);
         }
@@ -183,6 +186,60 @@ async function resizeImage(buffer: Buffer, type: 'jpeg|png|webp', width: number,
         });
     })
 
+}
+
+async function upload(req: http.IncomingMessage, res: http.ServerResponse): Promise<any> {
+
+    //image
+    let obj = await getPostObject(req);
+    let image = obj["image"];
+    let appKey = obj["application-key"];
+    if (image == null) {
+        return errors.parameterRequired("image");
+    }
+
+    if (appKey == null)
+        return errors.parameterRequired('appKey');
+
+    let db = await mongodb.MongoClient.connect(settings.mongodb_nodeauth);
+    let tokens = db.collection('Token');
+    let token = await tokens.findOne({ _id: new mongodb.ObjectId(appKey) });
+    if (token == null)
+        return new Error(`Cannt find token by application key '${appKey}'.`);
+
+    let collection = db.collection(imageCollectionName);
+
+    return collection.insertOne({ data: image, appId: token.objectId });
+}
+
+function getPostObject(request: http.IncomingMessage): Promise<any> {
+    let method = (request.method || '').toLowerCase();
+    let length = request.headers['content-length'] || 0;
+    let contentType = request.headers['content-type'] as string;
+    if (length <= 0)
+        return Promise.resolve({});
+
+    return new Promise((reslove, reject) => {
+        request.on('data', (data: { toString: () => string }) => {
+            let text = data.toString();
+            try {
+                let obj;
+                if (contentType.indexOf('application/json') >= 0) {
+                    obj = JSON.parse(text)
+                }
+                else {
+                    obj = querystring.parse(text);
+                }
+
+                reslove(obj);
+            }
+            catch (err) {
+                // let err = errors.postDataNotJSON(text);
+                // console.assert(err != null);
+                reject(err);
+            }
+        });
+    });
 }
 
 
