@@ -163,7 +163,6 @@ export class CommandField extends wuzhui.CustomField {
                     var rowElement = self.findParnet(event.target as HTMLElement, 'TR');
                     let row = wuzhui.Control.getControlByElement(rowElement) as wuzhui.GridViewDataRow;
                     // params.edit(row.dataItem);
-                    debugger;
                     params.itemEditor.show(row.dataItem);
                 }
 
