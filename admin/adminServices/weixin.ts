@@ -30,12 +30,6 @@ if (Service.token)
 if (location.search) {
     headers['application-key'] = location.search.substr(1);
 }
-
-$.ajaxSettings.headers = headers;
-
-
-
-
 export class WeiXinService extends Service {
     url(path) {
         return `${Service.config.weixinUrl}${path}`;
