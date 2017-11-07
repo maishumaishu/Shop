@@ -100,7 +100,8 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
             return;
 
         e.onclick = () => {
-            this.productsDialog.show();
+            //selected={(p) => this.productSelected(p)} 
+            this.productsDialog.show((product) => this.productSelected(product));
         }
     }
 
@@ -225,8 +226,7 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
                 </div>
                 <div className="clearfix"></div>
 
-                <ProductSelectDialog shopping={shopping as any} ref={(e: ProductSelectDialog) => this.productsDialog = e || this.productsDialog}
-                    selected={(p) => this.productSelected(p)} />
+                <ProductSelectDialog shopping={shopping as any} ref={(e: ProductSelectDialog) => this.productsDialog = e || this.productsDialog} />
             </div>
         );
     }
