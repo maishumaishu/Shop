@@ -33,23 +33,25 @@ if (location.search) {
 
 $.ajaxSettings.headers = headers;
 
-export class WebXinService extends Service {
-    getSetting() {
-        return $.ajax({
-            url: Service.config.weixinUrl + 'WeiXin/GetSetting'
-        });
+
+
+
+export class WeiXinService extends Service {
+    url(path) {
+        return `${Service.config.weixinUrl}${path}`;
     }
-    saveSetting(setting) {
-        return $.ajax({
-            url: Service.config.weixinUrl + 'WeiXin/SaveSetting',
-            data: setting
-        });
+    getSetting() {
+        let url = this.url('WeiXin/GetSetting');
+        return this.get<WeiXinSetting>(url);
+    }
+    saveSetting(setting: WeiXinSetting) {
+        let url = this.url('WeiXin/SaveSetting');
+        return this.putByJson(url, { model: setting });
     }
     getMessageTemplateTypes() {
-        return $.ajax({
-            url: Service.config.weixinUrl + 'WeiXin/GetMessageTemplateTypes'
-        });
+        let url = this.url('WeiXin/GetMessageTemplateTypes');
+        return this.get<any[]>(url);
     }
 }
 
-export default new WebXinService();
+export default new WeiXinService();
