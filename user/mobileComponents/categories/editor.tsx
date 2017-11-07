@@ -101,10 +101,13 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
 
             return value && value != emptyImage;
         }
+
+        let { required, custom } = rules;
         this.validator = new FormValidator(
-            { rule: rules.required(this.nameInput) },
+            { element: this.nameInput, rules: [required()] },//rule: rules.required(this.nameInput)
             {
-                rule: new Rule(this.picture, checkPicture.bind(this.validator), "图片不允许为空"),
+                element: this.picture, rules: [custom(checkPicture, "图片不允许为空")]
+                //rule: new Rule(this.picture, checkPicture.bind(this.validator), "图片不允许为空"),
             }
         )
 
