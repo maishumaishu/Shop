@@ -34,7 +34,6 @@ export class ActivityService extends Service {
         return this.post(url, item);
     }
     updateActivity(item) {
-        // let url = baseUrl + 'AddActivity';
         let url = this.url('SaveActivity');
         return this.post(url, item);
     }
@@ -52,17 +51,6 @@ export class ActivityService extends Service {
         return this.get(url);
     }
     addPromotion(activityId, type, method) {
-        /// <returns type="jQuery.Deferred"/>
-
-        // return $.ajax({
-        //     url: baseUrl + 'AddPromotion', method: 'post',
-        //     data: {
-        //         activityId: activityId,
-        //         type: type,
-        //         method: method
-        //     }
-        // });
-
         let url = this.url('AddPromotion');
         let data = {
             activityId: activityId,
@@ -71,13 +59,14 @@ export class ActivityService extends Service {
         };
         return this.post<{ Id: string }>(url, data);
     }
+
     deletePromotion(id) {
         // return $.ajax({ url: baseUrl + 'DeletePromotion', method: 'post', data: { id: id } });
         let url = this.url('DeletePromotion');
         let data = { id };
         return this.delete(url, data);
     }
-    getPromotions(activityId) {
+    promotions(activityId) {
         /// <returns type="jQuery.Deferred"/>
         // return $.ajax({ url: baseUrl + 'GetPromotions', method: 'get', data: { activityId: activityId } });
         let url = this.url('GetPromotions');
@@ -176,6 +165,10 @@ export class ActivityService extends Service {
         // });
         let url = this.url('ChangeIsAll');
         return this.post(url, { promotionId, isAll });
+    }
+    updateActivityPromotions(activityId: string, promotions: Array<Promotion>) {
+        let url = this.url('UpdateActivityPromotions');
+        return this.postByJson(url, { activityId, promotions })
     }
 }
 
