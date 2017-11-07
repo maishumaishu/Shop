@@ -15,6 +15,7 @@ declare namespace dilu {
         rules: Rule[];
         errorElement?: HTMLElement;
         depends?: ((() => Promise<boolean>) | (() => boolean))[];
+        condition?: () => boolean;
     };
     class FormValidator {
         static errorClassName: string;
