@@ -5,7 +5,7 @@ requirejs(['css!adminComponents/productSelectDialog']);
 
 type ProductsDialogProps = {
     shopping: ShoppingService,
-    selected: (product: Product) => Promise<any> | void
+    // selected?: (product: Product) => Promise<any> | void
 } & React.Props<ProductSelectDialog>;
 
 export class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[] }>{
@@ -14,6 +14,7 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
     private dataSource: wuzhui.DataSource<Product>;
     private pagingBarElement: HTMLElement;
     private searchInput: HTMLInputElement;
+    private onProductSelected: (product: Product) => Promise<any> | void;
 
     constructor(props) {
         super(props);
@@ -32,15 +33,16 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
         });
     }
 
-    show() {
+    show(onProductSelected: (product: Product) => Promise<any> | void) {
+        this.onProductSelected = onProductSelected;
         ui.showDialog(this.element);
     }
 
     productSelected(p: Product) {
-        if (!this.props.selected)
-            return;
+        // if (!this.props.selected)
+        //     return;
 
-        let result = this.props.selected(p) || Promise.resolve();
+        let result = this.onProductSelected(p) || Promise.resolve();
         result.then(() => ui.hideDialog(this.element));
         // var isOK = true;
         // if (this.props.selected) {
