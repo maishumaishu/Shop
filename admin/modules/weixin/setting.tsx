@@ -1,13 +1,19 @@
-﻿import weixin from 'adminServices/weixin';
+﻿import { WeiXinService } from 'adminServices/weixin';
 
-export default function (page: chitu.Page) {
+export default async function (page: chitu.Page) {
 
-    weixin.getSetting().then(data => {
-        debugger;
-    });
+    let weixin = page.createService(WeiXinService);
 
-    class SettingPage extends React.Component<{}, {}>{
+    class SettingPage extends React.Component<{ setting: WeiXinSetting }, { setting: WeiXinSetting }>{
+        constructor(props) {
+            super(props);
+            this.state = { setting: this.props.setting };
+        }
+        save() {
+            return weixin.saveSetting(this.state.setting);
+        }
         render() {
+            let setting = this.state.setting;
             return (
                 <div className="page-content">
                     <h4>Token设置</h4>
@@ -17,7 +23,11 @@ export default function (page: chitu.Page) {
                             <label>Token：</label>
                         </div>
                         <div className="col-xs-10">
-                            <input data-bind="value:Token" name="Token" className="form-control" />
+                            <input name="Token" className="form-control" value={setting.Token || ''}
+                                onChange={(e) => {
+                                    setting.Token = (e.target as HTMLInputElement).value;
+                                    this.setState(this.state);
+                                }} />
                         </div>
                     </div>
                     <div className="row form-group">
@@ -25,7 +35,11 @@ export default function (page: chitu.Page) {
                             <label>AppId：</label>
                         </div>
                         <div className="col-xs-10">
-                            <input data-bind="value:AppId" name="AppId" className="form-control" />
+                            <input name="AppId" className="form-control" value={setting.AppId || ''}
+                                onChange={(e) => {
+                                    setting.AppId = (e.target as HTMLInputElement).value;
+                                    this.setState(this.state);
+                                }} />
                         </div>
                     </div>
                     <div className="row form-group">
@@ -33,7 +47,11 @@ export default function (page: chitu.Page) {
                             <label>AppSecret：</label>
                         </div>
                         <div className="col-xs-10">
-                            <input data-bind="value:AppSecret" name="AppSecret" className="form-control" />
+                            <input name="AppSecret" className="form-control" value={setting.AppSecret || ''}
+                                onChange={(e) => {
+                                    setting.AppSecret = (e.target as HTMLInputElement).value;
+                                    this.setState(this.state);
+                                }} />
                         </div>
                     </div>
                     <hr />
@@ -44,11 +62,18 @@ export default function (page: chitu.Page) {
                             <label>PartnerKey：</label>
                         </div>
                         <div className="col-xs-10">
-                            <input data-bind="value:PartnerKey" name="PartnerKey" className="form-control" />
+                            <input name="PartnerKey" className="form-control" value={setting.PartnerKey || ''}
+                                onChange={(e) => {
+                                    setting.PartnerKey = (e.target as HTMLInputElement).value;
+                                    this.setState(this.state);
+                                }} />
                         </div>
                     </div>
                     <div className="form-actions text-right">
-                        <button className="btn btn-info" type="button" data-bind="click: SaveSetting">
+                        <button className="btn btn-info" type="button"
+                            ref={(e: HTMLButtonElement) => e ? e.onclick = ui.buttonOnClick(() => this.save(), {
+                                toast: '保存成功'
+                            }) : null}>
                             <i className="icon-ok bigger-110"></i>
                             保存
                 </button>
@@ -58,7 +83,8 @@ export default function (page: chitu.Page) {
         }
     }
 
-    ReactDOM.render(<SettingPage />, page.element)
+    let setting = await weixin.getSetting();
+    ReactDOM.render(<SettingPage setting={setting} />, page.element)
 
 }
 
