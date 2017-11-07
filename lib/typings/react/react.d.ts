@@ -386,6 +386,8 @@ declare module React {
         backgroundImage?: string;
 
         border?: string;
+        borderBottom?: string;
+        borderCollapse?: string;
         borderRadius?: number | string;
         borderTop?: string;
         borderTopWidth?: number | string;
@@ -393,7 +395,7 @@ declare module React {
         bottom?: number | string;
         boxFlex?: number;
         boxFlexGroup?: number;
-        borderBottom?: string;
+
 
         color?: string;
         columnCount?: number;
@@ -470,6 +472,7 @@ declare module React {
         autoComplete?: boolean;
         autoFocus?: boolean;
         autoPlay?: boolean;
+        border?: number;
         cellPadding?: number | string;
         cellSpacing?: number | string;
         charSet?: string;
