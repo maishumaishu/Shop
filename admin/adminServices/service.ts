@@ -11,6 +11,16 @@ username.add((value) => {
 // let local_service_host = 'service.alinq.cn'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
 let remote_service_host = 'service.alinq.cn';
 
+export function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
 export function imageUrl(path: string, width?: number) {
     if (!path) return path;
 
