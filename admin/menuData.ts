@@ -77,7 +77,8 @@ export let menuData: MenuNode[] = [
                 Icon: "icon-bullhorn",
                 Url: "shopping/promotion/activities",
                 Children: [
-                    { Title: "", Url: "shopping/promotion/activityEdit" }
+                    { Title: "", Url: "shopping/promotion/activityEdit" },
+                    { Title: "", Url: "shopping/promotion/activityEdit1" }
                 ]
             },
             {

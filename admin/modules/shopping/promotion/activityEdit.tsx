@@ -7,7 +7,7 @@ import app from 'application';
 
 
 let productSelectorDialog: ProductSelectDialog
-let productSelected: (product: Product) => void;
+// let productSelected: (product: Product) => void;
 export default function (page: chitu.Page) {
 
     let shopping = page.createService(ShoppingService);
@@ -25,12 +25,7 @@ export default function (page: chitu.Page) {
 
         let productSelectorElement = document.createElement('div');
         page.element.appendChild(productSelectorElement);
-        ReactDOM.render(<ProductSelectDialog ref={(e) => productSelectorDialog = e || productSelectorDialog} shopping={shopping}
-            selected={(p) => {
-                if (productSelected)
-                    return productSelected(p);
-
-            }} />, productSelectorElement);
+        ReactDOM.render(<ProductSelectDialog ref={(e) => productSelectorDialog = e || productSelectorDialog} shopping={shopping} />, productSelectorElement);
 
         page_load(page, page.routeData.values);
     });
@@ -47,14 +42,14 @@ export default function (page: chitu.Page) {
             ko.applyBindings(model, page.element);
         })
 
-        activity.getPromotions(activityId).then(function (data) {
+        activity.promotions(activityId).then(function (data) {
             for (var i = 0; i < data.length; i++) {
                 var content = new PromotionContent(data[i].Id, page);
                 content.type(data[i].Type);
                 content.method(data[i].Method);
                 for (var j = 0; j < data[i].PromotionContentRules.length; j++) {
                     var item = data[i].PromotionContentRules[j];
-                    var content_rule = content.newRule(item.Type, item.Method, item.Description);
+                    var content_rule = content.newRule(data[i].Type, data[i].Method, item.Description);
                     content_rule.id = item.Id;
                     content_rule.levelValue(item.LevelValue);
 
@@ -460,11 +455,11 @@ class PromotionRange {
             id: ko.observable<string>().extend({ required: true }),
             collectionType: ko.observable('Include'),
             showDialog: () => {
-                debugger;
-                productSelected = (product) => {
+                let productSelected = (product) => {
                     this.product.id(product.Id);
                 }
-                productSelectorDialog.show();
+                // selected={(product: Product) => Promise.resolve(true)}
+                productSelectorDialog.show(productSelected);
             }
         };
         this.brand = { id: ko.observable().extend({ required: true }), collectionType: ko.observable('Include') }
@@ -527,7 +522,6 @@ class PromotionRange {
 
             var brandName;
             var brandId = this.brand.id();
-            debugger;
             var brands = this.model.brands();
             for (var i = 0; i < brands.length; i++) {
                 if (brandId == brands[i].Id) {
@@ -723,7 +717,7 @@ function renderProductRuleDialog(element: HTMLElement, page: chitu.Page) {
             </div>
         </div>,
         <ProductSelectDialog key="productSelectorDialog" ref={(e) => productSelector = e || productSelector}
-            shopping={shopping} selected={(product: Product) => Promise.resolve(true)} />
+            shopping={shopping} />
 
     ], element);
 

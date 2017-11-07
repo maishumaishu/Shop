@@ -38,7 +38,7 @@ export abstract class Service extends chitu.Service {
     async ajax<T>(url: string, options: RequestInit) {
 
         // if (!Service.host) {
-        let host = await Service.setServiceHost();
+        let host = await Service.getServiceHost();
         // }
 
         url = `${protocol}//${host}/` + url;
@@ -66,8 +66,9 @@ export abstract class Service extends chitu.Service {
         return super.deleteByJson(url, data);
     }
     private static hostPing(host: string): Promise<number> {
-        var p = new Ping({ favicon: 'UserShop/Home/Index' });
-
+        let app_key = location.search.substr(1);
+        var p = new Ping({ favicon: `UserShop/Home/Index?application-key=${app_key}` });
+        //?application-key=location.search.substr(1)
         function ping(host): Promise<number> {
             return new Promise((resolve, reject) => {
                 p.ping(`${protocol}//${host}/`, (err: object, ping: number) => {
@@ -81,7 +82,7 @@ export abstract class Service extends chitu.Service {
             return num;
         });
     }
-    private static async setServiceHost(): Promise<string> {
+    private static async getServiceHost(): Promise<string> {
         let host = localStorage['ServiceHost'];
         if (host)
             return Promise.resolve(host);
