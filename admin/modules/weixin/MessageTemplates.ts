@@ -50,7 +50,7 @@ function page_load(page: chitu.Page, args) {
     };
 
     var val = validation.group(model.messageTemplate);
-    return weixin.getMessageTemplateTypes().done(function (data) {
+    return weixin.getMessageTemplateTypes().then(function (data) {
         /// <param name="data" type="Array"/>
         data.unshift({ Key: '', Value: '请选择类型' });
         model.types(data);
