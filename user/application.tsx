@@ -168,6 +168,8 @@ let station = new StationService();
 //     }
 // }
 
+chitu.Page.tagName = "article";
+
 export class Application extends BaseApplication {
     // private topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
     constructor() {
@@ -212,7 +214,8 @@ export class Application extends BaseApplication {
     }
 
     protected createPageElement(routeData: chitu.RouteData) {
-        let element = document.createElement('div');
+        let element = document.createElement(chitu.Page.tagName);
+        element.className = "mobile-page";
         if (location.pathname.endsWith('preview.html')) {
             let container = document.querySelector('.screen');
             console.assert(container != null, 'screen is not exists.');
