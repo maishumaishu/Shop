@@ -1,762 +1,1480 @@
-﻿import ko = require('knockout');
-import validation = require('knockout.validation');
+import { guid } from 'adminServices/service';
 import { ActivityService } from 'adminServices/activity';
-import { ShoppingService } from 'adminServices/shopping';
 import { ProductSelectDialog } from 'adminComponents/productSelectDialog';
+import { ShoppingService } from 'adminServices/shopping';
 import app from 'application';
+import * as dilu from 'dilu';
 
+dilu.FormValidator.errorClassName = "validationMessage";
 
-let productSelectorDialog: ProductSelectDialog
-// let productSelected: (product: Product) => void;
-export default function (page: chitu.Page) {
-
-    let shopping = page.createService(ShoppingService);
-    let activity = page.createService(ActivityService);
-
-    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
-        page.element.innerHTML = html;
-
-        let dlg_product = page.element.querySelector('[name="dlg_product"]') as HTMLElement;
-        renderProductRuleDialog(dlg_product, page);
-
-        let topbarElement = page.element.querySelector('.nav-tabs') as HTMLElement;
-        renderTopbar(topbarElement);
-        //renderTopbar
-
-        let productSelectorElement = document.createElement('div');
-        page.element.appendChild(productSelectorElement);
-        ReactDOM.render(<ProductSelectDialog ref={(e) => productSelectorDialog = e || productSelectorDialog} shopping={shopping} />, productSelectorElement);
-
-        page_load(page, page.routeData.values);
-    });
-
-    function page_load(page: chitu.Page, args) {
-        var activityId = args.id;
-        var model = new Model(page, activityId);
-
-        Promise.all([shopping.categories(), shopping.brands()]).then(result => {
-            result[0].unshift({ Name: '请选择类别', Id: '' });
-            result[1].dataItems.unshift({ Name: '请选择品牌', Id: '' });
-            model.categories(result[0]);
-            model.brands(result[1].dataItems);
-            ko.applyBindings(model, page.element);
-        })
-
-        activity.promotions(activityId).then(function (data) {
-            for (var i = 0; i < data.length; i++) {
-                var content = new PromotionContent(data[i].Id, page);
-                content.type(data[i].Type);
-                content.method(data[i].Method);
-                for (var j = 0; j < data[i].PromotionContentRules.length; j++) {
-                    var item = data[i].PromotionContentRules[j];
-                    var content_rule = content.newRule(data[i].Type, data[i].Method, item.Description);
-                    content_rule.id = item.Id;
-                    content_rule.levelValue(item.LevelValue);
-
-                    content.rules.push(content_rule);
-                }
-
-                var range = new PromotionRange(data[i].Id, model);
-                for (var j = 0; j < data[i].PromotionRangeRules.length; j++) {
-                    let item = data[i].PromotionRangeRules[j];
-                    var range_rule = range.newRule(item.Id, item.ObjectType, item.ObjectId, item.ObjectName, item.CollectionType, item.PromotionId);
-
-                    range.rules.push(range_rule);
-                }
-
-                range.allProducts(data[i].IsAll);
-
-                model.promotions.push({ id: data[i].Id, content: content, range: range, createDateTime: data[i].CreateDateTime });
-            }
-        });
-    }
-}
-
-var promotionMethods = {
-    amount: 'Amount',
-    count: 'Count'
-};
-var promotionMethodTexts = {
-    Amount: '按商品总金额',
-    Count: '按商品总数量'
-};
-
-var promotionTypes = {
-    amount: 'Reduce',
-    product: 'Given',
-    discount: 'Discount'
-};
 var promotionTypeTexts = {
     Reduce: '满减',
     Given: '满赠',
     Discount: '满折'
 };
 
-class PromotionContentRule {
-    id: string
-    promotion: PromotionContent
-    buyCount: KnockoutObservable<number>
-    buyAmount: KnockoutObservable<number>
-    levelValue: KnockoutObservable<number>
-    givenType: string
-    givenValue = ko.observable<string>()
-    typeText: KnockoutComputed<string>
-    method: string
-    description: KnockoutComputed<string> | string
+var promotionMethodTexts = {
+    Amount: '按商品总金额',
+    Count: '按商品总数量'
+};
 
-    constructor(promotion: PromotionContent, givenType: string) {
-        this.promotion = promotion;
-
-        this.buyCount = ko.observable<number>().extend({
-            required: {
-                onlyIf: $.proxy(function () {
-                    return ko.unwrap(this.type) == promotionMethods.count;
-                }, promotion)
-            }
-        });
-        this.buyAmount = ko.observable<number>().extend({
-            required: {
-                onlyIf: $.proxy(function () {
-                    return ko.unwrap(this.type) == promotionMethods.amount;
-                }, promotion)
-            }
-        });
-        ///this.method() == promotionMethods.amount ? promotionRule.buyAmount() : promotionRule.buyCount();
-        this.levelValue = ko.computed({
-            read: () => this.promotion.method() == promotionMethods.amount ? this.buyAmount() : this.buyCount(),
-            write: (value) => {
-                this.promotion.method() == promotionMethods.amount ? this.buyAmount(value) : this.buyCount(value)
-            }
-        });
-        this.givenType = givenType;
-        this.typeText = ko.computed(() => promotionTypeTexts[this.givenType]);
-    }
+var objectTypeTexts = {
+    Brand: '品牌',
+    Category: '类别',
+    Product: '商品'
 }
 
-class PromotionContent {
-    method: KnockoutObservable<string>
-    methodText: KnockoutComputed<string>
-    'type': KnockoutObservable<string> = ko.observable(promotionTypes.product)
-    typeText: KnockoutComputed<string> = ko.computed(() => promotionTypeTexts[this.type()])
-    rules: KnockoutObservableArray<PromotionContentRule> = ko.observableArray<PromotionContentRule>()
-    promotionId: string
-    productGivenVals: Array<any>
-    productGivenRule: ProductPromotionContentRule
-    amountReduceRule: AmountPromotionContentRule
-    amountDiscountRule: DiscountPromotionContentRule
-    val1: KnockoutValidationErrors
-    val2: KnockoutValidationErrors
-    val3: KnockoutValidationErrors
-    sv_activity: ActivityService;
-    shopping: ShoppingService;
-    page: chitu.Page;
+var promotionTypes = {
+    amount: 'Reduce',
+    product: 'Given',
+    discount: 'Discount'
+};
 
-    constructor(promotionId: string, page: chitu.Page) {
-        this.method = ko.observable(promotionMethods.amount);
-        this.methodText = ko.computed(() => promotionMethodTexts[this.method()]);
+var promotionMethods = {
+    amount: 'Amount',
+    count: 'Count'
+};
 
-        this.promotionId = promotionId;
-        this.productGivenVals = [];
+var objectNames: { [key: string]: string } = {};
 
-        var p = this;
-        p.productGivenRule = this.createPromotionRule(promotionTypes.product) as ProductPromotionContentRule;
-        p.amountReduceRule = this.createPromotionRule(promotionTypes.amount) as AmountPromotionContentRule;
-        p.amountDiscountRule = this.createPromotionRule(promotionTypes.discount) as DiscountPromotionContentRule;
-
-        //TODO:改名
-        this.val1 = validation.group(p.productGivenRule);
-        this.val2 = validation.group(p.amountReduceRule);
-        this.val3 = validation.group(p.amountDiscountRule);
-
-        this.sv_activity = page.createService(ActivityService);
-        this.shopping = page.createService(ShoppingService);
-        this.page = page;
-    }
-
-    addRule(promotionRule: PromotionContentRule) {
-        /// <param name="promotionRule" type="PromotionContentRule"/>
-        var method = ko.unwrap(promotionRule.method);
-        var rule = this.newRule(method, ko.unwrap(promotionRule.givenType), ko.unwrap(promotionRule.description));
-
-        var value = ko.unwrap(promotionRule.givenValue);
-        var levelValue = ko.unwrap(promotionRule.levelValue);
-        var givenType = ko.unwrap(promotionRule.givenType);
-        var givenValue = ko.unwrap(promotionRule.givenValue);
-
-        rule.levelValue(levelValue);
-
-
-        var self = this;
-        this.sv_activity.addContentRule(levelValue, givenType, givenValue, this.promotionId, rule.description)
-            .then((data) => {
-                rule['id'] = data.Id;
-                self.rules.push(rule);
-            });
-
-    }
-
-    newRule(method: string, givenType: string, description: string): PromotionContentRule {
-        var rule = new PromotionContentRule(this, givenType);
-        rule.givenType = givenType;
-        rule.method = method;
-        rule.description = ko.unwrap(description)
-        return rule;
-    }
-
-    removeRule(item) {
-        this.sv_activity.deleteContentRule(item.id).then(function () {
-            item.promotion.rules.remove(item);
-        });
-    }
-
-    createPromotionRule(type) {
-        var obj = createPromotionRule(this, type);
-        return obj;
-    }
-
-    /**
-     * 满赠
-     * @param promotion 
-     */
-    newBuyGiven(promotion: PromotionContent) {
-
-        promotion.val1.showAllMessages(false);
-        showInputDialog(this.page, 'dlg_productGiven', '满赠', (): Promise<any> => {
-
-            if (!promotion.productGivenRule['isValid']()) {
-                promotion.val1.showAllMessages();
-                for (var i = 0; i < promotion.productGivenVals.length; i++) {
-                    promotion.productGivenVals[i].showAllMessages();
-                }
-                return Promise.reject({});
-            }
-
-            var ids = '';
-            var products = promotion.productGivenRule.givenProducts();
-            for (var i = 0; i < products.length; i++) {
-                if (i > 0)
-                    ids = ids + ',';
-
-                ids = ids + "G'" + ko.unwrap(products[i].id) + "'";
-            }
-
-
-            let args = new wuzhui.DataSourceSelectArguments();
-            args.filter = 'Id in {' + ids + '}'
-            return this.shopping.products(args).then((data) => {
-                return data.dataItems;
-            }).then(data => {
-                var names = {};
-                for (var i = 0; i < data.length; i++) {
-                    names[data[i].Id] = data[i].Name;
-                }
-                for (var i = 0; i < products.length; i++) {
-                    var id = ko.unwrap(products[i].id);
-                    products[i].name(names[id]);
-                }
-
-                promotion.addRule(promotion.productGivenRule);
-            })
-        });
-    }
-
-    /**
-     * 满减
-     * @param promotion 
-     */
-    newBuyReduce(promotion: PromotionContent) {
-        promotion.val2.showAllMessages(false);
-        showInputDialog(this.page, 'dlg_amountReduce', '满减', (): Promise<any> => {
-            if (!this.amountReduceRule['isValid']()) {
-                promotion.val2.showAllMessages();
-                return Promise.reject({});
-            }
-
-            promotion.addRule(promotion.amountReduceRule);
-            return Promise.resolve();
-        });
-    }
-
-    newBuyDiscount(promotion) {
-        promotion.val3.showAllMessages(false);
-        showInputDialog(this.page, 'dlg_amountDiscount', '满折', function () {
-            if (!promotion.amountDiscountRule.isValid()) {
-                promotion.val3.showAllMessages();
-                return Promise.reject({});
-            }
-
-            promotion.addRule(promotion.amountDiscountRule);
-            return Promise.resolve();
-        });
-    }
-
-    showNewRuleDialog() {
-        switch (this.type()) {
-            case promotionTypes.amount:
-                this.newBuyReduce(this);
-                break;
-            case promotionTypes.discount:
-                this.newBuyDiscount(this);
-                break;
-            case promotionTypes.product:
-                this.newBuyGiven(this);
-                break;
-        }
-    }
-}
-
-class ProductPromotionContentRule extends PromotionContentRule {
-    givenProducts: KnockoutObservableArray<any>
-
-    constructor(promotion: PromotionContent, givenType: string) {
-        super(promotion, givenType);
-
-        this.givenProducts = ko.observableArray();
-        this.description = ko.computed(() => {
-            var str = '即可获赠';// chitu.Utility.format('即可获赠 “{0}” {1} 件', ko.unwrap(this.givenProduct.name()), ko.unwrap(this.givenProduct.quantity()));
-            var products = this.givenProducts();
-            for (var i = 0; i < products.length; i++) {
-                if (i > 0)
-                    str = str + "，";
-
-                let name = ko.unwrap(products[i].name);
-                let count = ko.unwrap(products[i].quantity);
-                str = str + ` “${name}” ${count} 件`;
-            }
-            return getConditionText(this) + str;
-        });
-
-        this.givenValue = ko.computed(() => {
-            var str = '';
-            var products = this.givenProducts();
-            for (var i = 0; i < products.length; i++) {
-                if (i > 0)
-                    str = str + ',';
-
-                str = str + ko.unwrap(products[i].id) + ':' + ko.unwrap(products[i].quantity);
-            }
-            return str;
-        });
-
-        this.addGivenProduct();
-    }
-    addGivenProduct = () => {
-        var item = {
-            id: ko.observable().extend({ required: true }),
-            name: ko.observable(),
-            quantity: ko.observable()
-        };
-        this.givenProducts.push(item);
-
-        var val = validation.group(item);
-        this.promotion.productGivenVals.push(val);
-    }
-    removeGivenProduct = (item) => {
-        this.givenProducts.remove(item);
-    }
-}
-
-class AmountPromotionContentRule extends PromotionContentRule {
-    reduceAmount: KnockoutObservable<number>
-    description: KnockoutComputed<string>
-
-    constructor(promotion: PromotionContent, givenType: string) {
-        super(promotion, givenType)
-        this.reduceAmount = ko.observable<number>().extend({ required: true });
-        this.givenValue = ko.computed(() => this.reduceAmount() == null ? '' : this.reduceAmount().toString());
-        this.description = ko.computed(() => {
-            // let str = new Number(this.reduceAmount())['toFormattedString']('￥{0:C2}');
-            let str = `￥${new Number(this.reduceAmount()).toFixed(2)}`;
-            var given_text = `即减 ${str} 元`;
-            return getConditionText(this) + given_text;
-        });
-    }
-}
-
-class DiscountPromotionContentRule extends PromotionContentRule {
-    pricePercentMain: KnockoutObservable<number>
-    pricePercentMinor: KnockoutObservable<number>
-    givenValue: KnockoutComputed<string>
-
-    constructor(promotion: PromotionContent, givenType: string) {
-        super(promotion, givenType)
-
-        this.pricePercentMain = ko.observable<number>();
-        this.pricePercentMinor = ko.observable<number>();
-
-        this.description = ko.computed(() => {
-            var given_text = '打 ' + this.pricePercentMain();
-            if (this.pricePercentMinor())
-                given_text = given_text + '.' + this.pricePercentMinor();
-
-            return getConditionText(this) + given_text + '折';
-        })
-
-        this.givenValue = ko.computed(() => this.pricePercentMain() + '.' + this.pricePercentMinor())
-    }
-}
-
-
-function createPromotionRule(promotion, type1): PromotionContentRule {
-    var baseRule = new PromotionContentRule(promotion, type1);
-    var extend: any = {
-    };
-    switch (type1) {
-        case promotionTypes.product:
-            extend = new ProductPromotionContentRule(promotion, type1);
-            break;
-        case promotionTypes.amount:
-            extend = new AmountPromotionContentRule(promotion, type1);
-            break;
-        case promotionTypes.discount:
-            extend = new DiscountPromotionContentRule(promotion, type1);
-            break;
-    }
-    return extend;
-}
-
-function getConditionText(promotionRule: PromotionContentRule) {
-    var promotion = promotionRule.promotion;
+function getConditionText(promotion: Promotion, promotionRule: PromotionContentRule) {
     var condition_text;
-    if (promotion.method() == promotionMethods.count) {
-        condition_text = `购买指定商品任意 ${ko.unwrap(promotionRule.buyCount)} 件`;
+    if (promotion.Method == promotionMethods.count) {
+        condition_text = `购买指定商品任意 ${promotionRule.LevelValue} 件, `;
     }
-    else if (promotion.method() == promotionMethods.amount) {
-        condition_text = `购买指定商品满 ￥${new Number(promotionRule.buyAmount()).toFixed(2)} 元,`;
+    else if (promotion.Method == promotionMethods.amount) {
+        condition_text = `购买指定商品满 ￥${new Number(promotionRule.LevelValue).toFixed(2)} 元, `;
     }
     return condition_text;
 }
 
-class PromotionRange {
-    promotionId: string
-    rules: KnockoutObservableArray<PromotionRangeRule>
-    allProducts: KnockoutObservable<boolean>
-    product: {
-        id: KnockoutObservable<string>,
-        collectionType: KnockoutObservable<string>,
-        showDialog: () => void
-    }
-    brand: any
-    category: any
-    product_val: KnockoutValidationErrors
-    brand_val: KnockoutValidationErrors
-    category_val: KnockoutValidationErrors
-    model: Model;
-    sv_activity: ActivityService;
-    shopping: ShoppingService;
-    page: chitu.Page;
-
-
-    constructor(promotionId: string, model: Model) {
-        this.promotionId = promotionId;
-        this.rules = ko.observableArray<PromotionRangeRule>();
-        this.allProducts = ko.observable(false);
-        this.product = {
-            id: ko.observable<string>().extend({ required: true }),
-            collectionType: ko.observable('Include'),
-            showDialog: () => {
-                let productSelected = (product) => {
-                    this.product.id(product.Id);
-                }
-                // selected={(product: Product) => Promise.resolve(true)}
-                productSelectorDialog.show(productSelected);
-            }
-        };
-        this.brand = { id: ko.observable().extend({ required: true }), collectionType: ko.observable('Include') }
-        this.category = { id: ko.observable().extend({ required: true }), collectionType: ko.observable('Include') };
-        this.product_val = validation.group(this.product);
-        this.brand_val = validation.group(this.brand);
-        this.category_val = validation.group(this.category);
-        this.model = model;
-
-        var self = this;
-        this.allProducts.subscribe((value) => {
-            this.sv_activity.changeIsAll(self.promotionId, value);
+function description(promotion: Promotion, contentRule: PromotionContentRule) {
+    if (promotion.Type == promotionTypes.product) {
+        var str = '即可获赠';// chitu.Utility
+        let items = contentRule.GivenValue.split(",").map(o => {
+            let arr = o.split(":");
+            let id = arr[0];
+            let quantity = Number.parseInt(arr[1]);
+            return { id, quantity };
         });
 
-        this.page = model.page;
-        this.sv_activity = this.page.createService(ActivityService);
-        this.shopping = this.page.createService(ShoppingService);
-    }
-    addRule = (type, name, id, collectionType, promotionId) => {
-        var self = this;
-        return this.sv_activity.addRangeRule(id, name, type, collectionType, promotionId)
-            .then((data) => {
-                var rule = this.newRule(data.Id, type, id, name, collectionType, promotionId);
-                self.rules.push(rule);
-            });
-    }
-    removeRule = (item) => {
-        return this.sv_activity.deleteRangeRule(ko.unwrap(item.id))
-            .then(() => {
-                this.rules.remove(item);
-            });
-    }
-    newRule(id, _type, objectId, objectName, collectionType, promotionId): PromotionRangeRule {
-        var rule = new PromotionRangeRule(id, _type, objectId, objectName, collectionType, this.sv_activity);
-        return rule;
-    }
-    newProductRule = (self) => {
-        this.product_val.showAllMessages(false);
-        showInputDialog(this.page, 'dlg_product', '添加商品', (): Promise<any> => {
-            if (!self.product.isValid()) {
-                self.product_val.showAllMessages();
-                return Promise.reject({});
-            }
-            return this.shopping.product(self.product.id()).then((product) => {
-                var name = ko.unwrap(product.Name)
-                var productId = ko.unwrap(product.Id)
-                var collectionType = ko.unwrap(self.product.collectionType)
+        for (var i = 0; i < items.length; i++) {
+            if (i > 0)
+                str = str + "，";
 
-                self.addRule('Product', name, productId, collectionType, self.promotionId);
-            });
+            str = str + ` “${objectNames[items[i].id]}” ${items[i].quantity} 件`;
+        }
+
+        let description = getConditionText(promotion, contentRule) + str;
+        return description;
+    }
+    else if (promotion.Type == promotionTypes.amount) {
+        let str = `￥${new Number(contentRule.GivenValue).toFixed(2)}`;
+        var given_text = `即减 ${str} 元`;
+        return getConditionText(promotion, contentRule) + given_text;
+    }
+    else if (promotion.Type == promotionTypes.discount) {
+        var given_text = `打 ${contentRule.GivenValue} 折`;
+        return getConditionText(promotion, contentRule) + given_text;
+    }
+}
+
+interface Props extends React.Props<ActivityEditPage> {
+    page: chitu.Page,
+    promotions: Promotion[],
+    activityId: string,
+}
+
+interface State {
+    promotions: Promotion[]
+}
+
+class ActivityEditPage extends React.Component<Props, State>{
+    private buyDiscountDialog: BuyDiscountDialog;
+    private buyReduceDialog: BuyReduceDialog;
+    private buyGivenDialog: BuyGivenDialog;
+    private categoryInputDialog: CategoryInputDialog;
+    private brandInputDialog: BrandInputDialog;
+    private productInputDialog: ProductInputDialog;
+    private productSelectDialog: ProductSelectDialog;
+    private page: chitu.Page;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = { promotions: props.promotions };
+        this.page = this.props.page;
+    }
+    newProductRule(promotion: Promotion) {
+        this.productInputDialog.show((product, isInclude) => {
+            let rule: PromotionRangeRule = {
+                Id: guid(),
+                ObjectName: product.Name,
+                ObjectId: product.Id,
+                ObjectType: 'Product',
+                PromotionId: promotion.Id,
+                CollectionType: isInclude ? 'Include' : 'Exclude',
+                CreateDateTime: new Date(Date.now())
+            }
+            promotion.PromotionRangeRules.push(rule);
+            this.setState(this.state);
         });
     }
-    newBrandRule = () => {
-        this.brand_val.showAllMessages(false);
-        showInputDialog(this.page, 'dlg_brand', '添加品牌', () => {
-            if (!this.brand.isValid()) {
-                this.brand_val.showAllMessages();
-                return Promise.reject({});
+    newBrandRule(promotion: Promotion) {
+        this.brandInputDialog.show((brand, isInclude) => {
+            let rule: PromotionRangeRule = {
+                Id: guid(),
+                ObjectName: brand.Name,
+                ObjectId: brand.Id,
+                ObjectType: 'Brand',
+                PromotionId: promotion.Id,
+                CollectionType: isInclude ? 'Include' : 'Exclude',
+                CreateDateTime: new Date(Date.now())
             }
-
-            var brandName;
-            var brandId = this.brand.id();
-            var brands = this.model.brands();
-            for (var i = 0; i < brands.length; i++) {
-                if (brandId == brands[i].Id) {
-                    brandName = brands[i].Name;
-                    break;
-                }
-            }
-
-            this.addRule('Brand', brandName, brandId, ko.unwrap(this.brand.collectionType), this.promotionId);
+            promotion.PromotionRangeRules.push(rule);
+            this.setState(this.state);
         })
     }
-    newCategoryRule = (self) => {
-        this.category_val['showAllMessages'](false);
-        showInputDialog(this.page, 'dlg_category', '添加类别', () => {
-            if (!this.category.isValid()) {
-                this.category_val.showAllMessages();
-                return Promise.reject({});
+    newCategoryRule(promotion: Promotion) {
+        this.categoryInputDialog.show((category, isInclude) => {
+            let rule: PromotionRangeRule = {
+                Id: guid(),
+                ObjectName: category.Name,
+                ObjectId: category.Id,
+                ObjectType: 'Category',
+                PromotionId: promotion.Id,
+                CollectionType: isInclude ? 'Include' : 'Exclude',
+                CreateDateTime: new Date(Date.now())
             }
-
-            var categoryName;
-            var categoryId = self.category.id();
-            debugger;
-            var categories = this.model.categories();
-            for (var i = 0; i < categories.length; i++) {
-                if (categoryId == categories[i].Id) {
-                    categoryName = categories[i].Name;
-                    break;
-                }
-            }
-
-            this.addRule('Category', categoryName, categoryId, ko.unwrap(self.category.collectionType), self.promotionId);
+            promotion.PromotionRangeRules.push(rule);
+            this.setState(this.state);
+        })
+    }
+    showNewRuleDialog(promotion: Promotion) {
+        switch (promotion.Type) {
+            case promotionTypes.amount:
+                this.newBuyReduce(promotion);
+                break;
+            case promotionTypes.discount:
+                this.newBuyDiscount(promotion);
+                break;
+            case promotionTypes.product:
+                this.newBuyGiven(promotion);
+                break;
+        }
+    }
+    newBuyReduce(promotion: Promotion) {
+        this.buyReduceDialog.show(promotion, (rule) => {
+            rule.Description = description(promotion, rule);
+            promotion.PromotionContentRules.push(rule);
+            this.setState(this.state);
         });
     }
-
-}
-
-class PromotionRangeRule {
-    id: string
-    type: string
-    typeText: string
-    objectName: string
-    objectId: string
-    isInclude: KnockoutObservable<boolean>
-    range: PromotionRange
-    collectionType: KnockoutObservable<string>
-
-    constructor(id, _type, objectId, objectName, collectionType, sv_activity: ActivityService) {
-        this.id = id;
-        this.objectId = objectId;
-        this.type = _type
-        this.objectId = objectId;
-        this.objectName = objectName;
-        this.typeText = _type == 'Product' ? '商品' : _type == 'Brand' ? '品牌' : '类别',
-            this.isInclude = ko.observable<boolean>(collectionType == 'Include');
-        this.collectionType = ko.observable<string>(collectionType);
-
-        this.isInclude.subscribe((value) => {
-            var type = value ? 'Include' : 'Exclude';
-            this.collectionType(value ? 'Include' : 'Exclude');
-            sv_activity.changeCollectionType(ko.unwrap(this.id), type);
-        }, this);
+    newBuyDiscount(promotion: Promotion) {
+        this.buyDiscountDialog.show(promotion, (rule: PromotionContentRule) => {
+            rule.Description = description(promotion, rule);
+            promotion.PromotionContentRules.push(rule);
+            this.setState(this.state);
+        })
     }
-}
-
-
-class Promotion {
-    id: string
-    content: PromotionContent
-    range: PromotionRange
-}
-
-class Model {
-    page: chitu.Page;
-    activityId: string
-    createPromotion: Function
-    removePromotion: Function
-    promotions = ko.observableArray()
-    categories = ko.observableArray<any>()
-    brands = ko.observableArray<any>()
-
-    promotion = {
-        method: ko.observable('Amount'),
-        type: ko.observable('Given')
+    newBuyGiven(promotion: Promotion) {
+        this.buyGivenDialog.show(promotion, (rule: PromotionContentRule) => {
+            rule.Description = description(promotion, rule);
+            promotion.PromotionContentRules.push(rule);
+            this.setState(this.state);
+        });
     }
-
-    constructor(page: chitu.Page, activityId: string) {
-        if (page == null)
-            throw new Error('Argument "page" is null.');
-
-        this.page = page
-        this.activityId = activityId;
-
-        let sv_activity = page.createService(ActivityService);
-
-        this.createPromotion = () => {
-            var $dlg = this.page.element.querySelector('[name="dlg_promotion"]') as HTMLElement;
-            showDialog($dlg, '添加优惠', () => {
-                return sv_activity.addPromotion(this.activityId, this.promotion.type(), this.promotion.method())
-                    .then((data) => {
-                        var p = new Promotion();
-                        p.id = data.Id;
-                        p.content = new PromotionContent(data.Id, page);
-                        p.content.method(this.promotion.method());
-                        p.content.type(this.promotion.type());
-                        p.range = new PromotionRange(data.Id, this);
-
-                        this.promotions.push(p);
-                    });
-            })
-        }
-
-        this.removePromotion = (item) => {
-            return sv_activity.deletePromotion(ko.unwrap(item.id)).then(() => {
-                this.promotions.remove(item);
-            });
-        }
+    removeContentRule(promotion: Promotion, contentRule: PromotionContentRule) {
+        let contentRules = promotion.PromotionContentRules.filter(o => o != contentRule);
+        promotion.PromotionContentRules = contentRules;
+        this.setState(this.state);
     }
-}
+    save() {
 
+    }
+    removePromotion(p: Promotion) {
+        this.state.promotions = this.state.promotions.filter(o => o != p);
+        this.setState(this.state);
+        return Promise.resolve();
+    }
+    render() {
+        let activity = this.page.createService(ActivityService);
+        let topbar = (
+            <ul key="topbar" className="nav nav-tabs">
+                <li key="back" className="pull-right">
+                    <button className="btn btn-sm btn-primary" onClick={() => app.back()}>
+                        <i className="icon-reply"></i>
+                        <span>返回</span>
+                    </button>
+                </li>
+                <li key="save" className="pull-right">
+                    <button className="btn btn-sm btn-primary"
+                        ref={(e: HTMLButtonElement) => {
+                            if (!e) return;
+                            e.onclick = ui.buttonOnClick(() => {
+                                return activity.updateActivityPromotions(this.props.activityId, this.state.promotions);
+                            }, { toast: '保存成功' })
+                        }}>
+                        <i className="icon-save"></i>
+                        <span>保存</span>
+                    </button>
+                </li>
+                <li key="delete" className="pull-right">
+                    <div className="btn-group">
+                        <button type="button" className="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i className="icon-remove"></i>
+                            <span style={{ paddingRight: 4 }}>删除</span>
+                            <i className="caret"></i>
+                        </button>
+                        <ul data-bind="foreach:promotions" className="dropdown-menu">
+                            <li><a data-bind="click:$parent.removePromotion, text:'第' + (ko.unwrap($index) + 1) + '条' " href="#"></a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li key="add" className="pull-right">
+                    <button data-bind="click:createPromotion" href="javascript:" className="btn btn-sm btn-primary">
+                        <i className="icon-plus"></i>
+                        <span>添加</span>
+                    </button>
+                </li>
+            </ul>
+        );
 
-
-
-function showDialog(dlg: HTMLElement, title, ok_callback: (element: HTMLElement) => void | Promise<any>) {
-    if (title)
-        dlg.querySelector('.modal-title').innerHTML = title;
-    (dlg.querySelector('[name="btnOK"]') as HTMLElement).onclick = function () {
-        var result = ok_callback(dlg);
-        if (result instanceof Promise) {
-            result.then(function () {
-                ui.hideDialog(dlg);
-            });
+        let result = [topbar];
+        let promotions = this.state.promotions;
+        if (promotions == null || promotions == []) {
+            result.push(
+                <div style={{ textAlign: 'center', padding: '50px 0px 50px 0px' }}>
+                    暂无优惠信息，你可以点击左上角的“添加”按钮进行添加，添加完成后，请点击“保存”按钮。
+                </div>
+            );
         }
         else {
-            ui.hideDialog(dlg);
-        }
-    };
-
-    ui.showDialog(dlg);
-}
-
-function showInputDialog(page: chitu.Page, name: string, title: string, ok_callback: (element: HTMLElement) => void | Promise<any>) {
-    let dialogElement = page.element.querySelector(`[name=${name}]`) as HTMLElement;
-    showDialog(dialogElement, title, ok_callback);
-}
-
-function renderProductRuleDialog(element: HTMLElement, page: chitu.Page) {
-    let productSelector: ProductSelectDialog;
-    let shopping = page.createService(ShoppingService);
-    ReactDOM.render([
-        <div key="productRuleDialog" className="modal-dialog">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <button type="button" className="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                        <span className="sr-only">Close</span>
-                    </button>
-                    <h4 className="modal-title">&nbsp;</h4>
-                </div>
-                <div className="modal-body">
-                    <div className="form-horizontal">
-                        <div className="form-group">
-                            <label className="control-label col-sm-2">
-                                *产品编号
-                            </label>
-                            <div className="col-sm-10">
-                                <div className="input-group">
-                                    <input data-bind="value:id" className="form-control" placeholder="请输入产品编号" />
-                                    <span className="input-group-btn">
-                                        <button name="btnSelectProduct" className="btn btn-default" type="button"
-                                            data-bind="click:showDialog">
-                                            <i className="icon-cog" />
+            promotions.map((o, i) =>
+                <div key={i} className="row">
+                    <div className="col-md-6">
+                        <PromotionRangeComponent page={this.page} rules={o.PromotionRangeRules} />
+                    </div>
+                    <div className="col-md-6">
+                        <table border={1} className="table table-striped table-bordered table-hover" style={{ borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr>
+                                    <th colSpan={4}>
+                                        优惠内容
+                                        <button className="btn-link pull-right" title="点击删除该优惠"
+                                            ref={(e: HTMLButtonElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => this.removePromotion(o), {
+                                                    confirm: '确定要删除该优惠吗'
+                                                });
+                                            }}>
+                                            <i className="icon-remove pull-right text-danger">
+                                            </i>
                                         </button>
-                                    </span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style={{ textAlign: 'center' }}>名称</th>
+                                    <th style={{ textAlign: 'center', width: 100 }}>
+                                        {o.Method == "Amount" ? '金额' : '数量'}
+                                    </th>
+                                    <th style={{ textAlign: 'center', width: 80 }}>
+                                        操作
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style={{ display: o.PromotionContentRules.length > 0 ? 'none' : null }}>
+                                    <td colSpan={4} style={{ border: "0px", textAlign: 'center' }}>
+                                        <div style={{ padding: '50px 0px 50px 0px' }}>暂无数据</div>
+                                    </td>
+                                </tr>
+                                {
+                                    o.PromotionContentRules.sort((a, b) => a.LevelValue - b.LevelValue).map((r, i) =>
+                                        <tr key={`content${i}`}>
+                                            <td>
+                                                {r.Description}
+                                            </td>
+                                            <td style={{ textAlign: 'right' }}>
+                                                {o.Method == 'Amount' ?
+                                                    `￥${r.LevelValue.toFixed(2)}` :
+                                                    r.LevelValue
+                                                }
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <button className="btn btn-minier btn-danger"
+                                                    onClick={() => this.removeContentRule(o, r)}>
+                                                    <i className="icon-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan={4}>
+                                        <div className="pull-left">
+                                            <div style={{ marginTop: 6 }}>
+                                                <label style={{ paddingTop: 2 }}>
+                                                    <span style={{ fontWeight: 'bold' }}>优惠方式：</span>
+                                                    <span data-bind="text:methodText">{promotionMethodTexts[o.Method]}</span>
+                                                </label>
+                                                <label style={{ paddingTop: 2, paddingLeft: 10 }}>
+                                                    <span style={{ fontWeight: 'bold' }}>优惠类型：</span>
+                                                    <span data-bind="text:typeText">{promotionTypeTexts[o.Type]}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="pull-right">
+                                            <button className="btn btn-primary btn-sm"
+                                                onClick={() => this.showNewRuleDialog(o)}>添加优惠内容</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            ).forEach(e => result.push(e));
+        }
+
+        let shopping = this.page.createService(ShoppingService);
+        let dialogs = [
+            <ProductInputDialog key="productInputDialog" page={this.page}
+                ref={(e) => this.productInputDialog = e || this.productInputDialog} />,
+            <BrandInputDialog key="brandInputDialog" page={this.page}
+                ref={(e) => this.brandInputDialog = e || this.brandInputDialog} />,
+            <CategoryInputDialog key="categoryInputDialog" page={this.page}
+                ref={(e) => this.categoryInputDialog = e || this.categoryInputDialog} />,
+            <BuyGivenDialog key="buyGivenDialog"
+                ref={(e) => this.buyGivenDialog = e || this.buyGivenDialog} />,
+            <BuyReduceDialog key="buyReduceDialog"
+                ref={(e) => this.buyReduceDialog = e || this.buyReduceDialog} />,
+            <BuyDiscountDialog key="buyDiscountDialog"
+                ref={(e) => this.buyDiscountDialog = e || this.buyDiscountDialog} />,
+            <ProductSelectDialog key="productSelectDialog" shopping={shopping}
+                ref={(e) => productSelectDialog = e || productSelectDialog} />
+        ];
+        dialogs.forEach(o => result.push(o));
+
+        return result;
+    }
+}
+
+class ProductInputDialog extends React.Component<React.Props<ProductInputDialog> & { page: chitu.Page },
+    { product?: Product, isInclude: boolean }> {
+
+    private nameError: HTMLElement;
+    private nameInput: HTMLInputElement;
+    private element: HTMLElement;
+    private validator: dilu.FormValidator;
+
+    private onProductSelected: (o: Product, isInclude: boolean) => void;
+
+    constructor(props) {
+        super(props);
+        this.state = { isInclude: true };
+    }
+    private showProductSelector() {
+        productSelectDialog.show((product) => {
+            this.state.product = product;
+            this.setState(this.state);
+        });
+    }
+    show(onProductSelected: (product: Product, isInclude: boolean) => void) {
+        this.state.product = null;
+        this.setState(this.state);
+        ui.showDialog(this.element);
+        this.onProductSelected = onProductSelected;
+    }
+    async confirm() {
+        let isValid = await this.validator.check();
+        if (!isValid)
+            return;
+
+        console.assert(this.state.product != null, "product is null");
+        this.onProductSelected(this.state.product, this.state.isInclude);
+
+        ui.hideDialog(this.element);
+    }
+    componentDidMount() {
+        let { required } = dilu.rules;
+        this.validator = new dilu.FormValidator({
+            element: this.nameInput,
+            rules: [required("请选择商品")],
+            errorElement: this.nameError
+        })
+    }
+    render() {
+        let { isInclude } = this.state;
+        let productId = "", productName = "";
+        if (this.state.product) {
+            productId = this.state.product.Id;
+            productName = this.state.product.Name;
+        }
+
+        let shopping = this.props.page.createService(ShoppingService);
+        return [
+            <form key="dlg_product" name="dlg_product" className="modal fade"
+                ref={(e: HTMLElement) => this.element = e || this.element}>
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span className="sr-only">Close</span>
+                            </button>
+                            <h4 className="modal-title">添加商品</h4>
+                        </div>
+                        <div className="modal-body form-horizontal">
+                            <div className="form-group" style={{ display: 'none' }}>
+                                <label className="control-label col-sm-2">
+                                    *产品编号
+                                </label>
+                                <div className="col-sm-10">
+                                    <div className="input-group">
+                                        <input className="form-control" placeholder="请输入产品编号"
+                                            value={productId || ''} readOnly={true} />
+                                        <span className="input-group-btn">
+                                            <button name="btnSelectProduct" className="btn btn-default" type="button"
+                                                onClick={() => this.showProductSelector()}>
+                                                <i className="icon-cog" />
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label col-sm-2">
+                                    *商品名称
+                                </label>
+                                <div className="col-sm-10">
+                                    <div className="input-group">
+                                        <input className="form-control" placeholder="请选择商品"
+                                            value={productName || ''} readOnly={true}
+                                            ref={(e: HTMLInputElement) => this.nameInput = e || this.nameInput} />
+                                        <span className="input-group-btn">
+                                            <button name="btnSelectProduct" className="btn btn-default" type="button"
+                                                onClick={() => this.showProductSelector()}>
+                                                <i className="icon-cog" />
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <span className="validationMessage" ref={(e: HTMLElement) => this.nameError = e || this.nameError}></span>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <div className="col-sm-10 col-sm-offset-2">
+                                    <label className="radio-inline">
+                                        <input type="radio" value="Include" checked={isInclude}
+                                            onChange={(e) => {
+                                                this.state.isInclude = (e.target as HTMLInputElement).checked;
+                                                this.setState(this.state);
+                                            }} />包含
+                                    </label>
+                                    <label className="radio-inline">
+                                        <input type="radio" value="Exclude" checked={!isInclude}
+                                            onChange={(e) => {
+                                                this.state.isInclude = !(e.target as HTMLInputElement).checked;
+                                                this.setState(this.state);
+                                            }} />排除
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                        <div className="form-group">
-                            <div className="col-sm-10 col-sm-offset-2">
-                                <label className="radio-inline">
-                                    <input data-bind="checked:collectionType,attr:{name:'productType'+ ($index())}" type="radio" value="Include" />包含
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
+                            <button name="btnOK" type="button" className="btn btn-primary"
+                                onClick={() => this.confirm()}>确定</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        ];
+    }
+}
+
+
+class BrandInputDialog extends React.Component<
+    React.Props<BrandInputDialog> & { page: chitu.Page },
+    { brands: Brand[], selectedBrand: Brand, isInclude: boolean }>{
+
+    private static brands: Array<Brand>;
+    private element: HTMLElement;
+    private brandSelect: HTMLSelectElement;
+    private validator: dilu.FormValidator;
+
+    private onBrandSelected: (brand: Brand, isInclude: boolean) => void
+
+    constructor(props) {
+        super(props);
+
+        this.state = { brands: BrandInputDialog.brands || [], selectedBrand: null, isInclude: true };
+
+        let args: wuzhui.DataSourceSelectArguments = {
+            maximumRows: 1000
+        };
+
+        if (BrandInputDialog.brands == null) {
+            let shopping = this.props.page.createService(ShoppingService);
+            shopping.brands(args).then(brands => {
+                BrandInputDialog.brands = brands.dataItems;
+                this.state.brands = BrandInputDialog.brands;
+                this.setState(this.state);
+            });
+        }
+    }
+    show(onBrandSelected: (brand: Brand, isInclude: boolean) => void) {
+        this.state.isInclude = true;
+        this.state.selectedBrand = null;
+        this.setState(this.state);
+
+        this.onBrandSelected = onBrandSelected;
+        ui.showDialog(this.element);
+    }
+    async confirm() {
+        let isValid = await this.validator.check();
+        if (isValid == false)
+            return;
+
+        this.onBrandSelected(this.state.selectedBrand, this.state.isInclude);
+        ui.hideDialog(this.element);
+    }
+    componentDidMount() {
+        let { required } = dilu.rules;
+        this.validator = new dilu.FormValidator(
+            { element: this.brandSelect, rules: [required("请选择品牌")] }
+        );
+    }
+    render() {
+        let brand = this.state.selectedBrand;
+        let isInclude = this.state.isInclude;
+        let selectedBrandId = brand == null ? "" : brand.Id;
+        return (
+            <form name="dlg_brand" className="modal fade"
+                ref={(e: HTMLElement) => this.element = e || this.element}>
+                <div data-bind="with:brand" className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span className="sr-only">Close</span>
+                            </button>
+                            <h4 className="modal-title">添加品牌</h4>
+                        </div>
+                        <div className="modal-body">
+                            <div className="form-horizontal">
+                                <div className="form-group">
+                                    <label className="control-label col-sm-2">
+                                        *品牌
                                 </label>
-                                <label className="radio-inline">
-                                    <input data-bind="checked:collectionType,attr:{name:'productType'+ ($index())}" type="radio" value="Exclude" />排除
-                                </label>
+                                    <div className="col-sm-10">
+                                        <select className="form-control" value={selectedBrandId}
+                                            ref={(e: HTMLSelectElement) => this.brandSelect = e || this.brandSelect}
+                                            onChange={(e) => {
+                                                let brandId = (e.target as HTMLSelectElement).value;
+                                                this.state.selectedBrand = this.state.brands.filter(o => o.Id == brandId)[0];
+                                                this.setState(this.state);
+                                            }} >
+                                            <option key="empty" value="">请选择品牌</option>
+                                            {this.state.brands.map(o =>
+                                                <option key={o.Id} value={o.Id} >{o.Name}</option>
+                                            )}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <div className="col-sm-10 col-sm-offset-2">
+                                        <label className="radio-inline">
+                                            <input type="radio" checked={isInclude}
+                                                onChange={(e) => {
+                                                    this.state.isInclude = (e.target as HTMLInputElement).checked;
+                                                    this.setState(this.state);
+                                                }} />包含
+                                        </label>
+                                        <label className="radio-inline">
+                                            <input type="radio" checked={!isInclude}
+                                                onChange={(e) => {
+                                                    this.state.isInclude = !(e.target as HTMLInputElement).checked;
+                                                    this.setState(this.state);
+                                                }} />排除
+                                    </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
+                            <button name="btnOK" type="button" className="btn btn-primary"
+                                onClick={() => this.confirm()}>确定</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        );
+    }
+}
+
+class CategoryInputDialog extends React.Component<
+    React.Props<CategoryInputDialog> & { page: chitu.Page },
+    { categories: Category[], selectedCategory: Category, isInclude: boolean }>{
+    private categorySelect: HTMLSelectElement;
+    private element: HTMLElement;
+    private onCategorySelected: (category: Category, isInclude: boolean) => void;
+    private static categories: Array<Category>;
+    private validator: dilu.FormValidator;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            categories: CategoryInputDialog.categories || [],
+            selectedCategory: null, isInclude: true
+        };
+        let shopping = this.props.page.createService(ShoppingService);
+
+        let args: wuzhui.DataSourceSelectArguments = {
+            maximumRows: 1000
+        };
+
+        if (CategoryInputDialog.categories == null) {
+            shopping.categories().then(categories => {
+                CategoryInputDialog.categories = categories;
+                this.state.categories = categories;
+                this.setState(this.state);
+            });
+        }
+
+    }
+    show(onBrandSelected: (category: Category, isInclude: boolean) => void) {
+
+        this.state.isInclude = true;
+        this.state.selectedCategory = null;
+        this.setState(this.state);
+
+        this.onCategorySelected = onBrandSelected;
+        ui.showDialog(this.element);
+    }
+    async confirm() {
+        let isValid = await this.validator.check();
+        if (!isValid)
+            return;
+
+        this.onCategorySelected(this.state.selectedCategory, this.state.isInclude);
+        ui.hideDialog(this.element);
+    }
+    componentDidMount() {
+        let { required } = dilu.rules;
+        this.validator = new dilu.FormValidator(
+            { element: this.categorySelect, rules: [required("请选择类别")] }
+        )
+    }
+    render() {
+        let category = this.state.selectedCategory;
+        let isInclude = this.state.isInclude;
+        let categories = this.state.categories;
+        let selectedBrandId = category == null ? "" : category.Id;
+        return (
+            <form name="dlg_brand" className="modal fade"
+                ref={(e: HTMLElement) => this.element = e || this.element}>
+                <div data-bind="with:brand" className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span className="sr-only">Close</span>
+                            </button>
+                            <h4 className="modal-title">添加类别</h4>
+                        </div>
+                        <div className="modal-body">
+                            <div className="form-horizontal">
+                                <div className="form-group">
+                                    <label className="control-label col-sm-2">
+                                        *类别
+                                    </label>
+                                    <div className="col-sm-10">
+                                        <select className="form-control" value={selectedBrandId}
+                                            ref={(e: HTMLSelectElement) => this.categorySelect = e || this.categorySelect}
+                                            onChange={(e) => {
+                                                let categoryId = (e.target as HTMLSelectElement).value;
+                                                this.state.selectedCategory = categories.filter(o => o.Id == categoryId)[0];
+                                                this.setState(this.state);
+                                            }} >
+                                            <option key="empty" value="">请选择类别</option>
+                                            {categories.map(o =>
+                                                <option key={o.Id} value={o.Id} >{o.Name}</option>
+                                            )}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <div className="col-sm-10 col-sm-offset-2">
+                                        <label className="radio-inline">
+                                            <input type="radio" checked={isInclude}
+                                                onChange={(e) => {
+                                                    this.state.isInclude = (e.target as HTMLInputElement).checked;
+                                                    this.setState(this.state);
+                                                }} />包含
+                                        </label>
+                                        <label className="radio-inline">
+                                            <input type="radio" checked={!isInclude}
+                                                onChange={(e) => {
+                                                    this.state.isInclude = !(e.target as HTMLInputElement).checked;
+                                                    this.setState(this.state);
+                                                }} />排除
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
+                            <button name="btnOK" type="button" className="btn btn-primary"
+                                onClick={() => this.confirm()}>确定</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        );
+    }
+}
+
+abstract class ContentRuleDialog<S> extends React.Component<any,
+    { promotion?: Promotion } & S>{
+
+    protected abstract get givenValueElements(): JSX.Element[];
+    protected abstract get validatorFields(): dilu.ValidateField[];
+    protected abstract get givenValue(): string;
+
+    protected element: HTMLElement;
+    protected title: string;
+
+    private countSelect: HTMLSelectElement;
+    private amountInput: HTMLInputElement;
+    private amountInputError: HTMLElement;
+    private validator: dilu.FormValidator;
+    private onConfirm: (contentRule: PromotionContentRule) => void;
+
+    constructor(props) {
+        super(props);
+        this.state = {} as S;
+    }
+    show(promotion: Promotion, onConfirm: (contentRule: PromotionContentRule) => void) {
+
+        this.onConfirm = onConfirm;
+        this.state.promotion = promotion;
+
+        this.countSelect.value = "";
+        this.amountInput.value = "";
+
+        this.setState(this.state);
+        ui.showDialog(this.element);
+    }
+
+    hide() {
+        ui.hideDialog(this.element);
+    }
+
+    private async confirm() {
+        let r = dilu.rules;
+        this.validator.clearErrors();
+        let checkResult = await this.validator.check();
+        if (!checkResult) {
+            return;
+        }
+
+        let { promotion } = this.state;
+        let contentRule: PromotionContentRule = {
+            Id: guid(),
+            LevelValue: promotion.Method == "Count" ?
+                Number.parseFloat(this.countSelect.value) :
+                Number.parseFloat(this.amountInput.value),
+            GivenValue: this.givenValue,
+            CreateDateTime: new Date(Date.now())
+        }
+
+        contentRule.Description = description(promotion, contentRule);
+
+        this.onConfirm(contentRule);
+        ui.hideDialog(this.element);
+    }
+
+    componentDidMount() {
+        let { required, numeric } = dilu.rules;
+
+        dilu.FormValidator.errorClassName = "validationMessage";
+        this.validator = new dilu.FormValidator(
+            {
+                element: this.countSelect, rules: [required()],
+                condition: () => this.state.promotion.Method == "Count"
+            },
+            {
+                element: this.amountInput, rules: [required(), numeric()],
+                condition: () => this.state.promotion.Method == "Amount",
+                errorElement: this.amountInputError
+            }
+        )
+        this.validator.addFields(...this.validatorFields);
+    }
+
+    render() {
+
+        let { promotion } = this.state;
+        let method = promotion != null ? promotion.Method : "";
+
+        return (
+            <form className="modal fade" ref={(e: HTMLElement) => this.element = e || this.element}>
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span className="sr-only">Close</span>
+                            </button>
+                            <h4 className="modal-title">{this.title || ''}</h4>
+                        </div>
+                        <div className="modal-body form-horizontal">
+                            <div className="form-group" style={{ display: method == "Count" ? null : 'none' }} >
+                                <label className="control-label col-sm-2">*购买数量</label>
+                                <div className="col-sm-10">
+                                    <select data-bind="value: buyCount"
+                                        className="form-control" ref={(e: HTMLSelectElement) => this.countSelect = e || this.countSelect}>
+                                        <option value="">购买数量</option>
+                                        <option value="1">任意1件</option>
+                                        <option value="2">任意2件</option>
+                                        <option value="3">任意3件</option>
+                                        <option value="4">任意4件</option>
+                                        <option value="5">任意5件</option>
+                                        <option value="6">任意6件</option>
+                                        <option value="7">任意7件</option>
+                                        <option value="8">任意8件</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="form-group" style={{ display: method == "Amount" ? null : 'none' }}>
+                                <label className="control-label col-sm-2">*消费金额</label>
+                                <div className="col-sm-10">
+                                    <div className="input-group">
+                                        <input data-bind="value:buyAmount" className="form-control" placeholder="请输入消费金额"
+                                            ref={(e: HTMLInputElement) => this.amountInput = e || this.amountInput} />
+                                        <div className="input-group-addon">元</div>
+                                    </div>
+                                    <span className={dilu.FormValidator.errorClassName}
+                                        ref={(e: HTMLElement) => this.amountInputError = e || this.amountInputError} />
+                                </div>
+                            </div>
+                            {this.givenValueElements}
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
+                            <button name="btnOK" data-bind="" type="button" className="btn btn-primary"
+                                onClick={() => this.confirm()}>确定</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        );
+    }
+}
+
+/** 满赠优惠对话框 */
+class BuyGivenDialog extends ContentRuleDialog<
+    { givenProducts: Array<{ id: string, quantity: number }> }> {
+
+    private productIdInput: HTMLInputElement;
+    private productCountSelect: HTMLSelectElement;
+    private productNameInput: HTMLInputElement;
+    private quantityInput: HTMLInputElement;
+    private productNameError: HTMLElement;
+
+    constructor(props) {
+        super(props);
+
+        this.title = "满赠";
+        this.state.givenProducts = [];
+    }
+
+    show(promotion: Promotion, onConfirm: (contentRule: PromotionContentRule) => void) {
+        this.state.givenProducts = [];
+        super.show(promotion, onConfirm)
+    }
+
+    private showProductSelector(): any {
+        productSelectDialog.show((product) => {
+            objectNames[product.Id] = product.Name;
+            this.productNameInput.value = product.Name;
+            this.productIdInput.value = product.Id;
+        })
+    }
+    private onGiveProductChanged(): any {
+        if (this.productIdInput.value && this.productCountSelect.value) {
+            this.addGivenProduct();
+            this.productNameInput.value = "";
+            this.productIdInput.value = "";
+            this.productCountSelect.value = "";
+        }
+    }
+    private addGivenProduct(): any {
+        let id = this.productIdInput.value;
+        let quantity = Number.parseInt(this.productCountSelect.value);
+        this.state.givenProducts.push({ id, quantity });
+        this.setState(this.state);
+    }
+    private removeGivenProduct(item: any): any {
+        let givenProducts = this.state.givenProducts.filter(o => o != item);
+        this.state.givenProducts = givenProducts;
+        this.setState(this.state);
+    }
+
+    protected get givenValue(): string {
+        let givenValue = "";
+        for (let i = 0; i < this.state.givenProducts.length; i++) {
+            if (i > 0)
+                givenValue = givenValue + ",";
+
+            var p = this.state.givenProducts[i];
+            givenValue = givenValue + `${p.id}:${p.quantity}`;
+        }
+        return givenValue;
+    }
+
+    protected get validatorFields(): dilu.ValidateField[] {
+        let r = dilu.rules;
+        return [
+            {
+                element: this.productIdInput,
+                errorElement: this.productNameError,
+                rules: [
+                    r.custom(() => {
+                        return this.state.givenProducts.length > 0
+                    }, "至少输入一个赠送商品")
+                ]
+            }
+        ];
+    }
+
+    protected get givenValueElements(): JSX.Element[] {
+        let givenProducts = this.state.givenProducts; //new Array<{ id: string, quantity: number }>();
+
+        return [
+            <div key="buyGivenElements" className="form-group">
+                <label data-bind="text:ko.unwrap($index) == 0 ? '*赠送商品' : ''" className="control-label col-sm-2">*赠送商品</label>
+                {
+                    givenProducts.map((o, i) =>
+                        <div key={o.id} className={i == 0 ? "col-sm-10" : 'col-sm-10 col-sm-offset-2'}>
+                            <div className="row" style={{ paddingTop: 8, paddingBottom: 12 }}>
+                                <div className="col-sm-8" style={{ paddingRight: 0 }}>
+                                    <input className="form-control" readOnly={true} value={objectNames[o.id]} />
+                                </div>
+                                <div className="col-sm-4" style={{ paddingLeft: 0 }}>
+                                    <div className="input-group">
+                                        <input className="form-control" value={`${o.quantity}件`} readOnly={true}
+                                            ref={(e: HTMLInputElement) => this.quantityInput = e || this.quantityInput} />
+                                        <span className="input-group-btn">
+                                            <button className="btn btn-default" type="button"
+                                                onClick={() => this.removeGivenProduct(o)}>
+                                                <i className="icon-minus"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+                <div className={givenProducts.length == 0 ? "col-sm-10" : 'col-sm-10 col-sm-offset-2'}>
+                    <div className="row">
+                        <div className="col-sm-8" style={{ paddingRight: 0 }}>
+                            <div className="input-group">
+                                <input placeholder="请选择赠送的商品" className="form-control" readOnly={true}
+                                    ref={(e: HTMLInputElement) => this.productNameInput = e || this.productNameInput} />
+                                <input type="hidden" placeholder="请输入赠送的商品编号"
+                                    onChange={() => this.onGiveProductChanged()} readOnly={true}
+                                    ref={(e: HTMLInputElement) => this.productIdInput = e || this.productIdInput} />
+                                <span className="input-group-btn">
+                                    <button className="btn btn-default" type="button"
+                                        onClick={() => this.showProductSelector()}>
+                                        <i className="icon-cog"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <span className="validationMessage"
+                                ref={(e: HTMLElement) => this.productNameError = e || this.productNameError} />
+                        </div>
+                        <div className="col-sm-4" style={{ paddingLeft: 0 }}>
+                            {/* <div className="input-group"> */}
+                            <select data-bind="value:quantity" className="form-control" style={{ height: 34 }}
+                                onChange={() => this.onGiveProductChanged()}
+                                ref={(e: HTMLSelectElement) => this.productCountSelect = e || this.productCountSelect}>
+                                <option value="">赠送数量</option>
+                                <option value="1">1件</option>
+                                <option value="2">2件</option>
+                                <option value="3">3件</option>
+                                <option value="4">4件</option>
+                                <option value="5">5件</option>
+                            </select>
+                            {/* <div data-bind="click:$parent.addGivenProduct, visible:ko.unwrap($index) == 0" className="input-group-addon"
+                                    onClick={() => this.addGivenProduct()}>
+                                    <i className="icon-plus"></i>
+                                </div> */}
+                            {/* </div> */}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ]
+    }
+
+
+
+
+
+    // private quantityInput: HTMLInputElement;
+    // private countSelect: HTMLSelectElement;
+    // private productNameInput: HTMLInputElement;
+    // private valueInput: HTMLInputElement;
+    // private productIdInput: HTMLInputElement;
+    // private productCountInput: HTMLSelectElement;
+    // private onConfirm: (rule: PromotionContentRule) => void;
+    // private validator: dilu.FormValidator;
+
+    // constructor(props) {
+    //     super(props);
+
+    //     this.title = "满赠";
+    //     this.state = { givenProducts: [] };
+    // }
+
+    // async confirm() {
+    //     dilu.FormValidator.errorClassName = "validationMessage";
+    //     let r = dilu.rules;
+    //     if (this.validator == null) {
+    //         this.validator = new dilu.FormValidator(
+    //             {
+    //                 element: this.productIdInput, rules: [
+    //                     r.custom(() => {
+    //                         return this.state.givenProducts.length > 0
+    //                     }, "至少输入一个赠送商品")
+    //                 ]
+    //             }
+    //         );
+    //         if (this.valueInput) {
+    //             this.validator.addFields(
+    //                 { element: this.valueInput, rules: [r.required(), r.numeric()] }
+    //             );
+    //         }
+    //     }
+
+    //     this.validator.clearErrors();
+    //     let checkResult = await this.validator.check();
+    //     if (!checkResult) {
+    //         return;
+    //     }
+
+    //     let givenValue = "";
+    //     for (let i = 0; i < this.state.givenProducts.length; i++) {
+    //         if (i > 0)
+    //             givenValue = givenValue + ",";
+
+    //         var p = this.state.givenProducts[i];
+    //         givenValue = givenValue + `${p.id}:${p.quantity}`;
+    //     }
+    //     let value = Number.parseFloat(this.valueInput.value);
+    //     let rule: PromotionContentRule = {
+    //         Id: guid(),
+    //         LevelValue: value,
+    //         GivenValue: givenValue,
+    //     }
+
+    //     this.onConfirm(rule);
+    //     ui.hideDialog(this.element);
+    // }
+    // addGivenProduct() {
+    //     let id = this.productIdInput.value;
+    //     let quantity = Number.parseInt(this.productCountInput.value);
+    //     this.state.givenProducts.push({ id, quantity });
+    //     this.setState(this.state);
+    // }
+    // removeGivenProduct(item) {
+    //     let givenProducts = this.state.givenProducts.filter(o => o != item);
+    //     this.state.givenProducts = givenProducts;
+    //     this.setState(this.state);
+    // }
+    // show(promotion: Promotion, onConfirm: (rule: PromotionContentRule) => void) {
+    //     this.onConfirm = onConfirm;
+    //     this.state.promotion = promotion;
+    //     this.state.givenProducts = [];
+    //     if (this.valueInput)
+    //         this.valueInput.value = "";
+
+    //     this.setState(this.state);
+
+    //     ui.showDialog(this.element);
+    // }
+    // showProductSelector() {
+    //     productSelectDialog.show((product) => {
+    //         objectNames[product.Id] = product.Name;
+    //         this.productNameInput.value = product.Name;
+    //         this.productIdInput.value = product.Id;
+    //     })
+    // }
+
+    // onGiveProductChanged() {
+    //     if (this.productIdInput.value && this.productCountInput.value) {
+    //         this.addGivenProduct();
+    //         this.productNameInput.value = "";
+    //         this.productIdInput.value = "";
+    //         this.productCountInput.value = "";
+    //     }
+    // }
+    // get body() {
+    //     let { promotion, givenProducts } = this.state;
+    //     let method = promotion != null ? promotion.Method : "";
+
+    //     return (
+    //         <div className="form-horizontal">
+    //             <div className="form-group" style={{ display: method == "Count" ? null : 'none' }}
+    //                 ref={(e: HTMLSelectElement) => this.countSelect = e || this.countSelect}>
+    //                 <label className="control-label col-sm-2">*购买数量</label>
+    //                 <div className="col-sm-10">
+    //                     <select data-bind="value: buyCount" className="form-control">
+    //                         <option value="">购买数量</option>
+    //                         <option value="1">任意1件</option>
+    //                         <option value="2">任意2件</option>
+    //                         <option value="3">任意3件</option>
+    //                         <option value="4">任意4件</option>
+    //                         <option value="5">任意5件</option>
+    //                         <option value="6">任意6件</option>
+    //                         <option value="7">任意7件</option>
+    //                         <option value="8">任意8件</option>
+    //                     </select>
+    //                 </div>
+    //             </div>
+    //             <div className="form-group" style={{ display: method == "Amount" ? null : 'none' }}>
+    //                 <label className="control-label col-sm-2">*消费金额</label>
+    //                 <div className="col-sm-10">
+    //                     <div className="input-group">
+    //                         <input data-bind="value:buyAmount" className="form-control" placeholder="请输入消费金额"
+    //                             ref={(e: HTMLInputElement) => this.valueInput = e || this.valueInput} />
+    //                         <div className="input-group-addon">元</div>
+    //                     </div>
+    //                 </div>
+    //             </div>
+
+    //             <div className="form-group">
+    //                 <label data-bind="text:ko.unwrap($index) == 0 ? '*赠送商品' : ''" className="control-label col-sm-2">*赠送商品</label>
+    //                 {
+    //                     givenProducts.map((o, i) =>
+    //                         <div key={o.id} className={i == 0 ? "col-sm-10" : 'col-sm-10 col-sm-offset-2'}>
+    //                             <div className="row" style={{ paddingTop: 8, paddingBottom: 12 }}>
+    //                                 <div className="col-sm-8" style={{ paddingRight: 0 }}>
+    //                                     <input className="form-control" readOnly={true} value={objectNames[o.id]} />
+    //                                 </div>
+    //                                 <div className="col-sm-4" style={{ paddingLeft: 0 }}>
+    //                                     <div className="input-group">
+    //                                         <input className="form-control" value={`${o.quantity}件`} readOnly={true}
+    //                                             ref={(e: HTMLInputElement) => this.quantityInput = e || this.quantityInput} />
+    //                                         <span className="input-group-btn">
+    //                                             <button className="btn btn-default" type="button"
+    //                                                 onClick={() => this.removeGivenProduct(o)}>
+    //                                                 <i className="icon-minus"></i>
+    //                                             </button>
+    //                                         </span>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </div>
+    //                     )
+    //                 }
+    //                 <div className={givenProducts.length == 0 ? "col-sm-10" : 'col-sm-10 col-sm-offset-2'}>
+    //                     <div className="row">
+    //                         <div className="col-sm-8" style={{ paddingRight: 0 }}>
+    //                             <div className="input-group">
+    //                                 <input placeholder="请选择赠送的商品" className="form-control" readOnly={true}
+    //                                     ref={(e: HTMLInputElement) => this.productNameInput = e || this.productNameInput} />
+    //                                 <input type="hidden" placeholder="请输入赠送的商品编号"
+    //                                     onChange={() => this.onGiveProductChanged()} readOnly={true}
+    //                                     ref={(e: HTMLInputElement) => this.productIdInput = e || this.productIdInput} />
+    //                                 <span className="input-group-btn">
+    //                                     <button className="btn btn-default" type="button"
+    //                                         onClick={() => this.showProductSelector()}>
+    //                                         <i className="icon-cog"></i>
+    //                                     </button>
+    //                                 </span>
+    //                             </div>
+    //                         </div>
+    //                         <div className="col-sm-4" style={{ paddingLeft: 0 }}>
+    //                             {/* <div className="input-group"> */}
+    //                             <select data-bind="value:quantity" className="form-control" style={{ height: 34 }}
+    //                                 onChange={() => this.onGiveProductChanged()}
+    //                                 ref={(e: HTMLSelectElement) => this.productCountInput = e || this.productCountInput}>
+    //                                 <option value="">赠送数量</option>
+    //                                 <option value="1">1件</option>
+    //                                 <option value="2">2件</option>
+    //                                 <option value="3">3件</option>
+    //                                 <option value="4">4件</option>
+    //                                 <option value="5">5件</option>
+    //                             </select>
+    //                             {/* <div data-bind="click:$parent.addGivenProduct, visible:ko.unwrap($index) == 0" className="input-group-addon"
+    //                                     onClick={() => this.addGivenProduct()}>
+    //                                     <i className="icon-plus"></i>
+    //                                 </div> */}
+    //                             {/* </div> */}
+    //                         </div>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     )
+    // }
+}
+
+class BuyReduceDialog extends ContentRuleDialog<{}> {
+    private reduceInput: HTMLInputElement;
+    private reduceInputError: HTMLElement;
+    protected givenValueElements: JSX.Element[];
+    protected get validatorFields(): dilu.ValidateField[] {
+        let { required } = dilu.rules;
+        return [
+            { element: this.reduceInput, rules: [required()], errorElement: this.reduceInputError }
+        ];
+    }
+
+    get givenValue(): string {
+        return this.reduceInput.value;
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.givenValueElements = [
+            <div key="reduceAmount" className="form-group">
+                <label className="control-label col-sm-2">*减免金额</label>
+                <div className="col-sm-10">
+                    <div className="input-group">
+                        <input data-bind="value:reduceAmount" className="form-control" placeholder="请输入减免金额"
+                            ref={(e: HTMLInputElement) => this.reduceInput = e || this.reduceInput} />
+                        <div className="input-group-addon">元</div>
+                    </div>
+                    <span className="validationMessage"
+                        ref={(e: HTMLElement) => this.reduceInputError = e || this.reduceInputError} />
+                </div>
+            </div>
+        ];
+
+
+    }
+}
+
+class BuyDiscountDialog extends ContentRuleDialog<{}>{
+    private minorSelect: HTMLSelectElement;
+    private mainSelect: HTMLSelectElement;
+
+    protected get validatorFields(): dilu.ValidateField[] {
+        return [];
+    }
+    protected get givenValue(): string {
+        return `${this.mainSelect.value}.${this.minorSelect.value}`
+    }
+    protected get givenValueElements(): JSX.Element[] {
+        return [
+            <div key="buyDiscountElement" className="form-group">
+                <label className="control-label col-sm-2">*打折</label>
+                <div className="col-sm-10">
+                    <div className="row">
+                        <div className="col-xs-6" style={{ paddingRight: 0 }}>
+                            <select data-bind="value:pricePercentMain" className="form-control"
+                                ref={(e: HTMLSelectElement) => this.mainSelect = e || this.mainSelect}>
+                                <option value="9">9</option>
+                                <option value="8">8</option>
+                                <option value="7">7</option>
+                                <option value="6">6</option>
+                                <option value="5">5</option>
+                                <option value="4">4</option>
+                                <option value="3">3</option>
+                                <option value="2">2</option>
+                                <option value="1">1</option>
+                            </select>
+                        </div>
+                        <div className="col-xs-6" style={{ paddingLeft: 0 }}>
+                            <div className="input-group">
+                                <select data-bind="value:pricePercentMinor" className="form-control"
+                                    ref={(e: HTMLSelectElement) => this.minorSelect = e || this.minorSelect}>
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                                <div className="input-group-addon">
+                                    折
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="modal-footer">
-                    <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
-                    <button name="btnOK" data-bind="" type="button" className="btn btn-primary">确定</button>
-                </div>
             </div>
-        </div>,
-        <ProductSelectDialog key="productSelectorDialog" ref={(e) => productSelector = e || productSelector}
-            shopping={shopping} />
+        ]
+    }
 
-    ], element);
+}
 
-    // setTimeout(() => {
-    //     let btn = element.querySelector('[name="btnSelectProduct"]') as HTMLButtonElement;
-    //     debugger;
-    //     btn.onclick = function () {
-    //         alert('hello');
-    //     }
-    // }, 1000);
+class PromotionRangeComponent extends React.Component<
+    { page: chitu.Page, rules: PromotionRangeRule[] },
+    { isAll?: boolean, rules: PromotionRangeRule[] }> {
+
+    categoryInputDialog: CategoryInputDialog;
+    brandInputDialog: BrandInputDialog;
+    productInputDialog: ProductInputDialog;
+
+    constructor(props) {
+        super(props);
+        this.state = { rules: this.props.rules };
+    }
+
+    private newCategoryRule(): any {
+        this.categoryInputDialog.show((category, isInclude) => {
+            let rule: PromotionRangeRule = {
+                Id: guid(),
+                ObjectName: category.Name,
+                ObjectId: category.Id,
+                ObjectType: 'Category',
+                // PromotionId: promotion.Id,
+                CollectionType: isInclude ? 'Include' : 'Exclude',
+                CreateDateTime: new Date(Date.now())
+            }
+            // promotion.PromotionRangeRules.push(rule);
+            this.state.rules.push(rule);
+            this.setState(this.state);
+        })
+    }
+    private newBrandRule(): any {
+        this.brandInputDialog.show((brand, isInclude) => {
+            let rule: PromotionRangeRule = {
+                Id: guid(),
+                ObjectName: brand.Name,
+                ObjectId: brand.Id,
+                ObjectType: 'Brand',
+                // PromotionId: promotion.Id,
+                CollectionType: isInclude ? 'Include' : 'Exclude',
+                CreateDateTime: new Date(Date.now())
+            }
+            this.state.rules.push(rule);
+            this.setState(this.state);
+        })
+    }
+    private newProductRule(): any {
+        this.productInputDialog.show((product, isInclude) => {
+            let rule: PromotionRangeRule = {
+                Id: guid(),
+                ObjectName: product.Name,
+                ObjectId: product.Id,
+                ObjectType: 'Product',
+                // PromotionId: promotion.Id,
+                CollectionType: isInclude ? 'Include' : 'Exclude',
+                CreateDateTime: new Date(Date.now())
+            }
+            this.state.rules.push(rule);
+            this.setState(this.state);
+        });
+    }
+
+    render() {
+        let { isAll, rules } = this.state;
+        let page = this.props.page;
+        return [
+            <table key="main" border={1} className="table table-striped table-bordered table-hover" style={{ borderCollapse: 'collapse' }}>
+                <thead>
+                    <tr>
+                        <th colSpan={4}>优惠范围</th>
+                    </tr>
+                    <tr>
+                        <th style={{ textAlign: 'center', width: 60 }}>类型</th>
+                        <th style={{ textAlign: 'center' }}>名称</th>
+                        <th style={{ textAlign: 'center', width: 160 }}>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style={{ display: rules.length > 0 ? 'none' : null }}>
+                        <td colSpan={4} style={{ border: "0px", textAlign: 'center' }}>
+                            <div style={{ padding: '50px 0px 50px 0px' }}>暂无数据</div>
+                        </td>
+                    </tr>
+                    {rules.map((r, i) =>
+                        <tr key={`range${i}`}>
+                            <td>{objectTypeTexts[r.ObjectType] || r.ObjectType}</td>
+                            <td>{r.ObjectName}</td>
+                            <td style={{ textAlign: 'center' }}>
+                                <label className="switch">
+                                    <input checked={r.CollectionType == "Include"} type="checkbox" className="ace ace-switch ace-switch-5"
+                                        onChange={(e) => {
+                                            (e.target as HTMLInputElement).checked ? r.CollectionType = "Include" : r.CollectionType = "Exclude";
+                                            this.setState(this.state);
+                                        }} />
+                                    <span className="lbl middle" data-lbl="包括 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 排除"></span>
+                                </label>
+                                <button className="btn btn-minier btn-danger" style={{ marginLeft: 8 }}
+                                    onClick={() => {
+                                        this.state.rules = rules.filter(item => item != r);
+                                        this.setState(this.state);
+                                    }}>
+                                    <i className="icon-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan={3}>
+                            <div className="pull-left">
+                                <label>
+                                    <input checked={isAll} type="checkbox"
+                                        onChange={(e) => isAll = (e.target as HTMLInputElement).checked} />
+                                    &nbsp; 全场优惠
+                                </label>
+                            </div>
+                            <div className="pull-right">
+                                <button className="btn btn-primary btn-sm"
+                                    onClick={() => this.newProductRule()}>添加商品</button>
+                                <button className="btn btn-primary btn-sm"
+                                    onClick={() => this.newBrandRule()}>添加品牌</button>
+                                <button className="btn btn-primary btn-sm"
+                                    onClick={() => this.newCategoryRule()}>添加品类</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>,
+            <ProductInputDialog key="productInputDialog" page={page}
+                ref={(e) => this.productInputDialog = e || this.productInputDialog} />,
+            <BrandInputDialog key="brandInputDialog" page={page}
+                ref={(e) => this.brandInputDialog = e || this.brandInputDialog} />,
+            <CategoryInputDialog key="categoryInputDialog" page={page}
+                ref={(e) => this.categoryInputDialog = e || this.categoryInputDialog} />,
+        ]
+    }
 }
 
 
-function renderTopbar(element: HTMLElement) {
-    ReactDOM.render([
-        <li key="back" className="pull-right">
-            <button className="btn btn-sm btn-primary" onClick={() => app.back()}>
-                <i className="icon-reply"></i>
-                <span>返回</span>
-            </button>
-        </li>,
-        <li key="delete" className="pull-right">
-            <div className="btn-group">
-                <button type="button" className="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i className="icon-remove"></i>
-                    <span style={{ paddingRight: 4 }}>删除</span>
-                    <i className="caret"></i>
-                </button>
-                <ul data-bind="foreach:promotions" className="dropdown-menu">
-                    <li><a data-bind="click:$parent.removePromotion, text:'第' + (ko.unwrap($index) + 1) + '条' " href="#"></a></li>
-                </ul>
-            </div>
-        </li>,
-        <li key="add" className="pull-right">
-            <button data-bind="click:createPromotion" href="javascript:" className="btn btn-sm btn-primary">
-                <i className="icon-plus"></i>
-                <span>添加</span>
-            </button>
-        </li>
-    ], element);
+
+var productSelectDialog: ProductSelectDialog;
+export default async function (page: chitu.Page) {
+
+    let activityId = page.routeData.values.id;
+    let activity = page.createService(ActivityService);
+    let { promotions } = await Promise.all([activity.promotions(activityId)])
+        .then(arr => ({
+            promotions: arr[0]
+        }));
+
+    ReactDOM.render(<ActivityEditPage activityId={activityId} promotions={promotions} page={page} />, page.element);
+
 }
 
