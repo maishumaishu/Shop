@@ -26,16 +26,13 @@ userToken.add((value) => {
     localStorage.setItem('userToken', value);
 })
 
-// const REMOTE_HOST = 'service.alinq.cn';
 export let config = {
-    /** 调用服务接口超时时间，单位为秒 */
-    ajaxTimeout: 30,
     pageSize: 10
 }
 
-// let host: string;
+
 let protocol = location.protocol;
-let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.cn`];
+let defaultHost = 'service.alinq.cn';
 
 function parseUrlParams(query: string) {
     let match,
@@ -53,17 +50,23 @@ function parseUrlParams(query: string) {
 export abstract class Service extends chitu.Service {
     async ajax<T>(url: string, options: RequestInit) {
 
-        let host = await this.getServiceHost();
-
-        url = `${protocol}//${host}/` + url;
-
+        let host = Ping.optimumServer || defaultHost;
+        url = `${protocol}//${host}/${url}`;
 
         options = options || {};
         options.headers = options.headers;
 
+        if (!tokens.appToken)
+            throw new Error("app token error");
+
         options.headers['application-key'] = tokens.appToken;
         if (tokens.userToken.value)
             options.headers['user-token'] = tokens.userToken.value;
+
+        this.error.add((sender, error) => {
+            debugger;
+            alert(error.message);
+        })
 
         return super.ajax<T>(url, options);
     }
@@ -79,52 +82,6 @@ export abstract class Service extends chitu.Service {
     delete<T>(url: string, data?: any): Promise<T> {
         return super.deleteByJson(url, data);
     }
-    private async ping<T>(method: () => Promise<T>) {
-        var start: number = new Date() as any;
-        let result = await method();
-        var pong = new Date() as any - start;
-        return Object.assign(result, { pong });
-    }
-    private async hostPing(host: string): Promise<number> {
-        let app_key = location.search.substr(1);
-
-        let url = "UserShop/Home/";
-        let m = () => this.get<string>(url);
-        let data = await Promise.all([
-            this.ping(m),
-            this.ping(m),
-            this.ping(m)
-        ]);
-
-        // localStorage.setItem('appid', data[0].AppId);
-
-        let arr = data.map(o => o.pong);
-        let num = (arr[0] + arr[1] + arr[2]) / 3;
-        return num;
-    }
-    private async getServiceHost(): Promise<string> {
-        let host = localStorage['ServiceHost'];
-        if (host)
-            return Promise.resolve(host);
-
-        host = await new Promise<string>((resolve, reject) => {
-            let result: string;
-            for (let i = 0; i < allServiceHosts.length; i++) {
-                this.hostPing(allServiceHosts[i]).then(o => {
-                    console.log(`ping: ${allServiceHosts[i]} ${o}`);
-
-                    if (!result) {
-                        result = allServiceHosts[i];
-                        resolve(result);
-                    }
-                });
-            }
-        });
-
-        localStorage['ServiceHost'] = host;
-        return host;
-    }
-
 }
 
 export function imageUrl(path: string, width?: number, height?: number) {
