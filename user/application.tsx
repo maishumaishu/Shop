@@ -4,7 +4,7 @@ window['h'] = window['h'] || React.createElement;
 
 import { StationService } from 'userServices/stationService';
 import { WeiXinService } from 'userServices/weiXinService';
-import { Application as BaseApplication } from 'chitu.mobile';
+import { Application as BaseApplication, Page as BasePage } from 'chitu.mobile';
 import { MobilePage } from 'mobileComponents/mobilePage'
 
 export let config = {
@@ -13,6 +13,7 @@ export let config = {
 
 
 chitu.Page.tagName = "article";
+let topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
 
 export class Application extends BaseApplication {
     constructor() {
@@ -26,10 +27,12 @@ export class Application extends BaseApplication {
 
     private styleloaded: boolean;
     protected createPage(routeData: chitu.RouteData, actionArguments) {
-        let page = super.createPage(routeData, actionArguments);// as Page;
+        let page = super.createPage(routeData, actionArguments) as BasePage;
         let path = routeData.actionPath.substr(routeData.basePath.length);
         let cssPath = `css!modules` + path;
         requirejs([cssPath]);
+
+        page.displayStatic = topLevelPages.indexOf(page.name) >= 0;
 
         //===================================================
         // 生成样式
@@ -58,6 +61,7 @@ export class Application extends BaseApplication {
         else {
             document.body.appendChild(element);
         }
+
         return element;
     }
 }
@@ -97,9 +101,9 @@ else if (!location.hash) {
 // })();
 
 
-app.error.add((page, error) => {
-    alert(error.message);
-})
+// app.error.add((page, error) => {
+//     alert(error.message);
+// })
 
 //============================================================
 // ui
