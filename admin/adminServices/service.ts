@@ -42,6 +42,19 @@ export function imageUrl(path: string, width?: number) {
     return url;
 }
 
+function parseUrlParams(query: string) {
+    let match,
+        pl = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
+
+    let urlParams = {};
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+
+    return urlParams;
+}
+
 export class Service extends chitu.Service {
     static error = chitu.Callbacks<Service, ServiceError>()
     static config = {
@@ -60,8 +73,12 @@ export class Service extends chitu.Service {
         if (Service.token)
             options.headers['user-token'] = Service.token;
 
-        if (location.search)
-            options.headers['application-key'] = location.search.substr(1);
+        if (location.search) {
+            let query = parseUrlParams(location.search.substr(1));
+            if (query['appKey']) {
+                options.headers['application-key'] = query['appKey'];
+            }
+        }
 
 
         return super.ajax<T>(url, options).then(data => {

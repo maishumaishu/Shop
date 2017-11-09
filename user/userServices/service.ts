@@ -1,12 +1,18 @@
 
 let userToken = new chitu.ValueStore<string>(localStorage.getItem('userToken'));
 // userToken.value = localStorage.getItem('userToken');
+
+let appToken: string;
 export let tokens = {
     get appToken() {
-        let search = location.search;
-        console.assert(search != null, 'search cannt null.');
-        let value = search.substr(1);
-        return value;
+        if (appToken == null) {
+            let search = location.search;
+            console.assert(search != null, 'search cannt null.');
+            let query = parseUrlParams(location.search.substr(1));
+            appToken = query['appKey'];
+        }
+
+        return appToken;
     },
     get userToken(): chitu.ValueStore<string> {
         return userToken;
@@ -32,14 +38,24 @@ export let config = {
 let protocol = location.protocol;
 let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.cn`];
 
+function parseUrlParams(query: string) {
+    let match,
+        pl = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
+
+    let urlParams = {};
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+
+    return urlParams;
+}
 
 export abstract class Service extends chitu.Service {
     // private static host;
     async ajax<T>(url: string, options: RequestInit) {
 
-        // if (!Service.host) {
         let host = await Service.getServiceHost();
-        // }
 
         url = `${protocol}//${host}/` + url;
 
@@ -64,6 +80,14 @@ export abstract class Service extends chitu.Service {
     }
     delete<T>(url: string, data?: any): Promise<T> {
         return super.deleteByJson(url, data);
+    }
+    private ping(method: () => Promise<any>) {
+        var start: number = new Date() as any;
+        method()
+            .then(o => {
+                var pong = new Date() as any - start;
+
+            })
     }
     private static hostPing(host: string): Promise<number> {
         let app_key = location.search.substr(1);
