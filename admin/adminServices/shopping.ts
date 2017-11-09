@@ -151,22 +151,29 @@ export class ShoppingService extends Service {
     // 优惠劵
     coupon(id) {
         let url = this.url('Coupon/GetCoupon');
-        return this.get<Coupon>(url, { id });
+        return this.get<Coupon>(url, { id }).then((c) => {
+            c.Ranges = c.Ranges || [];
+            return c;
+        });
     }
     coupons() {
         let url = this.url('Coupon/GetCoupons');
         return this.get<Coupon[]>(url);
     }
-    addCoupon(coupon: Coupon) {
+    private addCoupon(coupon: Coupon) {
         let url = this.url('Coupon/AddCoupon');
         return this.postByJson(url, coupon).then(data => {
             Object.assign(coupon, data);
             return data;
         });
     }
-    updateCoupon(coupon: Coupon) {
+    private updateCoupon(coupon: Coupon) {
         let url = this.url('Coupon/UpdateCoupon');
         return this.putByJson(url, coupon);
+    }
+    saveCoupon(coupon: Coupon) {
+        let url = this.url('Coupon/SaveCoupon');
+        return this.postByJson(url, { coupon });
     }
     deleteCoupon(coupon: Coupon) {
         let url = this.url('Coupon/DeleteCoupon');
