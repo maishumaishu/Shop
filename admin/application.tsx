@@ -133,7 +133,8 @@ class Page extends React.Component<any, {
                 <div className="first admin-pc">
                     <ul className="list-group" style={{ margin: 0 }}>
                         {firstLevelNodes.map((o, i) =>
-                            <li key={i} className={o == firstLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}
+                            <li key={i} className={o == firstLevelNode ? "list-group-item active" : "list-group-item"}
+                                style={{ cursor: 'pointer', display: o.Visible == false ? "none" : null }}
                                 onClick={() => this.showPageByNode(o)}>
                                 <i className={o.Icon} style={{ fontSize: 16 }}></i>
                                 <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.Title}</span>
@@ -144,7 +145,8 @@ class Page extends React.Component<any, {
                 <div className="second admin-pc">
                     <ul className="list-group" style={{ margin: 0 }}>
                         {secondLevelNodes.map((o, i) =>
-                            <li key={i} className={o == secondLevelNode ? "list-group-item active" : "list-group-item"} style={{ cursor: 'pointer' }}
+                            <li key={i} className={o == secondLevelNode ? "list-group-item active" : "list-group-item"}
+                                style={{ cursor: 'pointer', display: o.Visible == false ? "none" : null }}
                                 onClick={() => this.showPageByNode(o)}>
                                 <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.Title}</span>
                             </li>

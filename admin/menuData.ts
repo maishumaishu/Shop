@@ -8,12 +8,12 @@ export interface MenuNode {
 };
 
 export let menuData: MenuNode[] = [
-    { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index' },
+    { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index', Visible: false },
     {
         Title: "微店",
         Icon: "icon-home",
         Children: [
-            { Title: '店铺概况', Url: 'station/index' },
+            { Title: '店铺设置', Url: 'station/index' },
             { Title: '店铺首页', Url: 'station/pages/home' },
             {
                 Title: '会员主页',
@@ -42,7 +42,8 @@ export let menuData: MenuNode[] = [
                 Children: [
                     { Title: '页面', Url: 'station/page', Visible: false },
                     { Title: '页面', Url: 'station/page1', Visible: false }
-                ]
+                ],
+                Visible: false
             },
         ]
     },
@@ -56,7 +57,6 @@ export let menuData: MenuNode[] = [
                     { Url: 'shopping/product/productEdit', Title: "", Visible: false }
                 ]
             },
-            // { Url: "shopping/productCategoryList", Title: "商品类别" },
             { Url: "shopping/brandList", Title: "商品品牌" },
 
         ]
