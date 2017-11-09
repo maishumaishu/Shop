@@ -103,9 +103,10 @@ interface Coupon {
     Amount: number,
     ValidBegin: Date,
     ValidEnd: Date,
-    ProductIds?: string,
-    CategoryIds?: string,
-    BrandIds?: string
+    Ranges: PromotionRangeRule[],
+    // ProductIds?: string,
+    // CategoryIds?: string,
+    // BrandIds?: string
 }
 
 interface CouponCode {

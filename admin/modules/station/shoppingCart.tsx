@@ -1,13 +1,14 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { StationService } from 'adminServices/station';
+import { StationService as AdminStation } from 'adminServices/station';
+import { StationService as UserStation } from 'userServices/stationService';
 
-
-// var station = new StationService();
 export default async function (page: chitu.Page) {
-    let station = page.createService(StationService);
-    let pageData = await station.shoppingCartPage();
+
+    let adminStation = page.createService(AdminStation);
+    let userStation = page.createService(UserStation);
+    let pageData = await userStation.pages.shoppingCart();
     ReactDOM.render(
         <MobilePageDesigner pageData={pageData} showMenuSwitch={true}
-            save={station.savePageData.bind(station)} elementPage={page} >
+            save={adminStation.savePageData.bind(adminStation)} elementPage={page} >
         </MobilePageDesigner>, page.element);
 }

@@ -4,14 +4,15 @@ import { VirtualMobile } from 'virtualMobile';
 import { MobilePage } from 'mobileComponents/mobilePage';
 import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
-import { ControlDescrtion, guid, StationService } from 'adminServices/station';
+import { guid, StationService } from 'adminServices/station';
+import { StationService as UserStation } from 'userServices/stationService';
 import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 import { PropTypes } from 'prop-types';
 
 import * as ui from 'ui';
 
 
-let station = new StationService();
+// let station = new StationService();
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData,
@@ -39,6 +40,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private selectedControlId: string;
     private editorNameElement: HTMLElement;
     private editorName: string;
+    private userStation: UserStation;
 
     saved: chitu.Callback<MobilePageDesigner, { pageData: PageData }>;
 
@@ -54,10 +56,10 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         console.assert(pageData.footer.controls != null, 'footer controls is null.');
 
         this.state = { editors: [], pageData };
-
+        this.userStation = this.props.elementPage.createService(UserStation);
         let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
         if (!existsStyleControl) {
-            station.stylePage().then(stylePageData => {
+            this.userStation.pages.style().then(stylePageData => {
                 let styleControl = stylePageData.footer.controls[0];
                 console.assert(styleControl != null && styleControl.controlName == 'style');
                 styleControl.selected = 'disabled';
@@ -75,7 +77,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     }
 
     async loadMenu() {
-        let menuPageData = await station.menuPage();
+        let menuPageData = await this.userStation.pages.menu();
         let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
         console.assert(menuControlData != null);
         menuControlData.selected = 'disabled';

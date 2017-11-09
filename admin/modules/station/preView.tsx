@@ -1,8 +1,8 @@
 import { Editor, EditorProps } from 'mobileComponents/editor'
-import { StationService, guid, ControlDescrtion } from 'adminServices/station';
+import { StationService } from 'userServices/stationService';
 import FormValidator from 'formValidator';
 import { VirtualMobile } from 'virtualMobile';
-import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
+// import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 
 
 
@@ -12,7 +12,7 @@ export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
     let { pageId, templateId } = page.routeData.values;
-    var pages = await Promise.all([station.pageData(pageId), station.stylePage(), station.menuPage()])
+    var pages = await Promise.all([station.pageData(pageId), station.pages.style(), station.pages.menu()])
     pages[0].footer = pages[0].footer || { controls: [] };
     pages[1].footer = pages[1].footer || { controls: [] };
     pages[2].footer = pages[2].footer || { controls: [] };
@@ -37,11 +37,11 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
         let pageData = this.props.pageData;
         return (
             <VirtualMobile >
-                <PageComponent>
+                <div className="mobile-page">
                     {this.renderHeader(pageData)}
                     {this.renderViews(pageData)}
                     {this.renderFooter(pageData)}
-                </PageComponent>
+                </div>
             </VirtualMobile>
         );
     }
@@ -61,9 +61,9 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
             return null;
 
         return (
-            <PageHeader>
+            <header>
                 {this.renderControls(pageData.header.controls)}
-            </PageHeader>
+            </header>
         )
     }
 
@@ -72,9 +72,9 @@ class PreViewPage extends React.Component<{ pageData: PageData }, any>{
             return null;
 
         return (
-            <PageFooter>
+            <footer>
                 {this.renderControls(pageData.footer.controls)}
-            </PageFooter>
+            </footer>
         )
     }
 
