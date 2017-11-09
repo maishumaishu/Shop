@@ -69,7 +69,7 @@ export class Service extends chitu.Service {
 
     ajax<T>(url: string, options: RequestInit): Promise<T> {
         options = options || {} as RequestInit;
-        options.headers = options.headers || {};
+        options.headers = options.headers || {} as Headers;
         if (Service.token)
             options.headers['user-token'] = Service.token;
 

@@ -1,8 +1,8 @@
-import { Page, defaultNavBar, app, formatDate } from 'site';
+import { defaultNavBar, app, formatDate } from 'site';
 import { AccountService } from 'userServices/accountService';
 import { DataList } from 'user/components/dataList';
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     class ScroeListComponent extends React.Component<{}, {}>{
         private loadData() {
             return Promise.resolve([]);

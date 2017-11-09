@@ -1,9 +1,8 @@
-import { Page } from 'site';
 import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList, Tabs } = controls;
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     let shopping = page.createService(ShoppingService);
 
     let defaultIndex = 0;

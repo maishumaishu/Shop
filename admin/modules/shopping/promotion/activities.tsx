@@ -37,10 +37,7 @@ export default function (page: chitu.Page) {
                                 <button className="btn btn-minier btn-info" onClick={()=>app.redirect(`shopping/promotion/activityEdit?id=${dataItem.Id}`)}>
                                     <i className="icon-cog" />
                                     <span>设置</span>
-                                </button>,
-                                // <a className="btn btn-minier btn-info" href={`#shopping/promotion/ActivityEdit?id=${dataItem.Id}`}>
-                                //     <i className="icon-pencil" />
-                                // </a>,
+                                </button>
                             ];
                         },
                         itemStyle: { width: '130px' } as CSSStyleDeclaration,
@@ -117,57 +114,3 @@ export default function (page: chitu.Page) {
     ReactDOM.render(<ActivitiesPage />, page.element);
 
 }
-
-// function page_load(page: chitu.Page, args) {
-//     var dataSource = activity.activities;
-//     var $gridView = ($('<table>').appendTo(page.element)).gridView({
-//         dataSource: dataSource,
-//         columns: [
-//             { dataField: 'BeginDate', headerText: '开始日期', dataFormatString: '{0:d}' },
-//             { dataField: 'EndDate', headerText: '结束日期', dataFormatString: '{0:d}' },
-//             { type: JData.CommandField, headerText: '操作', showDeleteButton: true }
-//         ],
-//         rowCreated: function (sender, args) {
-//             if (args.row.get_rowType() != JData.DataControlRowType.DataRow)
-//                 return;
-
-//             var row = args.row.get_element();
-//             var dataItem = args.row.get_dataItem();
-//             var command_cell = row.cells[row.cells.length - 1];
-//             site.createCommand(command_cell, '#Shopping/Promotion/ActivityEdit?id=' + dataItem.Id, '<i class="icon-cog"></i>');
-//         },
-//         allowPaging: true
-//     });
-
-//     var gridView = $gridView.data('JData.GridView');
-//     var sel_args = gridView._getSelectArgument();
-//     // page.load.add(function () {
-//     dataSource.select(sel_args);
-//     // });
-
-//     var $dlg_activity = $(page.element).find('[name="dlg_activity"]');
-//     var model = {
-//         activity: {
-//             BeginDate: ko.observable().extend({ required: true }),
-//             EndDate: ko.observable().extend({ required: true })
-//         },
-//         add: function () {
-//             ($dlg_activity).modal();
-//         },
-//         ok: function () {
-//             if (!(model.activity as any).isValid()) {
-//                 val.showAllMessages();
-//                 return Promise.reject({});
-//             }
-//             var item = ko.mapping.toJS(model.activity);
-//             debugger;
-//             return activity.addActivity(item).then(function () {//activity.activities.insert(item)
-//                 ($dlg_activity).modal('hide');
-//             });
-//         }
-
-//     }
-
-//     var val = validation.group(model.activity);
-//     ko.applyBindings(model, page.element);
-// }

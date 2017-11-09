@@ -1,10 +1,14 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { default as station } from 'adminServices/station';
+import { StationService as UserStation } from 'userServices/stationService';
+import { StationService as AdminStation } from 'adminServices/station';
 export default function (page: chitu.Page) {
-    station.homePage().then(pageData => {
+
+    let userStation = page.createService(UserStation);
+    let adminStation = page.createService(AdminStation);
+    userStation.pages.home().then(pageData => {
         ReactDOM.render(
             <MobilePageDesigner pageData={pageData} showComponentPanel={true} showMenuSwitch={true}
-                save={station.savePageData.bind(station)}  elementPage={page}>
+                save={(p) => adminStation.savePageData(p)} elementPage={page}>
             </MobilePageDesigner>, page.element);
     })
 }

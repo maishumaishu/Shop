@@ -1,10 +1,8 @@
-import { Page, defaultNavBar } from 'site';
+import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import * as ui from 'ui';
 
-let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } = controls;
-
-export default function (page: Page) {
+export default function (page: chitu.Page) {
 
     let orderId = page.routeData.values.orderId;
     if (!orderId) throw new Error('orderId cannt be empty.');
@@ -13,34 +11,32 @@ export default function (page: Page) {
 
     class OrderCouponsPage extends React.Component<{ couponCodes: CouponCode[] }, {}>{
         render() {
-            return (
-                <PageComponent>
-                    <PageHeader>
-                        {defaultNavBar({ title: '请选择优惠劵' })}
-                    </PageHeader>
-                    <PageView>
-                        <hr />
-                        {this.props.couponCodes.map(o =>
-                            <div key={o.Code}>
-                                <div className="coupon">
-                                    <div className={`pull-left available`}>
-                                        ￥<span className="text">{o.Discount}</span>
+            return [
+                <header key="h">
+                    {defaultNavBar({ title: '请选择优惠劵' })}
+                </header>,
+                <section key="v">
+                    <hr />
+                    {this.props.couponCodes.map(o =>
+                        <div key={o.Code}>
+                            <div className="coupon">
+                                <div className={`pull-left available`}>
+                                    ￥<span className="text">{o.Discount}</span>
+                                </div>
+                                <div className="main">
+                                    <div>
+                                        {o.Title}
                                     </div>
-                                    <div className="main">
-                                        <div>
-                                            {o.Title}
-                                        </div>
-                                        <div className="date">
-                                            {`有效期 ${o.ValidBegin.toLocaleDateString()} 至 ${o.ValidEnd.toLocaleDateString()}`}
-                                        </div>
+                                    <div className="date">
+                                        {`有效期 ${o.ValidBegin.toLocaleDateString()} 至 ${o.ValidEnd.toLocaleDateString()}`}
                                     </div>
                                 </div>
-                                <hr />
                             </div>
-                        )}
-                    </PageView>
-                </PageComponent>
-            );
+                            <hr />
+                        </div>
+                    )}
+                </section>
+            ]
         }
     }
     shopping.orderAvailableCoupons(orderId).then(items => {

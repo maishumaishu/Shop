@@ -1,11 +1,11 @@
-import { Page, defaultNavBar, app, config } from 'site';
+import { defaultNavBar, app, config } from 'site';
 let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 import FormValidator from 'formValidator';
 // import * as services from 'userServices';
 import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     let member = page.createService(MemberService);  //new services.MemberService();
     class RegisterPage extends React.Component<{}, { letfSeconds: number }> {
         private validator: FormValidator;
@@ -82,61 +82,58 @@ export default function (page: Page) {
             });
         }
         render() {
-            return (
-                <PageComponent>
-                    <PageHeader>
-                        {defaultNavBar({ title: "用户注册" })}
-                    </PageHeader>
-                    <PageFooter></PageFooter>
-                    <PageView>
-                        <div className="container">
-                            <form className="form-horizontal"
-                                ref={(o: HTMLFormElement) => this.formElement = o || this.formElement}>
-                                <div className="form-group">
-                                    <div className="col-xs-12">
-                                        <input className="form-control" type="text" name="mobile" placeholder="请输入手机号码" />
-                                    </div>
+            return [
+                <header>
+                    {defaultNavBar({ title: "用户注册" })}
+                </header>,
+                <section>
+                    <div className="container">
+                        <form className="form-horizontal"
+                            ref={(o: HTMLFormElement) => this.formElement = o || this.formElement}>
+                            <div className="form-group">
+                                <div className="col-xs-12">
+                                    <input className="form-control" type="text" name="mobile" placeholder="请输入手机号码" />
                                 </div>
-                                <div className="form-group">
-                                    <div className="col-xs-6">
-                                        <input type="text" name="verifyCode" className="form-control" placeholder="验证码" />
-                                    </div>
-                                    <div className="col-xs-6">
-                                        <button type="button" className="btn btn-block btn-success"
-                                            disabled={this.state.letfSeconds > 0}
-                                            onClick={() => this.sendVerifyCode()}>
-                                            {this.state.letfSeconds > 0 ? `发送验证码(${this.state.letfSeconds})` : '发送验证码'}
-                                        </button>
-                                    </div>
-                                    <div className="col-xs-12">
-                                        <span className="verifyCode validationMessage"></span>
-                                    </div>
+                            </div>
+                            <div className="form-group">
+                                <div className="col-xs-6">
+                                    <input type="text" name="verifyCode" className="form-control" placeholder="验证码" />
                                 </div>
-                                <div className="form-group">
-                                    <div className="col-xs-12">
-                                        <input name="password" type="password" className="form-control" placeholder="请输入密码" />
-                                    </div>
+                                <div className="col-xs-6">
+                                    <button type="button" className="btn btn-block btn-success"
+                                        disabled={this.state.letfSeconds > 0}
+                                        onClick={() => this.sendVerifyCode()}>
+                                        {this.state.letfSeconds > 0 ? `发送验证码(${this.state.letfSeconds})` : '发送验证码'}
+                                    </button>
                                 </div>
-                                <div className="form-group">
-                                    <div className="col-xs-12">
-                                        <input name="confirmPassword" type="password" className="form-control" placeholder="请再一次输入密码" />
-                                    </div>
+                                <div className="col-xs-12">
+                                    <span className="verifyCode validationMessage"></span>
                                 </div>
-                                <div className="form-group">
-                                    <div className="col-xs-12">
-                                        <button type="button" className="btn btn-primary btn-block"
-                                            ref={(e: HTMLButtonElement) => {
-                                                if (!e) return;
-                                                e.onclick = ui.buttonOnClick(() => this.register(), { toast: '注册成功' });
+                            </div>
+                            <div className="form-group">
+                                <div className="col-xs-12">
+                                    <input name="password" type="password" className="form-control" placeholder="请输入密码" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <div className="col-xs-12">
+                                    <input name="confirmPassword" type="password" className="form-control" placeholder="请再一次输入密码" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <div className="col-xs-12">
+                                    <button type="button" className="btn btn-primary btn-block"
+                                        ref={(e: HTMLButtonElement) => {
+                                            if (!e) return;
+                                            e.onclick = ui.buttonOnClick(() => this.register(), { toast: '注册成功' });
 
-                                            }}>立即注册</button>
-                                    </div>
+                                        }}>立即注册</button>
                                 </div>
-                            </form>
-                        </div>
-                    </PageView>
-                </PageComponent>
-            );
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            ]
 
         }
     }

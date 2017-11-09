@@ -1,7 +1,7 @@
-import { Page, app, defaultNavBar } from 'site';
-import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
+import { app, defaultNavBar } from 'site';
+// import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     interface InvoicePageProps extends React.Props<InvoicePage> {
     }
     interface InvoicePageState {
@@ -24,50 +24,48 @@ export default function (page: Page) {
         render() {
             let type = this.state.type;
             let title = this.state.title;
-            return (
-                <PageComponent>
-                    <PageHeader>
-                        {defaultNavBar({ title: '发票信息' })}
-                    </PageHeader>
-                    <PageFooter>
-                        <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>
-                            <button onClick={() => this.confirm()} className="btn btn-block btn-primary">确认</button>
-                        </div>
-                    </PageFooter>
-                    <PageView>
-                        <form className="container">
-                            <div style={{ paddingTop: 20 }}>
-                                <label className="choose">
-                                    <input name="type" checked={type != '公司'} type="radio"
-                                        onChange={() => {
-                                            this.state.type = '个人';
-                                            this.setState(this.state);
-                                        } } /> 个人
-                                </label>
-                            </div>
-                            <hr />
-                            <div>
-                                <label className="choose">
-                                    <input name="type" checked={type == '公司'} type="radio"
-                                        onChange={() => {
-                                            this.state.type = '公司';
-                                            this.setState(this.state);
-                                        } } /> 公司
-                                </label>
-                            </div>
-                            <hr />
-                            <div className="form-group">
-                                <label>发票抬头</label>
-                                <input value={title} type="text" className="form-control" placeholder="个人或公司名称"
-                                    onChange={(e) => {
-                                        this.state.title = (e.target as HTMLInputElement).value;
+            return [
+                <header key="h">
+                    {defaultNavBar({ title: '发票信息' })}
+                </header>,
+                <footer key="f">
+                    <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>
+                        <button onClick={() => this.confirm()} className="btn btn-block btn-primary">确认</button>
+                    </div>
+                </footer>,
+                <section key="v">
+                    <form className="container">
+                        <div style={{ paddingTop: 20 }}>
+                            <label className="choose">
+                                <input name="type" checked={type != '公司'} type="radio"
+                                    onChange={() => {
+                                        this.state.type = '个人';
                                         this.setState(this.state);
-                                    } } />
-                            </div>
-                        </form>
-                    </PageView>
-                </PageComponent>
-            );
+                                    }} /> 个人
+                        </label>
+                        </div>
+                        <hr />
+                        <div>
+                            <label className="choose">
+                                <input name="type" checked={type == '公司'} type="radio"
+                                    onChange={() => {
+                                        this.state.type = '公司';
+                                        this.setState(this.state);
+                                    }} /> 公司
+                        </label>
+                        </div>
+                        <hr />
+                        <div className="form-group">
+                            <label>发票抬头</label>
+                            <input value={title} type="text" className="form-control" placeholder="个人或公司名称"
+                                onChange={(e) => {
+                                    this.state.title = (e.target as HTMLInputElement).value;
+                                    this.setState(this.state);
+                                }} />
+                        </div>
+                    </form>
+                </section>
+            ];
         }
     }
 

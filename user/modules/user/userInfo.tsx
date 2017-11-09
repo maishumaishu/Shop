@@ -1,9 +1,9 @@
-import { Page, defaultNavBar, app } from 'site';
+import { defaultNavBar, app } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 
-export default async function (page: Page) {
+export default async function (page: chitu.Page) {
     let member = page.createService(MemberService);
     let userInfo = await member.userInfo();
 
@@ -130,10 +130,10 @@ export default async function (page: Page) {
         render() {
             let userInfo = this.state.userInfo;
             return [
-                <header>
+                <header key="h">
                     {defaultNavBar({ title: '用户信息' })}
                 </header>,
-                <section>
+                <section key="v">
                     <div className="container">
                         <div className="form-group">
                             <div className="list-group">

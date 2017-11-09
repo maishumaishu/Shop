@@ -1,6 +1,5 @@
 import { StationService } from 'userServices/stationService';
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
-import { Page } from 'site';
 import { MobilePage } from 'mobileComponents/mobilePage';
 
 export default async function (page: chitu.Page) {

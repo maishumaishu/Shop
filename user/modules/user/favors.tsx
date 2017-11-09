@@ -1,11 +1,10 @@
-import { Page, defaultNavBar } from 'site';
+import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { app } from 'site';
+import { DataList } from 'user/components/dataList';
 
-let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox } = controls;
 
-
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     let shop = page.createService(ShoppingService);
 
     class FavorPage extends React.Component<{}, {}>{
@@ -40,47 +39,46 @@ export default function (page: Page) {
             });
         }
         render() {
-            return (
-                <PageComponent>
-                    <PageHeader>
-                        {defaultNavBar({ title: '我的收藏' })}
-                    </PageHeader>
-                    <PageView ref={o => o ? this.dataView = o.element : null}>
-                        <DataList className="container" loadData={this.loadFavorProducts} dataItem={(o: FavorProduct) => (
-                            <div key={o.ProductId}>
-                                <div className="item row">
-                                    <div onClick={() => this.showProduct(o.ProductId)} className="col-xs-4">
-                                        <ImageBox src={o.ImageUrl} className="img-responsive" />
-                                    </div>
-                                    <div className="col-xs-8">
-                                        <div onClick={() => this.showProduct(o.ProductId)} className="name">
-                                            <div>{o.ProductName}</div>
-                                        </div>
-                                        <button ref={`btn_${o.Id}`} onClick={(event) => this.unfavor(event, o)} className="pull-right btn btn-primary">
-                                            <i className="icon-heart"></i> 
-                                            <span>取消收藏</span>   
-                                        </button>
-                                        <label className="pull-right">
-                                            已取消
-                                        </label>
-                                    </div>
+            return [
+                <header>
+                    {defaultNavBar({ title: '我的收藏' })}
+                </header>,
+                <section ref={o => o ? this.dataView = o as HTMLElement : null}>
+                    <DataList className="container" loadData={this.loadFavorProducts} dataItem={(o: FavorProduct) => (
+                        <div key={o.ProductId}>
+                            <div className="item row">
+                                <div onClick={() => this.showProduct(o.ProductId)} className="col-xs-4">
+                                    <img src={o.ImageUrl} className="img-responsive"
+                                        ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                                 </div>
-                                <hr className="row" />
+                                <div className="col-xs-8">
+                                    <div onClick={() => this.showProduct(o.ProductId)} className="name">
+                                        <div>{o.ProductName}</div>
+                                    </div>
+                                    <button ref={`btn_${o.Id}`} onClick={(event) => this.unfavor(event, o)} className="pull-right btn btn-primary">
+                                        <i className="icon-heart"></i>
+                                        <span>取消收藏</span>
+                                    </button>
+                                    <label className="pull-right">
+                                        已取消
+                                </label>
+                                </div>
                             </div>
-                        )}
-                            emptyItem={
-                                <div className="norecords">
-                                    <div className="icon">
-                                        <i className="icon-heart-empty">
+                            <hr className="row" />
+                        </div>
+                    )}
+                        emptyItem={
+                            <div className="norecords">
+                                <div className="icon">
+                                    <i className="icon-heart-empty">
 
-                                        </i>
-                                    </div>
-                                    <h4 className="text">你还没有添加收藏哦</h4>
+                                    </i>
                                 </div>
-                            } />
-                    </PageView>
-                </PageComponent>
-            );
+                                <h4 className="text">你还没有添加收藏哦</h4>
+                            </div>
+                        } />
+                </section>
+            ]
         }
     }
 

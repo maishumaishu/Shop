@@ -1,11 +1,11 @@
-import { Page, defaultNavBar } from 'site';
+import { defaultNavBar } from 'site';
 import { imageUrl } from 'userServices/service';
 import { ShoppingService } from 'userServices/shoppingService';
 import { DataList } from 'components/dataList';
 import { Tabs } from 'components/tabs';
 
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
 
     let shop = page.createService(ShoppingService);
     let categoryId = page.routeData.values.categoryId;

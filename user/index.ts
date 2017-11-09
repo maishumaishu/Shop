@@ -73,8 +73,6 @@ requirejs(['react', 'react-dom', 'site', 'ui', 'ping', 'prop-types'], function (
     ui.setDialogContainer(document.getElementById('dialogContainer'));
 
     site.app.run();
-
-
 })
 
 // import * as React from 'react';

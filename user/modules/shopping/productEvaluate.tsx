@@ -1,9 +1,9 @@
-import { Page, defaultNavBar } from 'site';
+import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 let { PageComponent, PageHeader, PageFooter, PageView, ImageFileSelector, ImageBox } = controls;
 
 export type RouteValues = { orderDetailId: string, productImageUrl: string };
-export default function (page: Page) {
+export default function (page: chitu.Page) {
 
     let shop = page.createService(ShoppingService);
 
@@ -54,67 +54,65 @@ export default function (page: Page) {
         }
         render() {
             let evaluation = this.state.evaluation || '';
-            return (
-                <PageComponent>
-                    <PageHeader>
-                        {defaultNavBar({ title: '商品评价' })}
-                    </PageHeader>
-                    <PageFooter>
-                        <div className="container" style={{ paddingTop: 10, paddingBottom: 10, height: 50 }}>
-                            <button className="btn btn-primary btn-block"
-                                ref={(e: HTMLButtonElement) => {
-                                    if (!e) return;
-                                    e.onclick = ui.buttonOnClick(() => this.submit(), { confirm: '确定要发表评价吗？' });
-                                }}>
-                                提交
-                            </button>
-                        </div>
-                    </PageFooter>
-                    <PageView>
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-xs-4">
-                                    <ImageBox src={this.props.productImageUrl} data-bind="attr:{src:productImageUrl}"
-                                        className="img-responsive img-thumbnail" />
-                                </div>
-                                <div className="col-xs-8" style={{ paddingLeft: 0 }}>
-                                    <label>评分</label>
-                                    <div>{starts}</div>
-                                </div>
+            return [
+                <header key="h">
+                    {defaultNavBar({ title: '商品评价' })}
+                </header>,
+                <footer key="f">
+                    <div className="container" style={{ paddingTop: 10, paddingBottom: 10, height: 50 }}>
+                        <button className="btn btn-primary btn-block"
+                            ref={(e: HTMLButtonElement) => {
+                                if (!e) return;
+                                e.onclick = ui.buttonOnClick(() => this.submit(), { confirm: '确定要发表评价吗？' });
+                            }}>
+                            提交
+                    </button>
+                    </div>
+                </footer>,
+                <section key="v">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-xs-4">
+                                <ImageBox src={this.props.productImageUrl} data-bind="attr:{src:productImageUrl}"
+                                    className="img-responsive img-thumbnail" />
                             </div>
-                            <div className="row evaluation">
-                                <div className="col-xs-12">
-                                    <textarea className="form-control" placeholder={`长度在${minWordCount}至${maxWordCount}字之间`}
-                                        value={evaluation}
+                            <div className="col-xs-8" style={{ paddingLeft: 0 }}>
+                                <label>评分</label>
+                                <div>{starts}</div>
+                            </div>
+                        </div>
+                        <div className="row evaluation">
+                            <div className="col-xs-12">
+                                <textarea className="form-control" placeholder={`长度在${minWordCount}至${maxWordCount}字之间`}
+                                    value={evaluation}
+                                    onChange={(e) => {
+                                        this.state.evaluation = (e.target as HTMLTextAreaElement).value;
+                                        this.setState(this.state);
+                                    }} />
+                                <div className="word-num">{maxWordCount - evaluation.length}</div>
+                            </div>
+                        </div>
+                        <div className="row anonymous">
+                            <div className="col-xs-12 checkbox">
+                                <label>
+                                    <input checked={this.state.anonymous} type="checkbox"
                                         onChange={(e) => {
-                                            this.state.evaluation = (e.target as HTMLTextAreaElement).value;
+                                            this.state.anonymous = !this.state.anonymous;
                                             this.setState(this.state);
-                                        }} />
-                                    <div className="word-num">{maxWordCount - evaluation.length}</div>
-                                </div>
-                            </div>
-                            <div className="row anonymous">
-                                <div className="col-xs-12 checkbox">
-                                    <label>
-                                        <input checked={this.state.anonymous} type="checkbox"
-                                            onChange={(e) => {
-                                                this.state.anonymous = !this.state.anonymous;
-                                                this.setState(this.state);
-                                            }}
-                                        />
-                                        匿名评价
-                                </label>
-                                </div>
-                            </div>
-                            <div className="row pictures">
-                                <div className="col-xs-12">
-                                    <ImageFileSelector ref={(o) => this.imageFileSelector = o} />
-                                </div>
+                                        }}
+                                    />
+                                    匿名评价
+                        </label>
                             </div>
                         </div>
-                    </PageView>
-                </PageComponent>
-            );
+                        <div className="row pictures">
+                            <div className="col-xs-12">
+                                <ImageFileSelector ref={(o) => this.imageFileSelector = o} />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            ]
         }
     }
 

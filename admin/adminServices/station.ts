@@ -1,27 +1,7 @@
-﻿import { default as Service } from 'adminServices/service';
+﻿import { default as Service, guid } from 'adminServices/service';
 import templates from 'adminServices/data/templates'
 
-export interface ControlDescrtion {
-    controlId: string, controlName: string, data?: any,
-    selected?: boolean | 'disabled'
-}
-
-
-export interface TemplatePageData {
-    _id: string;
-    name: string;
-    image: string;
-}
-
-export function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
+export { guid } from 'adminServices/service';
 
 export class StationService extends Service {
     private url(path: string) {
@@ -144,36 +124,6 @@ export class StationService extends Service {
         }
     };
 
-    homePage(): Promise<PageData> {
-        const pageName = this.defaultPages.home.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null) {
-                pageData = this.defaultPages.home;
-            }
-            return pageData;
-        });
-    }
-
-    memberPage(): Promise<PageData> {
-        const pageName = this.defaultPages.member.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null) {
-                pageData = this.defaultPages.member;
-            }
-            return pageData;
-        });
-    }
-
-    menuPage(): Promise<PageData> {
-        const pageName = this.defaultPages.menu.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null) {
-                pageData = this.defaultPages.menu;
-            }
-            return pageData;
-        });
-    }
-
     stylePage(): Promise<PageData> {
         const pageName = this.defaultPages.style.name;
         return this.pageDataByName(pageName).then(pageData => {
@@ -182,26 +132,6 @@ export class StationService extends Service {
 
             return pageData;
         });
-    }
-
-    categoriesPage(): Promise<PageData> {
-        const pageName = this.defaultPages.categories.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null)
-                pageData = this.defaultPages.categories;
-
-            return pageData;
-        });
-    }
-
-    shoppingCartPage(): Promise<PageData> {
-        const pageName = this.defaultPages.shoppingCart.name;
-        return this.pageDataByName(pageName).then(pageData => {
-            if (pageData == null)
-                return this.defaultPages.shoppingCart;
-
-            return pageData;
-        })
     }
 
     //=================================================================
@@ -266,6 +196,16 @@ export class StationService extends Service {
             styleData = { controlId: guid(), controlName: 'style', data: {} };
         }
         return styleData;
+    }
+    //============================================================
+    // 店铺
+    saveStore(store: Store) {
+        let url = this.url('Store/Save');
+        return this.postByJson(url, { store });
+    }
+    store() {
+        let url = this.url('Store/Get');
+        return this.get<Store>(url);
     }
     //============================================================
 }

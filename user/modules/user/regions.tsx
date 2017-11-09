@@ -1,6 +1,5 @@
-import { Page, defaultNavBar, app } from 'site';
+import { defaultNavBar, app } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
-let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 
 export interface RegionsPageRouteValues {
     province: Region,
@@ -8,7 +7,7 @@ export interface RegionsPageRouteValues {
     country: Region,
     selecteRegion: (province: Region, city: Region, country: Region) => void
 }
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     let shop = page.createService(ShoppingService);
     let routeValues = (page.routeData.values || {}) as RegionsPageRouteValues;
     interface RegiosPageState {
@@ -18,10 +17,10 @@ export default function (page: Page) {
 
     class RegiosPage extends React.Component<{ provinces: Region[] }, RegiosPageState>
     {
-        private provincesView: controls.PageView;
-        private citiesView: controls.PageView;
-        private countriesView: controls.PageView;
-        private views: controls.PageView[];
+        private provincesView: HTMLElement;
+        private citiesView: HTMLElement;
+        private countriesView: HTMLElement;
+        private views: HTMLElement[];
         private activeViewIndex: number = 0;
 
         constructor(props) {
@@ -67,12 +66,12 @@ export default function (page: Page) {
                 return;
             }
 
-            prevView.element.style.transform = 'translateX(-100%)';
+            prevView.style.transform = 'translateX(-100%)';
             setTimeout(() => {
-                activeView.element.style.transition = '0.4s';
-                activeView.element.style.transform = 'translateX(100%)';
-                prevView.element.style.transition = '0.4s';
-                prevView.element.style.transform = 'translateX(0)';
+                activeView.style.transition = '0.4s';
+                activeView.style.transform = 'translateX(100%)';
+                prevView.style.transition = '0.4s';
+                prevView.style.transform = 'translateX(0)';
             }, 100);
 
             this.activeViewIndex = this.activeViewIndex - 1;
@@ -84,12 +83,12 @@ export default function (page: Page) {
                 return;
             }
 
-            nextView.element.style.transform = 'translateX(100%)';
+            nextView.style.transform = 'translateX(100%)';
             setTimeout(() => {
-                activeView.element.style.transition = '0.4s';
-                activeView.element.style.transform = 'translateX(-100%)';
-                nextView.element.style.transition = '0.4s';
-                nextView.element.style.transform = 'translateX(0)';
+                activeView.style.transition = '0.4s';
+                activeView.style.transform = 'translateX(-100%)';
+                nextView.style.transition = '0.4s';
+                nextView.style.transform = 'translateX(0)';
             }, 100);
             this.activeViewIndex = this.activeViewIndex + 1;
         }
@@ -99,8 +98,8 @@ export default function (page: Page) {
             if (!routeValues.selecteRegion) {
                 return;
             }
-            
-            let {currentProvince, currentCity, currentCountry } = this.state;
+
+            let { currentProvince, currentCity, currentCountry } = this.state;
             routeValues.selecteRegion(currentProvince, currentCity, currentCountry);
             app.back();
         }
@@ -109,47 +108,44 @@ export default function (page: Page) {
             let cities = this.state.cities;
             let countries = this.state.countries;
             let province = this.state.currentProvince;
-            return (
-                <PageComponent>
-                    <PageHeader>
-                        {defaultNavBar({ title: this.state.title, back: () => this.back() })}
-                    </PageHeader>
-                    <PageFooter></PageFooter>
-                    <PageView ref={o => this.provincesView = o}>
-                        <ul className="list-group">
-                            {provinces.map(o =>
-                                <li className="list-group-item" key={o.Id}
-                                    onClick={() => this.showCities(o)}>
-                                    {o.Name}
-                                    {this.state.currentProvince.Id == o.Id ? <i className="icon-ok pull-right"></i> : null}
-                                </li>
-                            )}
-                        </ul>
-                    </PageView>
-                    <PageView ref={o => this.citiesView = o} style={{ transform: 'translateX(100%)' }}>
-                        <ul className="list-group">
-                            {cities.map(o =>
-                                <li className="list-group-item" key={o.Id}
-                                    onClick={() => this.showCountries(o)}>
-                                    {o.Name}
-                                    {this.state.currentCity.Id == o.Id ? <i className="icon-ok pull-right"></i> : null}
-                                </li>
-                            )}
-                        </ul>
-                    </PageView>
-                    <PageView ref={o => this.countriesView = o} style={{ transform: 'translateX(200%)' }}>
-                        <ul className="list-group">
-                            {countries.map(o =>
-                                <li className="list-group-item" key={o.Id}
-                                    onClick={() => this.selectCountry(o)}>
-                                    {o.Name}
-                                    {this.state.currentCountry.Id == o.Id ? <i className="icon-ok pull-right"></i> : null}
-                                </li>
-                            )}
-                        </ul>
-                    </PageView>
-                </PageComponent>
-            );
+            return [
+                <header key="h">
+                    {defaultNavBar({ title: this.state.title, back: () => this.back() })}
+                </header>,
+                <section key="v1" ref={o => this.provincesView = o as HTMLElement}>
+                    <ul className="list-group">
+                        {provinces.map(o =>
+                            <li className="list-group-item" key={o.Id}
+                                onClick={() => this.showCities(o)}>
+                                {o.Name}
+                                {this.state.currentProvince.Id == o.Id ? <i className="icon-ok pull-right"></i> : null}
+                            </li>
+                        )}
+                    </ul>
+                </section>,
+                <section key="v2" ref={o => this.citiesView = o as HTMLElement} style={{ transform: 'translateX(100%)' }}>
+                    <ul className="list-group">
+                        {cities.map(o =>
+                            <li className="list-group-item" key={o.Id}
+                                onClick={() => this.showCountries(o)}>
+                                {o.Name}
+                                {this.state.currentCity.Id == o.Id ? <i className="icon-ok pull-right"></i> : null}
+                            </li>
+                        )}
+                    </ul>
+                </section>,
+                <section key="v3" ref={o => this.countriesView = o as HTMLElement} style={{ transform: 'translateX(200%)' }}>
+                    <ul className="list-group">
+                        {countries.map(o =>
+                            <li className="list-group-item" key={o.Id}
+                                onClick={() => this.selectCountry(o)}>
+                                {o.Name}
+                                {this.state.currentCountry.Id == o.Id ? <i className="icon-ok pull-right"></i> : null}
+                            </li>
+                        )}
+                    </ul>
+                </section>
+            ]
         }
     }
 

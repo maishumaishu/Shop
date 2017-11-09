@@ -1,11 +1,11 @@
-import { Page, defaultNavBar, app } from 'site';
+import { defaultNavBar, app } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { AccountService } from 'userServices/accountService';
 import { userData } from 'userServices/userData';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
 
-export default async function (page: Page) {
+export default async function (page: chitu.Page) {
 
     // let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
     //     PageComponent, PageHeader, PageFooter, PageView, Dialog } = controls;
@@ -56,143 +56,140 @@ export default async function (page: Page) {
             let order = this.state.order;
             // let balance = this.props.balance;
 
-            return (
-                <div>
-                    <header>
-                        {defaultNavBar({ title: '确认订单', back: () => app.back() })}
-                    </header>
-                    <footer>
-                        <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>
-                            <button onClick={() => this.confirmOrder()} className="btn btn-block btn-primary">提交订单</button>
+            return [
+                <header key="h">
+                    {defaultNavBar({ title: '确认订单', back: () => app.back() })}
+                </header>,
+                <footer key="f">
+                    <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>
+                        <button onClick={() => this.confirmOrder()} className="btn btn-block btn-primary">提交订单</button>
+                    </div>
+                </footer>,
+                <section key="v">
+                    <div className="container">
+                        <h4 className="text-primary">收货信息</h4>
+                        <a style={{ minHeight: 40, display: order.ReceiptAddress ? 'none' : 'block' }}
+                            onClick={() => this.showReceiptList()}>
+                            <div className="alert alert-danger text-center">
+                                点击这里设置收货信息
                         </div>
-                    </footer>
-                    <section>
-                        <div className="container">
-                            <h4 className="text-primary">收货信息</h4>
-                            <a style={{ minHeight: 40, display: order.ReceiptAddress ? 'none' : 'block' }}
-                                onClick={() => this.showReceiptList()}>
-                                <div className="alert alert-danger text-center">
-                                    点击这里设置收货信息
-                                </div>
-                            </a>
-                            <a onClick={() => this.showReceiptList()}
-                                className="address" style={{ minHeight: 40, display: order.ReceiptAddress ? 'block' : 'none' }}>
-                                <div className="pull-left" style={{ paddingRight: 20 }}>
-                                    <span className="small">{order.ReceiptAddress}</span>
-                                </div>
-                                <div className="pull-right">
-                                    <i className="icon-chevron-right"></i>
-                                </div>
-                            </a>
-                        </div>
-                        <hr style={{ margin: 0, borderTopWidth: 10 }} />
-                        <div className="container">
-                            <h4 className="text-primary">购物清单</h4>
-                        </div>
-                        <div className="container">
-                            <ul data-bind="foreach: order.OrderDetails" className="list-group row" style={{ marginBottom: 0 }}>
-                                {order.OrderDetails.map((o, i) => (
-                                    <li key={i} data-bind="visible:ko.unwrap(Price) >= 0" className="list-group-item">
-                                        <div className="pull-left" style={{ width: 60, height: 60 }}>
-                                            <img src={o.ImageUrl} className="img-responsive" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
-                                        </div>
-                                        <div style={{ marginLeft: 70 }}>
-                                            <div style={{ marginBottom: 10 }}>
-                                                <a href={`#home_product?id=${o.ProductId}`} className="title">
-                                                    {o.ProductName}
-                                                </a>
-                                            </div>
-                                            <div className="pull-left">
-                                                <span className="price">￥{o.Price.toFixed(2)}</span>
-                                                {(o.Score ? <span> + {o.Score} 积分</span> : null)}
-                                            </div>
-                                            <div className="pull-right">
-                                                <span style={{ paddingLeft: 10 }}>X {o.Quantity}</span>
-                                            </div>
-                                        </div>
-                                        <div className="clearfix"></div>
-                                    </li>
-                                ))}
-
-                            </ul>
-                        </div>
-                        <hr style={{ margin: 0, borderTopWidth: 10 }} />
-                        <div className="container">
-                            <h4 className="pull-left">配送方式</h4>
-                            <div className="pull-right" style={{ paddingTop: 6 }}>
-                                <span>快递 运费：<span className="price">￥{order.Freight.toFixed(2)}</span></span>
+                        </a>
+                        <a onClick={() => this.showReceiptList()}
+                            className="address" style={{ minHeight: 40, display: order.ReceiptAddress ? 'block' : 'none' }}>
+                            <div className="pull-left" style={{ paddingRight: 20 }}>
+                                <span className="small">{order.ReceiptAddress}</span>
                             </div>
-                        </div>
-                        <hr style={{ margin: 0, borderTopWidth: 10 }} />
-
-                        {order.CouponTitle ?
-                            <div onClick={() => this.showCoupons()} className="container">
-                                <h4 className="pull-left">优惠券</h4>
-                                <div className="pull-right" style={{ paddingTop: 6 }}>
-                                    <span style={{ paddingRight: 4 }}>
-                                        {order.CouponTitle}
-                                    </span>
-                                    <i className="icon-chevron-right"></i>
-                                </div>
-                            </div> : null}
-
-                        {order.CouponTitle ?
-                            <hr data-bind="visible:order.CouponTitle" style={{ margin: 0, borderTopWidth: 10 }} />
-                            : null}
-
-                        <div className="container"
-                            onClick={() => app.showPage('shopping_invoice', {
-                                callback: (invoice: string) => {
-                                    this.state.order.Invoice = invoice;
-                                    this.setState(this.state);
-                                }
-                            })}>
-                            <h4 className="pull-left">发票信息</h4>
-                            <div className="pull-right" style={{ paddingTop: 6 }}>
-                                <span style={{ paddingRight: 10 }}>{order.Invoice}</span>
+                            <div className="pull-right">
                                 <i className="icon-chevron-right"></i>
                             </div>
-                        </div>
-                        <hr style={{ margin: 0, borderTopWidth: 10 }} />
-                        <div className="container" style={{ padding: 10 }}>
-                            <input name="remark" type="text" multiple={true} style={{ width: '100%', height: 40, borderRadius: 4, border: '1px solid #dddddd' }}
-                                placeholder=" 若你对订单有特殊性要求，可以在此备注" />
-                        </div>
+                        </a>
+                    </div>
+                    <hr style={{ margin: 0, borderTopWidth: 10 }} />
+                    <div className="container">
+                        <h4 className="text-primary">购物清单</h4>
+                    </div>
+                    <div className="container">
+                        <ul data-bind="foreach: order.OrderDetails" className="list-group row" style={{ marginBottom: 0 }}>
+                            {order.OrderDetails.map((o, i) => (
+                                <li key={i} data-bind="visible:ko.unwrap(Price) >= 0" className="list-group-item">
+                                    <div className="pull-left" style={{ width: 60, height: 60 }}>
+                                        <img src={o.ImageUrl} className="img-responsive" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+                                    </div>
+                                    <div style={{ marginLeft: 70 }}>
+                                        <div style={{ marginBottom: 10 }}>
+                                            <a href={`#home_product?id=${o.ProductId}`} className="title">
+                                                {o.ProductName}
+                                            </a>
+                                        </div>
+                                        <div className="pull-left">
+                                            <span className="price">￥{o.Price.toFixed(2)}</span>
+                                            {(o.Score ? <span> + {o.Score} 积分</span> : null)}
+                                        </div>
+                                        <div className="pull-right">
+                                            <span style={{ paddingLeft: 10 }}>X {o.Quantity}</span>
+                                        </div>
+                                    </div>
+                                    <div className="clearfix"></div>
+                                </li>
+                            ))}
 
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-xs-4">商品</div>
-                                <div className="col-xs-8 text-right">
-                                    <span style={{ paddingRight: 4 }}>+</span>
-                                    <span className="price">￥{order.Amount.toFixed(2)}</span>
-                                </div>
+                        </ul>
+                    </div>
+                    <hr style={{ margin: 0, borderTopWidth: 10 }} />
+                    <div className="container">
+                        <h4 className="pull-left">配送方式</h4>
+                        <div className="pull-right" style={{ paddingTop: 6 }}>
+                            <span>快递 运费：<span className="price">￥{order.Freight.toFixed(2)}</span></span>
+                        </div>
+                    </div>
+                    <hr style={{ margin: 0, borderTopWidth: 10 }} />
+
+                    {order.CouponTitle ?
+                        <div onClick={() => this.showCoupons()} className="container">
+                            <h4 className="pull-left">优惠券</h4>
+                            <div className="pull-right" style={{ paddingTop: 6 }}>
+                                <span style={{ paddingRight: 4 }}>
+                                    {order.CouponTitle}
+                                </span>
+                                <i className="icon-chevron-right"></i>
                             </div>
-                            <div className="row">
-                                <div className="col-xs-4">运费</div>
-                                <div className="col-xs-8 text-right">
-                                    <span style={{ paddingRight: 4 }}>+</span>
-                                    <span className="price">￥{order.Freight.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-xs-4">优惠</div>
-                                <div className="col-xs-8 text-right">
-                                    <span style={{ paddingRight: 6 }}>-</span>
-                                    <span className="price">￥{(order.Discount || 0).toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <div className="col-xs-12" style={{ padding: 0, paddingTop: 8 }}>
-                                <div className="pull-right">
-                                    <span>总计：
-                                    <span className="price">
-                                            <strong>￥{order.Sum.toFixed(2)}</strong></span>
-                                    </span>
-                                </div>
+                        </div> : null}
+
+                    {order.CouponTitle ?
+                        <hr data-bind="visible:order.CouponTitle" style={{ margin: 0, borderTopWidth: 10 }} />
+                        : null}
+
+                    <div className="container"
+                        onClick={() => app.showPage('shopping_invoice', {
+                            callback: (invoice: string) => {
+                                this.state.order.Invoice = invoice;
+                                this.setState(this.state);
+                            }
+                        })}>
+                        <h4 className="pull-left">发票信息</h4>
+                        <div className="pull-right" style={{ paddingTop: 6 }}>
+                            <span style={{ paddingRight: 10 }}>{order.Invoice}</span>
+                            <i className="icon-chevron-right"></i>
+                        </div>
+                    </div>
+                    <hr style={{ margin: 0, borderTopWidth: 10 }} />
+                    <div className="container" style={{ padding: 10 }}>
+                        <input name="remark" type="text" multiple={true} style={{ width: '100%', height: 40, borderRadius: 4, border: '1px solid #dddddd' }}
+                            placeholder=" 若你对订单有特殊性要求，可以在此备注" />
+                    </div>
+
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-xs-4">商品</div>
+                            <div className="col-xs-8 text-right">
+                                <span style={{ paddingRight: 4 }}>+</span>
+                                <span className="price">￥{order.Amount.toFixed(2)}</span>
                             </div>
                         </div>
-                    </section >
-                </div>
-            );
+                        <div className="row">
+                            <div className="col-xs-4">运费</div>
+                            <div className="col-xs-8 text-right">
+                                <span style={{ paddingRight: 4 }}>+</span>
+                                <span className="price">￥{order.Freight.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-4">优惠</div>
+                            <div className="col-xs-8 text-right">
+                                <span style={{ paddingRight: 6 }}>-</span>
+                                <span className="price">￥{(order.Discount || 0).toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <div className="col-xs-12" style={{ padding: 0, paddingTop: 8 }}>
+                            <div className="pull-right">
+                                <span>总计：
+                            <span className="price">
+                                        <strong>￥{order.Sum.toFixed(2)}</strong></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section >]
         }
     }
 

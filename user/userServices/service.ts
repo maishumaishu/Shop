@@ -1,6 +1,5 @@
 
 let userToken = new chitu.ValueStore<string>(localStorage.getItem('userToken'));
-// userToken.value = localStorage.getItem('userToken');
 
 let appToken: string;
 export let tokens = {
@@ -52,10 +51,9 @@ function parseUrlParams(query: string) {
 }
 
 export abstract class Service extends chitu.Service {
-    // private static host;
     async ajax<T>(url: string, options: RequestInit) {
 
-        let host = await Service.getServiceHost();
+        let host = await this.getServiceHost();
 
         url = `${protocol}//${host}/` + url;
 
@@ -81,32 +79,30 @@ export abstract class Service extends chitu.Service {
     delete<T>(url: string, data?: any): Promise<T> {
         return super.deleteByJson(url, data);
     }
-    private ping(method: () => Promise<any>) {
+    private async ping<T>(method: () => Promise<T>) {
         var start: number = new Date() as any;
-        method()
-            .then(o => {
-                var pong = new Date() as any - start;
-
-            })
+        let result = await method();
+        var pong = new Date() as any - start;
+        return Object.assign(result, { pong });
     }
-    private static hostPing(host: string): Promise<number> {
+    private async hostPing(host: string): Promise<number> {
         let app_key = location.search.substr(1);
-        var p = new Ping({ favicon: `UserShop/Home/Index?application-key=${app_key}` });
-        //?application-key=location.search.substr(1)
-        function ping(host): Promise<number> {
-            return new Promise((resolve, reject) => {
-                p.ping(`${protocol}//${host}/`, (err: object, ping: number) => {
-                    resolve(ping);
-                });
-            })
-        }
 
-        return Promise.all([ping(host), ping(host), ping(host)]).then((arr) => {
-            let num = (arr[0] + arr[1] + arr[2]) / 3;
-            return num;
-        });
+        let url = "UserShop/Home/";
+        let m = () => this.get<string>(url);
+        let data = await Promise.all([
+            this.ping(m),
+            this.ping(m),
+            this.ping(m)
+        ]);
+
+        // localStorage.setItem('appid', data[0].AppId);
+
+        let arr = data.map(o => o.pong);
+        let num = (arr[0] + arr[1] + arr[2]) / 3;
+        return num;
     }
-    private static async getServiceHost(): Promise<string> {
+    private async getServiceHost(): Promise<string> {
         let host = localStorage['ServiceHost'];
         if (host)
             return Promise.resolve(host);
@@ -114,7 +110,7 @@ export abstract class Service extends chitu.Service {
         host = await new Promise<string>((resolve, reject) => {
             let result: string;
             for (let i = 0; i < allServiceHosts.length; i++) {
-                Service.hostPing(allServiceHosts[i]).then(o => {
+                this.hostPing(allServiceHosts[i]).then(o => {
                     console.log(`ping: ${allServiceHosts[i]} ${o}`);
 
                     if (!result) {

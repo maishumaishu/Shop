@@ -1,11 +1,10 @@
-import { Page, defaultNavBar } from 'site';
+import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { app } from 'site';
+import { DataList } from 'user/components/dataList';
+import { Tabs } from 'user/components/tabs';
 
-let { PageComponent, PageHeader, PageFooter, PageView, DataList, ImageBox, Tabs } = controls;
-type DataList = controls.DataList;
-
-export default function (page: Page) {
+export default function (page: chitu.Page) {
 
     let orderListView: OrderListView;
     let shop = page.createService(ShoppingService);
@@ -19,7 +18,7 @@ export default function (page: Page) {
 
     class OrderListView extends React.Component<{}, { activeIndex: number }>{
 
-        private dataView: controls.PageView;
+        private dataView: HTMLElement;
         private dataList: DataList;
 
         constructor(props) {
@@ -102,68 +101,67 @@ export default function (page: Page) {
             return control;
         }
         render() {
-            return (
-                <PageComponent>
-                    <PageHeader>
-                        {defaultNavBar({ title: '我的订单', back: () => app.redirect('user_index') })}
-                        <Tabs className="tabs" defaultActiveIndex={defaultActiveIndex} onItemClick={(index) => this.activeItem(index)}
-                            scroller={() => this.dataView.element} >
-                            <span>全部</span>
-                            <span>待付款</span>
-                            <span>待收货</span>
-                        </Tabs>
-                    </PageHeader>
-                    <PageView ref={o => this.dataView = o}>
-                        <DataList ref={o => this.dataList = o} loadData={(pageIndex) => this.loadData(pageIndex)}
-                            dataItem={(o: Order) => (
-                                <div key={o.Id} className="order-item">
-                                    <hr />
-                                    <div className="header">
-                                        <a href={`#shopping_orderDetail?id=${o.Id}`}>
-                                            <h4>订单编号：{o.Serial}</h4>
-                                            <div className="pull-right">
-                                                <i className="icon-chevron-right"></i>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div className="body">
-                                        <ul>
-                                            {o.OrderDetails.map((c, i) => (
-                                                <li key={i}>
-                                                    <ImageBox src={c.ImageUrl} className="img-responsive img-thumbnail img-full" />
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        {o.OrderDetails.length == 1 ?
-                                            <div className="pull-right" style={{ width: '75%', fontSize: '16px', paddingLeft: '16px', paddingTop: '4px' }}>
-                                                {o.OrderDetails[0].ProductName}
-                                            </div>
-                                            : null}
-                                        <div className="clearfix"></div>
-                                    </div>
-                                    <div className="footer">
-                                        <h4 className="pull-left">
-                                            实付款：<span className="price">￥{o.Amount.toFixed(2)}</span>
-                                        </h4>
+            return [
+                <header>
+                    {defaultNavBar({ title: '我的订单', back: () => app.redirect('user_index') })}
+                    <Tabs className="tabs" defaultActiveIndex={defaultActiveIndex} onItemClick={(index) => this.activeItem(index)}
+                        scroller={() => this.dataView} >
+                        <span>全部</span>
+                        <span>待付款</span>
+                        <span>待收货</span>
+                    </Tabs>
+                </header>,
+                <section ref={(o: HTMLElement) => this.dataView = o}>
+                    <DataList ref={o => this.dataList = o} loadData={(pageIndex) => this.loadData(pageIndex)}
+                        dataItem={(o: Order) => (
+                            <div key={o.Id} className="order-item">
+                                <hr />
+                                <div className="header">
+                                    <a href={`#shopping_orderDetail?id=${o.Id}`}>
+                                        <h4>订单编号：{o.Serial}</h4>
                                         <div className="pull-right">
-                                            {this.statusControl(o)}
+                                            <i className="icon-chevron-right"></i>
                                         </div>
+                                    </a>
+                                </div>
+                                <div className="body">
+                                    <ul>
+                                        {o.OrderDetails.map((c, i) => (
+                                            <li key={i}>
+                                                <img src={c.ImageUrl} className="img-responsive img-thumbnail img-full"
+                                                    ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    {o.OrderDetails.length == 1 ?
+                                        <div className="pull-right" style={{ width: '75%', fontSize: '16px', paddingLeft: '16px', paddingTop: '4px' }}>
+                                            {o.OrderDetails[0].ProductName}
+                                        </div>
+                                        : null}
+                                    <div className="clearfix"></div>
+                                </div>
+                                <div className="footer">
+                                    <h4 className="pull-left">
+                                        实付款：<span className="price">￥{o.Amount.toFixed(2)}</span>
+                                    </h4>
+                                    <div className="pull-right">
+                                        {this.statusControl(o)}
                                     </div>
                                 </div>
-                            )}
-                            emptyItem={
-                                <div className="norecords">
-                                    <div className="icon">
-                                        <i className="icon-list">
+                            </div>
+                        )}
+                        emptyItem={
+                            <div className="norecords">
+                                <div className="icon">
+                                    <i className="icon-list">
 
-                                        </i>
-                                    </div>
-                                    <h4 className="text">暂无此类订单</h4>
+                                    </i>
                                 </div>
-                            } />
-                    </PageView>
-                </PageComponent>
-            );
+                                <h4 className="text">暂无此类订单</h4>
+                            </div>
+                        } />
+                </section>
+            ]
         }
     }
 

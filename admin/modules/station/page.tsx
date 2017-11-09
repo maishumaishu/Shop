@@ -1,5 +1,5 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { StationService, ControlDescrtion, guid } from 'adminServices/station';
+import { StationService, guid } from 'adminServices/station';
 import { componentsDir } from 'mobileComponents/common';
 
 let station = new StationService();

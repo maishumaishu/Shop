@@ -1,9 +1,9 @@
-import { Page, defaultNavBar, app, formatDate } from 'site';
+import { defaultNavBar, app, formatDate } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
 import * as ui from 'ui';
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     let shopping = page.createService(ShoppingService);
     class OrderDetailPage extends React.Component<{ order: Order }, { order: Order }> {
         constructor(props) {

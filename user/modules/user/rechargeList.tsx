@@ -1,4 +1,4 @@
-import { Page, defaultNavBar, app, formatDate } from 'site';
+import { defaultNavBar, app, formatDate } from 'site';
 import { AccountService } from 'userServices/accountService';
 import { DataList } from 'user/components/dataList';
 
@@ -6,7 +6,7 @@ import * as ui from 'ui';
 
 // let { PageComponent, PageHeader, PageView, DataList } = controls;
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
 
     let account = page.createService(AccountService);
 
@@ -39,13 +39,13 @@ export default function (page: Page) {
 
         render() {
             return [
-                <header>
+                <header key="h">
                     {defaultNavBar({
                         title: '充值记录',
                         right: <button onClick={() => this.charge()} className="right-button" style={{ width: 'unset' }}>充值</button>
                     })}
                 </header>,
-                <section>
+                <section  key="v">
                     <DataList loadData={(i) => this.loadData(i)} pageSize={10000}
                         dataItem={(o: BalanceDetail, i: number) =>
                             <div key={i} className="container">

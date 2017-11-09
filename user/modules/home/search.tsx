@@ -1,9 +1,9 @@
-import { Page, searchNavBar, app } from 'site';
+import {  app } from 'site';
 import { StationService } from 'userServices/stationService';
 
 import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 
-export default function (page: Page) {
+export default function (page: chitu.Page) {
     interface SearchPageState {
         // historyKeywords: Array<string>;
         // searchKeyWords: Array<string>;
