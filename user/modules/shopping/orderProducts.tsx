@@ -58,7 +58,7 @@ export default async function (page: chitu.Page) {
 
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '确认订单', back: () => app.back() })}
+                    {defaultNavBar({ title: '确认订单' })}
                 </header>,
                 <footer key="f">
                     <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>

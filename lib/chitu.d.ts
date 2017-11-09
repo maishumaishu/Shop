@@ -1,4 +1,13 @@
+
 declare namespace chitu {
+    interface SiteMapNode {
+        pageName: string;
+        routeString: string | (() => string);
+        children: this[];
+    }
+    interface SiteMap<T extends SiteMapNode> {
+        root: T;
+    }
     class RouteData {
         private _parameters;
         private path_string;
@@ -10,7 +19,6 @@ declare namespace chitu {
         private _pageName;
         private _actionPath;
         private _routeString;
-        private _loadCompleted;
         constructor(basePath: string, routeString: string, pathSpliterChar?: string);
         parseRouteString(): void;
         private pareeUrlQuery(query);
@@ -19,7 +27,6 @@ declare namespace chitu {
         readonly pageName: string;
         readonly routeString: string;
         readonly actionPath: string;
-        readonly loadCompleted: boolean;
     }
     class Application {
         pageCreated: Callback<Application, Page>;
@@ -29,52 +36,60 @@ declare namespace chitu {
         private zindex;
         private page_stack;
         private cachePages;
+        private _siteMap;
         fileBasePath: string;
         backFail: Callback<Application, null>;
-        constructor();
+        error: Callback<Application, Error>;
+        constructor(args?: {
+            siteMap?: SiteMap<SiteMapNode>;
+        });
+        private setChildrenParent(parent);
         protected parseRouteString(routeString: string): RouteData;
         private on_pageCreated(page);
         readonly currentPage: Page;
         readonly pages: Array<Page>;
         protected createPage(routeData: RouteData, actionArguments: any): Page;
+        private on_pageError(app, error);
         protected createPageElement(routeData: chitu.RouteData): HTMLElement;
         protected hashchange(): void;
         run(): void;
         getPage(name: string): Page;
         private getPageByRouteString(routeString);
         showPage(routeString: string, args?: any): Page;
+        private pushPage(page);
+        private findSiteMapNode(pageName);
         setLocationHash(routeString: string): void;
-        private closeCurrentPage();
+        closeCurrentPage(): void;
         private clearPageStack();
         redirect(routeString: string, args?: any): Page;
-        back(args?: any): void;
+        back(): void;
+        _back(args?: any): void;
     }
 }
 
-declare namespace chitu {
-    class Errors {
-        static argumentNull(paramName: string): Error;
-        static modelFileExpecteFunction(script: any): Error;
-        static paramTypeError(paramName: string, expectedType: string): Error;
-        static paramError(msg: string): Error;
-        static viewNodeNotExists(name: any): Error;
-        static pathPairRequireView(index: any): Error;
-        static notImplemented(name: any): Error;
-        static routeExists(name: any): Error;
-        static noneRouteMatched(url: any): Error;
-        static emptyStack(): Error;
-        static canntParseUrl(url: string): Error;
-        static canntParseRouteString(routeString: string): Error;
-        static routeDataRequireController(): Error;
-        static routeDataRequireAction(): Error;
-        static viewCanntNull(): Error;
-        static createPageFail(pageName: string): Error;
-        static actionTypeError(pageName: string): Error;
-        static canntFindAction(pageName: any): Error;
-        static exportsCanntNull(pageName: string): void;
-        static scrollerElementNotExists(): Error;
-        static resourceExists(resourceName: string, pageName: string): Error;
-    }
+declare class Errors {
+    static argumentNull(paramName: string): Error;
+    static modelFileExpecteFunction(script: any): Error;
+    static paramTypeError(paramName: string, expectedType: string): Error;
+    static paramError(msg: string): Error;
+    static viewNodeNotExists(name: any): Error;
+    static pathPairRequireView(index: any): Error;
+    static notImplemented(name: any): Error;
+    static routeExists(name: any): Error;
+    static noneRouteMatched(url: any): Error;
+    static emptyStack(): Error;
+    static canntParseUrl(url: string): Error;
+    static canntParseRouteString(routeString: string): Error;
+    static routeDataRequireController(): Error;
+    static routeDataRequireAction(): Error;
+    static viewCanntNull(): Error;
+    static createPageFail(pageName: string): Error;
+    static actionTypeError(pageName: string): Error;
+    static canntFindAction(pageName: any): Error;
+    static exportsCanntNull(pageName: string): void;
+    static scrollerElementNotExists(): Error;
+    static resourceExists(resourceName: string, pageName: string): Error;
+    static siteMapRootCanntNull(): Error;
 }
 
 declare namespace chitu {
@@ -99,7 +114,7 @@ declare namespace chitu {
 
 declare namespace chitu {
     interface PageDisplayConstructor {
-        new(app: Application): PageDisplayer;
+        new (app: Application): PageDisplayer;
     }
     interface PageDisplayer {
         show(page: Page): Promise<any>;
@@ -154,10 +169,10 @@ declare namespace chitu {
     }
 }
 interface PageActionConstructor {
-    new(page: chitu.Page): any;
+    new (page: chitu.Page): any;
 }
 interface PageConstructor {
-    new(args: chitu.PageParams): chitu.Page;
+    new (args: chitu.PageParams): chitu.Page;
 }
 declare class PageDisplayerImplement implements chitu.PageDisplayer {
     show(page: chitu.Page): Promise<void>;
@@ -169,16 +184,13 @@ interface ServiceError extends Error {
 }
 declare function ajax<T>(url: string, options: RequestInit): Promise<T>;
 declare namespace chitu {
-    interface ServiceConstructor<T extends Service> {
-        new(): T;
+    interface ServiceConstructor<T> {
+        new (): T;
     }
     abstract class Service {
         error: Callback<Service, Error>;
         static settings: {
             ajaxTimeout: number;
-            headers: {
-                [key: string]: string;
-            };
         };
         constructor();
         ajax<T>(url: string, options: RequestInit): Promise<T>;
@@ -195,10 +207,8 @@ declare namespace chitu {
     }
 }
 
-declare namespace chitu {
-    function combinePath(path1: string, path2: string): string;
-    function loadjs(path: any): Promise<any>;
-}
-declare module "maishu-chitu" {
-    export = chitu;
-}
+declare function combinePath(path1: string, path2: string): string;
+declare function loadjs(path: any): Promise<any>;
+declare module "maishu-chitu" { 
+            export = chitu; 
+        }

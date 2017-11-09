@@ -1252,7 +1252,6 @@ export class PromotionRangeComponent extends React.Component<
 
 
 export default async function (page: chitu.Page) {
-    page.routeData.loadCompleted
     requirejs([`css!${page.routeData.actionPath}`]);
     let activityId = page.routeData.values.id;
     let activity = page.createService(ActivityService);

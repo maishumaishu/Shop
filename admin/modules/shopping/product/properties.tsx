@@ -28,7 +28,7 @@ function arrayToGroup(fields: KeyValue[]): KeyValue[][] {
 
 class DialogModel {
     constructor(element: HTMLElement) {
-        if (!element) throw chitu.Errors.argumentNull('element');
+        if (!element) throw new Error(`Argument 'element' cannt be null.`); //errors.argumentNull('element');
 
         this.element = element;
     }

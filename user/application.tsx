@@ -3,187 +3,20 @@ import * as ReactDOM from 'react-dom';
 window['h'] = window['h'] || React.createElement;
 
 import { StationService } from 'userServices/stationService';
-
+import { WeiXinService } from 'userServices/weiXinService';
 import { Application as BaseApplication } from 'chitu.mobile';
 import { MobilePage } from 'mobileComponents/mobilePage'
-
-/** 是否为 APP */
-// let isCordovaApp = location.protocol === 'file:';
-/** 是否为安卓系统 */
-// export let isAndroid = navigator.userAgent.indexOf('Android') > -1;
-/** 是否允浸入式头 */
-// let allowImmersionHeader = false;
-// let topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
-
-// const loadingClassName = 'loading';
-
-// if (isCordovaApp && !isAndroid) {
-//     allowImmersionHeader = true;
-// }
 
 export let config = {
     defaultUrl: 'home_index'
 }
 
-let station = new StationService();
-
-
-// export class Page extends chitu.Page {
-//     private allowSwipeBackGestrue;
-//     private displayStatic;
-
-//     constructor(params) {
-//         super(params);
-
-
-//         let className = this.routeData.pageName.split('.').join('-');
-//         this.element.className = (allowImmersionHeader ? 'mobile-page immersion ' : 'mobile-page ') + className;
-//         this.displayStatic = topLevelPages.indexOf(this.name) >= 0 || this.name == 'home.search';
-
-//         //=========================================
-//         // 在 shown 加入转动，而不是一开始加，避免闪烁
-//         this.shown.add((sender: Page, args) => {
-//             let i = sender.element.querySelector('section.loading i') as HTMLElement;
-//             if (i)
-//                 i.className = i.className + ' icon-spin';
-//         })
-//         //=========================================
-
-//         //===================================================
-//         // IOS WEB 浏览器自带滑动返回
-//         this.allowSwipeBackGestrue = (isCordovaApp || isAndroid) && topLevelPages.indexOf(this.routeData.pageName) < 0;
-//         //===================================================readonly
-
-//         this.renderLoading();
-//     }
-
-//     private renderLoading() {
-//         ReactDOM.render(
-//             <div>
-//                 {this.createHeader()}
-//                 <section className={loadingClassName}>
-//                     <div className="spin">
-//                         <i className="icon-spinner icon-spin"></i>
-//                     </div>
-//                 </section>
-//             </div>,
-//             this.element
-//         );
-//     }
-
-//     private renderError() {
-//         ReactDOM.render(
-//             <div>
-//                 {this.createHeader()}
-
-//                 <div className="norecords">
-//                     <div className="icon">
-//                         <i className="icon-rss">
-//                         </i>
-//                     </div>
-//                     <h4 className="text"></h4>
-//                     <button onClick={() => this.reload()} className="btn btn-default">点击重新加载页面</button>
-//                 </div>
-
-//             </div>, this.element
-//         );
-//     }
-
-//     private createHeader() {
-//         let noneHeaderPages = ['user.index'];
-//         if (noneHeaderPages.indexOf(this.routeData.pageName) >= 0) {
-//             return;
-//         }
-
-//         let navBar;
-//         switch (this.routeData.pageName) {
-//             case 'home.product':
-//                 navBar = productNavBar();
-//                 break;
-//             case 'home.search':
-//                 navBar = searchNavBar();
-//                 break;
-//             default:
-//                 let isTopPage = topLevelPages.indexOf(this.routeData.pageName) >= 0;
-//                 navBar = defaultNavBar({ showBackButton: !isTopPage });
-//                 break;
-//         }
-
-//         return <header>{(navBar)}</header>;
-//     }
-
-//     // createService<T extends Service>(serviceType: { new (): T }): T {
-//     //     let result = new serviceType();
-//     //     result.error.add((sender, error) => {
-//     //         this.processError(error);
-//     //     })
-//     //     return result;
-//     // }
-
-//     private showLoginPage = false;
-//     private processError(err: Error) {
-//         if (err.name == 'HeaderRequiredExeption' && err.message.indexOf('user-id') > 0) {
-//             // app.pages.pop();
-//             if (this.showLoginPage) {
-//                 return;
-//             }
-
-//             this.showLoginPage = true;
-//             var currentPage = app.currentPage;
-//             app.showPage('user_login', { return: currentPage.routeData.routeString });
-//             setTimeout(() => {
-//                 this.showLoginPage = false;
-//                 currentPage.close();
-//             }, 800);
-//             return;
-//         }
-//         let loadingElement = this.element.querySelector(`.${loadingClassName}`) as HTMLElement;
-//         if (loadingElement) {
-//             this.renderError();
-//         }
-//         else {
-//             alert(err.message);
-//             console.log(err);
-//         }
-//     }
-
-//     /** 判断主视图是否为活动状态 */
-//     private dataViewIsActive() {
-//         // 选取主视图后面的视图，如果有显示的，则说明为非活动状态
-//         let views = this.element.querySelectorAll('section[class="main"] + section');
-//         for (let i = 0; i < views.length; i++) {
-//             let view = views[i] as HTMLElement;
-//             let display = !view.style.display || view.style.display == 'block';
-//             if (display)
-//                 return false;
-//         }
-
-//         return true;
-//     }
-
-//     reload() {
-//         let result = super.reload();
-//         this.renderLoading();
-//         return result;
-//     }
-// }
 
 chitu.Page.tagName = "article";
 
 export class Application extends BaseApplication {
-    // private topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
     constructor() {
         super();
-        // this.pageType = Page;
-
-        //==================================================
-        // 添加样式
-        // let styleElement = document.createElement("div");
-        // document.body.appendChild(styleElement);
-        // station.styleControlData().then(controlData => {
-        //     MobilePage.createControlInstance(controlData, styleElement);
-        // })
-        //==================================================
     }
 
     public parseRouteString(routeString: string) {
@@ -203,6 +36,7 @@ export class Application extends BaseApplication {
         if (!this.styleloaded) {
             let element = document.createElement('div');
             document.body.appendChild(element);
+            let station = page.createService(StationService);
             station.pages.style().then(pageData => {
                 ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, element);
             })
@@ -215,7 +49,7 @@ export class Application extends BaseApplication {
 
     protected createPageElement(routeData: chitu.RouteData) {
         let element = document.createElement(chitu.Page.tagName);
-        element.className = "mobile-page";
+        element.className = "mobile-page " + routeData.pageName.split('.').join('-');
         if (location.pathname.endsWith('preview.html')) {
             let container = document.querySelector('.screen');
             console.assert(container != null, 'screen is not exists.');
@@ -228,27 +62,55 @@ export class Application extends BaseApplication {
     }
 }
 
-export let app = new Application();
-// app.backFail.add(() => {
-//     app.redirect(config.defaultUrl);
-// });
+export let app = window["app"] = window["app"] || new Application();
 
 
-if (!location.hash) {
+// (async function () {
+
+var ua = navigator.userAgent.toLowerCase();
+let isWeixin = (ua.match(/MicroMessenger/i) as any) == 'micromessenger';
+let weixin = new WeiXinService(); //app.currentPage.createService(WeiXinService);
+
+
+if (isWeixin && weixin.openid == null) {
+    weixin.weixinSetting().then(setting => {
+        if (setting == null) {
+            return;
+        }
+
+        let appid = setting.AppId;
+        let { protocol, pathname, search, hash } = location;
+        var redirect_uri = `${protocol}//${location.pathname}${search}`;
+        var state = hash ? hash.substr(1) : '';
+
+        var url =
+            `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=${state}#wechat_redirect`
+        location.href = url;
+    })
+
+}
+else if (!location.hash) {
+    debugger;
     app.redirect(config.defaultUrl);
 }
 
+// })();
+
+
+app.error.add((page, error) => {
+    alert(error.message);
+})
 
 //============================================================
 // ui
-export function defaultNavBar(options?: { title?: string, showBackButton?: boolean, right?: JSX.Element, back?: () => void, left?: JSX.Element }) {
+export function defaultNavBar(options?: { title?: string, showBackButton?: boolean, right?: JSX.Element, left?: JSX.Element }) {
     options = options || {};
     let title = options.title || '';
     let showBackButton = options.showBackButton == null ? true : options.showBackButton;
-    let back = options.back || (() => app.back());
+    // let back = options.back || (() => app.back());
 
     if (showBackButton && options.left == null) {
-        options.left = <button name="back-button" onClick={() => back()} className="left-button" style={{ opacity: 1 }}>
+        options.left = <button name="back-button" className="left-button" style={{ opacity: 1 }}>
             <i className="icon-chevron-left"></i>
         </button>;
     }
@@ -270,39 +132,4 @@ export function defaultNavBar(options?: { title?: string, showBackButton?: boole
     );
 }
 
-// export function productNavBar() {
-//     return (
-//         <nav style={{ opacity: 1, backgroundColor: 'unset' }}>
-//             <button onClick={() => app.back()} className="leftButton">
-//                 <i className="icon-chevron-left"></i>
-//             </button>
-//         </nav>
-//     );
-// }
 
-// export function searchNavBar() {
-//     return (
-//         <nav style={{ backgroundColor: 'white', borderBottom: 'solid 1px #ccc' }}>
-//             <button onClick={() => window['app'].back()} className="leftButton">
-//                 <i className="icon-chevron-left"></i>
-//             </button>
-//         </nav>
-//     );
-// }
-
-//===================================================
-// 生成样式
-// let element = document.createElement('div');
-// document.body.appendChild(element);
-// let stylePage = app.stylePage;
-// station.stylePage().then(pageData => {
-//     ReactDOM.render(<MobilePage pageData={pageData} elementPage={stylePage} />, element);
-// })
-
-//===================================================
-
-var ua = navigator.userAgent.toLowerCase();
-let isWeixin = (ua.match(/MicroMessenger/i) as any) == 'micromessenger';
-if (isWeixin) {
-
-}

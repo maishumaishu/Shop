@@ -1,8 +1,7 @@
 interface WeiXinSetting {
 
     AppId: string,
-    
-    // AppSecret: string,
+    AppSecret: string,
 
     /** 商户 ID */
     PartnerId: string,

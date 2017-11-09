@@ -67,6 +67,14 @@ export class Service extends chitu.Service {
         imageUrl: `https://${remote_service_host}/UserServices/Site/`
     }
 
+    constructor() {
+        super();
+
+        this.error.add((sender, error) => {
+            Service.error.fire(sender, error);
+        })
+    }
+
     ajax<T>(url: string, options: RequestInit): Promise<T> {
         options = options || {} as RequestInit;
         options.headers = options.headers || {} as Headers;

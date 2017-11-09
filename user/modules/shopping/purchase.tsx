@@ -25,14 +25,7 @@ export default function (page: chitu.Page) {
             return [
                 <header key="h">
                     {defaultNavBar({
-                        title: '订单概况',
-                        back: () => {
-                            if (page.previous != null && page.previous.name == 'shopping.orderList') {
-                                app.back();
-                                return;
-                            }
-                            app.redirect('shopping_orderList');
-                        }
+                        title: '订单概况'
                     })}
                 </header>,
                 <section key="v">

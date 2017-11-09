@@ -4,7 +4,6 @@ import FormValidator from 'formValidator';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
 import { MemberService } from 'userServices/memberService';
 
-let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 export default function (page: chitu.Page) {
     class LoginPasswordPage extends React.Component<{ userInfo: UserInfo }, { step: number }>{
         private validator: FormValidator;

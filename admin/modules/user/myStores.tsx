@@ -97,9 +97,6 @@ export default async function (page: chitu.Page) {
         }
         edit(app: Application) {
             this.nameInput.value = app.name;
-            // $(this.dialogElement).modal();
-            // let dialog = new ui.Dialog(this.dialogElement);
-            // dialog.show();
             ui.showDialog(this.dialogElement);
         }
         render() {
@@ -139,7 +136,7 @@ export default async function (page: chitu.Page) {
                                             onClick={() => this.showDialog(o)}>编辑</button>
                                     </div>
                                     <div className="col-xs-6">
-                                        <a href={`?${o.token}#home/index`} className="btn btn-success btn-block">详细</a>
+                                        <a href={`?appKey=${o.token}#home/index`} className="btn btn-success btn-block">详细</a>
                                     </div>
                                 </div>
                             </li>

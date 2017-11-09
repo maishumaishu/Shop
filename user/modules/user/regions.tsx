@@ -110,7 +110,7 @@ export default function (page: chitu.Page) {
             let province = this.state.currentProvince;
             return [
                 <header key="h">
-                    {defaultNavBar({ title: this.state.title, back: () => this.back() })}
+                    {defaultNavBar({ title: this.state.title })}
                 </header>,
                 <section key="v1" ref={o => this.provincesView = o as HTMLElement}>
                     <ul className="list-group">

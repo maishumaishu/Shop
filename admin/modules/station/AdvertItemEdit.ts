@@ -11,7 +11,7 @@ class PageModel {
     }
     back() {
         //location.href = 'Index.html#Station/AdvertItemList';
-        app.back({});
+        app.back();
         // .catch(function () {
         //     app.redirect('Station/AdvertItemList');
         // });

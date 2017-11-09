@@ -1,4 +1,4 @@
-import { Service, config, imageUrl, tokens, guid } from 'userServices/service';
+import { Service, imageUrl, tokens, guid } from 'userServices/service';
 // import { userData } from 'user/services/userData';
 
 

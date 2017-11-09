@@ -1,3 +1,5 @@
+import * as chitu from 'maishu-chitu';
+
 
 let userToken = new chitu.ValueStore<string>(localStorage.getItem('userToken'));
 
@@ -48,6 +50,7 @@ function parseUrlParams(query: string) {
 }
 
 export abstract class Service extends chitu.Service {
+    static error = new chitu.Callback<Service, Error>();
     async ajax<T>(url: string, options: RequestInit) {
 
         let host = Ping.optimumServer || defaultHost;
@@ -64,9 +67,9 @@ export abstract class Service extends chitu.Service {
             options.headers['user-token'] = tokens.userToken.value;
 
         this.error.add((sender, error) => {
-            debugger;
-            alert(error.message);
+            Service.error.fire(sender, error);
         })
+
 
         return super.ajax<T>(url, options);
     }

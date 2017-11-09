@@ -103,7 +103,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header>
-                    {defaultNavBar({ title: '我的订单', back: () => app.redirect('user_index') })}
+                    {defaultNavBar({ title: '我的订单' })}
                     <Tabs className="tabs" defaultActiveIndex={defaultActiveIndex} onItemClick={(index) => this.activeItem(index)}
                         scroller={() => this.dataView} >
                         <span>全部</span>

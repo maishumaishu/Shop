@@ -1,9 +1,6 @@
 import { defaultNavBar, app } from 'site';
-// import * as services from 'userServices';
 import { MobileBindingPageArguments } from 'modules/user/accountSecurity/mobileBinding';
 import { MemberService } from 'userServices/memberService';
-let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
-
 
 export default function (page: chitu.Page) {
     class IndexPage extends React.Component<{ userInfo: UserInfo }, { userInfo: UserInfo }>{
@@ -43,7 +40,7 @@ export default function (page: chitu.Page) {
                                 </span>
                                 <div style={{ paddingTop: 10 }}>绑定手机后，你可以通过手机找回密码</div>
                             </a>
-                            <a href="#AccountSecurity_Setting_PaymentPassword" className="list-group-item row">
+                            <a href="#user_accountSecurity_paymentPassword" className="list-group-item row">
                                 <strong className="name">支付密码</strong>
                                 <i className="icon-chevron-right pull-right"></i>
                                 <span data-bind="visible:!paymentPasswordSetted()" className="pull-right text-primary" style={{ paddingRight: 10 }}>未设置</span>

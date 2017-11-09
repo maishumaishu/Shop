@@ -46,7 +46,6 @@ requirejs.config({
         css: 'scripts/css',
         fetch: 'scripts/fetch',
         hammer: 'scripts/hammer',
-        ping: 'scripts/ping',
         react: 'scripts/react',
         'react-dom': 'scripts/react-dom',
         text: 'scripts/text',
@@ -64,7 +63,7 @@ requirejs.config({
     }
 });
 
-requirejs(['react', 'react-dom', 'site', 'ui', 'ping', 'prop-types'], function (React, ReactDOM, site) {
+requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types','errorHandle'], function (React, ReactDOM, site) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
