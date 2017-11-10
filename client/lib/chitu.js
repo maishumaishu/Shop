@@ -651,6 +651,9 @@ function travelJSON(result) {
     if (typeof result === 'string' && result.match(this.datePattern)) {
         return new Date(result);
     }
+    else if (typeof result === 'string') {
+        return result;
+    }
     var stack = new Array();
     stack.push(result);
     while (stack.length > 0) {

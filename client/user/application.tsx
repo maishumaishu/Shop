@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-window['h'] = window['h'] || React.createElement;
-
 import { StationService } from 'userServices/stationService';
 import { WeiXinService } from 'userServices/weiXinService';
 import { Application as BaseApplication, Page as BasePage } from 'chitu.mobile';
 import { MobilePage } from 'mobileComponents/mobilePage'
+
+window['h'] = window['h'] || React.createElement;
 
 export let config = {
     defaultUrl: 'home_index'
@@ -66,44 +66,11 @@ export class Application extends BaseApplication {
     }
 }
 
-export let app = window["app"] = window["app"] || new Application();
-
-
-// (async function () {
-
-var ua = navigator.userAgent.toLowerCase();
-let isWeixin = (ua.match(/MicroMessenger/i) as any) == 'micromessenger';
-let weixin = new WeiXinService(); //app.currentPage.createService(WeiXinService);
-
-
-if (isWeixin && weixin.openid == null) {
-    weixin.weixinSetting().then(setting => {
-        if (setting == null) {
-            return;
-        }
-
-        let appid = setting.AppId;
-        let { protocol, pathname, search, hash } = location;
-        var redirect_uri = `${protocol}//${location.pathname}${search}`;
-        var state = hash ? hash.substr(1) : '';
-
-        var url =
-            `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=${state}#wechat_redirect`
-        location.href = url;
-    })
-
-}
-else if (!location.hash) {
-    debugger;
-    app.redirect(config.defaultUrl);
-}
-
-// })();
-
-
-// app.error.add((page, error) => {
-//     alert(error.message);
-// })
+export let app: Application = window["app"] = window["app"] || new Application();
+let weixin = new WeiXinService();
+weixin.openid().then(data => {
+    let openid = data;
+})
 
 //============================================================
 // ui

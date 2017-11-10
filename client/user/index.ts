@@ -65,7 +65,6 @@ requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types','errorHandle'], func
     window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
 
-
     ui.setDialogContainer(document.getElementById('dialogContainer'));
 
     site.app.run();

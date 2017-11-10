@@ -36,7 +36,7 @@ export let config = {
 let protocol = location.protocol;
 let defaultHost = 'service.alinq.cn';
 
-function parseUrlParams(query: string) {
+export function parseUrlParams(query: string) {
     let match,
         pl = /\+/g,  // Regex for replacing addition symbol with a space
         search = /([^&=]+)=?([^&]*)/g,
