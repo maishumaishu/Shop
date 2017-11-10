@@ -25,7 +25,7 @@
             ],
             "userServices/*": [
                 "user/userServices/*",
-                "user/services"
+                "user/services/*"
             ]
         },
         "experimentalDecorators": true

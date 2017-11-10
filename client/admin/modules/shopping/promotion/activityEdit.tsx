@@ -1,4 +1,4 @@
-import { guid } from 'adminServices/service';
+import { guid } from 'services/service';
 import { ActivityService } from 'adminServices/activity';
 import { ProductSelectDialog } from 'adminComponents/productSelectDialog';
 import { ShoppingService } from 'adminServices/shopping';

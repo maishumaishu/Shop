@@ -1,5 +1,5 @@
-﻿import { Service } from 'adminServices/service';
-import { ShoppingService } from 'adminServices/shopping';
+﻿import { Service } from 'services/service';
+import { ShoppingService } from 'services/shopping';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 

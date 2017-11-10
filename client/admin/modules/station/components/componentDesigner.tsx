@@ -1,5 +1,6 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { guid, default as station } from 'adminServices/station'
+import { guid } from 'services/service';
+import { StationService } from 'services/station'
 import { default as StyleControl } from 'mobileComponents/style/control';
 
 interface Props extends React.Props<ComponentDesigner> {
@@ -16,10 +17,12 @@ interface State {
  * 组件设计器,数据以组件名称保存，即多个组件实例使用一份数据。
  */
 export class ComponentDesigner extends React.Component<Props, State>{
+    private station: StationService;
     constructor(props) {
         super(props);
+        this.station = this.props.elementPage.createService(StationService);
         this.state = { pageData: {} };
-        station.controlData(this.props.controlName).then(async controlData => {
+        this.station.controlData(this.props.controlName).then(async controlData => {
 
             let pageData: PageData = this.state.pageData;
             let target = this.props.target || 'default';
@@ -40,7 +43,7 @@ export class ComponentDesigner extends React.Component<Props, State>{
             }
 
             if (controlData.controlName != 'style') {
-                let styleControlData = await station.styleControlData();
+                let styleControlData = await this.station.styleControlData();
                 styleControlData.selected = 'disabled';
                 pageData.footer = pageData.footer || { controls: [] };
                 pageData.footer.controls = pageData.footer.controls || [];
@@ -68,7 +71,7 @@ export class ComponentDesigner extends React.Component<Props, State>{
 
         let controlData = controlDatas.filter(o => o.controlName == controlName)[0];
 
-        return station.saveControlData(controlData, 'menu');
+        return this.station.saveControlData(controlData, 'menu');
     }
     render() {
         let pageData = this.state.pageData;

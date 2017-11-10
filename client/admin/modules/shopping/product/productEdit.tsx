@@ -1,7 +1,7 @@
 ﻿import app from 'application';
 import { default as shopping } from 'adminServices/shopping';
-import { StationService, guid } from 'adminServices/station';
-import { Service, imageUrl } from 'adminServices/service';
+import { StationService } from 'services/station';
+import { Service, imageUrl, guid } from 'services/service';
 
 import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';
@@ -113,7 +113,7 @@ export default function (page: chitu.Page) {
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
                                 <button className="btn btn-sm btn-primary" onClick={() => app.back()}>
-                                    <i className="icon-reply"/>
+                                    <i className="icon-reply" />
                                     <span>返回</span>
                                 </button>
                             </li>
@@ -124,9 +124,9 @@ export default function (page: chitu.Page) {
                                         e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存商品成功' });
 
                                     }}>
-                                        <i className="icon-save"/>
-                                        <span>保存</span>
-                                    </button>
+                                    <i className="icon-save" />
+                                    <span>保存</span>
+                                </button>
                             </li>
                         </ul>
                     </div>

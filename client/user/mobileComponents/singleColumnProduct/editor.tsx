@@ -2,7 +2,7 @@ import { Editor, EditorProps } from 'mobileComponents/editor';
 import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control';
 import { ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'adminServices/station';
-import { imageUrl } from 'adminServices/service';
+import { imageUrl } from 'services/service';
 import { ProductSelectDialog } from 'adminComponents/productSelectDialog';
 export interface EditorState extends ControlState {
 

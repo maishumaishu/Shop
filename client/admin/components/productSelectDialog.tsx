@@ -1,4 +1,4 @@
-import { imageUrl } from 'adminServices/service';
+import { imageUrl } from 'services/service';
 import { ShoppingService } from 'adminServices/shopping';
 
 requirejs(['css!adminComponents/productSelectDialog']);

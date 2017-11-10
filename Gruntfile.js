@@ -1,6 +1,7 @@
 var admin_src = 'client/admin';
 var user_src = 'client/user';
 var out = 'www';
+var lib = 'client/lib';
 
 var admin_dest = `${out}/admin`;
 var user_dest = `${out}/user`;
@@ -37,19 +38,19 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'lib',
+                        cwd: `${lib}`,
                         src: ['ueditor/**/*.*'],
                         dest: `${admin_dest}/scripts`
                     },
                     {
                         expand: true,
-                        cwd: 'lib',
+                        cwd: `${lib}`,
                         src: ['umeditor/**/*.*'],
                         dest: `${admin_dest}/scripts`
                     },
                     {
                         expand: true,
-                        cwd: 'lib',
+                        cwd: `${lib}`,
                         src: ['*.js'],
                         dest: `${admin_dest}/scripts`
                     },
@@ -72,15 +73,15 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'lib',
+                        cwd: lib,
                         src: ['*.js'],
                         dest: `${user_dest}/scripts`
                     },
                     {
                         expand: true,
-                        cwd: `${user_src}/dest`,
+                        cwd: user_src,
                         src: ['*.js'],
-                        dest: `${user_dest}`
+                        dest: user_dest
                     }
                 ]
             }
@@ -142,8 +143,8 @@ module.exports = function (grunt) {
                     baseUrl: 'www/user',
                     include: [
                         'index', 'css', 'userServices/service', 'userServices/shoppingService',
-                        'mobileComponents/common', 'modules/page','polyfill'
-                    ], 
+                        'mobileComponents/common', 'modules/page', 'polyfill'
+                    ],
                     out: 'www/user/build.js',
                     optimize: 'none',
                     paths: {

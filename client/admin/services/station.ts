@@ -1,7 +1,6 @@
-﻿import { default as Service, guid } from 'admin/services/service';
-import templates from 'admin/services/data/templates'
-
-export { guid } from 'admin/services/service';
+﻿import { default as Service, guid } from 'services/service';
+import templates from 'services/data/templates'
+export { guid } from 'services/service';
 
 export class StationService extends Service {
     private url(path: string) {

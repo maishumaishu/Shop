@@ -2,7 +2,7 @@
 import * as ReactDOM from 'react-dom';
 import { menuData, MenuNode } from 'menuData';
 
-import { default as service } from 'admin/services/service';
+import { default as service } from 'services/service';
 import * as ui from 'ui';
 
 ui.setDialogContainer(document.querySelector('.dialog-container') as HTMLElement);

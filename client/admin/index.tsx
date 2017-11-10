@@ -82,8 +82,8 @@ requirejs.config({
 
         'ue': 'ueditor',
         'wuzhui': 'scripts/wuzhui',
-        // service: 'adminServices/service',
-        userServices: '../user/userServices',
+        userServices: '../user/services',
+        adminServices: './services',
         componentDesigner: 'modules/station/components/componentDesigner',
         mobileComponents: '../user/mobileComponents',
         mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
@@ -91,7 +91,7 @@ requirejs.config({
         'maishu-chitu': 'scripts/chitu',
         'user': '../user',
         'chitu.mobile': 'scripts/chitu.mobile',
-        'adminComponents': 'components',
+        'adminComponents': 'components'
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap', 'ping'];

@@ -8,7 +8,7 @@
 //     }
 
 // })(function () {
-import { default as Service } from 'admin/services/service';
+import { default as Service } from 'services/service';
 
 //HELLO
 

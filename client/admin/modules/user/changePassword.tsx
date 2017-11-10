@@ -53,7 +53,7 @@
 //     ko.applyBindings(model, page.element);
 // }
 
-import { Service } from 'adminServices/service';
+import { Service } from 'services/service';
 import { UserService } from 'adminServices/user';
 import site from 'site';
 

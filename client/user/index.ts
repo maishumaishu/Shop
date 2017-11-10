@@ -49,17 +49,15 @@ requirejs.config({
         react: 'scripts/react',
         'react-dom': 'scripts/react-dom',
         text: 'scripts/text',
-        // controls: 'controls',
         'chitu.mobile': 'scripts/chitu.mobile',
         carousel: 'scripts/carousel',
-        // mobileComponents: 'pageComponents',
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
         'prop-types': 'scripts/prop-types',
 
-        services: 'userServices',
+        userServices: 'services'
         ui: 'scripts/ui',
-        'user': '.',
+        'user': '.'
     }
 });
 
