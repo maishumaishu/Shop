@@ -101,13 +101,21 @@ export function imageUrl(path: string, width?: number, height?: number) {
         path = '/' + path;
     }
 
-    let url = 'https://image.alinq.cn' + path;
+    let urlParams = new Array<{ name: string, value: string }>();
+    let url = `${protocol}//image.alinq.cn` + path;
     if (width) {
-        url = url + '?width=' + width;
-        if (height) {
-            url = url + '&height=' + height;
-        }
+        // url = url + '?width=' + width;
+        urlParams.push({ name: 'width', value: width.toString() });
     }
+
+    if (navigator.userAgent.indexOf('chrome') < 0) {
+        urlParams.push({ name: 'type', value: 'jpeg' })
+    }
+
+    if (urlParams.length > 0) {
+        url = url + '?' + urlParams.map(o => `${o.name}=${o.value}`).join('&');
+    }
+    
     return url;
 }
 
