@@ -1,4 +1,4 @@
-import { default as services } from 'adminServices/service';
+import { default as services } from 'admin/services/service';
 import app from 'application';
 
 

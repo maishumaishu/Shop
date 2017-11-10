@@ -1,7 +1,4 @@
 
-declare module 'mobileControls' {
-    export = controls;
-}
 // // declare module 'userServices' {
 // //     export = userServices;
 // // }

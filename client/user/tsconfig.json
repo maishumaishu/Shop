@@ -3,13 +3,17 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../www",
+        "outDir": "../../www",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
+            "*": [
+                "lib/*",
+                "client/lib/*"
+            ],
             "chitu.mobile": [
-                "lib/chitu.mobile"
+                "client/lib/chitu.mobile"
             ],
             // "mobileComponents/*": [
             //     "user/pageComponents/*"
@@ -17,16 +21,12 @@
             // "pageComponents/*": [
             //     "user/pageComponents/*"
             // ],
-            "formValidator": [
-                "lib/formValidator.d.ts"
-            ],
             "adminComponents/*": [
                 "admin/components/*"
+            ],
+            "adminServices/*": [
+                "admin/services/*"
             ]
-            // ,
-            // "adminServices/*": [
-            //     "admin/services/*"
-            // ]
         },
         "experimentalDecorators": true,
         "declaration": false
@@ -38,6 +38,7 @@
         // "controls"
     ],
     "include": [
+
         "../lib/typings/fetch.d.ts",
         "../lib/typings/hammer.d.ts",
         "../lib/typings/jquery.d.ts",
@@ -46,8 +47,11 @@
         "../lib/typings/require.d.ts",
         "../lib/*.d.ts",
 
-        // "../admin/services/*",
+        "../admin/adminServices/*",
         // "../www/user/userServices.d.ts",
+
+        "../share/*.d.ts",
+        "../share/**/*.d.ts",
 
         "*.tsx",
         "**/*.tsx",

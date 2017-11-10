@@ -1,4 +1,3 @@
-import { PageComponent, PageHeader, PageFooter, PageView } from 'mobileControls';
 import { Control } from 'mobileComponents/common';
 import { default as StyleControl } from 'mobileComponents/style/control';
 requirejs(['css!content/devices.css']);
@@ -29,12 +28,12 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
     }
 
     controlCreated(component, type) {
-        if (type == PageView) {
-            let c = component as PageView;
-        }
-        else if (type == PageFooter) {
-            let c = component as PageFooter;
-        }
+        // if (type == PageView) {
+        //     let c = component as PageView;
+        // }
+        // else if (type == PageFooter) {
+        //     let c = component as PageFooter;
+        // }
     }
 
     render() {

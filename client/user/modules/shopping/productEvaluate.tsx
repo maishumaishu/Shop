@@ -1,6 +1,6 @@
 import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
-let { PageComponent, PageHeader, PageFooter, PageView, ImageFileSelector, ImageBox } = controls;
+import { ImageFileSelector } from 'user/components/imageFileSelector';
 
 export type RouteValues = { orderDetailId: string, productImageUrl: string };
 export default function (page: chitu.Page) {
@@ -37,7 +37,7 @@ export default function (page: chitu.Page) {
     class ProductEvaluate extends React.Component<RouteValues,
         { evaluation: string, anonymous: boolean }>{
 
-        private imageFileSelector: controls.ImageFileSelector;
+        private imageFileSelector: ImageFileSelector;
 
         constructor(props) {
             super(props);
@@ -73,8 +73,8 @@ export default function (page: chitu.Page) {
                     <div className="container">
                         <div className="row">
                             <div className="col-xs-4">
-                                <ImageBox src={this.props.productImageUrl} data-bind="attr:{src:productImageUrl}"
-                                    className="img-responsive img-thumbnail" />
+                                <img src={this.props.productImageUrl}
+                                    className="img-responsive img-thumbnail"/>
                             </div>
                             <div className="col-xs-8" style={{ paddingLeft: 0 }}>
                                 <label>评分</label>

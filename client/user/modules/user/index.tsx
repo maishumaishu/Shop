@@ -1,5 +1,4 @@
 import { StationService } from 'userServices/stationService';
-import { PageComponent, PageView, PageFooter } from 'mobileControls';
 import { MobilePage } from 'mobileComponents/mobilePage';
 export default async function (page: chitu.Page) {
     let station = page.createService(StationService);

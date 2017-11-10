@@ -1,6 +1,6 @@
 ﻿
 // import Product = require('models/Product');
-import { Service as Service } from 'adminServices/service';
+import { Service as Service } from 'admin/services/service';
 
 
 export class ShoppingService extends Service {

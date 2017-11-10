@@ -1,8 +1,10 @@
-var admin_dest = 'www/admin';
-var admin_src = 'admin';
-var user_dest = 'www/user';
-var user_src = 'user';
-var dest = 'www';
+var admin_src = 'client/admin';
+var user_src = 'client/user';
+var out = 'www';
+
+var admin_dest = `${out}/admin`;
+var user_dest = `${out}/user`;
+
 var ts_options = {
     module: 'amd',
     target: 'es5',
@@ -13,13 +15,13 @@ module.exports = function (grunt) {
     grunt.initConfig({
         shell: {
             admin: {
-                command: `tsc -p admin`,
+                command: `tsc -p ${admin_src}`,
                 options: {
                     failOnError: false
                 }
             },
             user: {
-                command: `tsc -p user`,
+                command: `tsc -p ${user_src}`,
                 options: {
                     failOnError: false
                 }

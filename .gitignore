@@ -8,7 +8,7 @@ node_modules
 nohup.out
 dest
 temp
-images/umeditor.net/upload
-images/*.js
-images/*.js.map
+server/images/umeditor.net/upload
+server/images/*.js
+server/images/*.js.map
 out

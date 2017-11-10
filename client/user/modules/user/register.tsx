@@ -1,5 +1,4 @@
 import { defaultNavBar, app, config } from 'site';
-let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
 import FormValidator from 'formValidator';
 // import * as services from 'userServices';
 import { MemberService } from 'userServices/memberService';

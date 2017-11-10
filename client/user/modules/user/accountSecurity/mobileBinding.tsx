@@ -5,7 +5,6 @@ import FormValidator from 'formValidator';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
 import VerifyCodeButton from 'components/verifyCodeButton';
 
-let { PageComponent, PageHeader, PageFooter, PageView, ImageBox, DataList } = controls;
 export interface MobileBindingPageArguments {
     mobileChanged: (mobile: string) => void
 }

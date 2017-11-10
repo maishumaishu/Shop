@@ -1,6 +1,6 @@
 import { componentsDir } from 'mobileComponents/common'
 // import { ImageBox } from 'mobile/controls';
-let { ImageBox } = controls;
+
 
 requirejs([`css!${componentsDir}/carousel/control`]);
 
@@ -380,7 +380,7 @@ export class State {
 
 }
 
-export class Control extends React.Component<Props,State> {
+export class Control extends React.Component<Props, State> {
     componentDidMount() {
 
     }
@@ -401,8 +401,9 @@ export class Control extends React.Component<Props,State> {
                     <div className="carousel-inner">
                         {items.map((o, i) =>
                             <div key={i} className={i == 0 ? "item active" : "item"}>
-                                <ImageBox src={o.image} text="" className="img-responsive">
-                                </ImageBox>
+                                <img src={o.image} className="img-responsive"
+                                    ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null}>
+                                </img>
                                 <div className="carousel-caption">
                                 </div>
                             </div>

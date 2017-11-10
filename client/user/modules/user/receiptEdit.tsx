@@ -4,7 +4,6 @@ import FormValidator from 'formValidator';
 import { RegionsPageRouteValues } from 'modules/user/regions';
 import * as ui from 'ui';
 
-let { PageComponent, PageHeader, PageView } = controls;
 export interface ReceiptEditRouteValues {
     id?: string,
     onSaved: (receipt: ReceiptInfo) => void

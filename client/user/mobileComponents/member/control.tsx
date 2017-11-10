@@ -1,5 +1,4 @@
 import { componentsDir, Control, ControlProps } from 'mobileComponents/common';
-import { PageComponent, PageView } from 'mobileControls';
 import { MemberService } from 'userServices/memberService';
 import { userData } from 'userServices/userData';
 import { imageUrl } from 'userServices/service';

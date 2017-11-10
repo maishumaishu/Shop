@@ -6,7 +6,6 @@ import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/co
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { guid, StationService } from 'adminServices/station';
 import { StationService as UserStation } from 'userServices/stationService';
-import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 import { PropTypes } from 'prop-types';
 
 import * as ui from 'ui';
@@ -113,7 +112,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     componentDidMount() {
         $(this.allContainer).find('li').draggable({
-            connectToSortable: $(this.element).find(PageView.tagName),
+            connectToSortable: $(this.element).find("section"),//PageView.tagName
             helper: "clone",
             revert: "invalid"
         });

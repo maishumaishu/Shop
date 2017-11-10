@@ -3,7 +3,7 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../www",
+        "outDir": "../../www",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
@@ -15,18 +15,21 @@
                 "user/mobileComponents/*"
             ],
             "virtualMobile": [
-                "modules/station/components/virtualMobile"
+                "admin/modules/station/components/virtualMobile"
             ],
             "adminComponents/*": [
                 "admin/components/*"
+            ],
+            "adminServices/*": [
+                "admin/services/*"
+            ],
+            "userServices/*": [
+                "user/userServices/*",
+                "user/services"
             ]
-            // "componentDesigner/*": [
-            //     "user/componentDesigner/*"
-            // ]
         },
         "experimentalDecorators": true
     },
-    "exclude": [],
     "include": [
 
         "../lib/*.d.ts",
@@ -34,18 +37,12 @@
         "../lib/typings/**/*.d.ts",
 
         "../share/*.d.ts",
+        "../share/**/*.d.ts",
 
-        // "../www/user/userServices.d.ts",
-        // "services/*",
         "references.d.ts",
 
-        // "application.tsx"
-
-        "user/mobileComponents/*",
-
-        "modules/station/components/virtualMobile",
-        "modules/station/components/mobilePageDesigner",
-        "modules/station/components/componentDesigner",
+        "../user/mobileComponents/*",
+        "../user/serverPing.ts",
 
         "*.tsx",
         "**/*.tsx",

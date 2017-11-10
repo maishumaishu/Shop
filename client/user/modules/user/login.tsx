@@ -2,8 +2,7 @@ import { defaultNavBar } from 'site';
 import * as ui from 'ui';
 import { MemberService } from 'userServices/memberService';
 import { app } from 'site';
-import FormValidator from 'formValidator';
-// let { PageComponent, PageHeader, PageFooter, PageView, DataList } = controls;
+import { FormValidator } from 'formValidator';
 
 export default function (page: chitu.Page) {
     let member = page.createService(MemberService);

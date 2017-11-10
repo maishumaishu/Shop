@@ -1,7 +1,7 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'mobileComponents/menu/control';
-import { FormValidator } from 'formValidator';
 import { StationService } from 'userServices/stationService';
+import { FormValidator　}　from 'formValidator';
 
 requirejs(['css!mobileComponents/menu/editor.css']);
 let h = React.createElement;
