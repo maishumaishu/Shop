@@ -75,15 +75,15 @@ export class UserData {
 }
 
 export let userData = new UserData();
-userData.userToken.add(() => {
+userData.userToken.add((value) => {
+    if (!value)
+        return;
+        
     // let ShoppingCart = new ShoppingCartService();
 
     // ShoppingCart.items().then((value) => {
     //     userData.shoppingCartItems.value = value;
     // })
-
-
-
     let account = new AccountService();
     account.account().then(o => {
         userData.balance.value = o.Balance;
