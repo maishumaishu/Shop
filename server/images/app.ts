@@ -93,7 +93,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         if (!result)
             throw errors.actionResultIsNull();
 
-        if (result.contentType.startsWith('image') && query.width) {
+        if (result.contentType != null && result.contentType.startsWith('image') && query.width) {
             let width = Number.parseInt(query.width);
             let height = query.height ? Number.parseInt(query.height) : width;
             let type = query.type || defaultImageType;
@@ -151,7 +151,8 @@ async function imageByName(req: http.IncomingMessage, res: http.ServerResponse, 
     var name = urlInfo.pathname.substr(1);
     let item = await collection.findOne({ name });
     if (!item) {
-        throw errors.objectNotExists(imageCollectionName, name);
+        let err = errors.objectNotExists(imageCollectionName, name);
+        return { data: err.message, statusCode: 404 };
     }
 
     let arr = (item.data || '').split(',');
@@ -165,6 +166,10 @@ async function imageByName(req: http.IncomingMessage, res: http.ServerResponse, 
 async function imageById(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db, _id: mongodb.ObjectId) {
     let collection = db.collection(imageCollectionName);
     let item = await collection.findOne({ _id });
+    if (item == null) {
+        let err = errors.objectNotExists(imageCollectionName, _id);
+        return { data: err.message, statusCode: 404 }
+    }
 
     let arr = (item.data || '').split(',');
     if (arr.length != 2)
