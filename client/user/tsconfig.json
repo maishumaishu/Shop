@@ -15,17 +15,15 @@
             "chitu.mobile": [
                 "client/lib/chitu.mobile"
             ],
-            // "mobileComponents/*": [
-            //     "user/pageComponents/*"
-            // ],
-            // "pageComponents/*": [
-            //     "user/pageComponents/*"
-            // ],
             "adminComponents/*": [
                 "admin/components/*"
             ],
             "adminServices/*": [
                 "admin/services/*"
+            ],
+            "userServices/*": [
+                "services/*",
+                "user/services/*"
             ]
         },
         "experimentalDecorators": true,
