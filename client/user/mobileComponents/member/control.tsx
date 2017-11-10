@@ -27,6 +27,8 @@ export interface State {
 
 export default class MemberControl extends Control<Props, State>{
 
+    static default_bg = '../user/mobileComponents/member/images/bg_user.png';
+
     get persistentMembers(): (keyof State)[] {
         return ["showBalance", "showLevel", "showScore", "sellsCenter", "bg"];
     }
@@ -52,10 +54,12 @@ export default class MemberControl extends Control<Props, State>{
 
     _render(h) {
         let { balance, userInfo, showBalance, showLevel, sellsCenter, showScore, bg, score } = this.state;
+        let bg_url = bg ? imageUrl(bg) : MemberControl.default_bg;
+
         userInfo = userInfo || {} as UserInfo;
         return (
             <div className="memberControl">
-                <div className="mobile-user-info text-center" style={{ backgroundImage: bg ? `url(${imageUrl(bg)})` : null }}>
+                <div className="mobile-user-info text-center" style={{ backgroundImage: `url(${bg_url})` }}>
                     <a href="#user_userInfo">
                         <img src={userInfo.HeadImageUrl} className="img-circle img-full"
                             title="上传头像" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />

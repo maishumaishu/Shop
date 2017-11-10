@@ -101,12 +101,7 @@ requirejs(references, function (React, ReactDOM, app, ui) {
     window['h'] = React.createElement;
 
 
-    app.default.run()
-
-
-
-    // requirejs(['ace'], function () { });
-
+    app.default.run();
 });
 
 

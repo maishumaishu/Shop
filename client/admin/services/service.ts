@@ -116,14 +116,14 @@ export class Service extends chitu.Service {
         return Service.userId;
     }
     static get token() {
-        return localStorage['token'];
+        return localStorage['adminToken'];
     };
     static set token(value: string) {
         if (value === undefined) {
-            localStorage.removeItem('token');
+            localStorage.removeItem('adminToken');
             return;
         }
-        localStorage.setItem('token', value);
+        localStorage.setItem('adminToken', value);
     }
     static get userId() {
         return localStorage['userId'];

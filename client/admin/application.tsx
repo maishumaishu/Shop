@@ -2,7 +2,7 @@
 import * as ReactDOM from 'react-dom';
 import { menuData, MenuNode } from 'menuData';
 
-import { default as service } from 'services/service';
+import { Service } from 'services/service';
 import * as ui from 'ui';
 
 ui.setDialogContainer(document.querySelector('.dialog-container') as HTMLElement);
@@ -21,13 +21,13 @@ class Page extends React.Component<any, {
         //     this.setState(this.state);
         // });
 
-        service.username.add((value) => {
+        Service.username.add((value) => {
             this.state.username = value;
             this.setState(this.state);
         })
 
         let url = (window.location.hash.substr(1) || '').split('?')[0];
-        this.state = { currentNode: this.findNodeByUrl(url), username: service.username.value };
+        this.state = { currentNode: this.findNodeByUrl(url), username: Service.username.value };
     }
     hideSecond() {
 
@@ -221,37 +221,38 @@ class Application extends chitu.Application {
     }
 }
 
-var app = new Application();
-app.error.add((sender, error) => {
-    if (error.name == 'NotLogin' || error.name == `724`) {
-        service.token = '';
-        // location.search = '';
-        // app.redirect('user/login');
-        location.href = 'index.html#user/login';
-        return;
-    };
+// var app = new Application();
+// app.error.add((sender, error) => {
+//     if (error.name == 'NotLogin' || error.name == `724`) {
+//         Service.token = '';
+//         // location.search = '';
+//         // app.redirect('user/login');
+//         location.href = 'index.html#user/login';
+//         return;
+//     };
 
-    //========================================
-    // 延迟处理错误，让其它模块先处理
-    let timeoutId = setTimeout(() => {
-        if (!error['handled']) {
-            ui.alert({
-                title: '错误',
-                message: error.message
-            });
-        }
+//     //========================================
+//     // 延迟处理错误，让其它模块先处理
+//     let timeoutId = setTimeout(() => {
+//         if (!error['handled']) {
+//             ui.alert({
+//                 title: '错误',
+//                 message: error.message
+//             });
+//         }
 
-        clearTimeout(timeoutId);
+//         clearTimeout(timeoutId);
 
-    }, 100);
-    //========================================
-})
+//     }, 100);
+//     //========================================
+// })
 
-if (service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
+let app = window['app'] = window['app'] || new Application();
+
+if (Service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
     app.redirect('user/login');
 }
 
-window['app'] = app;
 export default app;
 
 

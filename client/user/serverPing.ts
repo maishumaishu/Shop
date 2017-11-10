@@ -48,7 +48,7 @@ class Ping {
     static optimumServer: string
 }
 
-let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.cn`];
+let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.org`];
 let { protocol } = location;
 for (let i = 0; i < allServiceHosts.length; i++) {
     let url = `${protocol}//${allServiceHosts[i]}/`;

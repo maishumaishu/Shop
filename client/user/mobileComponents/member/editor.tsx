@@ -19,7 +19,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
     }
     render() {
         let bg = this.state.bg ? imageUrl(this.state.bg) :
-            '../user/mobileComponents/member/images/bg_user.png';
+           Control.default_bg
 
         return (
             <div className="member-editor well">
