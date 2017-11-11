@@ -43,6 +43,12 @@ label {
 // is required to ensure optimum display with or without those classes to better
 // address browser inconsistencies.
 
+input {
+  -webkit-appearance: none;
+  border: solid 1px;
+  border-radius: 0;
+}
+
 // Override content-box in Normalize (* isn't specific enough)
 input[type="search"] {
   .box-sizing(border-box);
