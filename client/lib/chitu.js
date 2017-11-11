@@ -71,6 +71,9 @@ get basePath() {
 get values() {
     return this._parameters;
 }
+set values(value) {
+    this._parameters = value;
+}
 get pageName() {
     return this._pageName;
 }
@@ -131,10 +134,11 @@ get currentPage() {
 get pages() {
     return this.page_stack;
 }
-createPage(routeData, actionArguments) {
+createPage(routeData) {
     let data = this.cachePages[routeData.routeString];
     if (data) {
         data.hitCount = (data.hitCount || 0) + 1;
+        data.page.routeData.values = routeData.values;
         return data.page;
     }
     let previous_page = this.pages[this.pages.length - 1];
@@ -146,8 +150,7 @@ createPage(routeData, actionArguments) {
         previous: previous_page,
         routeData: routeData,
         displayer,
-        element,
-        actionArguments
+        element
     });
     this.cachePages[routeData.routeString] = { page, hitCount: 1 };
     let keyes = Object.keys(this.cachePages);
@@ -239,7 +242,7 @@ showPage(routeString, args) {
         this.closeCurrentPage();
         return;
     }
-    let page = this.createPage(routeData, args);
+    let page = this.createPage(routeData);
     this.pushPage(page);
     page.show();
     return page;
@@ -481,7 +484,6 @@ constructor(params) {
     this._app = params.app;
     this._routeData = params.routeData;
     this._displayer = params.displayer;
-    this._actionArguments = params.actionArguments;
     this.loadPageAction();
 }
 on_load() {

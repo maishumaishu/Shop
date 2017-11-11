@@ -26,8 +26,8 @@ define(["require", "exports", "maishu-chitu"], function (require, exports, chitu
             else
                 this.pageDisplayType = LowMachinePageDisplayImplement;
         }
-        createPage(routeData, actionArguments) {
-            let page = super.createPage(routeData, actionArguments);
+        createPage(routeData) {
+            let page = super.createPage(routeData);
             //(page as Page).app = this;
             this.pageShown.fire(this, { page });
             return page;

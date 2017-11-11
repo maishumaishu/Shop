@@ -16,5 +16,5 @@ export declare class Application extends chitu.Application {
         page: chitu.Page;
     }>;
     constructor();
-    protected createPage(routeData: chitu.RouteData, actionArguments: any): chitu.Page;
+    protected createPage(routeData: chitu.RouteData): chitu.Page;
 }

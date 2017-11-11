@@ -23,7 +23,7 @@ declare namespace chitu {
         parseRouteString(): void;
         private pareeUrlQuery(query);
         readonly basePath: string;
-        readonly values: any;
+        values: any;
         readonly pageName: string;
         readonly routeString: string;
         readonly actionPath: string;
@@ -48,7 +48,7 @@ declare namespace chitu {
         private on_pageCreated(page);
         readonly currentPage: Page;
         readonly pages: Array<Page>;
-        protected createPage(routeData: RouteData, actionArguments: any): Page;
+        protected createPage(routeData: RouteData): Page;
         private on_pageError(app, error);
         protected createPageElement(routeData: chitu.RouteData): HTMLElement;
         protected hashchange(): void;
@@ -63,7 +63,6 @@ declare namespace chitu {
         private clearPageStack();
         redirect(routeString: string, args?: any): Page;
         back(): void;
-        _back(args?: any): void;
     }
 }
 
@@ -126,7 +125,6 @@ declare namespace chitu {
         element: HTMLElement;
         displayer: PageDisplayer;
         previous?: Page;
-        actionArguments: any;
     }
     class Page {
         private animationTime;
@@ -136,7 +134,6 @@ declare namespace chitu {
         private _app;
         private _routeData;
         private _displayer;
-        private _actionArguments;
         static tagName: string;
         error: Callback<Page, Error>;
         load: Callback<this, null>;
