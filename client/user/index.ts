@@ -54,7 +54,8 @@ requirejs.config({
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
         'prop-types': 'scripts/prop-types',
-        userServices: 'services',
+        userServices: './services',
+        // services: './services',
         ui: 'scripts/ui',
         'user': '.'
     }

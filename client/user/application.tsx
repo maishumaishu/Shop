@@ -26,8 +26,8 @@ export class Application extends BaseApplication {
     }
 
     private styleloaded: boolean;
-    protected createPage(routeData: chitu.RouteData, actionArguments) {
-        let page = super.createPage(routeData, actionArguments) as BasePage;
+    protected createPage(routeData: chitu.RouteData) {
+        let page = super.createPage(routeData) as BasePage;
         let path = routeData.actionPath.substr(routeData.basePath.length);
         let cssPath = `css!modules` + path;
         requirejs([cssPath]);
@@ -52,7 +52,7 @@ export class Application extends BaseApplication {
 
     protected createPageElement(routeData: chitu.RouteData) {
         let element = document.createElement(chitu.Page.tagName);
-        element.className = "mobile-page " + routeData.pageName.split('.').join('-');
+        element.className = routeData.pageName.split('.').join('-') + " mobile-page";
         if (location.pathname.endsWith('preview.html')) {
             let container = document.querySelector('.screen');
             console.assert(container != null, 'screen is not exists.');

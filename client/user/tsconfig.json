@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "allowJs": true,
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
@@ -29,12 +30,6 @@
         "experimentalDecorators": true,
         "declaration": false
     },
-    "exclude": [
-        // "user",
-        // "components",
-        // "pageComponents",
-        // "controls"
-    ],
     "include": [
 
         "../lib/typings/fetch.d.ts",
@@ -46,10 +41,8 @@
         "../lib/*.d.ts",
 
         "../admin/adminServices/*",
-        // "../www/user/userServices.d.ts",
 
-        "../share/*.d.ts",
-        "../share/**/*.d.ts",
+        "../share/models/*",
 
         "*.tsx",
         "**/*.tsx",
