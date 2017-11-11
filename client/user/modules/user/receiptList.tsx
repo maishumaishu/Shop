@@ -1,8 +1,6 @@
 import { defaultNavBar, app } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
-import { ReceiptEditRouteValues } from 'modules/user/receiptEdit';
-import * as ui from 'ui';
-
+import { ShoppingService } from 'services/shoppingService';
+import { ReceiptEditPageArguments } from 'modules/user/receiptEdit';
 export type SetAddress = (address: string, order: Order) => void;
 export interface ReceiptListRouteValues {
     callback: SetAddress,
@@ -17,17 +15,8 @@ export default function (page: chitu.Page) {
         constructor(props) {
             super(props);
             this.state = { items: this.props.items || [] };
-            // this.setStateByItems(this.props.items || []);
         }
-        // private setStateByItems(items: ReceiptInfo[]) {
-        //     let state = {} as { items: ReceiptInfo[] };
 
-        //     state.items = items;
-        //     if (this.state == null)
-        //         this.state = state;
-        //     else
-        //         this.setState(state);
-        // }
         private detail(item: ReceiptInfo) {
             var result = `${item.ProvinceName} ${item.CityName} ${item.CountyName} ${item.Address}`;
 
@@ -43,15 +32,17 @@ export default function (page: chitu.Page) {
                     if (receipt.IsDefault) {
                         this.state.items.forEach(o => o.IsDefault = false);
                     }
-                    this.state.items.push(receipt);
+                    this.state.items.unshift(receipt);
                     this.setState(this.state);
+                    app.back();
                 }
-            } as ReceiptEditRouteValues;
-            app.redirect('user_receiptEdit', routeValues);
+            } as ReceiptEditPageArguments;
+            app.showPage('user_receiptEdit', routeValues);
         }
         private editReceipt(receipt: ReceiptInfo) {
             let routeValues = {
                 id: receipt.Id,
+                receipt,
                 onSaved: (receipt: ReceiptInfo) => {
                     var index = this.state.items.findIndex((o) => o.Id == receipt.Id);
                     this.state.items[index] = receipt;
@@ -62,8 +53,9 @@ export default function (page: chitu.Page) {
                     }
 
                     this.setState(this.state);
+                    app.back();
                 }
-            } as ReceiptEditRouteValues;
+            } as ReceiptEditPageArguments;
             app.redirect('user_receiptEdit', routeValues);
         }
         async setDefaultReceipt(receipt: ReceiptInfo) {
@@ -98,63 +90,63 @@ export default function (page: chitu.Page) {
                     {defaultNavBar({ title: routeValue.callback ? '选择收货地址' : '收货地址' })}
                 </header>,
                 <section key="v">
-                    <div>
-                        {items.map(receipt => (
-                            <div key={receipt.Id} style={{ marginBottom: 14 }}>
-                                <div className="container">
-                                    <h5 data-bind="text:Name">{receipt.Name}</h5>
-                                    {routeValue.callback ?
-                                        <div onClick={() => this.setAddress(receipt)} className="small">{this.detail(receipt)}</div>
-                                        :
-                                        <div className="small">{this.detail(receipt)}</div>
-                                    }
-                                </div>
-                                <div style={{ marginTop: 6 }}>
-                                    <hr style={{ marginBottom: 8 }} />
-                                    <div className="container">
-                                        <div className="pull-left">
-                                            <a href="javascript:"
-                                                onClick={() => this.setDefaultReceipt(receipt)}>
-                                                {(receipt.IsDefault ?
-                                                    <i className="icon-ok-sign" style={{ fontSize: 20 }}></i> :
-                                                    <i className="icon-circle-blank" style={{ fontSize: 20 }}></i>)}
-                                                <span style={{ marginLeft: 8 }}>默认地址</span>
-                                            </a>
-                                        </div>
-                                        <div className="pull-right">
-                                            <a href="javascript:"
-                                                onClick={() => this.editReceipt(receipt)}>
-                                                <span className="icon-pencil" style={{ fontSize: 20 }}></span>
-                                                <span style={{ marginLeft: 4 }}>编辑</span>
-                                            </a>
-                                            <button style={{ marginLeft: 12, border: 'none', background: 'none' }}
-                                                ref={(e: HTMLButtonElement) => {
-                                                    if (!e) return;
-                                                    e.onclick = ui.buttonOnClick(() => this.deleteReceipt(receipt), { confirm: '你删除该收货地址吗？' })
-                                                }}   >
-                                                <span className="icon-remove" style={{ fontSize: 20 }}></span>
-                                                <span style={{ marginLeft: 4 }}>删除</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="clearfix"></div>
-                                    <hr style={{ marginTop: 8, borderTopWidth: 12 }} />
-                                </div>
-
+                    {items.map(receipt => (
+                        <div key={receipt.Id} style={{ marginBottom: 14 }}>
+                            <div className="container">
+                                <h5 data-bind="text:Name">{receipt.Name}</h5>
+                                {routeValue.callback ?
+                                    <div onClick={() => this.setAddress(receipt)} className="small">{this.detail(receipt)}</div>
+                                    :
+                                    <div className="small">{this.detail(receipt)}</div>
+                                }
                             </div>
-                        ))}
-                        {items.length == 0 ?
-                            <div className="norecords">
-                                <div className="icon">
-                                    <i className="icon-inbox" />
+                            <div style={{ marginTop: 6 }}>
+                                <hr style={{ marginBottom: 8 }} />
+                                <div className="container">
+                                    <div className="pull-left">
+                                        <a href="javascript:"
+                                            onClick={() => this.setDefaultReceipt(receipt)}>
+                                            {(receipt.IsDefault ?
+                                                <i className="icon-ok-sign" style={{ fontSize: 20 }}></i> :
+                                                <i className="icon-circle-blank" style={{ fontSize: 20 }}></i>)}
+                                            <span style={{ marginLeft: 8 }}>默认地址</span>
+                                        </a>
+                                    </div>
+                                    <div className="pull-right">
+                                        <a href="javascript:"
+                                            onClick={() => this.editReceipt(receipt)}>
+                                            <span className="icon-pencil" style={{ fontSize: 20 }}></span>
+                                            <span style={{ marginLeft: 4 }}>编辑</span>
+                                        </a>
+                                        <button
+                                            ref={(e: HTMLButtonElement) => {
+                                                if (!e) return;
+                                                e.onclick = ui.buttonOnClick(() => this.deleteReceipt(receipt),
+                                                    { confirm: '你删除该收货地址吗？' })
+                                            }}
+                                            style={{ marginLeft: 12, border: 'none', background: 'none' }}>
+                                            <span className="icon-remove" style={{ fontSize: 20 }}></span>
+                                            <span style={{ marginLeft: 4 }}>删除</span>
+                                        </button>
+                                    </div>
                                 </div>
-                                <h4 className="text">暂无收货地址</h4>
-                            </div> : null}
-                    </div>
+                                <div className="clearfix"></div>
+                                <hr style={{ marginTop: 8, borderTopWidth: 12 }} />
+                            </div>
+
+                        </div>
+                    ))}
+                    {items.length == 0 ?
+                        <div className="norecords">
+                            <div className="icon">
+                                <i className="icon-inbox" />
+                            </div>
+                            <h4 className="text">暂无收货地址</h4>
+                        </div> : null}
 
                 </section>,
                 <footer key="f">
-                    <div className="container">
+                    <div className="container navbar-fixed-bottom">
                         <div className="form-group">
                             <button onClick={() => this.newReceipt()} className="btn btn-primary btn-block">
                                 添加新的收货地址

@@ -1,107 +1,136 @@
 import { defaultNavBar, app } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
+import { ShoppingService } from 'services/shoppingService';
 import FormValidator from 'formValidator';
 import { RegionsPageRouteValues } from 'modules/user/regions';
 import * as ui from 'ui';
 
-export interface ReceiptEditRouteValues {
+export interface ReceiptEditPageArguments {
     id?: string,
+    receipt?: ReceiptInfo,
     onSaved: (receipt: ReceiptInfo) => void
 }
 export default async function (page: chitu.Page) {
 
     let shop = page.createService(ShoppingService);
 
-    class ReceiptEditPage extends React.Component<{ receiptInfo?: ReceiptInfo }, { receiptInfo: ReceiptInfo }>{
-        private validator: FormValidator;
-        constructor(props) {
-            super(props);
 
-            let receiptInfo = this.props.receiptInfo || {} as ReceiptInfo;
-            this.state = { receiptInfo: receiptInfo };
+    let routeValues = page.routeData.values as ReceiptEditPageArguments;
+    let receiptInfo: ReceiptInfo = await getReceiptInfo(routeValues, shop);
+
+    let receiptEditPage: ReceiptEditPage;
+    ReactDOM.render(<ReceiptEditPage receiptInfo={receiptInfo} shop={shop} onSaved={routeValues.onSaved}
+        ref={(e) => receiptEditPage = e || receiptEditPage} />, page.element);
+
+    page.showing.add(async () => {
+        let receiptInfo: ReceiptInfo = await getReceiptInfo(page.routeData.values, shop);
+        receiptEditPage.state.receiptInfo = receiptInfo;
+        receiptEditPage.setState(receiptEditPage.state);
+    })
+
+}
+
+async function getReceiptInfo(args: ReceiptEditPageArguments, shop: ShoppingService) {
+    let receiptInfo: ReceiptInfo;
+    let routeValues = args;
+    let id = routeValues.id;
+    if (id) {
+        receiptInfo = await shop.receiptInfo(id);
+    }
+    else {
+        receiptInfo = {} as ReceiptInfo;
+    }
+
+    return receiptInfo;
+}
+
+interface Props extends React.Props<ReceiptEditPage> {
+    receiptInfo?: ReceiptInfo,
+    shop: ShoppingService,
+    onSaved: (receiptInfo: ReceiptInfo) => void
+}
+class ReceiptEditPage extends React.Component<
+    Props,
+    { receiptInfo: ReceiptInfo }>{
+    private validator: FormValidator;
+    constructor(props) {
+        super(props);
+
+        let receiptInfo = this.props.receiptInfo || {} as ReceiptInfo;
+        this.state = { receiptInfo: receiptInfo };
+    }
+    componentDidMount() {
+        // let fromElement = page.element.querySelector('form') as HTMLElement;
+        // this.validator = new FormValidator(fromElement, {
+        //     Name: { rules: ['required'], display: '地址名称', messages: { required: '请输入地址名称' } },
+        //     Consignee: { rules: ['required'], display: '收货人', messages: { required: '请输入收货人姓名' } },
+        //     Mobile: { rules: ['required'], display: '手机号码', messages: { required: '请输入手机号码' } },
+        //     Address: { rules: ['required'], display: '详细地址', messages: { required: '请输入详细地址' } },
+        //     RegionId: { rules: ['required'], display: '地区', messages: { required: '请选择地区' } },
+        // });
+
+    }
+    onInputChange(event: React.FormEvent) {
+        let input = event.target as HTMLInputElement;
+        let value: any;
+        if (input.type == 'checkbox') {
+            value = input.checked;
         }
-        componentDidMount() {
-            let fromElement = page.element.querySelector('form') as HTMLElement;
-            this.validator = new FormValidator(fromElement, {
-                Name: { rules: ['required'], display: '地址名称', messages: { required: '请输入地址名称' } },
-                Consignee: { rules: ['required'], display: '收货人', messages: { required: '请输入收货人姓名' } },
-                Mobile: { rules: ['required'], display: '手机号码', messages: { required: '请输入手机号码' } },
-                Address: { rules: ['required'], display: '详细地址', messages: { required: '请输入详细地址' } },
-                RegionId: { rules: ['required'], display: '地区', messages: { required: '请选择地区' } },
-            });
-            //  [
-            //     { name: 'Name', display: '地址名称', rules: 'required' },
-            //     { name: 'Consignee', display: '收货人', rules: 'required' },
-            //     { name: 'Mobile', display: '手机号码', rules: 'required' },
-            //     { name: 'Address', display: '详细地址', rules: 'required' },
-            //     { name: 'RegionId', display: '地区', rules: 'required' },
-            // ]
-
-            // this.validator.messages ('Name.required', '请输入地址名称');
-            // this.validator.setMessage('Consignee.required', '请输入收货人姓名');
-            // this.validator.setMessage(`Mobile.required`, '请输入手机号码');
-            // this.validator.setMessage('Address.required', '请输入详细地址');
-            // this.validator.setMessage('RegionId.required', '请选择地区');
+        else {
+            value = input.value;
         }
-        onInputChange(event: React.FormEvent) {
-            let input = event.target as HTMLInputElement;
-            let value: any;
-            if (input.type == 'checkbox') {
-                value = input.checked;
-            }
-            else {
-                value = input.value;
-            }
 
-            this.state.receiptInfo[input.name] = value;
+        this.state.receiptInfo[input.name] = value;
+        this.setState(this.state);
+    }
+    saveReceipt(): Promise<any> {
+        if (!this.validator.validateForm()) {
+            return Promise.reject<any>(null);
+        }
+
+        let shop = this.props.shop;
+        return shop.saveReceiptInfo(this.state.receiptInfo).then(data => {
+            Object.assign(this.state.receiptInfo, data);
             this.setState(this.state);
-        }
-        saveReceipt(): Promise<any> {
-            if (!this.validator.validateForm()) {
-                return Promise.reject<any>(null);
-            }
-            return shop.saveReceiptInfo(this.state.receiptInfo).then(data => {
-                Object.assign(this.state.receiptInfo, data);
-                this.setState(this.state);
 
-                if (routeValues.onSaved) {
-                    routeValues.onSaved(this.state.receiptInfo);
-                    app.back();
-                }
-                return data;
-            });
-        }
-        changeRegion() {
-            let r = this.state.receiptInfo;
-            let routeValues: RegionsPageRouteValues = {
-                province: { Id: r.ProvinceId, Name: r.ProvinceName }, city: { Id: r.CityId, Name: r.CityName },
-                country: { Id: r.CountyId, Name: r.CountyName },
-                selecteRegion: (province, city, country) => {
-                    r.ProvinceName = province.Name;
-                    r.ProvinceId = province.Id;
-                    r.CityName = city.Name;
-                    r.CityId = city.Id;
-                    r.CountyName = country.Name;
-                    r.CountyId = country.Id;
-                    r.RegionId = country.Id;
-                    this.setState(this.state);
-                }
-            };
-            app.showPage('user_regions', routeValues);
-        }
-        render() {
-            let ReceiptInfo = this.state.receiptInfo;
-            return [
+            if (this.props.onSaved) {
+                this.props.onSaved(this.state.receiptInfo);
+                // app.back();
+            }
+            return data;
+        });
+    }
+    changeRegion() {
+        let r = this.state.receiptInfo;
+        let routeValues: RegionsPageRouteValues = {
+            province: { Id: r.ProvinceId, Name: r.ProvinceName }, city: { Id: r.CityId, Name: r.CityName },
+            county: { Id: r.CountyId, Name: r.CountyName },
+            selecteRegion: (province, city, county) => {
+                r.ProvinceName = province.Name;
+                r.ProvinceId = province.Id;
+                r.CityName = city.Name;
+                r.CityId = city.Id;
+                r.CountyName = county.Name;
+                r.CountyId = county.Id;
+                r.RegionId = county.Id;
+                this.setState(this.state);
+            }
+        };
+        app.redirect('user_regions', routeValues);
+    }
+    render() {
+        let receiptInfo = this.state.receiptInfo;
+        return (
+            <div>
                 <header>
                     {defaultNavBar({ title: '编辑地址' })}
-                </header>,
+                </header>
                 <section>
                     <div className="container">
                         <form data-bind="with:receipt" className="form-horizontal">
                             <div className="form-group">
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     <span className="color-red">*</span> 地址名称
-                            </label>
+                                </label>
                                 <div className="col-xs-9">
                                     <input type="text" name="Name" className="form-control"
                                         value={receiptInfo.Name || ''}
@@ -112,7 +141,7 @@ export default async function (page: chitu.Page) {
                             <div className="form-group">
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     <span className="color-red">*</span> 收货人
-                            </label>
+                                </label>
                                 <div className="col-xs-9">
                                     <input type="text" name="Consignee" className="form-control"
                                         value={receiptInfo.Consignee || ''}
@@ -123,7 +152,7 @@ export default async function (page: chitu.Page) {
                             <div className="form-group">
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     <span className="color-red">*</span> 手机号码
-                            </label>
+                                </label>
                                 <div className="col-xs-9">
                                     <input type="text" name="Mobile" className="form-control"
                                         value={receiptInfo.Mobile || ''}
@@ -134,7 +163,7 @@ export default async function (page: chitu.Page) {
                             <div className="form-group">
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     <span className="color-red">*</span> 所在地区
-                            </label>
+                                </label>
                                 <div className="col-xs-9 pull-right" style={{ textAlign: 'right' }}
                                     onClick={() => this.changeRegion()}>
                                     <span style={{ paddingRight: 10 }}>
@@ -147,7 +176,7 @@ export default async function (page: chitu.Page) {
                             <div className="form-group">
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     <span className="color-red">*</span> 详细地址
-                            </label>
+                                </label>
                                 <div className="col-xs-9">
                                     <input type="text" name="Address" className="form-control"
                                         value={receiptInfo.Address || ''}
@@ -158,7 +187,7 @@ export default async function (page: chitu.Page) {
                             <div className="form-group">
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     邮编
-                            </label>
+                                </label>
                                 <div className="col-xs-9">
                                     <input type="text" name="PostalCode" className="form-control"
                                         placeholder="请输入邮政编码"
@@ -169,7 +198,7 @@ export default async function (page: chitu.Page) {
                             <div className="form-group">
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     固定电话
-                            </label>
+                                </label>
                                 <div className="col-xs-9">
                                     <input name="Phone" className="form-control" placeholder="请输入固定电话号码"
                                         value={receiptInfo.Phone || ''} onChange={(e) => this.onInputChange(e)} />
@@ -178,7 +207,7 @@ export default async function (page: chitu.Page) {
                             <div className="form-group" style={{ display: 'block' }}>
                                 <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                     设为默认
-                            </label>
+                                </label>
                                 <div className="col-xs-9 pull-right" style={{ textAlign: 'right' }}>
                                     <input type="checkbox" name="IsDefault"
                                         onChange={(e) => this.onInputChange(e)}
@@ -192,7 +221,7 @@ export default async function (page: chitu.Page) {
 
                         <div className="form-group">
                             <span className="color-red">*</span>为必填项目
-                    </div>
+                        </div>
                         <div className="form-group">
                             <button className="btn btn-primary btn-block"
                                 ref={(o: HTMLButtonElement) => {
@@ -205,19 +234,7 @@ export default async function (page: chitu.Page) {
                         </div>
                     </div>
                 </section>
-            ]
-        }
+            </div>
+        );
     }
-
-    let receiptInfo: ReceiptInfo;
-    let routeValues = page.routeData.values as ReceiptEditRouteValues;
-    let id = routeValues.id;
-    if (id) {
-        receiptInfo = await shop.receiptInfo(id);
-    }
-    else {
-        receiptInfo = {} as ReceiptInfo;
-    }
-    ReactDOM.render(<ReceiptEditPage receiptInfo={receiptInfo} />, page.element);
-
 }
