@@ -15,6 +15,7 @@ export class UserData {
     // private _shoppingCartItems = new chitu.ValueStore<ShoppingCartItem[]>();
     private _userToken = new chitu.ValueStore<string>();
     private _score = new chitu.ValueStore<number>();
+    private _userInfo = new chitu.ValueStore<UserInfo>();
 
     constructor() {
         this.userToken.add((value) => {
@@ -72,13 +73,17 @@ export class UserData {
     get score() {
         return this._score;
     }
+
+    get userInfo() {
+        return this._userInfo;
+    }
 }
 
 export let userData = new UserData();
 userData.userToken.add((value) => {
     if (!value)
         return;
-        
+
     // let ShoppingCart = new ShoppingCartService();
 
     // ShoppingCart.items().then((value) => {
@@ -94,6 +99,11 @@ userData.userToken.add((value) => {
         userData.toEvaluateCount.value = data.ToEvaluateCount;
         userData.sendCount.value = data.SendCount;
         userData.notPaidCount.value = data.NotPaidCount;
+    });
+
+    let member = new MemberService();
+    member.userInfo().then(data => {
+        userData.userInfo.value = data;
     });
 
     // userData.shoppingCartItems.add(value => {

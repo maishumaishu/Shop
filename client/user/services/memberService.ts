@@ -21,7 +21,7 @@ export class MemberService extends Service {
 
     saveUserInfo(userInfo): Promise<any> {
         let url = this.url('Member/SaveUserInfo');
-        return this.put(url, { userInfo });
+        return this.put(url, userInfo);
     }
 
     // logout() {

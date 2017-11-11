@@ -1,91 +1,45 @@
-import { defaultNavBar, app } from 'site';
+import { defaultNavBar, app, subscribe } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { MemberService } from 'userServices/memberService';
+import { WeiXinService, isWeixin, createWeixinClient } from 'userServices/weiXinService';
+import { userData } from 'userServices/userData';
+import { RegionsPageRouteValues } from 'modules/user/regions';
+
 import * as ui from 'ui';
 
 export default async function (page: chitu.Page) {
     let member = page.createService(MemberService);
-    let userInfo = await member.userInfo();
+    let weixin = page.createService(WeiXinService);
 
+    // if (userData.userInfo.value == null) {
+    //     userData.userInfo.value = await member.userInfo();
+    // }
 
-    class GenderSelector extends React.Component<React.Props<GenderSelector> & { value: string },
-        { value: string }>{
-
-        private element: HTMLElement;
-        valueChanged: (value: string) => void;
-
-        constructor(props) {
-            super(props);
-            this.state = { value: this.props.value };
-        }
-
-        private changeValue(value: string) {
-            this.state.value = value;
-            this.setState(this.state);
-            if (this.valueChanged != null) {
-                this.valueChanged(value)
-            }
-        }
-        show() {
-            this.element.style.removeProperty('display');
-        }
-        hide() {
-            this.element.style.display = 'none';
-        }
-        render() {
-            let value = this.state.value;
-            return (
-                <div ref={(o: HTMLElement) => this.element = this.element || o} style={{ display: 'none' }}>
-                    <div className="modal fade in" style={{ display: 'block' }}
-                        onClick={() => { this.hide(); }}>
-                        <div className="list-group " style={{ position: 'absolute', bottom: 0, width: '100%' }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                            }}>
-                            <div className="list-group-item">
-                                <span style={{ fontWeight: '700' }}>请选择性别</span>
-                                <i className="icon-remove pull-right" onClick={() => this.hide()}>
-                                </i>
-                            </div>
-                            <div className="list-group-item"
-                                onClick={() => {
-                                    this.changeValue('male');
-                                    setTimeout(() => this.hide(), 200);
-                                }}>
-                                <span>男</span>
-                                <i className="pull-right icon-ok"
-                                    style={{ display: value == 'male' ? 'block' : 'none' }} />
-                            </div>
-                            <div className="list-group-item"
-                                onClick={() => {
-                                    this.changeValue('female');
-                                    setTimeout(() => this.hide(), 200);
-                                }}>
-                                <span>女</span>
-                                <i className="pull-right icon-ok"
-                                    style={{ display: value == 'female' ? 'block' : 'none' }} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="modal-backdrop fade in" />
-                </div>
-            );
-        }
-    }
+    // debugger;
+    // 
 
     class UserInfoPage extends React.Component<{}, { userInfo: UserInfo }>{
-        private genderSelector: GenderSelector;
+        private imageBox: ImageBox;
+        private genderSelector: ValueSelector;
         private userImage: HTMLImageElement;
 
         constructor(props) {
             super(props);
+
+            let userInfo = userData.userInfo.value;
             this.state = { userInfo };
+            subscribe(this, userData.userInfo, (value) => {
+                this.state.userInfo = value;
+                this.setState(this.state);
+            })
         }
         showGenderSelector() {
             this.genderSelector.show();
         }
-        saveUserInfo() {
-            return member.saveUserInfo(this.state.userInfo);
+        async saveUserInfo() {
+            this.state.userInfo.HeadImageUrl = this.imageBox.state.imageSource;
+            await member.saveUserInfo(this.state.userInfo);
+            userData.userInfo.value = this.state.userInfo;
         }
         /** 将图片文件转换为 base64 字符串 */
         imageFileToBase64(file: File): Promise<string> {
@@ -121,14 +75,49 @@ export default async function (page: chitu.Page) {
                 }
             })
         }
+        private regionText(userInfo: UserInfo) {
+            let region = "";
+            // let userInfo = this.state.userInfo;
+            if (userInfo.County) {
+                region = userInfo.County;
+            }
+            if (userInfo.City) {
+                region = userInfo.City + " " + region;
+            }
+            if (userInfo.Province) {
+                region = userInfo.Province + " " + region;
+            }
+            return region;
+        }
+        private showRegions() {
+            // let r = this.state.receiptInfo;
+            let userInfo = this.state.userInfo;
+            let routeValues: RegionsPageRouteValues = {
+                province: { Id: userInfo.ProvinceId, Name: userInfo.Province },
+                county: { Id: userInfo.CountyId, Name: userInfo.CountyId },
+                city: { Id: userInfo.CityId, Name: userInfo.City },
+                selecteRegion: (province, city, county) => {
+                    userInfo.City = city.Name;
+                    userInfo.County = county.Name;
+                    userInfo.Province = province.Name;
+                    userInfo.CityId = city.Id;
+                    userInfo.CountyId = county.Id;
+                    userInfo.ProvinceId = province.Id;
+                    this.setState(this.state);
+                }
+            };
+            app.redirect('user_regions', routeValues);
+        }
         componentDidMount() {
             this.genderSelector.valueChanged = (value) => {
-                this.state.userInfo.Gender = value;
+                this.state.userInfo.Gender = value.value as string;
                 this.setState(this.state);
             }
         }
         render() {
             let userInfo = this.state.userInfo;
+            let regionText = this.regionText(userInfo);
+
             return [
                 <header key="h">
                     {defaultNavBar({ title: '用户信息' })}
@@ -141,32 +130,25 @@ export default async function (page: chitu.Page) {
                                     <div className="col-xs-3">
                                         <label style={{ position: 'relative', top: 30 }}>
                                             头像
-                                </label>
+                                        </label>
                                     </div>
                                     <div className="col-xs-9">
                                         <div className="pull-right" style={{ paddingLeft: 10, position: 'relative', top: 30 }}>
                                             <i className="icon-chevron-right"></i>
                                         </div>
-                                        <img className="img-circle pull-right" style={{ width: 70, height: 70 }}
-                                            src={userInfo.HeadImageUrl} title="上传头像"
-                                            ref={(e: HTMLImageElement) => this.userImage = e || this.userImage} />
-                                        <input type="file" style={{ position: 'absolute', top: 0, left: 0, opacity: 0, width: '100%', height: 90 }} accept="images/*" multiple={false}
-                                            onChange={(e) => {
-                                                this.imageFileToBase64((e.target as HTMLInputElement).files[0]).then(data => {
-                                                    userInfo.HeadImageUrl = data;
-                                                    this.setState(this.state);
-                                                });
-                                            }} />
+                                        <ImageBox ref={(e) => this.imageBox = e || this.imageBox}
+                                            imageSource={userInfo.HeadImageUrl} imageText="上传头像" imageClassName="img-circle pull-right"
+                                            weixin={weixin} />
                                     </div>
                                 </div>
                                 <div className="list-group-item row">
                                     <label className="col-xs-3">
                                         昵称
-                            </label>
-                                    <div data-bind="click:$root.edit('NickName'),tap:$root.edit('NickName')" className="col-xs-9"
+                                    </label>
+                                    <div className="col-xs-9"
                                         style={{ paddingLeft: 0 }}>
                                         <input className="form-control" placeholder="请输入昵称" style={{ textAlign: 'right' }}
-                                            value={userInfo.NickName}
+                                            value={userInfo.NickName || ''}
                                             onChange={(e) => {
                                                 this.state.userInfo.NickName = (e.target as HTMLInputElement).value;
                                                 this.setState(this.state);
@@ -176,26 +158,30 @@ export default async function (page: chitu.Page) {
                                 <div className="list-group-item row">
                                     <label className="col-xs-3">
                                         性别
-                            </label>
+                                    </label>
                                     <div className="col-xs-9" style={{ paddingLeft: 0, textAlign: 'right' }}>
                                         <span style={{ color: 'gray' }} className="form-control"
                                             onClick={() => {
                                                 this.showGenderSelector();
                                             }}>
-                                            {userInfo.Gender ? (userInfo.Gender == 'Male' ? '男' : '女') : '请选择性别'}
+                                            {userInfo.Gender == 'Male' ? '男' : null}
+                                            {userInfo.Gender == 'Female' ? '女' : null}
+                                            {userInfo.Gender == 'None' || !userInfo.Gender ? '请选择性别' : null}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="list-group-item row">
                                     <label className="col-xs-3">
                                         地区
-                            </label>
-                                    <div data-bind="click:$root.edit('Region'),tap:$root.edit('Region')" className="col-xs-9" style={{ paddingLeft: 0 }}>
+                                    </label>
+                                    <div className="col-xs-9" style={{ paddingLeft: 0 }} onClick={() => this.showRegions()}>
                                         <div className="pull-right" style={{ paddingLeft: 10 }}>
                                             <i className="icon-chevron-right"></i>
                                         </div>
-                                        <div data-bind="text:ko.unwrap(userInfo.Region),visible:userInfo.Region" className="pull-right"></div>
-                                        <div data-bind="visible:!ko.unwrap(userInfo.Region)" className="pull-right text-danger pull-right">未填写</div>
+                                        <div className="pull-right"></div>
+                                        <div className="pull-right text-danger pull-right">
+                                            {regionText ? regionText : "未填写"}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -209,7 +195,8 @@ export default async function (page: chitu.Page) {
                                 保存
                         </button>
                         </div>
-                        <GenderSelector ref={(o) => this.genderSelector = o || this.genderSelector} value={userInfo.Gender} />
+                        <ValueSelector ref={(o) => this.genderSelector = o || this.genderSelector} items={[{ name: '男', value: 'Male' }, { name: '女', value: 'Female' }]}
+                            value={userInfo.Gender} title="请选择性别" />
                     </div>
 
                 </section>
@@ -218,4 +205,151 @@ export default async function (page: chitu.Page) {
     }
 
     ReactDOM.render(<UserInfoPage />, page.element);
-} 
+}
+
+interface ImageBoxProps extends React.Props<ImageBox> {
+    imageSource: string,
+    imageText?: string,
+    imageClassName?: string,
+    weixin: WeiXinService
+}
+
+interface ImageBoxState {
+    imageSource: string,
+}
+
+class ImageBox extends React.Component<ImageBoxProps, ImageBoxState> {
+    private imageElement: HTMLImageElement;
+    private element: HTMLElement;
+    // private isWeixin: boolean;
+
+    constructor(props) {
+        super(props);
+        this.state = { imageSource: this.props.imageSource };
+
+        // var ua = navigator.userAgent.toLowerCase();
+        // this.c
+    }
+    async componentDidMount() {
+        ui.renderImage(this.imageElement);
+        if (isWeixin) {
+            let wx = await createWeixinClient(this.props.weixin);
+            this.element.onclick = () => {
+                wx.chooseImage({
+                    count: 1,
+                    sizeType: ['compressed'],
+                    sourceType: ["album"],
+                    success: (res) => {
+                        wx.getLocalImgData({
+                            localId: res.localIds[0], // 图片的localID
+                            success: (res) => {
+                                var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+                                this.state.imageSource = localData;;
+                                this.setState(this.state);
+                            }
+                        });
+                    }
+                })
+            }
+        }
+    }
+    render() {
+        let imageSource = this.state.imageSource;
+        let imageText = this.props.imageText || '';
+        return (
+            <div className="image-box" ref={(e: HTMLElement) => this.element = e || this.element}>
+                <img className={this.props.imageClassName} style={{ width: 70, height: 70 }}
+                    src={imageSource} title="上传头像"
+                    ref={(e: HTMLImageElement) => this.imageElement = e || this.imageElement} >
+
+                </img>
+                {!isWeixin ?
+                    <input type="file" style={{ position: 'absolute', top: 0, left: 0, opacity: 0, width: '100%', height: 90 }} accept="images/*" multiple={false}
+                        onChange={(e) => {
+                            let file = (e.target as HTMLInputElement).files[0];
+                            if (!file) return;
+                            ui.imageFileToBase64(file, { width: 100, height: 100 }).then(data => {
+                                this.state.imageSource = data.base64;
+                                this.setState(this.state);
+                            })
+
+
+                        }} /> : null}
+            </div>
+        );
+    }
+
+}
+
+type ValueSelectorValueType = string | number | Date;
+type ValueSelectorItem = { name: string, value: ValueSelectorValueType };
+interface ValueSelectorProps extends React.Props<ValueSelector> {
+    items: Array<{ name: string, value: ValueSelectorValueType }>;
+    value: ValueSelectorValueType,
+    title?: string
+}
+
+interface ValueSelectorState {
+    value: ValueSelectorValueType
+}
+
+class ValueSelector extends React.Component<ValueSelectorProps, ValueSelectorState>{
+
+    private element: HTMLElement;
+    valueChanged: (item: ValueSelectorItem) => void;
+
+    constructor(props) {
+        super(props);
+        this.state = { value: this.props.value };
+    }
+
+    private changeValue(item: ValueSelectorItem) {
+        this.state.value = item.value;
+        this.setState(this.state);
+        if (this.valueChanged != null) {
+            this.valueChanged(item)
+        }
+    }
+    show() {
+        this.element.style.removeProperty('display');
+    }
+    hide() {
+        this.element.style.display = 'none';
+    }
+    render() {
+        let value = this.state.value;
+        let items = this.props.items;
+        let title = this.props.title || '';
+
+        return (
+            <div className="value-selector" ref={(o: HTMLElement) => this.element = this.element || o} style={{ display: 'none' }}>
+                <div className="modal fade in" style={{ display: 'block' }}
+                    onClick={() => { this.hide(); }}>
+                    <div className="list-group " style={{ position: 'absolute', bottom: 0, width: '100%' }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                        }}>
+                        <div className="list-group-item">
+                            <span style={{ fontWeight: '700' }}>{title}</span>
+                            <i className="icon-remove pull-right" onClick={() => this.hide()}>
+                            </i>
+                        </div>
+                        {items.map(item =>
+                            <div key={item.name} className="list-group-item"
+                                onClick={() => {
+                                    this.changeValue(item);
+                                    setTimeout(() => this.hide(), 200);
+                                }}>
+                                <span>{item.name}</span>
+                                <i className="pull-right icon-ok"
+                                    style={{ display: value == item.value ? 'block' : 'none' }} />
+                            </div>
+
+                        )}
+                    </div>
+                </div>
+                <div className="modal-backdrop fade in" style={{ opacity: 0.5 }} />
+            </div>
+        );
+    }
+}

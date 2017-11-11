@@ -53,7 +53,7 @@ export abstract class Service extends chitu.Service {
     static error = new chitu.Callback<Service, Error>();
     async ajax<T>(url: string, options: RequestInit) {
 
-        let host =Ping.optimumServer || defaultHost;
+        let host = defaultHost; //Ping.optimumServer ||
         url = `${protocol}//${host}/${url}`;
 
         options = options || {};

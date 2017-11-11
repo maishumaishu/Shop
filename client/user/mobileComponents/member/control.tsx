@@ -46,10 +46,15 @@ export default class MemberControl extends Control<Props, State>{
             this.state.balance = value;
             this.setState(this.state);
         });
-        member.userInfo().then(userInfo => {
-            this.state.userInfo = userInfo;
+        // member.userInfo().then(userInfo => {
+        //     this.state.userInfo = userInfo;
+        //     this.setState(this.state);
+        // });
+        this.state.userInfo = userData.userInfo.value;
+        this.subscribe(userData.userInfo, (value) => {
+            this.state.userInfo = value;
             this.setState(this.state);
-        });
+        })
     }
 
     _render(h) {
@@ -62,7 +67,11 @@ export default class MemberControl extends Control<Props, State>{
                 <div className="mobile-user-info text-center" style={{ backgroundImage: `url(${bg_url})` }}>
                     <a href="#user_userInfo">
                         <img src={userInfo.HeadImageUrl} className="img-circle img-full"
-                            title="上传头像" ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+                            title="上传头像"
+                            ref={(e: HTMLImageElement) => e ?
+                                ui.renderImage(e, {
+                                    imageSize: { width: 100, height: 100 }
+                                }) : null} />
                     </a>
                     <div className="nick-name">
                         {userInfo.NickName == null ? '未填写' : userInfo.NickName}
