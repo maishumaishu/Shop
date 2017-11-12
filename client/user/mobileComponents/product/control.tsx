@@ -8,79 +8,144 @@ import { app } from 'site';
 import { Panel } from 'components/panel';
 
 
-export interface Props extends ControlProps<ProductControl> {
-    // productId?: string,
-    product: Product
-}
-export interface State extends Props {
+// export interface Props extends ControlProps<ProductControl> {
+//     // productId?: string,
+//     product: Product
+// }
+// export interface State extends Props {
 
-}
+// }
 
 // @component("product")
-export default class ProductControl extends Control<Props, State>{
-    private productView: ProductView;
+// export default class ProductControl extends Control<Props, State>{
+//     private productView: ProductView;
 
-    persistentMembers = [];
+//     persistentMembers = [];
 
-    constructor(props) {
-        super(props);
-        this.loadControlCSS();
+//     constructor(props) {
+//         super(props);
+//         this.loadControlCSS();
+//     }
+//     get element() {
+//         return this.productView.element;
+//     }
+//     _render(h) {
+//         let shopping = new ShoppingService();
+//         let shoppingCart = new ShoppingCartService();
+
+//         let product: Product = this.props.product;
+//         let designer = this.context.designer;
+
+//         return (
+//             <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} mobilePage={this.mobilePage} />
+//         );
+//     }
+// }
+
+export class Header extends Control<ControlProps<Footer>, any>{
+    get persistentMembers(): string[] {
+        return [];
     }
-    get element() {
-        return this.productView.element;
+
+    private favor() {
+        let shopping = this.elementPage.createService(ShoppingService);
+        let p: (productId: string) => Promise<any>
+        if (this.state.isFavored) {
+            p = shopping.unfavorProduct;
+        }
+        else {
+            p = shopping.favorProduct;
+        }
+
+        return p.bind(shopping)(this.state.product.Id).then(o => {
+            this.state.isFavored = !this.state.isFavored;
+            this.setState(this.state);
+        })
+    }
+    componentDidMount() {
+        // let buttons = this.header.querySelectorAll('nav button');
+        // let title = this.header.querySelector('nav.bg-primary') as HTMLElement;
+
+        // this.productView.addEventListener('scroll', function (event) {
+        //     let p = this.scrollTop / 100;
+        //     p = p > 1 ? 1 : p;
+
+        //     let buttonOpacity = 0.5 + p;
+        //     buttonOpacity = buttonOpacity > 1 ? 1 : buttonOpacity;
+
+        //     title.style.opacity = `${p}`;
+        //     for (let i = 0; i < buttons.length; i++) {
+        //         (buttons[i] as HTMLElement).style.opacity = `${buttonOpacity}`;
+        //     }
+
+        // });
     }
     _render(h) {
-        let shopping = new ShoppingService();
-        let shoppingCart = new ShoppingCartService();
+        return [
+            <nav className="bg-primary"></nav>,
+            <nav>
+                <button className="leftButton" onClick={() => app.back()}>
+                    <i className="icon-chevron-left"></i>
+                </button>
+                <button className="rightButton"
+                    ref={(e: HTMLButtonElement) => {
+                        if (!e) return;
+                        e.onclick = ui.buttonOnClick(() => this.favor());
+                    }}>
+                    <i className="icon-heart-empty" style={{ fontWeight: `800`, fontSize: `20px`, display: !this.state.isFavored ? 'block' : 'none' }} ></i>
+                    <i className="icon-heart" style={{ display: this.state.isFavored ? 'block' : 'none' }}></i>
+                </button>
+            </nav>
+        ]
+    }
+}
 
-        let product: Product = this.props.product;
-        let designer = this.context.designer;
-        // if (designer == null || !designer.isDesignMode) {
+export class Footer extends Control<ControlProps<Footer>, { productsCount: number }> {
+    get persistentMembers() {
+        return [];
+    }
+    addToShoppingCart() {
 
-        // }
-        // else {
+        let c = this.mobilePage.controls.filter(o => o instanceof ProductControl)[0] as any as ProductControl;
 
-        // product = {
-        //     Id: 'abc', Name: "Product", ImagePath: "ABC_200_200", ImagePaths: ["ABC_200_200"],
-        //     Price: 100, MemberPrice: 100, Promotions: [], Arguments: [],
-        //     CustomProperties: []
-        // } as Product;
+        let shoppingCart = this.elementPage.createService(ShoppingCartService); //this.props.shoppingCart;
+        let product: Product = c.state.product;
+        let id = product.Id;
+        let count = c.state.count;
 
-        // }
+        let shoppingCartItem = {
+            Id: guid(),
+            Amount: product.Price * count,
+            Count: count,
+            ImagePath: product.ImagePath,
+            Name: product.Name,
+            ProductId: product.Id,
+            Selected: true,
+            Price: product.Price,
+        };
 
+        return shoppingCart.setItemCount(product, count);
+    }
+    _render(h) {
+        let { productsCount } = this.state;
         return (
-            <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} mobilePage={this.mobilePage} />
-            // ref={async (e) => {
-            //     if (!e || !this.props.productId) return;
-            //     let p = await shopping.product(this.props.productId);
-            //     // p.ImagePath = p.ImagePath || 'empty_300_300';
-            //     // if (!p.ImagePaths || p.ImagePaths.length == 0) {
-            //     //     p.ImagePaths = [p.ImagePath];
-            //     // }
-
-            //     e.state.product = p;
-            //     e.setState(e.state);
-            // }} />
+            <nav className="product-control-footer">
+                <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
+                    <i className="icon-shopping-cart"></i>
+                    {productsCount ?
+                        <span className="badge bg-primary">{productsCount}</span>
+                        : null
+                    }
+                </a>
+                <button ref={(e: HTMLButtonElement) => ui.buttonOnClick(() => this.addToShoppingCart())} className="btn btn-primary pull-right" >加入购物车</button>
+            </nav>
         );
     }
 }
 
 
 let productStore = new chitu.ValueStore<Product>();
-
-interface ProductPageState {
-    productSelectedText: string,
-    pullUpStatus: 'init' | 'ready',
-    isFavored: boolean,
-    productsCount: number,
-    content: string,
-    count: number,
-    product: Product;
-    couponsCount?: number
-}
-
-
-class ProductPanel extends React.Component<{ product: Product, parent: ProductView, shop: ShoppingService } & React.Props<ProductPanel>,
+class ProductPanel extends React.Component<{ product: Product, parent: ProductControl, shop: ShoppingService } & React.Props<ProductPanel>,
     { product: Product, count: number }> {
 
     private panel: Panel;
@@ -222,39 +287,61 @@ class ProductPanel extends React.Component<{ product: Product, parent: ProductVi
     }
 }
 
-interface ProductViewProps extends ControlProps<ProductView> {
-    product: Product, shop: ShoppingService,
-    shoppingCart: ShoppingCartService
+export interface Props extends ControlProps<ProductControl> {
+    product: Product,
+    //  shop: ShoppingService,
+    // shoppingCart: ShoppingCartService
 }
 
-class ProductView extends Control<ProductViewProps, ProductPageState>{
+export interface State {
+    productSelectedText: string,
+    pullUpStatus: 'init' | 'ready',
+    isFavored: boolean,
+    productsCount: number,
+    content: string,
+    count: number,
+    product: Product;
+    couponsCount?: number
+}
+
+export default class ProductControl extends Control<Props, State>{
 
     private productView: HTMLElement;
-    private header: HTMLElement;
+    // private header: HTMLElement;
     private introduceView: HTMLElement;
     private productPanel: ProductPanel;
     private isShowIntroduceView = false;
     private isShowProductView = false;
     private pageComponent: HTMLElement;
+    private shopping: ShoppingService;
+    private shoppingCart: ShoppingCartService;
 
     constructor(props) {
         super(props);
+
+        this.loadControlCSS();
         this.state = {
             productSelectedText: this.productSelectedText(this.props.product), content: null,
             pullUpStatus: 'init', isFavored: false, productsCount: userData.productsCount.value, count: 1,
             product: this.props.product
         };
 
-        let shop = this.props.shop;
-        shop.isFavored(this.props.product.Id).then((isFavored) => {
+        this.shoppingCart = this.elementPage.createService(ShoppingCartService);
+        let shopping = this.shopping = this.elementPage.createService(ShoppingService); //this.props.shop;
+        shopping.isFavored(this.props.product.Id).then((isFavored) => {
             this.state.isFavored = isFavored;
             this.setState(this.state);
         });
 
-        shop.storeCouponsCount().then(count => {
+        shopping.storeCouponsCount().then(count => {
             this.state.couponsCount = count;
             this.setState(this.state);
         })
+
+        shopping.productIntroduce(this.state.product.Id).then((content) => {
+            this.state.content = content;
+            this.setState(this.state);
+        });
 
         // subscribe(this, userData.productsCount, (value: number) => {
         //     this.state.productsCount = value;
@@ -288,61 +375,23 @@ class ProductView extends Control<ProductViewProps, ProductPageState>{
         str = str + (this.state == null ? 1 : this.state.count) + '件';
         return str;
     }
-    private showIntroduceView() {
-        let shop = this.props.shop;
-        if (this.state.content == null) {
-            shop.productIntroduce(this.state.product.Id).then((content) => {
-                this.state.content = content;
-                this.setState(this.state);
-            });
-        }
 
-        // this.productView.slide('up');
-        // this.introduceView.slide('origin');
-    }
+    // private showIntroduceView() {
+    //     let shopping = this.shopping;
+    //     if (this.state.content == null) {
+    //         shopping.productIntroduce(this.state.product.Id).then((content) => {
+    //             this.state.content = content;
+    //             this.setState(this.state);
+    //         });
+    //     }
+    // }
 
     componentDidMount() {
-        let buttons = this.header.querySelectorAll('nav button');
-        let title = this.header.querySelector('nav.bg-primary') as HTMLElement;
 
-        this.productView.addEventListener('scroll', function (event) {
-            let p = this.scrollTop / 100;
-            p = p > 1 ? 1 : p;
-
-            let buttonOpacity = 0.5 + p;
-            buttonOpacity = buttonOpacity > 1 ? 1 : buttonOpacity;
-
-            title.style.opacity = `${p}`;
-            for (let i = 0; i < buttons.length; i++) {
-                (buttons[i] as HTMLElement).style.opacity = `${buttonOpacity}`;
-            }
-
-        });
-    }
-
-    private favor() {
-        let shop = this.props.shop;
-        let p: (productId: string) => Promise<any>
-        if (this.state.isFavored) {
-            p = shop.unfavorProduct;
-        }
-        else {
-            p = shop.favorProduct;
-        }
-
-        return p.bind(shop)(this.state.product.Id).then(o => {
-            this.state.isFavored = !this.state.isFavored;
-            this.setState(this.state);
-        })
-    }
-
-    private showProductView() {
-        // this.productView.slide('origin');
-        // this.introduceView.slide('down');
     }
 
     addToShoppingCart() {
-        let shoppingCart = this.props.shoppingCart;
+        let shoppingCart = this.shoppingCart;
         let id = this.props.product.Id;
         let product = this.props.product;
         let count = this.state.count;
@@ -381,124 +430,210 @@ class ProductView extends Control<ProductViewProps, ProductPageState>{
     _render(h) {
         let p = this.state.product;
         let { productsCount, couponsCount } = this.state;
-        return (
-            <div className="mobile-page product-control" ref={(e: HTMLElement) => this.pageComponent = e || this.pageComponent}>
-                <header ref={(o: HTMLElement) => this.header = o || this.header}>
-                    <nav className="bg-primary"></nav>
-                    <nav>
-                        <button className="leftButton" onClick={() => app.back()}>
-                            <i className="icon-chevron-left"></i>
-                        </button>
-                        <button className="rightButton"
-                            ref={(e: HTMLButtonElement) => {
-                                if (!e) return;
-                                e.onclick = ui.buttonOnClick(() => this.favor());
-                            }}>
-                            <i className="icon-heart-empty" style={{ fontWeight: `800`, fontSize: `20px`, display: !this.state.isFavored ? 'block' : 'none' }} ></i>
-                            <i className="icon-heart" style={{ display: this.state.isFavored ? 'block' : 'none' }}></i>
-                        </button>
-                    </nav>
-                </header>
-                <section ref={(o: HTMLElement) => this.productView = this.productView || o}>
-                    <div name="productImages" className="carousel slide">
-                        <div className="carousel-inner">
-                            {p.ImagePaths.map((o, i) => (
-                                <div key={i} className={i == 0 ? "item active" : "item"} style={{ textAlign: "center" }}>
-                                    <img src={imageUrl(o)} className="img-responsive-100 img-full" title="牛牛店宝"
-                                        ref={(e: HTMLImageElement) => {
-                                            if (!e) return;
-                                            ui.renderImage(e)
-                                        }} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <ul className="list-group">
-                        <li name="productName" className="list-group-item">
-                            <h4 className="text-left" style={{ fontWeight: 'bold' }}>{p.Name}</h4>
-                        </li>
-
-                        <li className="list-group-item">
-                            <span>类别：</span>
-                            <a href="">{p.ProductCategoryName}</a>
-                        </li>
-
-                        <li className="list-group-item">
-                            <span className="pull-left">价格：<strong className="price">￥{p.Price.toFixed(2)}</strong></span>
-                            <span className="pull-left" style={{ display: p.Score == null ? 'none' : 'block' }}>积分：<strong className="price">{this.props.product.Score}</strong></span>
-                            <span className="pull-right">{p.Unit}</span>
-                            <div className="clearfix"></div>
-                            <p className="oldprice" style={{ display: p.MemberPrice != null && p.MemberPrice != p.Price ? 'block' : 'none' }}>
-                                促销价：<span className="price">￥{p.MemberPrice.toFixed(2)}</span>
-                            </p>
-                        </li>
-
-                        <li className="list-group-item" onClick={() => this.showPanel()}>
-                            <span>
-                                已选：{this.state.productSelectedText}
-                            </span>
-                            <span className="pull-right">
-                                <i className="icon-chevron-right"></i>
-                            </span>
-                        </li>
-
-                        {p.Promotions.length > 0 ?
-                            <li className="list-group-item">
-                                {p.Promotions.map((o, i) => (
-                                    <PromotionComponent key={i} promotion={o}></PromotionComponent>
-                                ))}
-                            </li> : null
-                        }
-
-                        {couponsCount ?
-                            <li className="list-group-item" style={{ padding: '0px 0px 10px 0px' }} onClick={() => location.hash = '#shopping_storeCoupons'}>
-                                <div className="pull-left">
-                                    店铺优惠劵
-                                </div>
-                                <div className="pull-right">
-                                    <span className="badge bg-primary" style={{ marginRight: 10 }}>{couponsCount}</span>
-                                    <i className="icon-chevron-right"></i>
-                                </div>
-                            </li> : null}
-                    </ul>
-                    <hr />
-                    <div className="container">
-                        <h4 style={{ fontWeight: 'bold', width: '100%' }}>商品信息</h4>
-                        {p.Arguments.map(o => (
-                            <div key={o.key} style={{ marginBottom: '10px' }}>
-                                <div className="pull-left" style={{ width: '100px' }}>{o.key}</div>
-                                <div style={{ marginLeft: '100px' }}>{o.value}</div>
-                                <div className="clearfix"></div>
+        return [
+            <div key="main" className="product-control" ref={(e: HTMLElement) => this.pageComponent = e || this.pageComponent}>
+                <div name="productImages" className="carousel slide">
+                    <div className="carousel-inner">
+                        {p.ImagePaths.map((o, i) => (
+                            <div key={i} className={i == 0 ? "item active" : "item"} style={{ textAlign: "center" }}>
+                                <img src={imageUrl(o)} className="img-responsive-100 img-full"
+                                    ref={(e: HTMLImageElement) => {
+                                        if (!e) return;
+                                        ui.renderImage(e)
+                                    }} />
                             </div>
                         ))}
-                        <div style={{
-                            height: '120px', paddingTop: '40px', textAlign: 'center',
-                            display: p.Arguments == null || p.Arguments.length == 0 ? 'block' : 'none'
-                        }}>
-                            <h4>暂无商品信息</h4>
-                        </div>
                     </div>
-                    <hr />
-                </section>
-                <footer>
-                    <nav>
-                        <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
-                            <i className="icon-shopping-cart"></i>
-                            {this.state.productsCount ?
-                                <span className="badge bg-primary">{productsCount}</span>
-                                : null
-                            }
-                        </a>
-                        <button ref={(e: HTMLButtonElement) => ui.buttonOnClick(() => this.addToShoppingCart())} className="btn btn-primary pull-right" >加入购物车</button>
-                    </nav>
-                </footer>
-                <ProductPanel ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.props.shop} />
+                </div>
+                <ul className="list-group">
+                    <li name="productName" className="list-group-item">
+                        <h4 className="text-left" style={{ fontWeight: 'bold' }}>{p.Name}</h4>
+                    </li>
+
+                    <li className="list-group-item">
+                        <span>类别：</span>
+                        <a href="">{p.ProductCategoryName}</a>
+                    </li>
+
+                    <li className="list-group-item">
+                        <span className="pull-left">价格：<strong className="price">￥{p.Price.toFixed(2)}</strong></span>
+                        <span className="pull-left" style={{ display: p.Score == null ? 'none' : 'block' }}>积分：<strong className="price">{this.props.product.Score}</strong></span>
+                        <span className="pull-right">{p.Unit}</span>
+                        <div className="clearfix"></div>
+                        <p className="oldprice" style={{ display: p.MemberPrice != null && p.MemberPrice != p.Price ? 'block' : 'none' }}>
+                            促销价：<span className="price">￥{p.MemberPrice.toFixed(2)}</span>
+                        </p>
+                    </li>
+
+                    <li className="list-group-item" onClick={() => this.showPanel()}>
+                        <span>
+                            已选：{this.state.productSelectedText}
+                        </span>
+                        <span className="pull-right">
+                            <i className="icon-chevron-right"></i>
+                        </span>
+                    </li>
+
+                    {p.Promotions.length > 0 ?
+                        <li className="list-group-item">
+                            {p.Promotions.map((o, i) => (
+                                <PromotionComponent key={i} promotion={o}></PromotionComponent>
+                            ))}
+                        </li> : null
+                    }
+
+                    {couponsCount ?
+                        <li className="list-group-item" style={{ padding: '0px 0px 10px 0px' }} onClick={() => location.hash = '#shopping_storeCoupons'}>
+                            <div className="pull-left">
+                                店铺优惠劵
+                            </div>
+                            <div className="pull-right">
+                                <span className="badge bg-primary" style={{ marginRight: 10 }}>{couponsCount}</span>
+                                <i className="icon-chevron-right"></i>
+                            </div>
+                        </li> : null}
+                </ul>
+                <hr />
+                <div className="container">
+                    <h4 style={{ fontWeight: 'bold', width: '100%' }}>商品信息</h4>
+                    {p.Arguments.map(o => (
+                        <div key={o.key} style={{ marginBottom: '10px' }}>
+                            <div className="pull-left" style={{ width: '100px' }}>{o.key}</div>
+                            <div style={{ marginLeft: '100px' }}>{o.value}</div>
+                            <div className="clearfix"></div>
+                        </div>
+                    ))}
+                    <div style={{
+                        height: '120px', paddingTop: '40px', textAlign: 'center',
+                        display: p.Arguments == null || p.Arguments.length == 0 ? 'block' : 'none'
+                    }}>
+                        <h4>暂无商品信息</h4>
+                    </div>
+                </div>
+                <hr />
+
+            </div>,
+            <ProductPanel key="panel" ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.shopping} />,
+            <div key="content" className="container" style={{ background: 'whitesmoke' }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
             </div>
 
-
-        );
+        ];
     }
 }
+
+{/* <div className="mobile-page product-control" ref={(e: HTMLElement) => this.pageComponent = e || this.pageComponent}>
+<header ref={(o: HTMLElement) => this.header = o || this.header}>
+    <nav className="bg-primary"></nav>
+    <nav>
+        <button className="leftButton" onClick={() => app.back()}>
+            <i className="icon-chevron-left"></i>
+        </button>
+        <button className="rightButton"
+            ref={(e: HTMLButtonElement) => {
+                if (!e) return;
+                e.onclick = ui.buttonOnClick(() => this.favor());
+            }}>
+            <i className="icon-heart-empty" style={{ fontWeight: `800`, fontSize: `20px`, display: !this.state.isFavored ? 'block' : 'none' }} ></i>
+            <i className="icon-heart" style={{ display: this.state.isFavored ? 'block' : 'none' }}></i>
+        </button>
+    </nav>
+</header>
+<section ref={(o: HTMLElement) => this.productView = this.productView || o}>
+    <div name="productImages" className="carousel slide">
+        <div className="carousel-inner">
+            {p.ImagePaths.map((o, i) => (
+                <div key={i} className={i == 0 ? "item active" : "item"} style={{ textAlign: "center" }}>
+                    <img src={imageUrl(o)} className="img-responsive-100 img-full" title="牛牛店宝"
+                        ref={(e: HTMLImageElement) => {
+                            if (!e) return;
+                            ui.renderImage(e)
+                        }} />
+                </div>
+            ))}
+        </div>
+    </div>
+    <ul className="list-group">
+        <li name="productName" className="list-group-item">
+            <h4 className="text-left" style={{ fontWeight: 'bold' }}>{p.Name}</h4>
+        </li>
+
+        <li className="list-group-item">
+            <span>类别：</span>
+            <a href="">{p.ProductCategoryName}</a>
+        </li>
+
+        <li className="list-group-item">
+            <span className="pull-left">价格：<strong className="price">￥{p.Price.toFixed(2)}</strong></span>
+            <span className="pull-left" style={{ display: p.Score == null ? 'none' : 'block' }}>积分：<strong className="price">{this.props.product.Score}</strong></span>
+            <span className="pull-right">{p.Unit}</span>
+            <div className="clearfix"></div>
+            <p className="oldprice" style={{ display: p.MemberPrice != null && p.MemberPrice != p.Price ? 'block' : 'none' }}>
+                促销价：<span className="price">￥{p.MemberPrice.toFixed(2)}</span>
+            </p>
+        </li>
+
+        <li className="list-group-item" onClick={() => this.showPanel()}>
+            <span>
+                已选：{this.state.productSelectedText}
+            </span>
+            <span className="pull-right">
+                <i className="icon-chevron-right"></i>
+            </span>
+        </li>
+
+        {p.Promotions.length > 0 ?
+            <li className="list-group-item">
+                {p.Promotions.map((o, i) => (
+                    <PromotionComponent key={i} promotion={o}></PromotionComponent>
+                ))}
+            </li> : null
+        }
+
+        {couponsCount ?
+            <li className="list-group-item" style={{ padding: '0px 0px 10px 0px' }} onClick={() => location.hash = '#shopping_storeCoupons'}>
+                <div className="pull-left">
+                    店铺优惠劵
+                </div>
+                <div className="pull-right">
+                    <span className="badge bg-primary" style={{ marginRight: 10 }}>{couponsCount}</span>
+                    <i className="icon-chevron-right"></i>
+                </div>
+            </li> : null}
+    </ul>
+    <hr />
+    <div className="container">
+        <h4 style={{ fontWeight: 'bold', width: '100%' }}>商品信息</h4>
+        {p.Arguments.map(o => (
+            <div key={o.key} style={{ marginBottom: '10px' }}>
+                <div className="pull-left" style={{ width: '100px' }}>{o.key}</div>
+                <div style={{ marginLeft: '100px' }}>{o.value}</div>
+                <div className="clearfix"></div>
+            </div>
+        ))}
+        <div style={{
+            height: '120px', paddingTop: '40px', textAlign: 'center',
+            display: p.Arguments == null || p.Arguments.length == 0 ? 'block' : 'none'
+        }}>
+            <h4>暂无商品信息</h4>
+        </div>
+    </div>
+    <hr />
+</section>
+<footer>
+    <nav>
+        <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
+            <i className="icon-shopping-cart"></i>
+            {this.state.productsCount ?
+                <span className="badge bg-primary">{productsCount}</span>
+                : null
+            }
+        </a>
+        <button ref={(e: HTMLButtonElement) => ui.buttonOnClick(() => this.addToShoppingCart())} className="btn btn-primary pull-right" >加入购物车</button>
+    </nav>
+</footer>
+<ProductPanel ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.props.shop} />
+</div> */}
+
 
 class PromotionComponent extends React.Component<
     { promotion: Promotion, key: any },

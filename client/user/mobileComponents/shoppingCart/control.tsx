@@ -52,7 +52,7 @@ export class Header extends Control<any, { status: ControlStatus }> {
                 </button> : null
             ),
             showBackButton: false,
-
+            title: '购物车',
             right:
                 <button className="right-button" style={{ width: 'unset' }}
                     onClick={async () => {

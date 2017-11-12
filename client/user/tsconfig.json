@@ -40,7 +40,7 @@
         "../lib/typings/require.d.ts",
         "../lib/*.d.ts",
 
-        "../admin/adminServices/*",
+        // "../admin/adminServices/*",
 
         "../share/models/*",
 

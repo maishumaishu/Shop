@@ -29,6 +29,7 @@ export class Panel extends React.Component<PanelProps, {}>{
         let modal = this.modal; //this.refs['modal'] as HTMLElement;
         let backdrop = this.backdrop; //this.refs['backdrop'] as HTMLElement;
 
+        this.element.style.removeProperty('display');
         panel.style.display = 'block';
         modal.style.display = 'block';
 
@@ -82,7 +83,7 @@ export class Panel extends React.Component<PanelProps, {}>{
         }
     }
     render() {
-        return <div ref={(o: HTMLElement) => this.panel = o || this.panel} className="product-panel">
+        return <div ref={(o: HTMLElement) => this.panel = o || this.panel} className="product-panel" style={{ display: 'none' }}>
             <div ref={(o: HTMLElement) => this.modal = o} className="modal">
                 <div ref={(o: HTMLElement) => this.modalDialog = o} className="modal-dialog">
                     <div className="modal-content">

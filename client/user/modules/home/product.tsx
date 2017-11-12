@@ -16,7 +16,12 @@ export default async function (page: chitu.Page) {
                     { controlId: guid(), controlName: 'product', data: { product } }
                 ]
             }
-        ]
+        ],
+        footer: {
+            controls: [
+                { controlId: guid(), controlName: 'product:Footer' }
+            ]
+        }
     } as PageData;
 
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page}></MobilePage>, page.element);

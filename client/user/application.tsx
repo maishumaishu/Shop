@@ -72,35 +72,5 @@ weixin.openid().then(data => {
     let openid = data;
 })
 
-//============================================================
-// ui
-export function defaultNavBar(options?: { title?: string, showBackButton?: boolean, right?: JSX.Element, left?: JSX.Element }) {
-    options = options || {};
-    let title = options.title || '';
-    let showBackButton = options.showBackButton == null ? true : options.showBackButton;
-    // let back = options.back || (() => app.back());
-
-    if (showBackButton && options.left == null) {
-        options.left = <button name="back-button" className="left-button" style={{ opacity: 1 }}>
-            <i className="icon-chevron-left"></i>
-        </button>;
-    }
-
-    return (
-        <nav className="bg-primary">
-            <div className="col-xs-3" style={{ padding: 0 }}>
-                {options.left ? options.left : null}
-            </div>
-            <div className="col-xs-6" style={{ padding: 0 }}>
-                <h4>
-                    {title}
-                </h4>
-            </div>
-            <div className="col-xs-3" style={{ padding: 0 }}>
-                {options.right ? (options.right) : null}
-            </div>
-        </nav>
-    );
-}
 
 

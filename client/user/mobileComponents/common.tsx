@@ -36,7 +36,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     }
 
     abstract get persistentMembers(): (keyof S)[];
-    abstract _render(h): JSX.Element;
+    abstract _render(h): JSX.Element | JSX.Element[];
 
     get mobilePage() {
         return this._page;
@@ -81,7 +81,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     render() {
         if (this.mobilePage.props.designTime != null)
             return this._render(createDesignTimeElement);
-
+        // ReactDOM.render
         return this._render(React.createElement);
     }
 

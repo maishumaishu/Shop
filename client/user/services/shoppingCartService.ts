@@ -72,7 +72,7 @@ export class ShoppingCartService extends Service {
                     .then(() => resolve())
                     .catch(err => rejct(err));
 
-            }, 1000 * 2); // 延迟 3 秒更新
+            }, 1000 * 3); // 延迟 3 秒更新
             //================================================================
         })
     }

@@ -64,7 +64,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
     static getControlType(controlName: string): Promise<{ Control: React.ComponentClass<any>, Props: { new() } }> {
 
-        let arr = controlName.split('.');
+        let arr = controlName.split(':');
         let fileName = arr[0];
         let name = arr[1] || 'default';
 
@@ -170,7 +170,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let headerControls = (pageData.header || { controls: [] }).controls || [];
         this.headerControlsCount = headerControls.length;
         return (
-            <header className="page-header">
+            <header key="header" className="page-header">
                 {this.renderControls(headerControls)}
             </header>
         )
@@ -180,7 +180,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
         this.footerControlsCount = footerControls.length;
         return (
-            <footer className="page-footer">
+            <footer key="footer" className="page-footer">
                 {this.renderControls(footerControls)}
             </footer>
         )
@@ -207,7 +207,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let views = pageData.views || [];
         let paddingBottom = this.calculateFooterHeight(pageData);
         return views.map((o, i) => (
-            <section className="page-view" key={i} style={{ paddingBottom }}>
+            <section key={`view${i}`} className="page-view" style={{ paddingBottom }}>
                 {this.renderControls(o.controls)}
             </section>
         ));
@@ -263,13 +263,24 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let children = React.Children.toArray(this.props.children) || [];
         let pageData = this.state.pageData;
         let className = pageData.className ? `page ${pageData.className}` : 'page';
-        return (
-            <div className={className}>
-                {this.renderHeader(pageData)}
-                {this.renderViews(pageData)}
-                {this.renderFooter(pageData)}
-            </div>
-        );
+
+        // let header = this.renderHeader(pageData);
+        // header.key = "header";
+
+        // let footer = this.renderFooter(pageData);
+        // footer.key = "footer";
+
+        // let views = this.renderViews(pageData);
+        // for (let i = 0; i < views.length; i++)
+        //     views[i].key = `view${i}`;
+
+        // let elements = [header, ...views, footer];
+        // return elements;
+        return [
+            this.renderHeader(pageData),
+            ...this.renderViews(pageData),
+            this.renderFooter(pageData)
+        ]
     }
 }
 

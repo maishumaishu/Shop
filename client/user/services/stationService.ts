@@ -35,7 +35,7 @@ class Pages {
             showMenu: true,
             header: {
                 controls: [
-                    { controlId: guid(), controlName: 'shoppingCart.Header' }
+                    { controlId: guid(), controlName: 'shoppingCart:Header' }
                 ]
             },
             views: [
@@ -47,7 +47,7 @@ class Pages {
             ],
             footer: {
                 controls: [
-                    { controlId: guid(), controlName: 'shoppingCart.Footer' }
+                    { controlId: guid(), controlName: 'shoppingCart:Footer' }
                 ]
             }
         }
