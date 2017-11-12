@@ -238,14 +238,21 @@ showPage(routeString, args) {
         throw Errors.noneRouteMatched(routeString);
     }
     Object.assign(routeData.values, args || {});
+    let oldCurrentPage = this.currentPage;
     if (this.page_stack.length >= 2 && routeString == this.page_stack[this.page_stack.length - 2].routeData.routeString) {
         this.closeCurrentPage();
-        return;
     }
-    let page = this.createPage(routeData);
-    this.pushPage(page);
-    page.show();
-    return page;
+    else {
+        let page = this.createPage(routeData);
+        this.pushPage(page);
+        page.show();
+        console.assert(page == this.currentPage, "page is not current page");
+    }
+    if (oldCurrentPage)
+        oldCurrentPage.deactive.fire(oldCurrentPage, null);
+    console.assert(this.currentPage != null);
+    this.currentPage.active.fire(this.currentPage, null);
+    return this.currentPage;
 }
 pushPage(page) {
     let previous = this.currentPage;
@@ -293,29 +300,6 @@ redirect(routeString, args) {
 }
 back() {
     history.back();
-}
-_back(args = undefined) {
-    if (this.currentPage == null) {
-        this.backFail.fire(this, null);
-        return;
-    }
-    let routeData = this.currentPage.routeData;
-    this.closeCurrentPage();
-    if (this.page_stack.length > 0) {
-        return;
-    }
-    if (this._siteMap == null) {
-        this.backFail.fire(this, null);
-        return;
-    }
-    let siteMapNode = this.findSiteMapNode(routeData.pageName);
-    if (siteMapNode != null && siteMapNode.parent != null) {
-        let p = siteMapNode.parent;
-        let routeString = typeof p.routeString == 'function' ? p.routeString() : p.routeString;
-        this.redirect(routeString);
-        return;
-    }
-    this.backFail.fire(this, null);
 }
 }
 chitu.Application = Application;
@@ -479,6 +463,8 @@ constructor(params) {
     this.hidden = chitu.Callbacks();
     this.closing = chitu.Callbacks();
     this.closed = chitu.Callbacks();
+    this.active = chitu.Callbacks();
+    this.deactive = chitu.Callbacks();
     this._element = params.element;
     this._previous = params.previous;
     this._app = params.app;

@@ -144,6 +144,8 @@ declare namespace chitu {
         hidden: Callback<this, null>;
         closing: Callback<this, null>;
         closed: Callback<this, null>;
+        active: Callback<this, null>;
+        deactive: Callback<this, null>;
         constructor(params: PageParams);
         private on_load();
         private on_loadComplete();

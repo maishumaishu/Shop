@@ -137,10 +137,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
             componentWillUnmount();
         }
     }
-
-
 }
-
 
 export function createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
     props = props || {};

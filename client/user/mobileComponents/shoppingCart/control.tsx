@@ -54,14 +54,14 @@ export class Header extends Control<any, { status: ControlStatus }> {
             showBackButton: false,
 
             right:
-            <button className="right-button" style={{ width: 'unset' }}
-                onClick={async () => {
-                    await this.edit();
-                    this.state.status = this.shoppingCart.state.status;
-                    this.setState(this.state);
-                }}>
-                {status == 'normal' ? '编辑' : '完成'}
-            </button>
+                <button className="right-button" style={{ width: 'unset' }}
+                    onClick={async () => {
+                        await this.edit();
+                        this.state.status = this.shoppingCart.state.status;
+                        this.setState(this.state);
+                    }}>
+                    {status == 'normal' ? '编辑' : '完成'}
+                </button>
 
         });
     }
@@ -137,7 +137,7 @@ export class Footer extends Control<any, FooterStatus>{
         let selectedCount = selectedItems.length;
         let deleteItemsCount = this.state.deleteItemsCount;
         let totalAmount = 0;
-        selectedItems.forEach(o => totalAmount = totalAmount + o.Amount);
+        selectedItems.forEach(o => totalAmount = totalAmount + o.Amount * o.Count);
 
         let items = this.state.status == 'normal' ? this.state.items.length : this.state.deleteItemsCount;
 
@@ -209,15 +209,15 @@ export default class ShoppingCartControl extends Control<
         };
 
         this.loadControlCSS();
-        this.updateItems();
-        
+        this.refreshItems();
+
     }
 
     get persistentMembers() {
         return [];
     }
 
-    private updateItems() {
+    private refreshItems() {
         shoppingCart.calculateShoppingCartItems().then((items) => {
             this.state.items = items;
             this.setState(this.state);
@@ -246,6 +246,7 @@ export default class ShoppingCartControl extends Control<
         let items: ShoppingCartItem[] = this.state.deleteItems;
         await shoppingCart.removeItems(items.map(o => o.Id));
         this.setDeleteItems([]);
+        this.refreshItems();
     }
     private decreaseCount(item: ShoppingCartItem) {
         let itemCount = this.state.inputCounts[item.Id] || item.Count;
@@ -273,7 +274,6 @@ export default class ShoppingCartControl extends Control<
         this.state.inputCounts[item.Id] = count;
         this.setState(this.state);
     }
-
 
     cancel() {
         this.state.status = 'normal';
@@ -314,7 +314,7 @@ export default class ShoppingCartControl extends Control<
             this.state.status = 'normal';
             status.value = this.state.status;
             // this.setState(this.state);
-            this.updateItems();
+            this.refreshItems();
         });
 
         return result;
@@ -381,7 +381,7 @@ export default class ShoppingCartControl extends Control<
     }
 
     componentDidMount() {
-        this.elementPage.showing.add(() => this.updateItems());
+        this.elementPage.active.add(() => this.refreshItems());
     }
 
     _render(h) {
