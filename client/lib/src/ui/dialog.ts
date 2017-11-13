@@ -1,6 +1,14 @@
 
 namespace ui {
 
+    function dialogContainer(): HTMLElement {
+        return dialogConfig.dialogContainer || document.body;
+    }
+
+    export let dialogConfig = {
+        dialogContainer: null as HTMLElement
+    }
+
     function addClassName(element: HTMLElement, className: string) {
         console.assert(className != null, 'class is null');
         let c1 = (element.className || '').split(/\s+/);
@@ -53,7 +61,7 @@ namespace ui {
 
     export function alert(args: string | { title: string, message: string }) {
         let element = document.createElement('div');
-        ui.dialogContainer.appendChild(element);
+        dialogContainer().appendChild(element);
         if (typeof args == 'string') {
             args = { title: '&nbsp;', message: args }
         }
@@ -109,7 +117,7 @@ namespace ui {
         let message: string;
         let execute = args.confirm;
         let container = args.container || document.body;
-        
+
         if (typeof args == 'string') {
             message = args;
         }
@@ -125,7 +133,7 @@ namespace ui {
         confirmDialogElment.style.marginTop = '20px'
         console.assert(dialogContainer != null, 'dialog container is null');
 
-        dialogContainer.appendChild(confirmDialogElment);
+        dialogContainer().appendChild(confirmDialogElment);
         confirmDialogElment.innerHTML = `
                     <div class="modal-dialog">
                         <div class="modal-content">

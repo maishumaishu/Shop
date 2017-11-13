@@ -2,14 +2,6 @@ namespace ui {
     export type Callback = (event: MouseEvent) => Promise<any>;
     export type Arguments = { confirm?: string | (() => string), toast?: string | HTMLElement };
 
-    export let dialogContainer = document.body;
-    export function setDialogContainer(value: HTMLElement) {
-        if (value == null)
-            throw new Error('value can not be null.');
-
-        dialogContainer = value;
-    }
-
     export function buttonOnClick(callback: Callback, args?: Arguments): (event: Event) => void {
         args = args || {};
         let execute = async (event) => {
@@ -48,6 +40,7 @@ namespace ui {
         if (!msg)
             throw new Error('Argument msg is null.');
 
+        let dialogContainer: HTMLElement = dialogConfig.dialogContainer || document.body;
         let toastDialogElement = document.createElement('div');
         toastDialogElement.className = 'modal fade in';
         toastDialogElement.style.marginTop = '20px';
