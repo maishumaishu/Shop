@@ -1,9 +1,7 @@
-
 declare namespace chitu {
     interface SiteMapNode {
         pageName: string;
-        routeString: string | (() => string);
-        children: this[];
+        children?: this[];
     }
     interface SiteMap<T extends SiteMapNode> {
         root: T;
