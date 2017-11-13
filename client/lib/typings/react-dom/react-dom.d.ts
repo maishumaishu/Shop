@@ -6,6 +6,10 @@ declare namespace ReactDOM {
         container?: Element,
         callback?: Function
     )
+    function createPortal(
+        children: React.ReactElement<any>[],
+        container: Element,
+    )
     function render<P>(
         element: React.ReactElement<any>[],
         container?: Element,
