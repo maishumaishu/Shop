@@ -114,7 +114,7 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
         this.setState(this.state);
         let { protocol, host, pathname, search } = location;
         let url = `${protocol}//${host}${pathname}${search}#user_regions?activeIndex=` + activeIndex;
-        history.pushState("", "", url);
+        history.pushState("skip", "", url);
     }
     selectCounty(county: Region) {
         this.state.currentCounty = county;

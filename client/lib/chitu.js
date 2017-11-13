@@ -215,7 +215,10 @@
                     return;
                 var app = this;
                 this.hashchange();
-                window.addEventListener('popstate', () => {
+                window.addEventListener('popstate', (event) => {
+                    if (event.state == 'skip')
+                        return;
+
                     this.hashchange();
                 });
                 this._runned = true;
@@ -295,7 +298,7 @@
                 if (window.location.hash == '#' + routeString) {
                     return;
                 }
-                history.pushState(routeString, "", `#${routeString}`);
+                history.pushState("chitu", "", `#${routeString}`);
             }
             closeCurrentPage() {
                 if (this.page_stack.length <= 0)

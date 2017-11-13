@@ -118,7 +118,12 @@ class ReceiptEditPage extends React.Component<
         app.redirect('user_regions', routeValues);
     }
     render() {
-        let receiptInfo = this.state.receiptInfo;
+        let receiptInfo = this.state.receiptInfo;//请选择地区
+        let region = "";
+        if (receiptInfo.ProvinceName && receiptInfo.CityName && receiptInfo.CountyName) {
+            region = `${receiptInfo.ProvinceName} ${receiptInfo.CityName} ${receiptInfo.CountyName}`;
+        }
+
         return [
             <header key="header">
                 {defaultNavBar({ title: '编辑地址' })}
@@ -151,7 +156,7 @@ class ReceiptEditPage extends React.Component<
                         <div className="form-group">
                             <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                 <span className="color-red">*</span> 手机号码
-                        </label>
+                            </label>
                             <div className="col-xs-9">
                                 <input type="text" name="Mobile" className="form-control"
                                     value={receiptInfo.Mobile || ''}
@@ -162,14 +167,16 @@ class ReceiptEditPage extends React.Component<
                         <div className="form-group">
                             <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                 <span className="color-red">*</span> 所在地区
-                        </label>
-                            <div className="col-xs-9 pull-right" style={{ textAlign: 'right' }}
+                            </label>
+                            <div className="col-xs-9"
                                 onClick={() => this.changeRegion()}>
-                                <span style={{ paddingRight: 10 }}>
+                                {/* <span style={{ paddingRight: 10 }}>
                                     {receiptInfo.ProvinceName} {receiptInfo.CityName} {receiptInfo.CountyName}
                                     <input type="hidden" value={receiptInfo.RegionId || ''} readOnly={true} />
                                 </span>
-                                <i className="icon-chevron-right"></i>
+                                <i className="icon-chevron-right"></i> */}
+                                <input type="text" className="form-control" placeholder="请选择地区" value={region} />
+                                <input type="hidden" value={receiptInfo.RegionId || ''} readOnly={true} />
                             </div>
                         </div>
                         <div className="form-group">

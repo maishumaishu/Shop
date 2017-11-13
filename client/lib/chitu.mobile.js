@@ -17,8 +17,8 @@ define(["require", "exports", "maishu-chitu"], function (require, exports, chitu
     }
     exports.Page = Page;
     class Application extends chitu.Application {
-        constructor() {
-            super();
+        constructor(args) {
+            super(args);
             this.pageShown = chitu.Callbacks();
             this.pageType = Page;
             if (isiOS)

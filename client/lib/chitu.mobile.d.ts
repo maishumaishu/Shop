@@ -15,6 +15,8 @@ export declare class Application extends chitu.Application {
     pageShown: chitu.Callback<Application, {
         page: chitu.Page;
     }>;
-    constructor();
+    constructor(args?: {
+        siteMap?: chitu.SiteMap<chitu.SiteMapNode>;
+    });
     protected createPage(routeData: chitu.RouteData): chitu.Page;
 }

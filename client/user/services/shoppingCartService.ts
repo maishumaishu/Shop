@@ -1,9 +1,4 @@
 import { Service, imageUrl, tokens, guid } from 'userServices/service';
-// import { userData } from 'user/services/userData';
-
-
-
-
 export class ShoppingCartService extends Service {
 
     private static _items = new chitu.ValueStore<ShoppingCartItem[]>([]);
@@ -188,14 +183,20 @@ export class ShoppingCartService extends Service {
     }
 
     async calculateShoppingCartItems() {
-        let url = this.url('Calculate'); //`${config.service.shop}ShoppingCart/Calculate`;
-        let result = await this.get<ShoppingCartItem[]>(url);
+        let url = this.url('Calculate'); 
+        let result = await this.get<ShoppingCartItem[]>(url).then(items => {
+            items.forEach(o => o.ImagePath = o.ImagePath || (o as any).ImageUrl);
+            return items;
+        });
         return result;
     }
 
     async items() {
         let url = this.url("Get");
-        return this.get<ShoppingCartItem[]>(url);
+        return this.get<ShoppingCartItem[]>(url).then(items => {
+            items.forEach(o => o.ImagePath = o.ImagePath || (o as any).ImageUrl)
+            return items;
+        });
     }
 
 

@@ -1,5 +1,5 @@
 import { Control, ControlProps } from 'mobileComponents/common';
-
+import { imageUrl } from 'userServices/service';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { ShoppingService } from 'userServices/shoppingService';
 import { StationService } from 'userServices/stationService';
@@ -134,49 +134,52 @@ export class Footer extends Control<any, FooterStatus>{
 
     _render() {
         let selectedItems = this.state.items.filter(o => o.Selected);
-        let selectedCount = selectedItems.length;
         let deleteItemsCount = this.state.deleteItemsCount;
         let totalAmount = 0;
-        selectedItems.forEach(o => totalAmount = totalAmount + o.Amount * o.Count);
+        let selectedCount = 0;
+        selectedItems.forEach(o => {
+            totalAmount = totalAmount + o.Amount * o.Count;
+            selectedCount = selectedCount + o.Count;
+        });
 
-        let items = this.state.status == 'normal' ? this.state.items.length : this.state.deleteItemsCount;
-
-        return (<div className="settlement" style={{ bottom: this.props.hideMenu ? 0 : null, paddingLeft: 0 }}>
-            <div className="pull-right">
-                {this.state.status == 'normal' ?
-                    <button className="btn btn-primary" onClick={() => this.shoppingCart.buy()} disabled={selectedCount == 0}>
-                        {selectedCount > 0 ? `结算（${selectedCount}）` : '结算'}
-                    </button>
-                    :
-                    <button className="btn btn-primary" disabled={deleteItemsCount == 0}
-                        ref={(e: HTMLButtonElement) => {
-                            if (!e) return;
-                            e.onclick = ui.buttonOnClick(o => this.shoppingCart.removeSelectedItems(), {
-                                confirm: this.shoppingCart.removeConfirmText()
-                            });
-                        }}>
-                        删除
-                </button>
-                }
-            </div>
-            <div style={{ width: '100%', paddingTop: 8 }}>
-                <button className="select-all pull-left" onClick={() => this.checkAll()}>
-                    {this.isCheckedAll() ?
-                        <i className="icon-ok-sign text-primary"></i>
+        return (
+            <div className="settlement" style={{ bottom: this.props.hideMenu ? 0 : null, paddingLeft: 0 }}>
+                <div className="pull-right">
+                    {this.state.status == 'normal' ?
+                        <button className="btn btn-primary" onClick={() => this.shoppingCart.buy()} disabled={selectedCount == 0}>
+                            {selectedCount > 0 ? `结算（${selectedCount}）` : '结算'}
+                        </button>
                         :
-                        <i className="icon-circle-blank text-primary"></i>
-                    }
-                    <span className="text">全选</span>
+                        <button className="btn btn-primary" disabled={deleteItemsCount == 0}
+                            ref={(e: HTMLButtonElement) => {
+                                if (!e) return;
+                                e.onclick = ui.buttonOnClick(o => this.shoppingCart.removeSelectedItems(), {
+                                    confirm: this.shoppingCart.removeConfirmText()
+                                });
+                            }}>
+                            删除
                 </button>
-                {this.state.status == 'normal' ?
-                    <label className="pull-right" style={{ paddingRight: 10, paddingTop: 2 }}>
-                        总计：<span className="price">￥{totalAmount.toFixed(2)}</span>
-                    </label>
-                    : null
-                }
-            </div>
+                    }
+                </div>
+                <div style={{ width: '100%', paddingTop: 8 }}>
+                    <button className="select-all pull-left" onClick={() => this.checkAll()}>
+                        {this.isCheckedAll() ?
+                            <i className="icon-ok-sign text-primary"></i>
+                            :
+                            <i className="icon-circle-blank text-primary"></i>
+                        }
+                        <span className="text">全选</span>
+                    </button>
+                    {this.state.status == 'normal' ?
+                        <label className="pull-right" style={{ paddingRight: 10, paddingTop: 2 }}>
+                            总计：<span className="price">￥{totalAmount.toFixed(2)}</span>
+                        </label>
+                        : null
+                    }
+                </div>
 
-        </div>)
+            </div>
+        )
     }
 }
 
@@ -386,12 +389,12 @@ export default class ShoppingCartControl extends Control<
 
     _render(h) {
         let inputCounts = this.state.inputCounts;
-
+        let items = this.state.items;
         return (
-            this.state.items.length > 0 ?
+            items.length > 0 ?
                 <div className="container">
                     <ul className="list-group">
-                        {this.state.items.map(o =>
+                        {items.map(o =>
                             <li key={o.Id} className="list-group-item row">
                                 {o.Type == null ?
                                     <button onClick={() => this.selectItem(o)} className="pull-left icon">
@@ -403,8 +406,8 @@ export default class ShoppingCartControl extends Control<
                                             {o.Type == 'Reduce' ? '减' : '折'}
                                         </div>
                                         :
-                                        <img src={o.ImagePath} className="img-responsive"
-                                            ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />}
+                                        <img src={imageUrl(o.ImagePath)} className="img-responsive"
+                                            ref={(e: any) => e ? ui.renderImage(e) : null} />}
 
                                 </a>
                                 <div style={{ marginLeft: 100 }}>

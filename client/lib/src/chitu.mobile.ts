@@ -24,8 +24,8 @@ export class Page extends chitu.Page {
 export class Application extends chitu.Application {
     public pageShown = chitu.Callbacks<Application, { page: chitu.Page }>()
 
-    constructor() {
-        super();
+    constructor(args?: { siteMap?: chitu.SiteMap<chitu.SiteMapNode> }) {
+        super(args);
 
         this.pageType = Page;
 

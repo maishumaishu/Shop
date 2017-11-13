@@ -5,7 +5,7 @@ import { menuData, MenuNode } from 'menuData';
 import { Service } from 'services/service';
 import * as ui from 'ui';
 
-ui.setDialogContainer(document.querySelector('.dialog-container') as HTMLElement);
+ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
 
 let viewContainer: HTMLElement;
 

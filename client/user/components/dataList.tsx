@@ -1,3 +1,5 @@
+import { errors } from "ui";
+
 
 interface DataListProps extends React.Props<DataList> {
     loadData: ((pageIndex: number) => Promise<Array<any>>),
@@ -129,4 +131,47 @@ function scrollOnBottom(element: HTMLElement, callback: Function, deltaHeight?: 
             callback();
         }
     });
+}
+
+
+export function dataList<T>(args: {
+    element: HTMLElement,
+    item: (dataItem: T, index: number) => HTMLElement,
+    loadData: ((pageIndex: number) => Promise<Array<any>>),
+}) {
+
+    args = args || {} as any;
+
+    if (!args.element)
+        throw errors.argumentNull('element');
+
+    if (!args.item)
+        throw errors.argumentNull('item');
+
+    if (!args.loadData)
+        throw errors.argumentNull('loadData');
+
+
+    var pageIndex = 0;
+    var status: 'loading' | 'completed' | 'finish' | 'fail';
+    function loadDataItems() {
+        if (status == 'loading' || status == 'completed')
+            return;
+
+        status = 'loading';
+        args.loadData(pageIndex)
+            .then(items => {
+                var itemElements = items.map((o, i) => args.item(o, i))
+                itemElements.forEach(o => args.element.appendChild(o));
+                pageIndex = pageIndex + 1;
+                status = 'finish';
+            })
+            .catch(() => {
+                status = 'fail';
+            })
+    }
+
+    args.element.innerHTML = "";
+    loadDataItems()
+    scrollOnBottom(args.element.parentElement, () => loadDataItems(), 50);
 }

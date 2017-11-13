@@ -16,8 +16,8 @@ chitu.Page.tagName = "article";
 let topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
 
 export class Application extends BaseApplication {
-    constructor() {
-        super();
+    constructor(args?: { siteMap?: chitu.SiteMap<chitu.SiteMapNode> }) {
+        super(args);
     }
 
     public parseRouteString(routeString: string) {
@@ -66,7 +66,39 @@ export class Application extends BaseApplication {
     }
 }
 
-export let app: Application = window["app"] = window["app"] || new Application();
+export let app: Application = window["app"] = window["app"] || new Application({
+    siteMap: {
+        root: {
+            pageName: 'home.index',
+            children: [
+                {
+                    pageName: 'home.class',
+                    children: [
+                        {
+                            pageName: 'home.productList',
+                            children: [{ pageName: 'home.product' }]
+                        }
+                    ]
+                },
+                { pageName: 'shopping.shoppingCart' },
+                {
+                    pageName: 'user.index',
+                    children: [
+                        {
+                            pageName: 'user.receiptList',
+                            children: [
+                                { pageName: 'user.receiptEdit' }
+                            ]
+                        },
+                        { pageName: 'user.favors' },
+                        { pageName: 'user.coupon' },
+                        { pageName: 'user.accountSecurity.index' }
+                    ]
+                }
+            ]
+        }
+    }
+});
 let weixin = new WeiXinService();
 weixin.openid().then(data => {
     let openid = data;

@@ -72,12 +72,8 @@ namespace ui {
      * @param options 渲染选项，默认将 IMG 元素的 SRC 属性渲染出来 
      */
     export function renderImage(element: HTMLImageElement, options?: LoadImageOptions): Promise<string> {
-        // imageText = imageText || config.imageDisaplyText;
-        //, imageUrl: string, imageText?: string
 
         options = options || {};
-
-
         if (!element) throw errors.argumentNull('element');
 
         let imageUrl = element.src || '';
@@ -141,14 +137,7 @@ namespace ui {
     export function imageFileToBase64(imageFile: File, size?: { width: number, height: number }): Promise<ImageFileToBase64Result> {
         if (!imageFile) throw errors.argumentNull('imageFile');
 
-        // options = options || {} as any;
-
         return new Promise<ImageFileToBase64Result>((resolve, reject) => {
-            // if (!(/image/i).test(imageFile.type)) {
-            //     console.log("File " + imageFile.name + " is not an image.");
-            //     reject();
-            // }
-
             var reader = new FileReader();
             reader.readAsArrayBuffer(imageFile);
             reader.onload = (ev: Event) => {

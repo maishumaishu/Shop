@@ -62,12 +62,13 @@ requirejs.config({
 });
 
 requirejs(["css!content/font-awesome"]);
-requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types','errorHandle'], function (React, ReactDOM, site) {
+requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'], function (React, ReactDOM, site) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
 
-    ui.setDialogContainer(document.getElementById('dialogContainer'));
+    ui.loadImageConfig.imageDisaplyText = "你好"
+    ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
 
     site.app.run();
 })

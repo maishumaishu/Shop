@@ -216,10 +216,9 @@ class ProductPanel extends React.Component<{ product: Product, parent: ProductCo
                         </ul>
                         <div style={{ paddingTop: "10px" }}>
                             <div className="pull-left" style={{ width: 80, height: 80, marginLeft: 10 }}>
-                                {/*<ImageBox src={p.ImageUrl} className="img-responsive" />*/}
-                                <img className="img-responsive" ref={(e: HTMLImageElement) => {
-                                    if (!e) return;
-                                }} />
+                                <img className="img-responsive"
+                                    src={imageUrl(p.ImagePath)}
+                                    ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                             </div>
                             <div style={{ marginLeft: 100, marginRight: 70 }}>
                                 <div>{p.Name}</div>
