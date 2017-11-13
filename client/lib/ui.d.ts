@@ -4,11 +4,12 @@ declare namespace ui {
         confirm?: string | (() => string);
         toast?: string | HTMLElement;
     };
-    let dialogContainer: HTMLElement;
-    function setDialogContainer(value: HTMLElement): void;
     function buttonOnClick(callback: Callback, args?: Arguments): (event: Event) => void;
 }
 declare namespace ui {
+    let dialogConfig: {
+        dialogContainer: HTMLElement;
+    };
     /** 弹窗
      * @param element bootstrap 的 modal 元素
      */

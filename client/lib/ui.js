@@ -8,13 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var ui;
 (function (ui) {
-    ui.dialogContainer = document.body;
-    function setDialogContainer(value) {
-        if (value == null)
-            throw new Error('value can not be null.');
-        ui.dialogContainer = value;
-    }
-    ui.setDialogContainer = setDialogContainer;
     function buttonOnClick(callback, args) {
         args = args || {};
         let execute = (event) => __awaiter(this, void 0, void 0, function* () {
@@ -49,11 +42,12 @@ var ui;
     function showToastMessage(msg) {
         if (!msg)
             throw new Error('Argument msg is null.');
+        let dialogContainer = ui.dialogConfig.dialogContainer || document.body;
         let toastDialogElement = document.createElement('div');
         toastDialogElement.className = 'modal fade in';
         toastDialogElement.style.marginTop = '20px';
-        console.assert(ui.dialogContainer != null, 'dialog container is null.');
-        ui.dialogContainer.appendChild(toastDialogElement);
+        console.assert(dialogContainer != null, 'dialog container is null.');
+        dialogContainer.appendChild(toastDialogElement);
         toastDialogElement.innerHTML = `
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -80,6 +74,12 @@ var ui;
 })(ui || (ui = {}));
 var ui;
 (function (ui) {
+    function dialogContainer() {
+        return ui.dialogConfig.dialogContainer || document.body;
+    }
+    ui.dialogConfig = {
+        dialogContainer: null
+    };
     function addClassName(element, className) {
         console.assert(className != null, 'class is null');
         let c1 = (element.className || '').split(/\s+/);
@@ -123,7 +123,7 @@ var ui;
     ui.hideDialog = hideDialog;
     function alert(args) {
         let element = document.createElement('div');
-        ui.dialogContainer.appendChild(element);
+        dialogContainer().appendChild(element);
         if (typeof args == 'string') {
             args = { title: '&nbsp;', message: args };
         }
@@ -180,8 +180,8 @@ var ui;
         confirmDialogElment = document.createElement('div');
         confirmDialogElment.className = 'modal fade';
         confirmDialogElment.style.marginTop = '20px';
-        console.assert(ui.dialogContainer != null, 'dialog container is null');
-        ui.dialogContainer.appendChild(confirmDialogElment);
+        console.assert(dialogContainer != null, 'dialog container is null');
+        dialogContainer().appendChild(confirmDialogElment);
         confirmDialogElment.innerHTML = `
                     <div class="modal-dialog">
                         <div class="modal-content">
