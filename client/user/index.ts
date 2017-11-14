@@ -1,5 +1,8 @@
 requirejs.config({
     shim: {
+        dilu: {
+            exports: 'dilu'
+        },
         fetch: {
             exports: 'fetch'
         },
@@ -44,6 +47,7 @@ requirejs.config({
         // chitu: 'scripts/chitu',
         'maishu-chitu': 'scripts/chitu',
         css: 'scripts/css',
+        dilu: 'scripts/dilu',
         fetch: 'scripts/fetch',
         hammer: 'scripts/hammer',
         react: 'scripts/react',
