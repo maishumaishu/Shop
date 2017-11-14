@@ -23,7 +23,10 @@ export function guid() {
 
 export function imageUrl(path: string, width?: number) {
     if (!path) return path;
-
+    if (path.startsWith("data:image")) {
+        return path;
+    }
+    
     let HTTP = 'http://'
     if (path.startsWith(HTTP)) {
         path = path.substr(HTTP.length);

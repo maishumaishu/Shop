@@ -1,7 +1,7 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'mobileComponents/menu/control';
 import { StationService } from 'userServices/stationService';
-import { FormValidator　}　from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 
 requirejs(['css!mobileComponents/menu/editor.css']);
 let h = React.createElement;
@@ -37,6 +37,7 @@ let icons = [
 ]
 
 export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>{ //Editor<ControlProps, ControlState, EditorState, Control> {//Editor<EditorState<ControlProps>>
+    private urlInput: HTMLInputElement;
     private itemDialogELement: HTMLElement;
     private nameInput: HTMLInputElement;
     private validator: FormValidator;
@@ -65,8 +66,9 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
         this.validator.clearErrors();
         ui.showDialog(this.itemDialogELement);
     }
-    save() {
-        if (!this.validator.validateForm()) {
+    async save() {
+        let isValid = await this.validator.check();
+        if (!isValid) {
             return;
         }
         let currentItem = this.state.currentItem;
@@ -78,17 +80,22 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
         return Promise.resolve();
     }
     createValidator(form: HTMLElement) {
-        this.validator = new FormValidator(this.itemDialogELement, {
-            name: { rules: ['required'] },
-            url: {
-                depends: () => {
-                    if (this.isCustomUrl())
-                        return ['required'];
+        // this.validator = new FormValidator(this.itemDialogELement, {
+        //     name: { rules: ['required'] },
+        //     url: {
+        //         depends: () => {
+        //             if (this.isCustomUrl())
+        //                 return ['required'];
 
-                    return;
-                }
-            }
-        })
+        //             return;
+        //         }
+        //     }
+        // })
+        let { required } = rules;
+        this.validator = new FormValidator(
+            { element: this.nameInput, rules: [required()] },
+            { element: this.urlInput, rules: [required()], condition: () => this.isCustomUrl() }
+        );
     }
     private isCustomUrl() {
         if (this.state.currentItem == null)
@@ -188,7 +195,6 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                     ref={(e: HTMLElement) => {
                         if (!e) return;
                         this.itemDialogELement = e;
-                        this.createValidator(e);
                     }}>
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -272,32 +278,33 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                                 <div className="form-group">
                                     <label className="col-sm-2 control-label">链接</label>
                                     <div className="col-sm-10">
-                                        {this.isCustomUrl() ?
-                                            <input name="url" className="form-control"
-                                                ref={(e: HTMLInputElement) => {
-                                                    if (!e) return;
-                                                    e.value = currentItem.url || '';
-                                                    e.onchange = () => {
-                                                        currentItem.url = e.value;
-                                                    }
-                                                }} /> :
-                                            <select className="form-control"
-                                                ref={(e: HTMLSelectElement) => {
-                                                    if (!e) return;
-                                                    e.value = currentItem.url;
-                                                    e.onchange = () => {
-                                                        let option = e.options[e.selectedIndex] as HTMLOptionElement;
-                                                        currentItem.url = option.value;
-                                                    }
-                                                }}>
-                                                {links.map((o, i) =>
-                                                    <option key={i} value={o.url}>
-                                                        {o.text}
-                                                    </option>
-                                                )}
+                                        <input name="url" className="form-control"
+                                            style={{ display: this.isCustomUrl() ? null : 'none' }}
+                                            ref={(e: HTMLInputElement) => {
+                                                if (!e) return;
+                                                this.urlInput = e;
+                                                e.value = currentItem.url || '';
+                                                e.onchange = () => {
+                                                    currentItem.url = e.value;
+                                                }
+                                            }} />
+                                        <select className="form-control"
+                                            style={{ display: this.isCustomUrl() ? 'none' : null }}
+                                            ref={(e: HTMLSelectElement) => {
+                                                if (!e) return;
+                                                e.value = currentItem.url;
+                                                e.onchange = () => {
+                                                    let option = e.options[e.selectedIndex] as HTMLOptionElement;
+                                                    currentItem.url = option.value;
+                                                }
+                                            }}>
+                                            {links.map((o, i) =>
+                                                <option key={i} value={o.url}>
+                                                    {o.text}
+                                                </option>
+                                            )}
 
-                                            </select>
-                                        }
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="form-group">

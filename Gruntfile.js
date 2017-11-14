@@ -28,6 +28,20 @@ module.exports = function (grunt) {
                 }
             }
         },
+        babel: {
+            source: {
+                options: {
+                    sourceMap: false,
+                    presets: ["es2015"],
+                },
+                files: [{
+                    expand: true,
+                    cwd: `client/lib/es6`,
+                    src: [`*.js`],
+                    dest: `client/lib/`
+                }]
+            }
+        },
         copy: {
             admin: {
                 files: [{
@@ -170,10 +184,10 @@ module.exports = function (grunt) {
             }
         }
     });
+
+    grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    // grunt.loadNpmTasks('grunt-contrib-sass');
-    // grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.registerTask('admin', ['shell:admin', 'less:admin', 'less:mobileComponents', 'copy:admin']);

@@ -1,5 +1,5 @@
 import { defaultNavBar, app, config } from 'site';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 // import * as services from 'userServices';
 import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
@@ -16,30 +16,45 @@ export default function (page: chitu.Page) {
             this.state = { letfSeconds: 0 };
         }
         componentDidMount() {
-            this.validator = new FormValidator(this.formElement, {
-                mobile: {
-                    rules: ['required', 'mobile'],
-                    messages: { required: '请输入手机号码' }
+            // this.validator = new FormValidator(this.formElement, {
+            //     mobile: {
+            //         rules: ['required', 'mobile'],
+            //         messages: { required: '请输入手机号码' }
+            //     },
+            //     verifyCode: {
+            //         rules: ['required'],
+            //         messages: { required: '请输入验证码' }
+            //     },
+            //     password: {
+            //         rules: ['required'],
+            //         messages: { required: '请输入密码' }
+            //     },
+            //     confirmPassword: {
+            //         rules: ['required', { name: 'matches', params: ['password'] }],
+            //         messages: {
+            //             required: '请再次输入密码',
+            //             matches: '两次输入的密码不匹配'
+            //         }
+            //     }
+            // });
+            let e = this.formElement;
+            let { required, matches } = rules;
+            this.validator = new FormValidator(
+                { element: e["mobile"], rules: [required('请输入手机号码')] },
+                { element: e["verifyCode"], rules: [required('请输入验证码')] },
+                { element: e["password"], rules: [required('请输入密码')] },
+                {
+                    element: e["confirmPassword"], rules: [
+                        required('请再次输入密码'),
+                        matches(e["password"], "两次输入的密码不匹配")
+                    ]
+
                 },
-                verifyCode: {
-                    rules: ['required'],
-                    messages: { required: '请输入验证码' }
-                },
-                password: {
-                    rules: ['required'],
-                    messages: { required: '请输入密码' }
-                },
-                confirmPassword: {
-                    rules: ['required', { name: 'matches', params: ['password'] }],
-                    messages: {
-                        required: '请再次输入密码',
-                        matches: '两次输入的密码不匹配'
-                    }
-                }
-            });
+            )
         }
         async  sendVerifyCode() {
-            if (!this.validator.validateFields('mobile')) {
+            let isValid = await this.validator.check();
+            if (isValid == false) {
                 return;
             }
 
@@ -65,8 +80,9 @@ export default function (page: chitu.Page) {
                     this.setState(this.state);
                 });
         }
-        register() {
-            if (!this.validator.validateForm())
+        async register() {
+            let isValid = await this.validator.check();
+            if (isValid == false)
                 return;
 
             let mobile = this.formElement['mobile'].value;

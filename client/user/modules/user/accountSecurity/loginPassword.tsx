@@ -1,6 +1,6 @@
 import { defaultNavBar } from 'site';
 import * as ui from 'ui';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
 import { MemberService } from 'userServices/memberService';
 
@@ -9,6 +9,7 @@ export default function (page: chitu.Page) {
         private validator: FormValidator;
         private form: HTMLElement;
         private passwordInput: HTMLInputElement;
+        private confirmPasswordInput: HTMLInputElement;
         private wizard: WizardComponent;
 
         constructor(props) {
@@ -16,21 +17,27 @@ export default function (page: chitu.Page) {
             this.state = { step: 0 };
         }
         componentDidMount() {
-            this.validator = new FormValidator(this.form, {
-                password: { rules: ['required'] },
-                confirmPassword: {
-                    rules: [
-                        'required',
-                        { name: 'matches', params: ['password'] }
-                    ],
-                    messages: {
-                        matches: '两次输入的密码不正确'
-                    }
-                }
-            })
+            // this.validator = new FormValidator(this.form, {
+            //     password: { rules: ['required'] },
+            //     confirmPassword: {
+            //         rules: [
+            //             'required',
+            //             { name: 'matches', params: ['password'] }
+            //         ],
+            //         messages: {
+            //             matches: '两次输入的密码不正确'
+            //         }
+            //     }
+            // })
+            let { required } = rules;
+            this.validator = new FormValidator(
+                { element: this.passwordInput, rules: [required()] },
+                { element: this.confirmPasswordInput, rules: [required()] }
+            )
         }
-        changePassword(): Promise<any> {
-            if (!this.validator.validateForm()) {
+        async changePassword(): Promise<any> {
+            let isValid = await this.validator.check();
+            if (!isValid) {
                 return Promise.reject({});
             }
 
@@ -54,7 +61,8 @@ export default function (page: chitu.Page) {
                         </div>
                         <div className="form-group">
                             <div className="col-xs-12">
-                                <input name="confirmPassword" type="password" className="form-control" placeholder="请再次输入登录密码" />
+                                <input name="confirmPassword" type="password" className="form-control" placeholder="请再次输入登录密码"
+                                    ref={(e => this.confirmPasswordInput = e as HTMLInputElement || this.confirmPasswordInput)} />
                             </div>
                         </div>
                         <div className="form-group">

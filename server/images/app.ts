@@ -82,7 +82,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             context = new mongodb.ObjectID(p);
             action = imageById;
         }
-        else if (path = '/upload') {
+        else if (path == '/upload') {
             action = upload;
         }
         else {

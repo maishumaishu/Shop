@@ -2,7 +2,7 @@ import { defaultNavBar } from 'site';
 import * as ui from 'ui';
 import { MemberService } from 'userServices/memberService';
 import { app } from 'site';
-import { FormValidator } from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 
 export default function (page: chitu.Page) {
     let member = page.createService(MemberService);
@@ -12,6 +12,22 @@ export default function (page: chitu.Page) {
     let validator: FormValidator;
 
     class UserLoginPage extends React.Component<any, any> {
+        async   login() {
+            if (!validator) {
+                let { required } = rules;
+                validator = new FormValidator(
+                    { element: usernameInput, rules: [required("请输入手机号码")] },
+                    { element: passwordInput, rules: [required("请输入密码")] }
+                )
+            }
+
+            let isValid = await validator.check();
+            if (!isValid)
+                return;
+
+            await member.login(usernameInput.value, passwordInput.value);
+            app.redirect(returnString);
+        }
         render() {
             return [
                 <header key="header">
@@ -38,21 +54,7 @@ export default function (page: chitu.Page) {
                                     ref={(e: HTMLButtonElement) => {
                                         if (!e) return;
                                         e.onclick = ui.buttonOnClick(async () => {
-                                            if (!validator) {
-                                                validator = new FormValidator(formElement, {
-                                                    username: {
-                                                        rules: ['required', 'mobile'],
-                                                        display: '手机号码'
-                                                    },
-                                                    password: { rules: ['required'], display: '密码' }
-                                                });
-                                            }
 
-                                            if (!validator.validateForm())
-                                                return;
-
-                                            await member.login(usernameInput.value, passwordInput.value);
-                                            app.redirect(returnString);
                                         });
                                     }}>立即登录</button>
                             </div>

@@ -2,7 +2,7 @@ import { defaultNavBar } from 'site';
 import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import VerifyCodeButton from 'components/verifyCodeButton';
 
 let member = new MemberService();
@@ -21,7 +21,8 @@ class WizardComponent extends React.Component<{ userInfo: UserInfo } & React.Pro
         this.state = { step: 0 };
     }
     async nextStep(): Promise<any> {
-        if (!this.validator.validateForm()) {
+        let isValid = await this.validator.check();
+        if (isValid == false) {
             return;
         }
 
@@ -44,11 +45,11 @@ class WizardComponent extends React.Component<{ userInfo: UserInfo } & React.Pro
         return Promise.resolve({});
     }
 
-     nextStepControl: JSX.Element;
+    nextStepControl: JSX.Element;
     componentDidMount() {
-        this.validator = new FormValidator(this.stepOneForm, {
-            verifyCode: { rules: ['required'], display: '验证码' }
-        });
+        this.validator = new FormValidator(
+            { element:this.stepOneForm['verifyCode'],  rules: [rules.required()]} 
+        );
         // this.validator.registerCallback('verifyCodeCheck', (value) => {
 
         // })

@@ -1,17 +1,16 @@
 {
     "compilerOptions": {
-        "allowJs": true,
+        "allowJs": false,
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../../www",
+        "outDir": "../../out/es6",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
             "*": [
-                "lib/*",
-                "client/lib/*"
+                "lib/*.ts"
             ],
             "chitu.mobile": [
                 "client/lib/chitu.mobile"
@@ -39,6 +38,10 @@
         "../lib/typings/react-dom/*.*",
         "../lib/typings/require.d.ts",
         "../lib/*.d.ts",
+
+        "../mylib/*.ts",
+        "../mylib/**/*.ts",
+        // "../client/mylib/*.ts",
 
         // "../admin/adminServices/*",
 

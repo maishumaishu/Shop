@@ -3,13 +3,14 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../../www",
+        "outDir": "../../out/es6",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
             "*": [
-                "lib/*"
+                "lib/*",
+                "mylib/*"
             ],
             "mobileComponents/*": [
                 "user/mobileComponents/*"
@@ -35,6 +36,9 @@
         "../lib/*.d.ts",
         "../lib/typings/*.d.ts",
         "../lib/typings/**/*.d.ts",
+
+        "../mylib/*.ts",
+        "../mylib/**/*.ts",
 
         "../share/*.d.ts",
         "../share/**/*.d.ts",

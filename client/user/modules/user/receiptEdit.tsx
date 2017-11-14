@@ -1,6 +1,6 @@
 import { defaultNavBar, app } from 'site';
 import { ShoppingService } from 'services/shoppingService';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import { RegionsPageRouteValues } from 'modules/user/regions';
 import * as ui from 'ui';
 
@@ -51,6 +51,7 @@ interface Props extends React.Props<ReceiptEditPage> {
 class ReceiptEditPage extends React.Component<
     Props,
     { receiptInfo: ReceiptInfo }>{
+    private formElement: HTMLFormElement;
     private validator: FormValidator;
     constructor(props) {
         super(props);
@@ -67,6 +68,15 @@ class ReceiptEditPage extends React.Component<
         //     Address: { rules: ['required'], display: '详细地址', messages: { required: '请输入详细地址' } },
         //     RegionId: { rules: ['required'], display: '地区', messages: { required: '请选择地区' } },
         // });
+        let { required } = rules;
+        let e = this.formElement;
+        this.validator = new FormValidator(
+            { element: e["Name"], rules: [required("请输入地址名称")] },
+            { element: e["Consignee"], rules: [required('请输入收货人姓名')] },
+            { element: e["Mobile"], rules: [required('请输入手机号码')] },
+            { element: e["Address"], rules: [required('请输入详细地址')] },
+            { element: e["RegionId"], rules: [required('请选择地区')] },
+        )
 
     }
     onInputChange(event: React.FormEvent) {
@@ -82,8 +92,9 @@ class ReceiptEditPage extends React.Component<
         this.state.receiptInfo[input.name] = value;
         this.setState(this.state);
     }
-    saveReceipt(): Promise<any> {
-        if (!this.validator.validateForm()) {
+    async saveReceipt(): Promise<any> {
+        let isValid = await this.validator.check();
+        if (isValid == false) {
             return Promise.reject<any>(null);
         }
 
@@ -130,7 +141,9 @@ class ReceiptEditPage extends React.Component<
             </header>,
             <section key="view0">
                 <div className="container">
-                    <form data-bind="with:receipt" className="form-horizontal">
+                    <form data-bind="with:receipt"
+                        ref={(e: HTMLFormElement) => this.formElement = e || this.formElement}
+                        className="form-horizontal">
                         <div className="form-group">
                             <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                 <span className="color-red">*</span> 地址名称
