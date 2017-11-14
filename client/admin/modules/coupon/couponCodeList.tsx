@@ -1,7 +1,7 @@
 import * as ui from 'myWuZhui';
 import { buttonOnClick } from 'ui';
 import { ShoppingService } from 'adminServices/shopping';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 
 export default function (page: chitu.Page) {
 
@@ -13,6 +13,8 @@ export default function (page: chitu.Page) {
         coupons: Array<Coupon>
     }
     class CouponCodeListPage extends React.Component<{}, PageState>{
+        private couponsSelect: HTMLSelectElement;
+        private countInput: HTMLInputElement;
         private couponCodesTable: HTMLTableElement;
         private currentStatus: Status = 'all';
         private dataSource: wuzhui.WebDataSource<CouponCode>;
@@ -77,8 +79,9 @@ export default function (page: chitu.Page) {
             this.validator.clearErrors();
             $(this.dialogElement).modal();
         }
-        generateCouponCode(): Promise<any> {
-            if (!this.validator.validateForm()) {
+        async  generateCouponCode(): Promise<any> {
+            let isValid = await this.validator.check();
+            if (isValid == false) {
                 return Promise.reject({});
             }
             let couponId = (this.dialogElement['coupon'] as HTMLSelectElement).value;
@@ -89,10 +92,16 @@ export default function (page: chitu.Page) {
             });
         }
         componentDidMount() {
-            this.validator = new FormValidator(this.dialogElement, {
-                count: { rules: ['required'], display: '数量' },
-                coupon: { rules: ['required'], messages: { required: '请选择优惠劵' } }//
-            });
+            // this.validator = new FormValidator(this.dialogElement, {
+            //     count: { rules: ['required'], display: '数量' },
+            //     coupon: { rules: ['required'], messages: { required: '请选择优惠劵' } }//
+            // });
+            let { required } = rules;
+            // let e = this.dialogElement;
+            this.validator = new FormValidator(
+                { element: this.countInput, rules: [required('请输入数量')] },
+                { element: this.couponsSelect, rules: [required('请选择优惠劵')] }
+            );
 
             this.dataSource = new wuzhui.WebDataSource({
                 primaryKeys: ["Id"],
@@ -178,7 +187,8 @@ export default function (page: chitu.Page) {
                                             优惠劵
                                         </label>
                                         <div className="col-sm-10">
-                                            <select name="coupon" className="form-control">
+                                            <select name="coupon" className="form-control"
+                                                ref={(e: HTMLSelectElement) => this.couponsSelect = e || this.couponsSelect}>
                                                 <option value="">请选择优惠劵</option>
                                                 {coupons.map(o =>
                                                     <option key={o.Id} value={o.Id}>
@@ -193,7 +203,8 @@ export default function (page: chitu.Page) {
                                             数量
                                         </label>
                                         <div className="col-sm-10">
-                                            <input name="count" type="text" className="form-control" placeholder="请输入生成优惠码的数量" />
+                                            <input name="count" type="text" className="form-control" placeholder="请输入生成优惠码的数量"
+                                                ref={(e: HTMLInputElement) => this.countInput = e || this.countInput} />
                                         </div>
                                     </div>
                                 </div>
