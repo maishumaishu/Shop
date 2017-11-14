@@ -1,12 +1,12 @@
 /** 同城配送 页面*/
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import { ShoppingService } from 'adminServices/shopping';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
 
     let shopping = page.createService(ShoppingService);
-    
+
     class InCitySendPage extends React.Component<{ cityFreight: CityFreight }, { cityFreight: CityFreight }>{
         validator: FormValidator;
         formElement: HTMLFormElement;
@@ -15,14 +15,21 @@ export default function (page: chitu.Page) {
             this.state = { cityFreight: this.props.cityFreight };
         }
         componentDidMount() {
-            this.validator = new FormValidator(this.formElement, {
-                SendAmount: { rules: ['required'] },
-                Freight: { rules: ['required'] },
-                SendRadius: { rules: ['required'] }
-            })
+
+            let { required } = rules;
+            let SendAmount = this.formElement.querySelector('[Name="SendAmount"]') as HTMLInputElement;
+            let Freight = this.formElement.querySelector('[Name="Freight"]') as HTMLInputElement;
+            let SendRadius = this.formElement.querySelector('[Name="SendRadius"]') as HTMLInputElement;
+            
+            this.validator = new FormValidator(
+                { element: SendAmount, rules: [required()] },
+                { element: Freight, rules: [required()] },
+                { element: SendRadius, rules: [required()] }
+            )
         }
-        save(): Promise<any> {
-            if (!this.validator.validateForm())
+        async save(): Promise<any> {
+            let isValid = await this.validator.check();
+            if (isValid == false)
                 return Promise.reject({});
 
             let dataItem = this.state.cityFreight;
