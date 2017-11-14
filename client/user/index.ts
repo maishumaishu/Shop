@@ -65,17 +65,25 @@ requirejs.config({
     }
 });
 
+
 requirejs(["css!content/font-awesome"]);
-requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'], function (React, ReactDOM, site) {
-    window['React'] = React;
-    window['ReactDOM'] = ReactDOM;
-    window['h'] = React.createElement;
 
-    ui.loadImageConfig.imageDisaplyText = "你好"
-    ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
+let references1 = ['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'];
+let references2 = ['build']
+requirejs(['build'], function () {
+    requirejs(references1, function (React, ReactDOM, site) {
+        window['React'] = React;
+        window['ReactDOM'] = ReactDOM;
+        window['h'] = React.createElement;
 
-    site.app.run();
+        ui.loadImageConfig.imageDisaplyText = "你好"
+        ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
+
+        site.app.run();
+    })
 })
+
+
 
 // import * as React from 'react';
 // import * as ReactDOM from 'react-dom';

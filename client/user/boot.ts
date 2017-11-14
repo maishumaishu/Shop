@@ -4,20 +4,16 @@
     // 配置
     let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.org`];
     //====================================================
+    let Ping = {
+        optimumServer: null as string
+    };
+    function createPing(opt?: { favicon?: string, timeout?: number }) {
 
-    class Ping {
-        private opt: any;
-        private favicon: string;
-        private timeout: number;
-        private img: HTMLImageElement;
+        this.opt = opt || {};
+        this.favicon = this.opt.favicon || "/favicon.ico";
+        this.timeout = this.opt.timeout || 0;
 
-        constructor(opt?: { favicon?: string, timeout?: number }) {
-            this.opt = opt || {};
-            this.favicon = this.opt.favicon || "/favicon.ico";
-            this.timeout = this.opt.timeout || 0;
-        }
-
-        ping(source: string, callback: (error: string, pong: number) => void) {
+        function ping(source: string, callback: (error: string, pong: number) => void) {
             this.img = new Image();
             var timer;
 
@@ -43,21 +39,26 @@
                 }
             }
 
-            let src = this.favicon.indexOf('?') >= 0 ?
-                source + this.favicon + "&" + (+new Date()) :
-                source + this.favicon + "?" + (+new Date());
+            let src = opt.favicon.indexOf('?') >= 0 ?
+                source + opt.favicon + "&" + (+new Date()) :
+                source + opt.favicon + "?" + (+new Date());
 
             this.img.src = src;
         }
 
-        /** 最佳服务器 */
-        static optimumServer: string
+        return {
+            ping
+        }
     }
+
+
+
+
 
     let { protocol } = location;
     for (let i = 0; i < allServiceHosts.length; i++) {
         let url = `${protocol}//${allServiceHosts[i]}/`;
-        var p = new Ping({ favicon: 'user/index' });
+        var p = createPing({ favicon: 'user/index' });
         p.ping(url, (error, pong) => {
             if (!Ping.optimumServer)
                 Ping.optimumServer = allServiceHosts[i];

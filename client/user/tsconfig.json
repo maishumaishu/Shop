@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "allowJs": false,
-        "target": "es6",
+        "target": "es5",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../../out/es6",
+        "outDir": "../../www",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
@@ -27,7 +27,13 @@
             ]
         },
         "experimentalDecorators": true,
-        "declaration": false
+        "declaration": false,
+        "lib": [
+            "dom",
+            "scripthost",
+            "es2015",
+            "dom.iterable"
+        ]
     },
     "include": [
 
@@ -39,8 +45,6 @@
         "../lib/typings/require.d.ts",
         "../lib/*.d.ts",
 
-        "../mylib/*.ts",
-        "../mylib/**/*.ts",
         // "../client/mylib/*.ts",
 
         // "../admin/adminServices/*",

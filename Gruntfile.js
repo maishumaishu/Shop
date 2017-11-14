@@ -1,6 +1,6 @@
 var admin_src = 'client/admin';
 var user_src = 'client/user';
-var out = 'www';
+var out = 'out';
 var lib = 'client/lib';
 
 var admin_dest = `${out}/admin`;
@@ -26,20 +26,6 @@ module.exports = function (grunt) {
                 options: {
                     failOnError: false
                 }
-            }
-        },
-        babel: {
-            source: {
-                options: {
-                    sourceMap: false,
-                    presets: ["es2015"],
-                },
-                files: [{
-                    expand: true,
-                    cwd: `client/lib/es6`,
-                    src: [`*.js`],
-                    dest: `client/lib/`
-                }]
             }
         },
         copy: {
@@ -100,6 +86,20 @@ module.exports = function (grunt) {
                 ]
             }
         },
+        cssmin: {
+            options: {
+                mergeIntoShorthands: false,
+                roundingPrecision: -1
+            },
+            target: {
+                files: [{
+                    expand: true,
+                    cwd: `${out}`,
+                    src: ['**/*.css'],
+                    dest: 'www'
+                }]
+            }
+        },
         less: {
             admin: {
                 options: {
@@ -139,57 +139,60 @@ module.exports = function (grunt) {
                     dest: `mobileComponents/dest/mobileComponents`,
                     ext: '.css'
                 }, ]
-            },
-            // user_bt: {
-            //     files: [
-            //         { expand: false, src: `${user_src}/content/bootstrap_red.less`, dest: `${user_dest}/content/bootstrap_red.css` }
-            //     ]
-            // },
-            // admin_bt: {
-            //     files: [
-            //         { expand: false, src: `${admin_src}/content/bootstrap_blue.less`, dest: `${admin_dest}/content/bootstrap_bule.css` }
-            //     ]
-            // }
+            }
         },
         requirejs: {
             user: {
                 options: {
-                    baseUrl: 'www/user',
+                    baseUrl: `${out}/user`,
                     include: [
-                        'index', 'css', 'userServices/service', 'userServices/shoppingService',
-                        'mobileComponents/common', 'modules/page', 'polyfill'
+                        "polyfill",
+                        "css", "react", "react-dom", 'prop-types', 'ui',
+                        'maishu-chitu', "chitu.mobile", "dilu",
+                        'site', 'errorHandle',
+                        'modules/home/index'
                     ],
-                    out: 'www/user/build.js',
-                    optimize: 'none',
+                    out: `www/user/build.js`,
+                    optimize: 'uglify', //'none',//
                     paths: {
-                        // chitu: 'scripts/chitu',
-                        polyfill: '../../node_modules/babel-polyfill/dist/polyfill.min',
-
                         css: 'scripts/css',
-                        fetch: 'scripts/fetch',
-                        hammer: 'scripts/hammer',
-                        react: 'scripts/react',
-                        'react-dom': 'scripts/react-dom',
-                        text: 'scripts/text',
-                        // 'chitu.mobile': 'scripts/chitu.mobile',
-                        carousel: 'scripts/carousel',
-                        services: 'userServices',
+                        'chitu.mobile': 'scripts/chitu.mobile',
+                        dilu: 'scripts/dilu',
+                        react: 'scripts/react.production',
+                        'react-dom': 'scripts/react-dom.production',
+                        'prop-types': 'scripts/prop-types',
+                        polyfill: 'scripts/polyfill',
+                        // text: 'scripts/text',
+                        // carousel: 'scripts/carousel',
                         // mobileComponents: 'pageComponents',
-                        formValidator: 'scripts/formValidator',
-                        mobileControls: 'scripts/mobileControls',
+                        // mobileControls: 'scripts/mobileControls',
                         ui: 'scripts/ui',
-                        'maishu-chitu': 'chitu'
+                        'maishu-chitu': 'scripts/chitu',
+                        'user': './',
+                        'userServices': './services'
                     }
                 }
             }
-        }
+        },
+        uglify: {
+            out: {
+                files: [{
+                    expand: true,
+                    cwd: `${out}`,
+                    src: '**/*.js',
+                    dest: `www`
+                }]
+            }
+        },
     });
 
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.registerTask('admin', ['shell:admin', 'less:admin', 'less:mobileComponents', 'copy:admin']);
     grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
     grunt.registerTask('default', ['admin', 'user']);

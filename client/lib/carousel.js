@@ -2,16 +2,19 @@
 //import cm = require('chitu.mobile');
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    class Errors {
-        static argumentNull(parameterName) {
-            let msg = `Argument '${parameterName}' cannt be null.`;
-            return new Error(msg);
+    var Errors = (function () {
+        function Errors() {
         }
-    }
+        Errors.argumentNull = function (parameterName) {
+            var msg = "Argument '" + parameterName + "' cannt be null.";
+            return new Error(msg);
+        };
+        return Errors;
+    }());
     var animateTime = 400; //ms，这个数值，要和样式中的设定一致。
-    const MOVE_PERSEND = 20;
-    class Carousel {
-        constructor(element, options) {
+    var MOVE_PERSEND = 20;
+    var Carousel = (function () {
+        function Carousel(element, options) {
             this.playTimeId = 0; // 0 为停止中，－1 为已停止，非 0 为播放中。
             this.playing = false;
             this.paned = false;
@@ -20,13 +23,13 @@ define(["require", "exports"], function (require, exports) {
                 throw Errors.argumentNull('element');
             this.window_width = document.body.clientWidth;
             this.items = new Array();
-            let q = element.querySelectorAll('.item');
-            for (let i = 0; i < q.length; i++) {
+            var q = element.querySelectorAll('.item');
+            for (var i = 0; i < q.length; i++) {
                 this.items[i] = q.item(i);
             }
             this.indicators = new Array();
             q = element.querySelectorAll('.carousel-indicators li');
-            for (let i = 0; i < q.length; i++)
+            for (var i = 0; i < q.length; i++)
                 this.indicators[i] = q.item(i);
             console.assert(this.indicators.length == this.items.length);
             this.active_index = this.active_index >= 0 ? this.active_index : 0;
@@ -47,49 +50,50 @@ define(["require", "exports"], function (require, exports) {
                 // })
             }
         }
-        listenTouch(element) {
-            let startY, currentY;
-            let startX, currentX;
-            let moving;
-            let horizontal_swipe_angle = 35;
-            let vertical_pull_angle = 65;
-            element.addEventListener('touchstart', (event) => {
+        Carousel.prototype.listenTouch = function (element) {
+            var _this = this;
+            var startY, currentY;
+            var startX, currentX;
+            var moving;
+            var horizontal_swipe_angle = 35;
+            var vertical_pull_angle = 65;
+            element.addEventListener('touchstart', function (event) {
                 startY = event.touches[0].pageY;
                 startX = event.touches[0].pageX;
-                this.panstart(event);
+                _this.panstart(event);
             });
-            element.addEventListener('touchmove', (event) => {
+            element.addEventListener('touchmove', function (event) {
                 currentX = event.targetTouches[0].pageX;
                 currentY = event.targetTouches[0].pageY;
-                let angle = calculateAngle(currentX - startX, currentY - startY);
+                var angle = calculateAngle(currentX - startX, currentY - startY);
                 if (angle < horizontal_swipe_angle) {
                     moving = 'horizontal';
-                    this.panmove(event, currentX - startX);
+                    _this.panmove(event, currentX - startX);
                 }
                 if (moving != null) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
             });
-            var calculateAngle = (x, y) => {
-                let d = Math.atan(Math.abs(y / x)) / 3.14159265 * 180;
+            var calculateAngle = function (x, y) {
+                var d = Math.atan(Math.abs(y / x)) / 3.14159265 * 180;
                 return d;
             };
-            let readyElement;
-            let initElement;
-            var endHorizontal = (event, deltaX) => {
+            var readyElement;
+            var initElement;
+            var endHorizontal = function (event, deltaX) {
                 moving = null;
-                this.panend(event, deltaX);
+                _this.panend(event, deltaX);
             };
-            element.addEventListener('touchcancel', (event) => endHorizontal(event, currentX - startX));
-            element.addEventListener('touchend', (event) => endHorizontal(event, currentX - startX));
-        }
-        panstart(e) {
+            element.addEventListener('touchcancel', function (event) { return endHorizontal(event, currentX - startX); });
+            element.addEventListener('touchend', function (event) { return endHorizontal(event, currentX - startX); });
+        };
+        Carousel.prototype.panstart = function (e) {
             if (this.is_pause)
                 return false;
             this.stop();
-        }
-        panmove(e, deltaX) {
+        };
+        Carousel.prototype.panmove = function (e, deltaX) {
             var percent_position = Math.floor(deltaX / document.body.clientWidth * 100);
             if (this.active_position == percent_position || this.playing == true) {
                 return;
@@ -105,25 +109,26 @@ define(["require", "exports"], function (require, exports) {
                 this.prevItem().className = 'item prev';
                 this.move(this.prevItem(), deltaX - this.window_width, 0);
             }
-        }
-        move(element, deltaX, time) {
-            element.style.transform = `translate(${deltaX}px, 0px)`;
-            element.style.transition = `${time / 1000}s`;
-        }
-        panend(e, deltaX) {
+        };
+        Carousel.prototype.move = function (element, deltaX, time) {
+            element.style.transform = "translate(" + deltaX + "px, 0px)";
+            element.style.transition = time / 1000 + "s";
+        };
+        Carousel.prototype.panend = function (e, deltaX) {
+            var _this = this;
             if (this.paned == false)
                 return;
             this.paned = false;
             var duration_time = 200;
-            let p = MOVE_PERSEND;
+            var p = MOVE_PERSEND;
             if (this.active_position > 0 && this.active_position >= p) {
                 this.move(this.activeItem(), this.window_width, duration_time);
                 this.move(this.prevItem(), 0, duration_time);
-                window.setTimeout(() => {
-                    removeClassName(this.prevItem(), 'prev', 'next');
-                    addClassName(this.prevItem(), 'active');
-                    removeClassName(this.activeItem(), 'active');
-                    this.decreaseActiveIndex();
+                window.setTimeout(function () {
+                    removeClassName(_this.prevItem(), 'prev', 'next');
+                    addClassName(_this.prevItem(), 'active');
+                    removeClassName(_this.activeItem(), 'active');
+                    _this.decreaseActiveIndex();
                 }, duration_time);
             }
             else if (this.active_position > 0 && this.active_position < p) {
@@ -133,11 +138,11 @@ define(["require", "exports"], function (require, exports) {
             else if (this.active_position <= 0 - p) {
                 this.move(this.activeItem(), 0 - this.window_width, duration_time);
                 this.move(this.nextItem(), 0, duration_time);
-                window.setTimeout(() => {
-                    removeClassName(this.nextItem(), 'prev', 'next');
-                    addClassName(this.nextItem(), 'active');
-                    removeClassName(this.activeItem(), 'active');
-                    this.increaseActiveIndex();
+                window.setTimeout(function () {
+                    removeClassName(_this.nextItem(), 'prev', 'next');
+                    addClassName(_this.nextItem(), 'active');
+                    removeClassName(_this.activeItem(), 'active');
+                    _this.increaseActiveIndex();
                 }, duration_time);
             }
             else {
@@ -145,55 +150,56 @@ define(["require", "exports"], function (require, exports) {
                 this.move(this.activeItem(), 0, duration_time);
                 this.move(this.nextItem(), this.window_width, duration_time);
             }
-            window.setTimeout(() => {
-                if (this.autoplay) {
-                    this.play();
+            window.setTimeout(function () {
+                if (_this.autoplay) {
+                    _this.play();
                 }
             }, duration_time + 200);
-        }
-        increaseActiveIndex() {
+        };
+        Carousel.prototype.increaseActiveIndex = function () {
             this.setIndicatorClassName(this.active_index, '');
             this.active_index = this.active_index + 1;
             if (this.active_index > this.items.length - 1)
                 this.active_index = 0;
             this.setIndicatorClassName(this.active_index, 'active');
             return this.active_index;
-        }
-        decreaseActiveIndex() {
+        };
+        Carousel.prototype.decreaseActiveIndex = function () {
             this.setIndicatorClassName(this.active_index, '');
             this.active_index = this.active_index - 1;
             if (this.active_index < 0)
                 this.active_index = this.items.length - 1;
             this.setIndicatorClassName(this.active_index, 'active');
-        }
-        nextItemIndex() {
+        };
+        Carousel.prototype.nextItemIndex = function () {
             var next = this.active_index + 1;
             if (next > this.items.length - 1)
                 next = 0;
             return next;
-        }
-        prevItemIndex() {
+        };
+        Carousel.prototype.prevItemIndex = function () {
             var prev = this.active_index - 1;
             if (prev < 0)
                 prev = this.items.length - 1;
             return prev;
-        }
-        nextItem() {
+        };
+        Carousel.prototype.nextItem = function () {
             var nextIndex = this.active_index + 1;
             if (nextIndex > this.items.length - 1)
                 nextIndex = 0;
             return this.items[nextIndex];
-        }
-        prevItem() {
+        };
+        Carousel.prototype.prevItem = function () {
             var prevIndex = this.active_index - 1;
             if (prevIndex < 0)
                 prevIndex = this.items.length - 1;
             return this.items[prevIndex];
-        }
-        activeItem() {
+        };
+        Carousel.prototype.activeItem = function () {
             return this.items[this.active_index];
-        }
-        moveNext() {
+        };
+        Carousel.prototype.moveNext = function () {
+            var _this = this;
             if (this.playTimeId == 0)
                 return;
             if (this.playing == true)
@@ -209,21 +215,22 @@ define(["require", "exports"], function (require, exports) {
             this.nextItem().className = 'item next';
             //==================================================
             // 需要延时，否则第二个动画不生效。
-            window.setTimeout(() => {
-                addClassName(this.activeItem(), 'left');
-                addClassName(this.nextItem(), 'active');
+            window.setTimeout(function () {
+                addClassName(_this.activeItem(), 'left');
+                addClassName(_this.nextItem(), 'active');
                 //==================================================
                 // 动画完成后，清除样式。
-                setTimeout(() => {
-                    this.nextItem().className = 'item active';
-                    this.activeItem().className = 'item';
-                    this.increaseActiveIndex();
-                    this.playing = false;
+                setTimeout(function () {
+                    _this.nextItem().className = 'item active';
+                    _this.activeItem().className = 'item';
+                    _this.increaseActiveIndex();
+                    _this.playing = false;
                 }, animateTime);
                 //==================================================
             }, 50);
-        }
-        movePrev() {
+        };
+        Carousel.prototype.movePrev = function () {
+            var _this = this;
             if (this.playTimeId == 0)
                 return;
             if (this.playing == true)
@@ -236,42 +243,46 @@ define(["require", "exports"], function (require, exports) {
             this.activeItem().style.transform = this.activeItem().style.webkitTransform = '';
             //==================================================
             // 需要延时，否则第二个动画不生效。
-            window.setTimeout(() => {
-                addClassName(this.activeItem(), 'right');
-                addClassName(this.prevItem(), 'active');
+            window.setTimeout(function () {
+                addClassName(_this.activeItem(), 'right');
+                addClassName(_this.prevItem(), 'active');
                 //==================================================
                 // 动画完成后，清除样式。
-                setTimeout(() => {
-                    removeClassName(this.prevItem(), 'prev', 'next');
-                    removeClassName(this.activeItem(), 'right', 'active');
-                    this.decreaseActiveIndex();
-                    this.playing = false;
+                setTimeout(function () {
+                    removeClassName(_this.prevItem(), 'prev', 'next');
+                    removeClassName(_this.activeItem(), 'right', 'active');
+                    _this.decreaseActiveIndex();
+                    _this.playing = false;
                 }, animateTime);
                 //==================================================
             }, 10);
-        }
-        setIndicatorClassName(index, className) {
-            let indicator = this.indicators[index];
+        };
+        Carousel.prototype.setIndicatorClassName = function (index, className) {
+            var indicator = this.indicators[index];
             if (indicator == null) {
                 return;
             }
             indicator.className = className;
-        }
-        stop() {
+        };
+        Carousel.prototype.stop = function () {
             if (this.playTimeId == 0) {
                 return;
             }
             window.clearInterval(this.playTimeId);
             this.playTimeId = 0;
-        }
-        get pause() {
-            return this.is_pause;
-        }
-        set pause(value) {
-            this.is_pause = value;
-            if (this.is_pause == true)
-                this.stop();
-        }
+        };
+        Object.defineProperty(Carousel.prototype, "pause", {
+            get: function () {
+                return this.is_pause;
+            },
+            set: function (value) {
+                this.is_pause = value;
+                if (this.is_pause == true)
+                    this.stop();
+            },
+            enumerable: true,
+            configurable: true
+        });
         // private findPageView(element: HTMLElement) {
         //     console.assert(element != null);
         //     let p = element;
@@ -282,25 +293,36 @@ define(["require", "exports"], function (require, exports) {
         //         p = p.parentElement;
         //     }
         // }
-        play() {
+        Carousel.prototype.play = function () {
+            var _this = this;
             if (this.playTimeId != 0)
                 return;
-            this.playTimeId = window.setInterval(() => {
-                this.moveNext();
+            this.playTimeId = window.setInterval(function () {
+                _this.moveNext();
             }, 2000);
+        };
+        return Carousel;
+    }());
+    function addClassName(element) {
+        var classNames = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            classNames[_i - 1] = arguments[_i];
         }
-    }
-    function addClassName(element, ...classNames) {
         console.assert(element.className != null);
-        for (let className of classNames) {
+        for (var _a = 0, classNames_1 = classNames; _a < classNames_1.length; _a++) {
+            var className = classNames_1[_a];
             if (element.className.indexOf(className) >= 0)
                 continue;
             element.className = element.className + ' ' + className;
         }
     }
-    function removeClassName(element, ...classNames) {
+    function removeClassName(element) {
+        var classNames = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            classNames[_i - 1] = arguments[_i];
+        }
         console.assert(element.className != null);
-        for (let i = 0; i < classNames.length; i++)
+        for (var i = 0; i < classNames.length; i++)
             element.className = element.className.replace(classNames[i], '');
     }
     return Carousel;

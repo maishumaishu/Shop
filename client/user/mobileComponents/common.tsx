@@ -24,6 +24,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     private _element: HTMLElement;
     private _page: MobilePage;
     private _elementPage: chitu.Page;
+    private _state: S;
 
     // static contextTypes = { designer: PropTypes.object };
     // context: { designer: IMobilePageDesigner };
@@ -54,7 +55,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     }
 
     get state(): S {
-        return super.state;
+        return this._state;
     }
 
     /**
@@ -62,8 +63,8 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
      */
     set state(value: S) {
         value = value || {} as S;
-        if (super.state != null) {
-            super.state = value;
+        if (this._state != null) {
+            this._state = value;
             return;
         }
 
@@ -75,8 +76,10 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
                 state[keys[i]] = prop;
         }
 
-        super.state = Object.assign(value, state);;
+        this._state = Object.assign(value, state);;
     }
+
+
 
     render() {
         if (this.mobilePage.props.designTime != null)

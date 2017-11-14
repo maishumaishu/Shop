@@ -10,6 +10,7 @@ export interface EditorProps {
 
 export abstract class Editor<P extends EditorProps, S> extends React.Component<P, S>{
     private controlType: React.ComponentClass<any>;
+    private _state: S;
 
     constructor(props) {
         super(props);
@@ -17,7 +18,7 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
     }
 
     get state(): S {
-        return super.state;
+        return this._state;
     }
     /**
      * 重写 set state， 在第一次赋值，将控件中 state 的持久化成员赋值过来。 
@@ -25,8 +26,8 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
     set state(value: S) {
 
         value = value || {} as S;
-        if (super.state != null) {
-            super.state = value;
+        if (this._state != null) {
+            this._state = value;
             return;
         }
 
@@ -39,7 +40,7 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
                 state[keys[i]] = prop;
         }
 
-        super.state = Object.assign(value, state);;
+        this._state = Object.assign(value, state);;
     }
 
     componentDidMount() {

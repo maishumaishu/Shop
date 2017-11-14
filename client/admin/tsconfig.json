@@ -1,16 +1,15 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es5",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../../out/es6",
+        "outDir": "../../out",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
             "*": [
-                "lib/*",
-                "mylib/*"
+                "lib/*"
             ],
             "mobileComponents/*": [
                 "user/mobileComponents/*"
@@ -29,16 +28,18 @@
                 "user/services/*"
             ]
         },
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "lib": [
+            "dom",
+            "scripthost",
+            "es2015"
+        ]
     },
     "include": [
 
         "../lib/*.d.ts",
         "../lib/typings/*.d.ts",
         "../lib/typings/**/*.d.ts",
-
-        "../mylib/*.ts",
-        "../mylib/**/*.ts",
 
         "../share/*.d.ts",
         "../share/**/*.d.ts",

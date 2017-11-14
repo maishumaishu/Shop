@@ -1,11 +1,16 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es5",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../../out/es6/scripts",
+        "outDir": "../lib",
         "jsx": "react",
-        "declaration": true
+        "declaration": true,
+        "lib": [
+            "dom",
+            "scripthost",
+            "es2015"
+        ]
     },
     "exclude": [
     ],
