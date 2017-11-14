@@ -241,11 +241,7 @@ _createClass(Application, [{
         var routeData = this.parseRouteString(routeString);
         var page = this.getPage(routeData.pageName);
         var previousPageIndex = this.page_stack.length - 2;
-        if (page != null && this.page_stack.indexOf(page) == previousPageIndex) {
-            this.closeCurrentPage();
-        } else {
-            this.showPage(routeString);
-        }
+        this.showPage(routeString);
     }
 }, {
     key: 'run',
@@ -290,13 +286,15 @@ _createClass(Application, [{
         }
         Object.assign(routeData.values, args || {});
         var oldCurrentPage = this.currentPage;
-        if (this.page_stack.length >= 2 && routeString == this.page_stack[this.page_stack.length - 2].routeData.routeString) {
+        var page = this.getPage(routeData.pageName);
+        var previousPageIndex = this.page_stack.length - 2;
+        if (page != null && this.page_stack.indexOf(page) == previousPageIndex) {
             this.closeCurrentPage();
         } else {
-            var page = this.createPage(routeData);
-            this.pushPage(page);
-            page.show();
-            console.assert(page == this.currentPage, "page is not current page");
+            var _page = this.createPage(routeData);
+            this.pushPage(_page);
+            _page.show();
+            console.assert(_page == this.currentPage, "page is not current page");
         }
         if (oldCurrentPage) oldCurrentPage.deactive.fire(oldCurrentPage, null);
         console.assert(this.currentPage != null);
@@ -353,7 +351,6 @@ _createClass(Application, [{
         var page = this.page_stack.pop();
         page.previous = this.currentPage;
         page.hide();
-        if (this.currentPage != null) this.setLocationHash(this.currentPage.routeData.routeString);
     }
 }, {
     key: 'clearPageStack',

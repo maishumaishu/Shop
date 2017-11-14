@@ -2,7 +2,7 @@
 import app from 'application';
 import val = require('knockout.validation');
 import { ShoppingService } from 'adminServices/shopping';
-import * as ui from 'myWuZhui';
+import * as wz from 'myWuZhui';
 
 export default function (page: chitu.Page) {
 
@@ -29,19 +29,19 @@ export default function (page: chitu.Page) {
         update: (dataItem: RegionFreight) => shopping.setRegionFreight(dataItem.Id, dataItem.Freight, dataItem.FreeAmount),
         primaryKeys: ['Id']
     });
-    ui.appendGridView(page.element, {
+    wz.appendGridView(page.element, {
         dataSource,
         columns: [
-            new ui.BoundField({ dataField: 'RegionName', headerText: '地区' }),
-            new ui.BoundField({
+            new wz.BoundField({ dataField: 'RegionName', headerText: '地区' }),
+            new wz.BoundField({
                 dataField: 'Freight', headerText: '运费', dataFormatString: '￥{0:C2}',
                 itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
             }),
-            new ui.BoundField({
+            new wz.BoundField({
                 dataField: 'FreeAmount', headerText: '免运费金额', dataFormatString: '￥{0:C2}',
                 itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
             }),
-            new ui.CustomField({
+            new wz.CustomField({
                 createItemCell(dataItem) {
                     let cell = new wuzhui.GridViewCell();
                     ReactDOM.render(

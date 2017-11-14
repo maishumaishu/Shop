@@ -6,7 +6,7 @@ import { Service, imageUrl, guid } from 'services/service';
 import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';
 import FormValidator from 'formValidator';
-import * as ui from 'ui';
+
 import tips from 'tips';
 import ImageUpload from 'adminComponents/imageUpload';
 

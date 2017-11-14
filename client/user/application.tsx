@@ -4,6 +4,7 @@ import { StationService } from 'userServices/stationService';
 import { WeiXinService } from 'userServices/weiXinService';
 import { Application as BaseApplication, Page as BasePage } from 'chitu.mobile';
 import { MobilePage } from 'mobileComponents/mobilePage'
+import * as ui from 'ui';
 
 window['h'] = window['h'] || React.createElement;
 

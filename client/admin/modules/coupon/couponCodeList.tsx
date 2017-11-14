@@ -1,4 +1,4 @@
-import * as ui from 'myWuZhui';
+import * as wz from 'myWuZhui';
 import { buttonOnClick } from 'ui';
 import { ShoppingService } from 'adminServices/shopping';
 import { FormValidator, rules } from 'dilu';

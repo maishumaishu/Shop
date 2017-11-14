@@ -6,7 +6,7 @@ import { imageUrl } from 'userServices/service';
 let member = new MemberService();
 
 requirejs([`css!${componentsDir}/member/control`]);
-import * as ui from 'ui';
+
 export interface Props extends ControlProps<MemberControl> {
     // showBalance?: boolean,// = false;
     // showLevel?: boolean,// = false;

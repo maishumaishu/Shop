@@ -1,9 +1,8 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { menuData, MenuNode } from 'menuData';
-
-import { Service } from 'services/service';
 import * as ui from 'ui';
+import { Service } from 'services/service';
 
 ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
 

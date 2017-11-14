@@ -1,5 +1,4 @@
 import * as wz from 'myWuZhui';
-import * as ui from 'ui';
 import { ShoppingService } from 'adminServices/shopping';
 
 export default function (page: chitu.Page) {

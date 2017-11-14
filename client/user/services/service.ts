@@ -89,6 +89,8 @@ export abstract class Service extends chitu.Service {
 
 export function imageUrl(path: string, width?: number, height?: number) {
     if (!path) return path;
+    if (path.startsWith('data:image'))
+        return path;
 
     let HTTP = 'http://'
     if (path.startsWith(HTTP)) {
@@ -115,7 +117,7 @@ export function imageUrl(path: string, width?: number, height?: number) {
     if (urlParams.length > 0) {
         url = url + '?' + urlParams.map(o => `${o.name}=${o.value}`).join('&');
     }
-    
+
     return url;
 }
 

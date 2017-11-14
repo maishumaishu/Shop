@@ -5,7 +5,8 @@ export interface MobiePageDesigner {
 }
 
 export interface EditorProps {
-    control: Control<any, any>
+    control: Control<any, any>,
+    elementPage: chitu.Page
 }
 
 export abstract class Editor<P extends EditorProps, S> extends React.Component<P, S>{
@@ -41,6 +42,10 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
         }
 
         this._state = Object.assign(value, state);;
+    }
+
+    get elementPage() {
+        return this.props.elementPage;
     }
 
     componentDidMount() {

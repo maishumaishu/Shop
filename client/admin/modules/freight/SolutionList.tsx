@@ -2,7 +2,6 @@
 import { default as shopping } from 'adminServices/shopping';
 import site = require('site');
 import * as wz from 'myWuZhui';
-import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
 

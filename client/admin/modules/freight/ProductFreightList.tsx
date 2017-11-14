@@ -1,7 +1,6 @@
 ﻿import { Service } from 'services/service';
 import { ShoppingService } from 'services/shopping';
 import * as wz from 'myWuZhui';
-import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
 

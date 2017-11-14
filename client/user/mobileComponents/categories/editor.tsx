@@ -3,8 +3,7 @@ import { State as ControlState, default as CategoriesControl } from 'mobileCompo
 import { ShoppingService } from 'adminServices/shopping'
 import * as ui from 'ui';
 import { FormValidator, rules, Rule, InputElement } from 'dilu';
-
-const shopping = new ShoppingService();
+import { imageUrl } from 'adminServices/service';
 
 export interface EditorState extends Partial<ControlState> {
     categories?: Category[]
@@ -24,11 +23,14 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
     private control: CategoriesControl;
     private currentItem: Category;
     private showIconsInput: HTMLInputElement;
+    private shopping: ShoppingService;
+
 
     constructor(props) {
         super(props)
         this.control = this.props.control as CategoriesControl;
-        shopping.categories().then(categories => {
+        this.shopping = this.elementPage.createService(ShoppingService);
+        this.shopping.categories().then(categories => {
             this.state.categories = categories;
             this.setState(this.state);
         });
@@ -45,7 +47,7 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
         category.SortNumber = this.sortNumberInput.value ? Number.parseInt(this.sortNumberInput.value) : null;
 
         if (category.Id)
-            return shopping.updateCategory(category)
+            return this.shopping.updateCategory(category)
                 .then(o => {
                     var c = this.state.categories.filter(o => o.Id == category.Id)[0];
                     Object.assign(c, category);
@@ -53,7 +55,7 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
                     ui.hideDialog(this.dialogElement);
                 });
 
-        return shopping.addCategory(category).then(data => {
+        return this.shopping.addCategory(category).then(data => {
             Object.assign(category, data);
             this.state.categories.push(category);
             this.setState(this.state);
@@ -79,7 +81,7 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
         this.nameInput.value = category.Name || '';
         this.remarkInput.value = category.Remark || '';
         this.hiddenInput.checked = category.Hidden || false;
-        this.picture.value = category.ImagePath || emptyImage;
+        this.picture.value = imageUrl(category.ImagePath || emptyImage);
 
         ui.showDialog(this.dialogElement);
     }
@@ -174,7 +176,7 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
                                     <td>{o.Remark}</td>
                                     <td>{o.Hidden}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <img src={o.ImagePath} style={{ height: 36 }} />
+                                        <img src={imageUrl(o.ImagePath)} style={{ height: 36 }} />
                                     </td>
                                     <td style={{ textAlign: 'center' }}>
                                         <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
@@ -188,7 +190,7 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
                                             ref={(e: HTMLButtonElement) => {
                                                 if (!e) return;
                                                 e.onclick = ui.buttonOnClick((event) => {
-                                                    return shopping.deleteCategory(o.Id).then(() => {
+                                                    return this.shopping.deleteCategory(o.Id).then(() => {
                                                         this.state.categories = categories.filter(a => a.Id != o.Id);
                                                         this.setState(this.state);
                                                     });

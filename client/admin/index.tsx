@@ -10,8 +10,10 @@ requirejs.config({
         bootbox: {
             deps: ['bootstrap']
         },
-        chitu: {
-            exports: 'chitu'
+        'maishu-chitu': {
+            deps: [
+                'polyfill'
+            ]
         },
         dilu: {
             exports: 'dilu'
@@ -61,7 +63,9 @@ requirejs.config({
         mobileControls: 'scripts/mobileControls',
         move: 'scripts/move',
         text: 'scripts/text',
-        ping: 'scripts/ping',
+
+        polyfill: 'scripts/polyfill',
+
         ui: 'scripts/ui',
         um: 'scripts/umeditor/umeditor',
         um_config: 'scripts/umeditor/umeditor.config',
@@ -94,7 +98,7 @@ requirejs.config({
         'adminComponents': 'components'
     }
 });
-var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap', 'ping'];
+var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
 requirejs(references, function (React, ReactDOM, app, ui) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;

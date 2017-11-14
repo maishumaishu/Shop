@@ -33,13 +33,17 @@ requirejs.config({
             exports: 'userServices'
         },
         ui: {
-            exports: 'ui'
+            exports: 'ui',
+            deps: ['polyfill']
         },
         site: {
-            deps: ['react', 'maishu-chitu']
+            deps: ['react', 'maishu-chitu', 'polyfill']
         },
         'prop-types': {
             deps: ['react']
+        },
+        'maishu-chitu': {
+            deps: ['polyfill']
         }
     },
     paths: {
@@ -57,6 +61,7 @@ requirejs.config({
         carousel: 'scripts/carousel',
         formValidator: 'scripts/formValidator',
         mobileControls: 'scripts/mobileControls',
+        polyfill: 'scripts/polyfill',
         'prop-types': 'scripts/prop-types',
         userServices: './services',
         // services: './services',
@@ -66,11 +71,14 @@ requirejs.config({
 });
 
 
-requirejs(["css!content/font-awesome"]);
+// define('build', function () {
+
+// })
 
 let references1 = ['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'];
 let references2 = ['build']
 requirejs(['build'], function () {
+    requirejs(["css!content/font-awesome"]);
     requirejs(references1, function (React, ReactDOM, site) {
         window['React'] = React;
         window['ReactDOM'] = ReactDOM;

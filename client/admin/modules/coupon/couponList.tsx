@@ -2,7 +2,7 @@
 import { ShoppingService } from 'adminServices/shopping';
 import site from 'site';
 import app from 'application';
-import * as ui from 'myWuZhui';
+import * as wz from 'myWuZhui';
 
 export default function (page: chitu.Page) {
 
@@ -10,7 +10,7 @@ export default function (page: chitu.Page) {
 
     class CouponListPage extends React.Component<{}, {}>{
         private couponsTable: HTMLTableElement;
-        private itemEditor: ui.GridViewItemPopupEditor;
+        private itemEditor: wz.GridViewItemPopupEditor;
 
         componentDidMount() {
             let dataSource = new wuzhui.WebDataSource<Coupon>({
@@ -18,13 +18,13 @@ export default function (page: chitu.Page) {
                 select: () => shopping.coupons(),
                 delete: (dataItem) => shopping.deleteCoupon(dataItem)
             });
-            let gridView = ui.createGridView({
+            let gridView = wz.createGridView({
                 element: this.couponsTable,
                 dataSource,
                 columns: [
-                    new ui.BoundField({ dataField: 'Title', headerText: '标题' }),
+                    new wz.BoundField({ dataField: 'Title', headerText: '标题' }),
                     // new ui.BoundField({ dataField: 'Title', headerText: '标题' }),
-                    new ui.CustomField({
+                    new wz.CustomField({
                         createItemCell(dataItem: Coupon) {
                             let cell = new wuzhui.GridViewCell();
                             ReactDOM.render(
@@ -38,15 +38,15 @@ export default function (page: chitu.Page) {
                         },
                         headerText: '有效期'
                     }),
-                    new ui.BoundField({
+                    new wz.BoundField({
                         dataField: 'Discount', headerText: '折扣金额', dataFormatString: '￥{0:C2}',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                     }),
-                    new ui.BoundField({
+                    new wz.BoundField({
                         dataField: 'Amount', headerText: '使用金额', dataFormatString: '￥{0:C2}',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                     }),
-                    new ui.CommandField({
+                    new wz.CommandField({
                         // itemEditor: this.itemEditor,
                         leftButtons: (dataItem: Coupon) => [
                             <button className="btn btn-minier btn-info"
@@ -77,8 +77,8 @@ export default function (page: chitu.Page) {
                         </ul>
                     </div>
                     <table ref={(o: HTMLTableElement) => this.couponsTable = this.couponsTable || o}></table>
-                    <ui.GridViewItemPopupEditor name="优惠劵" saveDataItem={(dataItem) => Promise.resolve({})}>
-                    </ui.GridViewItemPopupEditor>
+                    <wz.GridViewItemPopupEditor name="优惠劵" saveDataItem={(dataItem) => Promise.resolve({})}>
+                    </wz.GridViewItemPopupEditor>
                 </div>
             );
         }

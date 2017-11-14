@@ -33,6 +33,7 @@ class Pages {
         shoppingCart: <PageData>{
             name: '*shoppingCart',
             showMenu: true,
+            className: 'shopping-shoppingCart'
             header: {
                 controls: [
                     { controlId: guid(), controlName: 'shoppingCart:Header' }
@@ -185,7 +186,7 @@ export class StationService extends Service {
 
         return pageData;
     }
-    
+
     pageData(pageId: string) {
         let url = this.url('Page/GetPageData');
         let data = { pageId };

@@ -1,8 +1,7 @@
 import { componentsDir, Control } from 'mobileComponents/common';
 import { StationService } from 'userServices/stationService';
 import { ShoppingService } from 'userServices/shoppingService';
-
-import * as ui from 'ui';
+import { imageUrl } from 'userServices/service'
 
 const station = new StationService();
 const shopping = new ShoppingService();
@@ -40,7 +39,8 @@ export default class CategoriesControl extends Control<any, State> {
             <div className="categories-control">
                 {categories ? categories.map(item => (
                     <a key={item.Id} href={`#home_productList?categoryId=${item.Id}`} className="col-xs-4">
-                        <img src={item.ImagePath} className="img-responsive" />
+                        <img src={imageUrl(item.ImagePath)} className="img-responsive"
+                            ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                         <span className="mini interception">{item.Name}</span>
                     </a>
                 )) : null}

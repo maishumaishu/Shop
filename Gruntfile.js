@@ -1,6 +1,6 @@
 var admin_src = 'client/admin';
 var user_src = 'client/user';
-var out = 'out';
+var out = 'www';
 var lib = 'client/lib';
 
 var admin_dest = `${out}/admin`;
@@ -148,7 +148,7 @@ module.exports = function (grunt) {
                     include: [
                         "polyfill",
                         "css", "react", "react-dom", 'prop-types', 'ui',
-                        'maishu-chitu', "chitu.mobile", "dilu",
+                        "dilu",
                         'site', 'errorHandle',
                         'modules/home/index'
                     ],
@@ -170,6 +170,14 @@ module.exports = function (grunt) {
                         'maishu-chitu': 'scripts/chitu',
                         'user': './',
                         'userServices': './services'
+                    },
+                    shim:{
+                        dilu: {
+                            exports: 'dilu'
+                        },
+                        ui:{
+                            exports: 'ui'
+                        }
                     }
                 }
             }

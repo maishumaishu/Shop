@@ -200,7 +200,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         requirejs([editorPathName], (exports) => {
             let editorType = exports.default;
             console.assert(editorType != null, 'editor type is null');
-            let editorReactElement = React.createElement(editorType, { control });
+            console.assert(this.props.elementPage != null, 'element page is null');
+            let editorReactElement = React.createElement(editorType, { control, elementPage: this.props.elementPage } as EditorProps);
             ReactDOM.render(editorReactElement, editorElement);
         })
 
