@@ -9,24 +9,25 @@ export default function (page: chitu.Page) {
     let usernameInput: HTMLInputElement;
     let passwordInput: HTMLInputElement;
     let formElement: HTMLFormElement;
-    let validator: FormValidator;
 
     class UserLoginPage extends React.Component<any, any> {
-        async   login() {
-            if (!validator) {
-                let { required } = rules;
-                validator = new FormValidator(
-                    { element: usernameInput, rules: [required("请输入手机号码")] },
-                    { element: passwordInput, rules: [required("请输入密码")] }
-                )
-            }
-
-            let isValid = await validator.check();
+        private validator: FormValidator;
+        async login() {
+            let isValid = await this.validator.check();
             if (!isValid)
                 return;
 
             await member.login(usernameInput.value, passwordInput.value);
             app.redirect(returnString);
+        }
+        componentDidMount() {
+            // if (!validator) {
+            let { required } = rules;
+            this.validator = new FormValidator(
+                { element: usernameInput, rules: [required("请输入手机号码")] },
+                { element: passwordInput, rules: [required("请输入密码")] }
+            )
+            // }
         }
         render() {
             return [
@@ -53,9 +54,7 @@ export default function (page: chitu.Page) {
                                 <button id="Login" type="button" className="btn btn-primary btn-block"
                                     ref={(e: HTMLButtonElement) => {
                                         if (!e) return;
-                                        e.onclick = ui.buttonOnClick(async () => {
-
-                                        });
+                                        e.onclick = ui.buttonOnClick(() => this.login());
                                     }}>立即登录</button>
                             </div>
                             <div className="col-xs-12 text-center" style={{ marginTop: 10 }}>
