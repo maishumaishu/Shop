@@ -3,7 +3,6 @@ import { imageUrl } from 'userServices/service';
 import { ShoppingService } from 'userServices/shoppingService';
 import { DataList, dataList } from 'components/dataList';
 import { Tabs } from 'components/tabs';
-// import { HTMLElement } from 'react';
 
 
 export default function (page: chitu.Page) {
@@ -16,12 +15,12 @@ export default function (page: chitu.Page) {
     ReactDOM.render(<ProductListView shop={shop} categoryId={categoryId}
         ref={e => productListView = e || productListView} />, page.element);
     page.active.add(() => {
+        if (productListView.state.categoryId == page.routeData.values.categoryId)
+            return;
+
         productListView.state.categoryId = page.routeData.values.categoryId;
         productListView.setState(productListView.state);
-        // productListView.dataList.reset();
-        // productListView.dataList.loadData();
     })
-    // })
 }
 
 class ProductListView extends React.Component<
