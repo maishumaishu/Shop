@@ -246,18 +246,22 @@ var ui;
             return function (ctx, canvasWidth, canvasHeight) {
                 // let fontSize1 = Math.floor(canvasHeight / 3 * 0.8);
                 var fontSize = Math.floor((canvasWidth / imageText.length) * 0.6);
+                var bgColor = 'whitesmoke';
+                var textColor = '#999';
                 // let fontSize = Math.min(fontSize1, fontSize2);
                 options = Object.assign({
-                    fontSize: fontSize
+                    fontSize: fontSize,
+                    bgColor: bgColor,
+                    textColor: textColor
                 }, options);
-                ctx.fillStyle = 'whitesmoke';
+                ctx.fillStyle = options.bgColor; //'whitesmoke';
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                 // 设置字体
                 ctx.font = "Bold " + options.fontSize + "px Arial";
                 // 设置对齐方式
                 ctx.textAlign = "left";
                 // 设置填充颜色
-                ctx.fillStyle = "#999";
+                ctx.fillStyle = options.textColor; //"#999";
                 var textWidth = fontSize * imageText.length;
                 var startX = Math.floor((canvasWidth - textWidth) * 0.5);
                 var startY = Math.floor((canvasHeight - options.fontSize) * 0.3);
@@ -266,14 +270,16 @@ var ui;
             };
         }
     };
-    function generateImageBase64(width, height, draw) {
+    function generateImageBase64(width, height, obj, options) {
         var canvas = document.createElement('canvas');
         canvas.width = width; //img_width;
         canvas.height = height; //img_height;
         var ctx = canvas.getContext('2d');
+        var draw = typeof obj == 'string' ? draws.text(obj, options) : obj;
         draw(ctx, width, height);
         return canvas.toDataURL();
     }
+    ui.generateImageBase64 = generateImageBase64;
     function loadImageByUrl(url) {
     }
     var PREVIEW_IMAGE_DEFAULT_WIDTH = 200;

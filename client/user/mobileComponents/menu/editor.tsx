@@ -79,24 +79,6 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
         ui.hideDialog(this.itemDialogELement);
         return Promise.resolve();
     }
-    createValidator(form: HTMLElement) {
-        // this.validator = new FormValidator(this.itemDialogELement, {
-        //     name: { rules: ['required'] },
-        //     url: {
-        //         depends: () => {
-        //             if (this.isCustomUrl())
-        //                 return ['required'];
-
-        //             return;
-        //         }
-        //     }
-        // })
-        let { required } = rules;
-        this.validator = new FormValidator(
-            { element: this.nameInput, rules: [required()] },
-            { element: this.urlInput, rules: [required()], condition: () => this.isCustomUrl() }
-        );
-    }
     private isCustomUrl() {
         if (this.state.currentItem == null)
             return false;
@@ -117,6 +99,13 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
         this.iconsElement.style.display ?
             this.iconsElement.style.removeProperty('display') :
             this.iconsElement.style.display = 'none';
+    }
+    componentDidMount() {
+        let { required } = rules;
+        this.validator = new FormValidator(
+            { element: this.nameInput, rules: [required()] },
+            { element: this.urlInput, rules: [required()], condition: () => this.isCustomUrl() }
+        );
     }
     render() {
         let menuNodes = this.state.menuNodes || [];

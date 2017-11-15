@@ -1,5 +1,6 @@
-interface Store {
-    Name: string
+interface StoreInfo {
+    Name: string,
+    ImagePath: string
 }
 
 interface ControlDescrtion {

@@ -1,4 +1,3 @@
-import { defaultNavBar } from 'site';
 import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 

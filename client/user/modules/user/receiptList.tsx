@@ -87,7 +87,7 @@ export default function (page: chitu.Page) {
             this.state.items.filter(o => !o.IsDefault).forEach((o) => items.push(o));
             return [
                 <header key="h">
-                    {defaultNavBar({ title: routeValue.callback ? '选择收货地址' : '收货地址' })}
+                    {defaultNavBar(page, { title: routeValue.callback ? '选择收货地址' : '收货地址' })}
                 </header>,
                 <section key="v">
                     {items.map(receipt => (

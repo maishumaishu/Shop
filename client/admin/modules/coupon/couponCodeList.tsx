@@ -2,6 +2,7 @@ import * as wz from 'myWuZhui';
 import { buttonOnClick } from 'ui';
 import { ShoppingService } from 'adminServices/shopping';
 import { FormValidator, rules } from 'dilu';
+import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
 
@@ -110,14 +111,14 @@ export default function (page: chitu.Page) {
                 }
             })
             let self = this;
-            let gridView = ui.createGridView({
+            let gridView = wz.createGridView({
                 element: this.couponCodesTable,
                 dataSource: this.dataSource,
                 columns: [
-                    new ui.BoundField({ dataField: 'Title', headerText: '标题' }),
-                    new ui.BoundField({ dataField: 'Code', headerText: '优惠码' }),
-                    new ui.BoundField({ dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{0:g}' }),
-                    new ui.CustomField({
+                    new wz.BoundField({ dataField: 'Title', headerText: '标题' }),
+                    new wz.BoundField({ dataField: 'Code', headerText: '优惠码' }),
+                    new wz.BoundField({ dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{0:g}' }),
+                    new wz.CustomField({
                         createItemCell(dataItem: CouponCode) {
                             let cell = new wuzhui.GridViewCell();
                             let status = self.status(dataItem);

@@ -18,7 +18,7 @@ export default async function (page: chitu.Page) {
     let receiptInfo: ReceiptInfo = await getReceiptInfo(routeValues, shop);
 
     let receiptEditPage: ReceiptEditPage;
-    ReactDOM.render(<ReceiptEditPage receiptInfo={receiptInfo} shop={shop} onSaved={routeValues.onSaved}
+    ReactDOM.render(<ReceiptEditPage receiptInfo={receiptInfo} elementPage={page} onSaved={routeValues.onSaved}
         ref={(e) => receiptEditPage = e || receiptEditPage} />, page.element);
 
     page.showing.add(async () => {
@@ -45,7 +45,7 @@ async function getReceiptInfo(args: ReceiptEditPageArguments, shop: ShoppingServ
 
 interface Props extends React.Props<ReceiptEditPage> {
     receiptInfo?: ReceiptInfo,
-    shop: ShoppingService,
+    elementPage: chitu.Page,
     onSaved: (receiptInfo: ReceiptInfo) => void
 }
 class ReceiptEditPage extends React.Component<
@@ -98,7 +98,7 @@ class ReceiptEditPage extends React.Component<
             return Promise.reject<any>(null);
         }
 
-        let shop = this.props.shop;
+        let shop = this.props.elementPage.createService(ShoppingService); //this.props.shop;
         return shop.saveReceiptInfo(this.state.receiptInfo).then(data => {
             Object.assign(this.state.receiptInfo, data);
             this.setState(this.state);
@@ -137,7 +137,7 @@ class ReceiptEditPage extends React.Component<
 
         return [
             <header key="header">
-                {defaultNavBar({ title: '编辑地址' })}
+                {defaultNavBar(this.props.elementPage, { title: '编辑地址' })}
             </header>,
             <section key="view0">
                 <div className="container">

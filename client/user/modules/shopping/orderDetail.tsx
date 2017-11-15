@@ -25,7 +25,7 @@ export default function (page: chitu.Page) {
         render() {
             let order = this.state.order;
             return [
-                <header>{defaultNavBar({ title: '订单详情' })}</header>,
+                <header>{defaultNavBar(page, { title: '订单详情' })}</header>,
                 <section>
                     <div className="container order" style={{ paddingTop: 10 }}>
                         <div className="list">

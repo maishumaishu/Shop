@@ -10,9 +10,5 @@
             "scripthost",
             "es2015"
         ]
-    },
-    "include": [
-        "*.ts",
-        "../../typings/jquery.d.ts"
-    ]
+    }
 }   

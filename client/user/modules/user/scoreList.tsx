@@ -19,7 +19,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header key="header">
-                    {defaultNavBar({ title: '我的积分' })}
+                    {defaultNavBar(page, { title: '我的积分' })}
                 </header>,
                 <section key="view">
                     <div className="container">

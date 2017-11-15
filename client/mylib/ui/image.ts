@@ -9,22 +9,26 @@ namespace ui {
 
     let config = loadImageConfig;
 
-    type CanvasDraw = (ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) => void
-
+    export type CanvasDraw = (ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) => void
+    export type DrawOption = { fontSize?: number, bgColor?: string, textColor?: string };
     let draws = {
-        text: (imageText: string, options?: { fontSize: number }): CanvasDraw => {
+        text: (imageText: string, options?: DrawOption): CanvasDraw => {
 
             return (ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) => {
 
                 // let fontSize1 = Math.floor(canvasHeight / 3 * 0.8);
                 let fontSize = Math.floor((canvasWidth / imageText.length) * 0.6);
+                let bgColor = 'whitesmoke';
+                let textColor = '#999';
                 // let fontSize = Math.min(fontSize1, fontSize2);
 
                 options = Object.assign({
-                    fontSize
+                    fontSize,
+                    bgColor,
+                    textColor
                 }, options);
 
-                ctx.fillStyle = 'whitesmoke';
+                ctx.fillStyle = options.bgColor; //'whitesmoke';
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
                 // 设置字体
@@ -32,7 +36,7 @@ namespace ui {
                 // 设置对齐方式
                 ctx.textAlign = "left";
                 // 设置填充颜色
-                ctx.fillStyle = "#999";
+                ctx.fillStyle = options.textColor; //"#999";
 
                 let textWidth = fontSize * imageText.length;
                 let startX = Math.floor((canvasWidth - textWidth) * 0.5);
@@ -43,12 +47,15 @@ namespace ui {
         }
     };
 
-    function generateImageBase64(width: number, height: number, draw: CanvasDraw): string {
+    export function generateImageBase64(width: number, height: number, text: string, options?: DrawOption): string
+    export function generateImageBase64(width: number, height: number, draw: CanvasDraw): string
+    export function generateImageBase64(width: number, height: number, obj: CanvasDraw | string, options?: DrawOption): string {
         var canvas = document.createElement('canvas');
         canvas.width = width; //img_width;
         canvas.height = height; //img_height;
         var ctx = canvas.getContext('2d');
-        draw(ctx, width, height);
+        let draw = typeof obj == 'string' ? draws.text(obj, options) : obj;
+        draw(ctx, width, height)
 
         return canvas.toDataURL();
     }
@@ -77,7 +84,7 @@ namespace ui {
         if (!element) throw errors.argumentNull('element');
 
         let imageUrl = element.src || '';
-        if (imageUrl.indexOf('data:image/png;base64') == 0 ||  element['rendered']) {
+        if (imageUrl.indexOf('data:image/png;base64') == 0 || element['rendered']) {
             return;
         }
 

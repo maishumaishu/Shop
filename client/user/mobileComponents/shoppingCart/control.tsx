@@ -45,13 +45,12 @@ export class Header extends Control<any, { status: ControlStatus }> {
     }
     _render() {
         let { status } = this.state;
-        return defaultNavBar({
+        return defaultNavBar(this.elementPage, {
             left: (
                 status == 'edit' ? <button className="left-button" style={{ width: 'unset' }} onClick={() => this.cancle()}>
                     取消
                 </button> : null
             ),
-            showBackButton: false,
             title: '购物车',
             right:
                 <button className="right-button" style={{ width: 'unset' }}

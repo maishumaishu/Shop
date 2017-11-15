@@ -16,7 +16,7 @@ export default async function (page: chitu.Page) {
     let regionsPage: RegionsPage;
     ReactDOM.render(<RegionsPage provinces={provinces} shop={shop}
         currentProvince={province} currentCity={city} currentCounty={county}
-        ref={e => regionsPage = e || regionsPage} />, page.element,
+        ref={e => regionsPage = e || regionsPage} elementPage={page} />, page.element,
         () => {
             if (regionsPage != null)
                 regionsPage.onSelecteRegion = routeValues.selecteRegion;
@@ -43,7 +43,9 @@ interface RegiosPageState {
 
 interface RegiosPageProps extends React.Props<RegionsPage> {
     provinces: Region[], shop: ShoppingService,
-    currentProvince?: Region, currentCity?: Region, currentCounty?: Region,
+    currentProvince?: Region, currentCity?: Region,
+    currentCounty?: Region,
+    elementPage: chitu.Page
 }
 
 
@@ -138,7 +140,7 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
         return (
             <div>
                 <header>
-                    {defaultNavBar({ title: this.state.title })}
+                    {defaultNavBar(this.props.elementPage, { title: this.state.title })}
                 </header>
                 <section ref={(o: HTMLElement) => this.provincesView = o} style={{ transform: `translateX(${0 - activeIndex * 100}%)` }}>
                     <ul className="list-group">

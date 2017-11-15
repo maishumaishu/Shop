@@ -33,7 +33,7 @@ class Pages {
         shoppingCart: <PageData>{
             name: '*shoppingCart',
             showMenu: true,
-            className: 'shopping-shoppingCart'
+            className: 'shopping-shoppingCart',
             header: {
                 controls: [
                     { controlId: guid(), controlName: 'shoppingCart:Header' }
@@ -235,7 +235,7 @@ export class StationService extends Service {
         //     let styleControl = stylePageData.footer.controls[0];
         //     console.assert(styleControl != null && styleControl.controlName == 'style');
         //     pageData.footer.controls.push(styleControl);
-        //     // })
+        //     // })/home/maishu/projects/shop-cloud/trunk/Assemblies/packages/Microsoft.AspNet.WebApi.Core.5.2.3/lib/net45/System.Web.Http.dll
         // }
 
         let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
@@ -246,5 +246,10 @@ export class StationService extends Service {
         }
 
         return pageData;
+    }
+
+    store() {
+        let url = this.url('Store/Get');
+        return this.get<StoreInfo>(url);
     }
 }

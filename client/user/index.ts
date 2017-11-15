@@ -71,12 +71,9 @@ requirejs.config({
 });
 
 
-// define('build', function () {
-
-// })
-
 let references1 = ['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'];
 let references2 = ['build']
+define('build', function () { });
 requirejs(['build'], function () {
     requirejs(["css!content/font-awesome"]);
     requirejs(references1, function (React, ReactDOM, site) {
@@ -84,7 +81,8 @@ requirejs(['build'], function () {
         window['ReactDOM'] = ReactDOM;
         window['h'] = React.createElement;
 
-        ui.loadImageConfig.imageDisaplyText = "你好"
+        let storeName = localStorage.getItem(`${urlParams.appKey}_storeName`) || '';
+        ui.loadImageConfig.imageDisaplyText = storeName;
         ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
 
         site.app.run();

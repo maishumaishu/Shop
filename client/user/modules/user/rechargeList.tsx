@@ -40,7 +40,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header key="h">
-                    {defaultNavBar({
+                    {defaultNavBar(page, {
                         title: '充值记录',
                         right: <button onClick={() => this.charge()} className="right-button" style={{ width: 'unset' }}>充值</button>
                     })}

@@ -1,7 +1,7 @@
 import { defaultNavBar, app } from 'site';
 import { MobileBindingPageArguments } from 'modules/user/accountSecurity/mobileBinding';
 import { MemberService } from 'userServices/memberService';
-import { FormValidator, rules 　} 　from 'dilu';
+import { FormValidator, rules } from 'dilu';
 
 export default function (page: chitu.Page) {
     class IndexPage extends React.Component<{ userInfo: UserInfo }, { userInfo: UserInfo }>{
@@ -22,7 +22,7 @@ export default function (page: chitu.Page) {
             let userInfo = this.state.userInfo;
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '账户安全' })}
+                    {defaultNavBar(page, { title: '账户安全' })}
                 </header>,
                 <section key="v">
                     <div className="container">

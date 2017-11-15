@@ -2,25 +2,42 @@
 // import { Button, ImageBox } from 'common/controls';
 import { default as site } from 'site'
 import { StationService } from 'adminServices/station';
+import { imageUrl } from 'adminServices/service';
+import { FormValidator, rules } from 'dilu';
+
 export default async function (page: chitu.Page) {
-    // page.element.className = 'admin-pc';
+
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
     let station = page.createService(StationService);
 
-    class StationIndexPage extends React.Component<{ store: Store }, { store: Store }>{
+    class StationIndexPage extends React.Component<{ store: StoreInfo }, { store: StoreInfo }>{
+        private nameInput: HTMLInputElement;
+        private imageUpload: ImageUpload;
+        private validator: FormValidator;
+
         constructor(props) {
             super(props);
             this.state = { store: this.props.store };
         }
-        userClientUrl() {
+        async save() {
+            let isValid = await this.validator.check();
+            if (!isValid)
+                return Promise.reject({});
 
-        }
-        save() {
+            var data = await station.saveImage(this.imageUpload.state.src);
+            this.state.store.ImagePath = data._id;
             return station.saveStore(this.state.store);
+        }
+        componentDidMount() {
+            let { required } = rules;
+            this.validator = new FormValidator(
+                { element: this.nameInput, rules: [required()] }
+            )
         }
         render() {
             let { store } = this.state;
+
             return (
                 <div className="station-index">
                     <ul className="nav nav-tabs">
@@ -52,21 +69,30 @@ export default async function (page: chitu.Page) {
                     </ul>
                     <div className="clearfix">
                     </div>
-                    <br />
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <h4>基本信息</h4>
-                        </div>
-                    </div>
-                    <div className="row from-group">
-                        <div className="col-lg-4 col-md-4">
-                            <label className="col-lg-3">店铺名称*</label>
-                            <div className="col-lg-9">
-                                <input className="form-control" value={store.Name}
-                                    onChange={(e) => store.Name = (e.target as HTMLInputElement).value} />
+                    <div className="well" style={{ minHeight: 100 }}>
+                        <div className="row form-group">
+                            <div className="col-lg-12">
+                                <label className="col-md-4" style={{ width: 120 }}>店铺名称*</label>
+                                <div className="col-md-8" style={{ maxWidth: 300 }}>
+                                    <input className="form-control" name="店铺名称" value={store.Name}
+                                        onChange={(e) => {
+                                            store.Name = (e.target as HTMLInputElement).value;
+                                            this.setState(this.state);
+                                        }}
+                                        ref={(e: HTMLInputElement) => this.nameInput = e || this.nameInput} />
+                                </div>
                             </div>
                         </div>
+                        <div className="row form-group">
+                            <div className="col-lg-12">
+                                <label className="col-md-4" style={{ width: 120 }}>店铺图标</label>
+                                <div className="col-md-8" style={{ maxWidth: 300 }}>
+                                    <ImageUpload ref={e => this.imageUpload = e || this.imageUpload}
+                                        src={store.ImagePath ? imageUrl(store.ImagePath) : null} />
+                                </div>
+                            </div>
 
+                        </div>
                     </div>
 
                     {/* <div className="well summary">
@@ -99,4 +125,45 @@ export default async function (page: chitu.Page) {
 
     let store = await station.store();
     ReactDOM.render(<StationIndexPage store={store} />, page.element);
+}
+
+interface ImageUploadProps extends React.Props<ImageUpload> {
+    src?: string
+}
+interface ImageUploadState {
+    src: string
+}
+class ImageUpload extends React.Component<ImageUploadProps, ImageUploadState>{
+    private imageElement: HTMLImageElement;
+    private width = 200;
+    private height = 200;
+    constructor(props) {
+        super(props);
+
+        let emptyImage = ui.generateImageBase64(this.width, this.height, "请上传图片", { bgColor: 'white' })
+        this.state = { src: this.props.src || emptyImage };
+    }
+    private async onFileChanged(e) {
+        if (!e.files[0]) {
+            return;
+        }
+
+        let data = await ui.imageFileToBase64(e.files[0], { width: this.width, height: this.height });
+        this.state.src = data.base64;
+        this.setState(this.state);
+    }
+    render() {
+        let src = this.state.src;
+        return [
+            <img key="img" style={{ width: this.width, height: this.height }}
+                ref={(e: HTMLImageElement) => this.imageElement = e || this.imageElement}
+                src={src} />,
+            <input key="file" name="ImageUpload" type="file" id="ImageUpload" multiple={true}
+                style={{ position: 'absolute', top: 0, opacity: 0, height: '100%', width: '100%' }}
+                ref={(e: HTMLInputElement) => {
+                    if (!e) return;
+                    e.onchange = () => this.onFileChanged(e);
+                }} />
+        ]
+    }
 }

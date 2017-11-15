@@ -198,13 +198,13 @@ export class StationService extends Service {
     }
     //============================================================
     // 店铺
-    saveStore(store: Store) {
+    saveStore(store: StoreInfo) {
         let url = this.url('Store/Save');
         return this.postByJson(url, { store });
     }
     store() {
         let url = this.url('Store/Get');
-        return this.get<Store>(url);
+        return this.get<StoreInfo>(url);
     }
     //============================================================
 }

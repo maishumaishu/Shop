@@ -37,16 +37,16 @@ export default function (page: chitu.Page) {
             //         }
             //     }
             // });
-            let e = this.formElement;
+            let element = (name) => this.formElement.querySelector(`[name='${name}']`) as HTMLInputElement;
             let { required, matches } = rules;
             this.validator = new FormValidator(
-                { element: e["mobile"], rules: [required('请输入手机号码')] },
-                { element: e["verifyCode"], rules: [required('请输入验证码')] },
-                { element: e["password"], rules: [required('请输入密码')] },
+                { element: element("mobile"), rules: [required('请输入手机号码')] },
+                { element: element("verifyCode"), rules: [required('请输入验证码')] },
+                { element: element("password"), rules: [required('请输入密码')] },
                 {
-                    element: e["confirmPassword"], rules: [
+                    element: element("confirmPassword"), rules: [
                         required('请再次输入密码'),
-                        matches(e["password"], "两次输入的密码不匹配")
+                        matches(element("password"), "两次输入的密码不匹配")
                     ]
 
                 },
@@ -99,7 +99,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header>
-                    {defaultNavBar({ title: "用户注册" })}
+                    {defaultNavBar(page, { title: "用户注册" })}
                 </header>,
                 <section>
                     <div className="container">

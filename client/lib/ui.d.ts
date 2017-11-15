@@ -37,6 +37,14 @@ declare namespace ui {
         imageBaseUrl: string;
         imageDisaplyText: string;
     };
+    type CanvasDraw = (ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) => void;
+    type DrawOption = {
+        fontSize?: number;
+        bgColor?: string;
+        textColor?: string;
+    };
+    function generateImageBase64(width: number, height: number, text: string, options?: DrawOption): string;
+    function generateImageBase64(width: number, height: number, draw: CanvasDraw): string;
     type LoadImageOptions = {
         imageSize?: {
             width: number;

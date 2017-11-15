@@ -49,7 +49,7 @@ export default function (page: chitu.Page) {
             let { step } = this.state;
             return [
                 <header>
-                    {defaultNavBar({ title: '登录密码' })}
+                    {defaultNavBar(page, { title: '登录密码' })}
                 </header>,
                 <section>
                     <WizardComponent userInfo={this.props.userInfo} ref={(e) => this.wizard = e || this.wizard}>

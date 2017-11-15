@@ -26,7 +26,7 @@ export default function (page: chitu.Page) {
             let title = this.state.title;
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '发票信息' })}
+                    {defaultNavBar(page, { title: '发票信息' })}
                 </header>,
                 <footer key="f">
                     <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>

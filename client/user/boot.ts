@@ -67,16 +67,29 @@
 
 })();
 
+let urlParams: { code?: string, appKey?: string, state?: string } = {};
+if (location.search)
+    urlParams = parseUrlParams(location.search.substr(1));
+
+function parseUrlParams(query: string) {
+    let match,
+        pl = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
+
+    let urlParams = {};
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+
+    return urlParams;
+}
+
 /** 微信环境获取用户的 openid */
 (async function check() {
     var ua = navigator.userAgent.toLowerCase();
     let isWeiXin = (ua.match(/MicroMessenger/i) as any) == 'micromessenger';
     if (!isWeiXin)
         return;
-
-    let urlParams: { code?: string, appKey?: string, state?: string } = {};
-    if (location.search)
-        urlParams = parseUrlParams(location.search.substr(1));
 
     let openid = localStorage.getItem('openid');
     if (openid)
@@ -110,18 +123,7 @@
         history.pushState("", "", u);
     }
 
-    function parseUrlParams(query: string) {
-        let match,
-            pl = /\+/g,  // Regex for replacing addition symbol with a space
-            search = /([^&=]+)=?([^&]*)/g,
-            decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
 
-        let urlParams = {};
-        while (match = search.exec(query))
-            urlParams[decode(match[1])] = decode(match[2]);
-
-        return urlParams;
-    }
 
     function serviceUrl(path: string) {
         let { protocol } = location;
@@ -140,5 +142,15 @@
         let response = await fetch(url);
         return response.json();
     }
+
+})();
+
+(async function () {
+    let { protocol } = location;
+    let url = `${protocol}//service.alinq.cn/UserSite/Store/Get?application-key=${urlParams.appKey}`;
+    let response = await fetch(url);
+    let store = await response.json();
+    if (store != null && store.Name != null)
+        localStorage.setItem(`${urlParams.appKey}_storeName`, store.Name);
 
 })();

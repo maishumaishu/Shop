@@ -38,7 +38,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '手机绑定' })}
+                    {defaultNavBar(page, { title: '手机绑定' })}
                 </header>,
                 <section key="v">
                     <WizardComponent userInfo={this.props.userInfo}>

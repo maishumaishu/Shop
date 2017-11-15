@@ -33,7 +33,7 @@ export default function (page: chitu.Page) {
             let status = this.state.status;
             return [
                 <header>
-                    {defaultNavBar({ title: '我的优惠券' })}
+                    {defaultNavBar(page, { title: '我的优惠券' })}
                     <Tabs className="tabs" defaultActiveIndex={defaultIndex} onItemClick={(index) => this.activeItem(index)}
                         scroller={() => this.dataView} >
                         {statuses.map(o => (

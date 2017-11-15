@@ -1,20 +1,22 @@
 .summaryHeader { 
     // background: #535356;
-    padding: 10px;
-    
+    padding: 14px;
+    @width: 80px;
     .headerImage {
         // width: 100px,
         // height: 100px,
         img {
-            width: 90px;
-            height: 90px;
+            width: @width;
+            height: 80px;
         }
     }
 
     .headerContent {
-        margin-left: 100px;
+        margin-left: @width + 10px;
         color: white;
-
+        h4 {
+            margin-top: 6px;
+        }
         .item { 
             text-align: center;
             width: 33.3%;

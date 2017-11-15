@@ -13,7 +13,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '请选择优惠劵' })}
+                    {defaultNavBar(page, { title: '请选择优惠劵' })}
                 </header>,
                 <section key="v">
                     <hr />

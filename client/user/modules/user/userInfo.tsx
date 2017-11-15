@@ -120,7 +120,7 @@ export default async function (page: chitu.Page) {
 
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '用户信息' })}
+                    {defaultNavBar(page, { title: '用户信息' })}
                 </header>,
                 <section key="v">
                     <div className="container">

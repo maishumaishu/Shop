@@ -31,7 +31,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header key="header">
-                    {defaultNavBar({ title: "登录" })}
+                    {defaultNavBar(page, { title: "登录" })}
                 </header>,
                 <section key="view">
                     <form className="form-horizontal container"

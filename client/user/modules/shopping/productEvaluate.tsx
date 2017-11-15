@@ -56,7 +56,7 @@ export default function (page: chitu.Page) {
             let evaluation = this.state.evaluation || '';
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '商品评价' })}
+                    {defaultNavBar(page, { title: '商品评价' })}
                 </header>,
                 <footer key="f">
                     <div className="container" style={{ paddingTop: 10, paddingBottom: 10, height: 50 }}>
@@ -74,7 +74,7 @@ export default function (page: chitu.Page) {
                         <div className="row">
                             <div className="col-xs-4">
                                 <img src={this.props.productImageUrl}
-                                    className="img-responsive img-thumbnail"/>
+                                    className="img-responsive img-thumbnail" />
                             </div>
                             <div className="col-xs-8" style={{ paddingLeft: 0 }}>
                                 <label>评分</label>

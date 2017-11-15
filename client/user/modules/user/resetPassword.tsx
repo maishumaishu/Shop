@@ -88,7 +88,7 @@ export default function (page: chitu.Page) {
         render() {
             return [
                 <header>
-                    {defaultNavBar({ title: "登录密码" })}
+                    {defaultNavBar(page, { title: "登录密码" })}
                 </header>,
                 <section>
                     <div className="container">

@@ -13,7 +13,7 @@ export default function (page: chitu.Page) {
             let coupons = this.props.coupons;
             return [
                 <header key="h">
-                    {defaultNavBar({ title: '店铺优惠劵' })}
+                    {defaultNavBar(page, 　{ title: '店铺优惠劵' })}
                 </header>,
                 <section key="v">
                     {coupons.length > 0 ?

@@ -23,9 +23,7 @@ export default function (page: chitu.Page) {
             let order = this.props.order;
             return [
                 <header key="h">
-                    {defaultNavBar({
-                        title: '订单概况'
-                    })}
+                    {defaultNavBar(page, { title: '订单概况' })}
                 </header>,
                 <section key="v">
                     <div className="container">
