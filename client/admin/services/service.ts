@@ -1,5 +1,7 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
+import { urlParams } from 'share/common';
+export { guid, imageUrl } from 'share/common';
 
 let username = new chitu.ValueStore<string>();
 username.value = localStorage['username'];
@@ -11,39 +13,7 @@ username.add((value) => {
 // let local_service_host = 'service.alinq.cn'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
 let remote_service_host = 'service.alinq.cn';
 
-export function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
 
-export function imageUrl(path: string, width?: number) {
-    if (!path) return path;
-    if (path.startsWith("data:image")) {
-        return path;
-    }
-    
-    let HTTP = 'http://'
-    if (path.startsWith(HTTP)) {
-        path = path.substr(HTTP.length);
-        let index = path.indexOf('/');
-        console.assert(index > 0);
-        path = path.substr(index);
-    }
-    else if (path[0] != '/') {
-        path = '/' + path;
-    }
-
-    let url = 'https://image.alinq.cn' + path;
-    if (width) {
-        url = url + '?width=' + width;
-    }
-    return url;
-}
 
 function parseUrlParams(query: string) {
     let match,
@@ -111,8 +81,7 @@ export class Service extends chitu.Service {
 
 
     static get appToken() {
-        let search = window.location.search || '';
-        return search.substr(1);
+        return urlParams.appKey;
     }
 
     static get storeId() {

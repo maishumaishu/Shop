@@ -1,11 +1,10 @@
 import * as chitu from 'maishu-chitu';
-
+import { urlParams } from 'share/common';
+export { guid, imageUrl, urlParams, parseUrlParams } from 'share/common';
 
 let userToken = new chitu.ValueStore<string>(localStorage.getItem('userToken'));
 
-export let urlParams: { code?: string, appKey?: string, state?: string } = {};
-if (location.search)
-    urlParams = parseUrlParams(location.search.substr(1));
+
 
 
 let appToken: string;
@@ -40,18 +39,6 @@ export let config = {
 let protocol = location.protocol;
 let defaultHost = 'service.alinq.cn';
 
-export function parseUrlParams(query: string) {
-    let match,
-        pl = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
-
-    let urlParams = {};
-    while (match = search.exec(query))
-        urlParams[decode(match[1])] = decode(match[2]);
-
-    return urlParams;
-}
 
 export abstract class Service extends chitu.Service {
     static error = new chitu.Callback<Service, Error>();
@@ -84,46 +71,46 @@ export abstract class Service extends chitu.Service {
     }
 }
 
-export function imageUrl(path: string, width?: number, height?: number) {
-    if (!path) return path;
-    if (path.startsWith('data:image'))
-        return path;
+// export function imageUrl(path: string, width?: number, height?: number) {
+//     if (!path) return path;
+//     if (path.startsWith('data:image'))
+//         return path;
 
-    let HTTP = 'http://'
-    if (path.startsWith(HTTP)) {
-        path = path.substr(HTTP.length);
-        let index = path.indexOf('/');
-        console.assert(index > 0);
-        path = path.substr(index);
-    }
-    else if (path[0] != '/') {
-        path = '/' + path;
-    }
+//     let HTTP = 'http://'
+//     if (path.startsWith(HTTP)) {
+//         path = path.substr(HTTP.length);
+//         let index = path.indexOf('/');
+//         console.assert(index > 0);
+//         path = path.substr(index);
+//     }
+//     else if (path[0] != '/') {
+//         path = '/' + path;
+//     }
 
-    let urlParams = new Array<{ name: string, value: string }>();
-    let url = `${protocol}//image.alinq.cn` + path;
-    if (width) {
-        // url = url + '?width=' + width;
-        urlParams.push({ name: 'width', value: width.toString() });
-    }
+//     let urlParams = new Array<{ name: string, value: string }>();
+//     let url = `${protocol}//image.alinq.cn` + path;
+//     if (width) {
+//         // url = url + '?width=' + width;
+//         urlParams.push({ name: 'width', value: width.toString() });
+//     }
 
-    if (navigator.userAgent.indexOf('chrome') < 0) {
-        urlParams.push({ name: 'type', value: 'jpeg' })
-    }
+//     if (navigator.userAgent.indexOf('chrome') < 0) {
+//         urlParams.push({ name: 'type', value: 'jpeg' })
+//     }
 
-    if (urlParams.length > 0) {
-        url = url + '?' + urlParams.map(o => `${o.name}=${o.value}`).join('&');
-    }
+//     if (urlParams.length > 0) {
+//         url = url + '?' + urlParams.map(o => `${o.name}=${o.value}`).join('&');
+//     }
 
-    return url;
-}
+//     return url;
+// }
 
-export function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
+// export function guid() {
+//     function s4() {
+//         return Math.floor((1 + Math.random()) * 0x10000)
+//             .toString(16)
+//             .substring(1);
+//     }
+//     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+//         s4() + '-' + s4() + s4() + s4();
+// }
