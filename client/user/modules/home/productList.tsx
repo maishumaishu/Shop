@@ -5,7 +5,7 @@ import { DataList, dataList } from 'components/dataList';
 import { Tabs } from 'components/tabs';
 
 
-export default function (page: chitu.Page) {
+export default async function (page: chitu.Page) {
 
     class ProductListHeader extends React.Component<{ title: string }, {}>{
         render() {
@@ -110,12 +110,13 @@ export default function (page: chitu.Page) {
         ref={e => productListView = e || productListView} />, page.element);
 
     page.active.add(async () => {
-        if (productListView.state.categoryId == page.routeData.values.categoryId)
+        categoryId = page.routeData.values.categoryId;
+        if (productListView.state.categoryId == categoryId)
             return;
 
         let category = await shop.category(categoryId);
         productListView.state.title = category.Name;
-        productListView.state.categoryId = page.routeData.values.categoryId;
+        productListView.state.categoryId = categoryId;
         productListView.setState(productListView.state);
     })
 }

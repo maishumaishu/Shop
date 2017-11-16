@@ -122,7 +122,7 @@ var root: MySiteMapNode = {
                 }
             ]
         },
-        { pageName: 'shopping.shoppingCart', title: '用户中心' },
+        { pageName: 'shopping.shoppingCart', title: '购物车' },
         { pageName: 'home.class', title: '商品类别' },
         {
             pageName: 'user.index',

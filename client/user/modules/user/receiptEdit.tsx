@@ -69,13 +69,13 @@ class ReceiptEditPage extends React.Component<
         //     RegionId: { rules: ['required'], display: '地区', messages: { required: '请选择地区' } },
         // });
         let { required } = rules;
-        let e = this.formElement;
+        let e = (name: string) => this.formElement.querySelector(`[name='${name}']`) as HTMLInputElement;
         this.validator = new FormValidator(
-            { element: e["Name"], rules: [required("请输入地址名称")] },
-            { element: e["Consignee"], rules: [required('请输入收货人姓名')] },
-            { element: e["Mobile"], rules: [required('请输入手机号码')] },
-            { element: e["Address"], rules: [required('请输入详细地址')] },
-            { element: e["RegionId"], rules: [required('请选择地区')] },
+            { element: e("Name"), rules: [required("请输入地址名称")] },
+            { element: e("Consignee"), rules: [required('请输入收货人姓名')] },
+            { element: e("Mobile"), rules: [required('请输入手机号码')] },
+            { element: e("Address"), rules: [required('请输入详细地址')] },
+            { element: e("RegionId"), rules: [required('请选择地区')] },
         )
 
     }
@@ -189,7 +189,7 @@ class ReceiptEditPage extends React.Component<
                                 </span>
                                 <i className="icon-chevron-right"></i> */}
                                 <input type="text" className="form-control" placeholder="请选择地区" value={region} />
-                                <input type="hidden" value={receiptInfo.RegionId || ''} readOnly={true} />
+                                <input type="hidden" name="RegionId" value={receiptInfo.RegionId || ''} readOnly={true} />
                             </div>
                         </div>
                         <div className="form-group">

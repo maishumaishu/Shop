@@ -1,6 +1,7 @@
 import { componentsDir, Control, component, ControlProps } from 'mobileComponents/common';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { ShoppingService } from 'userServices/shoppingService';
+import { Service } from 'userServices/service';
 import { userData } from 'userServices/userData';
 import { imageUrl, guid } from 'userServices/service';
 
@@ -513,7 +514,14 @@ export default class ProductControl extends Control<Props, State>{
 
             </div>,
             <ProductPanel key="panel" ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.shopping} />,
-            <div key="content" className="container" style={{ background: 'whitesmoke' }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
+            <div key="content" className="product-control content"
+                style={{ background: 'whitesmoke' }} dangerouslySetInnerHTML={{ __html: this.state.content }}
+                ref={(e: HTMLElement) => {
+                    if (!e) return;
+                    e.querySelectorAll('img').forEach(img => {
+                        ui.renderImage(img, { imageText: Service.storeName });
+                    });
+                }}>
             </div>
 
         ];

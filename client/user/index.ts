@@ -70,41 +70,17 @@ requirejs.config({
     }
 });
 
-
-let references1 = ['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'];
-let references2 = ['build']
-define('build', function () { });
+// define('build', function () { });
 requirejs(['build'], function () {
     requirejs(["css!content/font-awesome"]);
-    requirejs(references1, function (React, ReactDOM, site) {
-        window['React'] = React;
-        window['ReactDOM'] = ReactDOM;
-        window['h'] = React.createElement;
+    requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'],
+        function (React, ReactDOM, site) {
+            window['React'] = React;
+            window['ReactDOM'] = ReactDOM;
+            window['h'] = React.createElement;
 
-        ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
+            ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
 
-        site.app.run();
-    })
+            site.app.run();
+        })
 })
-
-
-// import * as React from 'react';
-// import * as ReactDOM from 'react-dom';
-// import 'babel-polyfill';
-
-// import * as chitu from 'maishu-chitu';
-// import { app } from 'site';
-
-// // import 'requirejs'
-// // import 'require-css';
-
-// window['React'] = React;
-// window['ReactDOM'] = ReactDOM;
-// window['chitu'] = chitu;
-
-// window['h'] = React.createElement;
-// // window['requirejs'] = window['require'];
-
-
-
-// app.run();
