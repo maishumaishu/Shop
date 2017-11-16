@@ -266,7 +266,7 @@ class ProductCount extends React.Component<
             <div className="productCout pull-right">
                 <i className="icon-plus-sign pull-right" onClick={() => this.increaseCount(product)} />
                 {count ? [
-                    <input key={0} className="pull-right" value={`${count}`}
+                    <input type="text" key={0} className="pull-right" value={`${count}`}
                         onChange={(e) => {
                             if (!e) return;
                             var value = Number.parseInt((e.target as HTMLInputElement).value);

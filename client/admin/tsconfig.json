@@ -41,8 +41,8 @@
         "../lib/typings/*.d.ts",
         "../lib/typings/**/*.d.ts",
 
-        "../share/*.d.ts",
-        "../share/**/*.d.ts",
+        "../share/*.ts",
+        "../share/**/*.ts",
 
         "references.d.ts",
 

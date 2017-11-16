@@ -27,6 +27,7 @@ declare namespace chitu {
         readonly actionPath: string;
     }
     class Application {
+        static skipStateName: string;
         pageCreated: Callback<Application, Page>;
         protected pageType: PageConstructor;
         protected pageDisplayType: PageDisplayConstructor;
@@ -47,7 +48,6 @@ declare namespace chitu {
         readonly currentPage: Page;
         readonly pages: Array<Page>;
         protected createPage(routeData: RouteData): Page;
-        private on_pageError(app, error);
         protected createPageElement(routeData: chitu.RouteData): HTMLElement;
         protected hashchange(): void;
         run(): void;
@@ -135,7 +135,7 @@ declare namespace chitu {
         static tagName: string;
         error: Callback<Page, Error>;
         load: Callback<this, null>;
-        loadComplete: Callback<this, null>;
+        loadComplete: Callback<this, any>;
         showing: Callback<this, null>;
         shown: Callback<this, null>;
         hiding: Callback<this, null>;
@@ -191,16 +191,16 @@ declare namespace chitu {
         };
         constructor();
         ajax<T>(url: string, options: RequestInit): Promise<T>;
-        getByJson<T>(url: string, data?: any): Promise<T>;
-        postByJson<T>(url: string, data?: Object): Promise<T>;
-        deleteByJson<T>(url: string, data?: Object): Promise<T>;
-        putByJson<T>(url: string, data?: Object): Promise<T>;
-        getByJson<T>(url: string, data?: any): Promise<T>;
-        postByJson<T>(url: string, data?: any): Promise<T>;
-        putByJson<T>(url: string, data?: any): Promise<T>;
-        deleteByJson<T>(url: string, data?: any): Promise<T>;
-        private ajaxByForm<T>(url, data, method);
-        private ajaxByJSON<T>(url, data, method);
+        protected getByJson<T>(url: string, data?: any): Promise<T>;
+        protected postByJson<T>(url: string, data?: Object): Promise<T>;
+        protected deleteByJson<T>(url: string, data?: Object): Promise<T>;
+        protected putByJson<T>(url: string, data?: Object): Promise<T>;
+        protected get<T>(url: string, data?: any): Promise<T>;
+        protected post<T>(url: string, data?: any): Promise<T>;
+        protected put<T>(url: string, data?: any): Promise<T>;
+        protected delete<T>(url: string, data?: any): Promise<T>;
+        protected ajaxByForm<T>(url: string, data: Object, method: string): Promise<T>;
+        protected ajaxByJSON<T>(url: string, data: Object, method: string): Promise<T>;
     }
 }
 

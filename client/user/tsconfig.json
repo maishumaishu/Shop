@@ -45,11 +45,8 @@
         "../lib/typings/require.d.ts",
         "../lib/*.d.ts",
 
-        // "../client/mylib/*.ts",
-
-        // "../admin/adminServices/*",
-
-        "../share/models/*",
+        "../share/*.ts",
+        "../share/**/*.ts",
 
         "*.tsx",
         "**/*.tsx",
