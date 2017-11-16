@@ -7,6 +7,7 @@ import { Editor, EditorProps } from 'mobileComponents/editor';
 import { guid, StationService } from 'adminServices/station';
 import { StationService as UserStation } from 'userServices/stationService';
 import { PropTypes } from 'prop-types';
+import { app as userApp } from 'user/application';
 
 import * as ui from 'ui';
 
@@ -30,6 +31,7 @@ export interface State {
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
+    private virtualMobile: VirtualMobile;
     private editorsElement: HTMLElement;
     private currentEditor: HTMLElement;
     private allContainer: HTMLElement;
@@ -108,14 +110,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             let editorReactElement = React.createElement(editorType, { control });
             ReactDOM.render(editorReactElement, editorElement);
         })
-    }
-
-    componentDidMount() {
-        $(this.allContainer).find('li').draggable({
-            connectToSortable: $(this.element).find("section"),//PageView.tagName
-            helper: "clone",
-            revert: "invalid"
-        });
     }
 
     save() {
@@ -240,6 +234,23 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         open(`#station/preView?pageId=${pageId}`, ':blank');
     }
 
+    renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
+        console.assert(screenElement != null);
+
+        let emptyPage = userApp.createEmptyPage(screenElement);
+        ReactDOM.render(<MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
+            elementPage={emptyPage}
+            designTime={{
+                controlSelected: (a, b) => this.selecteControl(a, b)
+            }} />, screenElement);
+
+        $(this.allContainer).find('li').draggable({
+            connectToSortable: $(this.element).find("section"),
+            helper: "clone",
+            revert: "invalid"
+        });
+    }
+
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
@@ -250,12 +261,19 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         return (
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
-                    <VirtualMobile >
-                        <MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
-                            elementPage={this.props.elementPage}
-                            designTime={{
-                                controlSelected: (a, b) => this.selecteControl(a, b)
-                            }} />
+                    <VirtualMobile ref={(e) => {
+                        if (!e) return;
+                        this.virtualMobile = e;
+
+                        // let routeData = userApp.parseRouteString("");
+
+                        setTimeout(() => {
+                            this.renederVirtualMobile(e.screenElement, pageData);
+
+                        }, 100);
+
+                    }} >
+
                         {children}
                     </VirtualMobile>
                 </div>

@@ -4,14 +4,14 @@ requirejs(['css!content/devices.css']);
 
 
 export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {}>{
-    private screenElement: HTMLElement;
+    private _screenElement: HTMLElement;
     constructor(props) {
         super(props);
     }
 
-    static getInstanceByElement(element: HTMLElement): VirtualMobile {
-        return (element as any).mobilePage;
-    }
+    // static getInstanceByElement(element: HTMLElement): VirtualMobile {
+    //     return (element as any).mobilePage;
+    // }
 
     async createControlInstance(controlId: string, controlName: string, element: HTMLElement, controlData?: any) {
         let controlType = await this.getControlType(controlName);
@@ -36,6 +36,10 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
         // }
     }
 
+    get screenElement() {
+        return this._screenElement;
+    }
+
     render() {
         let children = React.Children.toArray(this.props.children) || [];
         return (
@@ -49,8 +53,8 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
                 <div className="screen mobile-page"
                     ref={(e: HTMLElement) => {
                         if (!e) return;
-                        this.screenElement = e;
-                        (e as any).mobilePage = this;
+                        this._screenElement = e;
+                        // (e as any).mobilePage = this;
                     }}>
                     {children}
                 </div>

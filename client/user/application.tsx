@@ -32,6 +32,20 @@ export class Application extends BaseApplication {
         return routeData;
     }
 
+    private emtpyPageElement: HTMLElement;
+    createEmptyPage(element: HTMLElement) {
+        if (!element) throw new Error("argument element is null.");
+
+        this.emtpyPageElement = element;
+        define("modules/empty", function () {
+            return "";
+        })
+
+        let routeData = this.parseRouteString("empty");
+        let page = super.createPage(routeData) as BasePage;
+        return page;
+    }
+
     private styleloaded: boolean;
     protected createPage(routeData: chitu.RouteData) {
         let page = super.createPage(routeData) as BasePage;
@@ -64,6 +78,9 @@ export class Application extends BaseApplication {
     // }
 
     protected createPageElement(routeData: chitu.RouteData) {
+        if (routeData.routeString == 'empty')
+            return this.emtpyPageElement;
+
         let element = document.createElement(chitu.Page.tagName);
         element.className = routeData.pageName.split('.').join('-') + " mobile-page";
         if (location.pathname.endsWith('preview.html')) {
@@ -150,6 +167,6 @@ var root: MySiteMapNode = {
 }
 
 
-export let app: Application = window["app"] = window["app"] || new Application({
+export let app: Application = window["user-app"] = window["user-app"] || new Application({
     siteMap: { root }
 });
