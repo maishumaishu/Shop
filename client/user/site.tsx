@@ -30,7 +30,7 @@ export function defaultNavBar(elementPage: chitu.Page, options?: { title?: strin
     if (isWeixin) {
         return weixinNavheader(elementPage, options);
     }
-
+    document.title = options.title || "";
     options = options || {};
     let title = options.title || '';
     let className = elementPage.element.className;

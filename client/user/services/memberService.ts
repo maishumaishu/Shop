@@ -12,7 +12,7 @@ export class MemberService extends Service {
     userInfo(): Promise<UserInfo> {
         let url1 = this.url('Member/CurrentUserInfo');
         let url2 = `user/userInfo`;
-        return Promise.all([this.get<UserInfo>(url1), this.get<{ mobile }>(url2)])
+        return Promise.all([this.getByJson<UserInfo>(url1), this.getByJson<{ mobile }>(url2)])
             .then((data) => {
                 data[0].Mobile = data[1].mobile;
                 return data[0];
@@ -21,7 +21,7 @@ export class MemberService extends Service {
 
     saveUserInfo(userInfo): Promise<any> {
         let url = this.url('Member/SaveUserInfo');
-        return this.put(url, userInfo);
+        return this.putByJson(url, userInfo);
     }
 
     // logout() {
@@ -31,12 +31,12 @@ export class MemberService extends Service {
     sentVerifyCode(mobile: string, type: VerifyCodeType): Promise<{ smsId: string }> {
         console.assert(mobile != null);
         let url = `sms/sendVerifyCode`;
-        return this.get(url, { mobile, type });
+        return this.getByJson(url, { mobile, type });
     }
 
     checkVerifyCode(smsId: string, verifyCode: string) {
         let url = `sms/checkVerifyCode`;
-        return this.get(url, { smsId, verifyCode });
+        return this.getByJson(url, { smsId, verifyCode });
     }
 
 
@@ -60,7 +60,7 @@ export class MemberService extends Service {
 
     login(username: string, password: string): Promise<{ token: string, userId: string }> {
         let url = `user/login`;
-        return this.post<{ token: string, userId: string }>(url, { username, password }).then((result) => {
+        return this.postByJson<{ token: string, userId: string }>(url, { username, password }).then((result) => {
             tokens.userToken.value = result.token;
             return result;
         });
@@ -68,7 +68,7 @@ export class MemberService extends Service {
 
     resetPassword(mobile: string, password: string, smsId: string, verifyCode: string) {
         let url = `user/resetPassword`;
-        return this.put(url, { mobile, password, smsId, verifyCode }).then(data => {
+        return this.putByJson(url, { mobile, password, smsId, verifyCode }).then(data => {
             debugger;
             return data;
         });
@@ -76,7 +76,7 @@ export class MemberService extends Service {
 
     changePassword(password: string, smsId: string, verifyCode: string) {
         let url = `user/changePassword`;
-        return this.put(url, { password, smsId, verifyCode }).then(data => {
+        return this.putByJson(url, { password, smsId, verifyCode }).then(data => {
             debugger;
             return data;
         });
@@ -84,7 +84,7 @@ export class MemberService extends Service {
 
     changeMobile(mobile: string, smsId: string, verifyCode: string) {
         let url = `user/changeMobile`;
-        return this.put(url, { mobile, smsId, verifyCode });
+        return this.putByJson(url, { mobile, smsId, verifyCode });
     }
 
 }

@@ -31,11 +31,11 @@ export class ActivityService extends Service {
     addActivity(item) {
         // let url = baseUrl + 'AddActivity';
         let url = this.url('SaveActivity');
-        return this.post(url, item);
+        return this.postByJson(url, item);
     }
     updateActivity(item) {
         let url = this.url('SaveActivity');
-        return this.post(url, item);
+        return this.postByJson(url, item);
     }
     getActivity(id: string): Promise<any> {
         let url = this.url('GetActivity');//baseUrl + 'GetActivity'
@@ -57,14 +57,14 @@ export class ActivityService extends Service {
             type: type,
             method: method
         };
-        return this.post<{ Id: string }>(url, data);
+        return this.postByJson<{ Id: string }>(url, data);
     }
 
     deletePromotion(id) {
         // return $.ajax({ url: baseUrl + 'DeletePromotion', method: 'post', data: { id: id } });
         let url = this.url('DeletePromotion');
         let data = { id };
-        return this.delete(url, data);
+        return this.deleteByJson(url, data);
     }
     promotions(activityId) {
         /// <returns type="jQuery.Deferred"/>
@@ -95,7 +95,7 @@ export class ActivityService extends Service {
         }
 
         let url = this.url('AddRangeRule');
-        return this.post<{ Id: string }>(url, data);
+        return this.postByJson<{ Id: string }>(url, data);
     }
     deleteRangeRule(id) {
         /// <returns type="jQuery.Deferred"/>
@@ -107,7 +107,7 @@ export class ActivityService extends Service {
         //     }
         // });
         let url = this.url('DeleteRangeRule');
-        return this.delete(url, { id });
+        return this.deleteByJson(url, { id });
     }
     addContentRule(levelValue, givenType, givenValue, promotionId, description) {
         // return $.ajax({
@@ -122,7 +122,7 @@ export class ActivityService extends Service {
         //     }
         // });
         let url = this.url('AddContentRule');
-        return this.post<{ Id: string }>(url, {
+        return this.postByJson<{ Id: string }>(url, {
             levelValue: levelValue,
             givenType: givenType,
             givenValue: givenValue,
@@ -139,7 +139,7 @@ export class ActivityService extends Service {
         //     }
         // });
         let url = this.url('DeleteContentRule');
-        return this.delete(url, { id });
+        return this.deleteByJson(url, { id });
     }
     changeCollectionType(ruleId, type) {
         /// <returns type="jQuery.Deferred"/>
@@ -152,7 +152,7 @@ export class ActivityService extends Service {
         //     }
         // });
         let url = this.url('ChangeCollectionType');
-        return this.post(url, { ruleId, type });
+        return this.postByJson(url, { ruleId, type });
     }
     changeIsAll(promotionId, isAll) {
         // return $.ajax({
@@ -164,7 +164,7 @@ export class ActivityService extends Service {
         //     }
         // });
         let url = this.url('ChangeIsAll');
-        return this.post(url, { promotionId, isAll });
+        return this.postByJson(url, { promotionId, isAll });
     }
     updateActivityPromotions(activityId: string, promotions: Array<Promotion>) {
         let url = this.url('UpdateActivityPromotions');

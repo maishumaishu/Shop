@@ -13,20 +13,20 @@ export class AccountService extends Service {
     // }
 
     balanceDetails(): Promise<BalanceDetail[]> {
-        return this.get<BalanceDetail[]>(this.url('Account/GetBalanceDetails'), {});
+        return this.getByJson<BalanceDetail[]>(this.url('Account/GetBalanceDetails'), {});
     }
 
     scoreDetails(): Promise<ScoreDetail[]> {
-        return this.get<ScoreDetail[]>(this.url('Account/GetScoreDetails'), {});
+        return this.getByJson<ScoreDetail[]>(this.url('Account/GetScoreDetails'), {});
     }
 
     account(): Promise<Account> {
-        return this.get<Account>(this.url('Account/GetAccount'));
+        return this.getByJson<Account>(this.url('Account/GetAccount'));
     }
 
     payOrder(orderId: string, amount: number) {
         let url = this.url('Account/PayOrder');
-        return this.put(url, { orderId, amount });
+        return this.putByJson(url, { orderId, amount });
     }
 }
 

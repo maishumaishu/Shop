@@ -10,7 +10,7 @@ export class ShoppingService extends Service {
     product(productId: string) {
         let url = Service.config.shopUrl + 'Product/GetProduct';
         let data = { productId: productId };
-        return this.get<Product>(url, data).then((data) => {
+        return this.getByJson<Product>(url, data).then((data) => {
             data.Fields = data.Fields || [];
             data.Arguments = data.Arguments || [];
 
@@ -19,7 +19,7 @@ export class ShoppingService extends Service {
     }
     products(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
-        return this.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
+        return this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args);
     }
     productsByIds(productIds: string[]) {
         var url = this.url('Product/GetProductsByIds');
@@ -42,7 +42,7 @@ export class ShoppingService extends Service {
         if (searchText)
             args['searchText'] = encodeURI(searchText);
 
-        return this.get<any>(url, args).then(function (result) {
+        return this.getByJson<any>(url, args).then(function (result) {
             for (var i = 0; i < result.DataItems.length; i++) {
                 // result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);
             }
@@ -53,7 +53,7 @@ export class ShoppingService extends Service {
     productChildren(parentId: string) {
         var url = this.url('Product/GetProducts');
         var args = { filter: `ParentId == Guid"${parentId}"` } as wuzhui.DataSourceSelectArguments;
-        return this.get<wuzhui.DataSourceSelectResult<Product>>(url, args);
+        return this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args);
     }
     commonProduct(product) {
         alert(product.Id());
@@ -89,7 +89,7 @@ export class ShoppingService extends Service {
     categories() {
         let url = this.url('Product/GetProductCategories');
 
-        return this.get<Category[]>(url);
+        return this.getByJson<Category[]>(url);
     }
     addCategory(item: Category) {
         let url = this.url('Product/AddProductCategory');
@@ -107,7 +107,7 @@ export class ShoppingService extends Service {
     // 品牌
     brands(args?: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Product/GetBrands');
-        return this.get<wuzhui.DataSourceSelectResult<Brand>>(url, args);
+        return this.getByJson<wuzhui.DataSourceSelectResult<Brand>>(url, args);
         // .then(o => {
         //     return o.dataItems;
         // });
@@ -131,11 +131,11 @@ export class ShoppingService extends Service {
     }
     getProductStocks(productIds: string[]) {
         let url = this.url('Product/GetProductStocks');
-        return this.get<Array<{ ProductId: string, Quantity: number }>>(url, { productIds: productIds });
+        return this.getByJson<Array<{ ProductId: string, Quantity: number }>>(url, { productIds: productIds });
     }
     getBuyLimitedNumbers(productIds: string[]) {
         let url = this.url('Product/GetBuyLimitedNumbers');
-        return this.get<Array<{ ProductId: string, LimitedNumber: number }>>(url, { productIds: productIds });
+        return this.getByJson<Array<{ ProductId: string, LimitedNumber: number }>>(url, { productIds: productIds });
     }
     buyLimited(productId, quantity) {
         let url = this.url('Product/SetBuyLimitedQuantity');
@@ -151,14 +151,14 @@ export class ShoppingService extends Service {
     // 优惠劵
     coupon(id) {
         let url = this.url('Coupon/GetCoupon');
-        return this.get<Coupon>(url, { id }).then((c) => {
+        return this.getByJson<Coupon>(url, { id }).then((c) => {
             c.Ranges = c.Ranges || [];
             return c;
         });
     }
     coupons() {
         let url = this.url('Coupon/GetCoupons');
-        return this.get<Coupon[]>(url);
+        return this.getByJson<Coupon[]>(url);
     }
     private addCoupon(coupon: Coupon) {
         let url = this.url('Coupon/AddCoupon');
@@ -181,7 +181,7 @@ export class ShoppingService extends Service {
     }
     couponCodes(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Coupon/GetCouponCodes');
-        return this.get<wuzhui.DataSourceSelectResult<any>>(url, args).then(result => {
+        return this.getByJson<wuzhui.DataSourceSelectResult<any>>(url, args).then(result => {
             result.dataItems.forEach(o => {
                 if (o.UsedDateTime)
                     o.UsedDateTime = new Date(o.UsedDateTime);
@@ -198,15 +198,15 @@ export class ShoppingService extends Service {
     }
     //===================================================
     getDefineProperties(defineId) {
-        return this.get('Product/GetDefineProperties', { defineId: defineId });
+        return this.getByJson('Product/GetDefineProperties', { defineId: defineId });
     }
     getProductArguments(argumentId) {
-        return this.get('Product/GetProductArguments', { argumentId: argumentId });
+        return this.getByJson('Product/GetProductArguments', { argumentId: argumentId });
     }
     //================================================================
     // 运费
     freightSolutions() {
-        return this.get<Array<FreightSolution>>(this.url('Freight/GetFreightSolutions'));
+        return this.getByJson<Array<FreightSolution>>(this.url('Freight/GetFreightSolutions'));
     }
     deleteFreightSolution(dataItem) {
         return this.deleteByJson(this.url('Freight/DeleteFreightSolution'), dataItem);
@@ -216,7 +216,7 @@ export class ShoppingService extends Service {
     }
     regionFreights(solutionId) {
         let url = `${Service.config.shopUrl}Freight/GetRegionFreights`
-        return this.get<Array<RegionFreight>>(url, { solutionId: solutionId });
+        return this.getByJson<Array<RegionFreight>>(url, { solutionId: solutionId });
     }
     setRegionFreight(id, freight, freeAmount) {
         let url = this.url('Freight/SetRegionFreight');
@@ -224,7 +224,7 @@ export class ShoppingService extends Service {
     }
     productFreights(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Freight/GetProductFreights');
-        return this.get<wuzhui.DataSourceSelectResult<ProductFreight>>(url, args);
+        return this.getByJson<wuzhui.DataSourceSelectResult<ProductFreight>>(url, args);
     }
     addProductFreight(productId: string, solutionId: string) {
         let url = this.url('Freight/AddProductFreight');
@@ -232,7 +232,7 @@ export class ShoppingService extends Service {
     }
     cityFreight() {
         let url = this.url('Freight/GetCityFreight');
-        return this.get<CityFreight>(url);
+        return this.getByJson<CityFreight>(url);
     }
     updateCityFreight(item: CityFreight) {
         let url = this.url('Freight/UpdateCityFreight');
@@ -259,7 +259,7 @@ export class ShoppingService extends Service {
     }
     orders(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Order/GetOrders');
-        return this.get<wuzhui.DataSourceSelectResult<Order>>(url, args).then(result => {
+        return this.getByJson<wuzhui.DataSourceSelectResult<Order>>(url, args).then(result => {
             result.dataItems.forEach(c => c.StatusText = this.orderStatusText(c.Status));
             return result;
         });

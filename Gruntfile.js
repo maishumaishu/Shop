@@ -33,10 +33,10 @@ module.exports = function (grunt) {
             www: {
                 options: {
                     // 服务器端口号
-                    port: 9026,
+                    port: 2626,
                     // 服务器地址(可以使用主机名localhost，也能使用IP)
-                    hostname: '192.168.1.9',
-                    // hostname: '127.0.0.1',
+                    // hostname: '192.168.1.9',
+                    hostname: '127.0.0.1',
                     keepalive: true,
                     livereload: 20453,
                     // 物理路径(默认为. 即根目录) 注：使用'.'或'..'为路径的时，可能会返回403 Forbidden. 此时将该值改为相对路径 如：/grunt/reloard。
@@ -221,8 +221,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
-    grunt.registerTask('admin', ['shell:admin', 'less:admin', 'less:mobileComponents', 'copy:admin']);
-    grunt.registerTask('user', ['shell:user', 'less:user', 'copy:user']);
+    grunt.registerTask('admin', ['less:admin', 'less:mobileComponents', 'copy:admin']);
+    grunt.registerTask('user', ['less:user', 'copy:user']);
     grunt.registerTask('default', ['admin', 'user']);
     grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
 }

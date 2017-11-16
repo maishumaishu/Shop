@@ -13,13 +13,13 @@ export class ShoppingService extends Service {
      */
     product(productId): Promise<Product> {
         let url = this.url('Product/GetProduct');
-        return this.get<Product>(url, { productId })
+        return this.getByJson<Product>(url, { productId })
             .then(product => this.processProduct(product));
     }
     productByProperies(groupId: string, properties: { [propName: string]: string }): Promise<Product> {
         type t = { key: string };
         var d = { groupId, filter: JSON.stringify(properties) };
-        return this.get<Product>(this.url('Product/GetProductByPropertyFilter'), d)
+        return this.getByJson<Product>(this.url('Product/GetProductByPropertyFilter'), d)
             .then(o => this.processProduct(o));
     }
     private processProduct(product: Product): Product {
@@ -35,7 +35,7 @@ export class ShoppingService extends Service {
     }
     productIntroduce(productId: string): Promise<string> {
         let url = this.url('Product/GetProductIntroduce');
-        return this.get<{ Introduce: string }>(url, { productId }).then(o => o.Introduce);
+        return this.getByJson<{ Introduce: string }>(url, { productId }).then(o => o.Introduce);
     }
     products(pageIndex: number): Promise<Product[]>;
     products(categoryId: string, pageIndex: number): Promise<Product[]>;
@@ -50,7 +50,7 @@ export class ShoppingService extends Service {
         if (categoryId != null) {
             args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
         }
-        return this.get<{ Products: Array<Product> }>(url, args).then(o => {
+        return this.getByJson<{ Products: Array<Product> }>(url, args).then(o => {
             return o.Products;
         });
     }
@@ -77,7 +77,7 @@ export class ShoppingService extends Service {
         }
 
         let url = this.url('Product/GetProducts');
-        return this.get<{ Products: Array<Product> }>(url, args).then(o => {
+        return this.getByJson<{ Products: Array<Product> }>(url, args).then(o => {
             o.Products.forEach(o => {
                 o.ImagePath = imageUrl(o.ImagePath);
             });
@@ -87,14 +87,14 @@ export class ShoppingService extends Service {
 
     category(categoryId: string) {
         let url = this.url('Product/GetCategory');
-        return this.get<ProductCategory>(url, { categoryId });
+        return this.getByJson<ProductCategory>(url, { categoryId });
     }
     categories() {
         let url = this.url('Product/GetCategories');
-        return this.get<ProductCategory[]>(url);
+        return this.getByJson<ProductCategory[]>(url);
     }
     toCommentProducts() {
-        var result = this.get<ProductComent[]>(this.url('Product/GetToCommentProducts'))
+        var result = this.getByJson<ProductComent[]>(this.url('Product/GetToCommentProducts'))
             .then(items => {
                 items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl));
                 return items;
@@ -102,7 +102,7 @@ export class ShoppingService extends Service {
         return result;
     }
     commentedProducts() {
-        var result = this.get<ProductComent[]>(this.url('Product/GetCommentedProducts'))
+        var result = this.getByJson<ProductComent[]>(this.url('Product/GetCommentedProducts'))
             .then(items => {
                 items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl));
                 return items;
@@ -112,19 +112,19 @@ export class ShoppingService extends Service {
     //=====================================================================
     // 收藏夹
     favorProducts() {
-        return this.get<FavorProduct[]>(this.url('Product/GetFavorProducts')).then(items => {
+        return this.getByJson<FavorProduct[]>(this.url('Product/GetFavorProducts')).then(items => {
             items.forEach(o => o.ImageUrl = imageUrl(o.ImageUrl))
             return items;
         });
     }
     unfavorProduct(productId: string) {
-        return this.post(this.url('Product/UnFavorProduct'), { productId });
+        return this.postByJson(this.url('Product/UnFavorProduct'), { productId });
     }
     isFavored(productId: string) {
-        return this.get<boolean>(this.url('Product/IsFavored'), { productId });
+        return this.getByJson<boolean>(this.url('Product/IsFavored'), { productId });
     }
     favorProduct(productId: string) {
-        return this.post(this.url('Product/FavorProduct'), { productId });
+        return this.postByJson(this.url('Product/FavorProduct'), { productId });
     }
     //=====================================================================
     // 订单
@@ -134,7 +134,7 @@ export class ShoppingService extends Service {
     // }
     confirmOrder(orderId: string, remark: string, invoice: string) {
         let args = { orderId, remark, invoice };
-        var result = this.post<Order>(this.url('Order/ConfirmOrder'), args);
+        var result = this.postByJson<Order>(this.url('Order/ConfirmOrder'), args);
         return result;
     }
     myOrderList(pageIndex, type?: 'WaitingForPayment' | 'Send') {
@@ -144,7 +144,7 @@ export class ShoppingService extends Service {
         if (type)
             args.filter = `Status="${type}"`
 
-        return this.get<Order[]>(this.url('Order/GetMyOrderList'), args)
+        return this.getByJson<Order[]>(this.url('Order/GetMyOrderList'), args)
             .then(orders => {
                 orders.forEach(o => {
                     o.OrderDetails.forEach(c => c.ImageUrl = imageUrl(c.ImageUrl));
@@ -153,13 +153,13 @@ export class ShoppingService extends Service {
             });
     }
     order(orderId: string): Promise<Order> {
-        return this.get<Order>(this.url('Order/GetOrder'), { orderId }).then(o => {
+        return this.getByJson<Order>(this.url('Order/GetOrder'), { orderId }).then(o => {
             o.OrderDetails.forEach(c => c.ImageUrl = imageUrl(c.ImageUrl));
             return o;
         });
     }
     createOrder(productIds: string[], quantities: number[]) {
-        var result = this.post<Order>(this.url('Order/CreateOrder'), { productIds: productIds, quantities: quantities })
+        var result = this.postByJson<Order>(this.url('Order/CreateOrder'), { productIds: productIds, quantities: quantities })
             .then(function (order) {
                 return order;
             });
@@ -167,15 +167,15 @@ export class ShoppingService extends Service {
     }
     cancelOrder(orderId: string) {
         let url = this.url('Order/CancelOrder');
-        return this.put<{ Id: string, Status: string }>(url, { orderId });
+        return this.putByJson<{ Id: string, Status: string }>(url, { orderId });
     }
     ordersSummary() {
         type OrdersSummaryResult = { NotPaidCount: number, SendCount: number, ToEvaluateCount: number };
-        return this.get<OrdersSummaryResult>(this.url('Order/GetOrdersSummary'));
+        return this.getByJson<OrdersSummaryResult>(this.url('Order/GetOrdersSummary'));
     }
 
     changeReceipt(orderId, receiptId) {
-        var result = this.post<Order>(this.url('Order/ChangeReceipt'), { orderId, receiptId });
+        var result = this.postByJson<Order>(this.url('Order/ChangeReceipt'), { orderId, receiptId });
         return result;
     }
     orderStatusText(status: string) {
@@ -216,28 +216,28 @@ export class ShoppingService extends Service {
     /** 获取个人优惠码 */
     myCoupons(pageIndex: number, status: string) {
         let url = this.url('Coupon/GetMyCoupons');
-        return this.get<CouponCode[]>(url, { pageIndex, status });
+        return this.getByJson<CouponCode[]>(url, { pageIndex, status });
     }
     storeCoupons() {
         let url = this.url('Coupon/GetCoupons');
-        return this.get<Coupon[]>(url);
+        return this.getByJson<Coupon[]>(url);
     }
     /** 领取优惠卷 */
     receiveCoupon(couponId: string) {
         let url = this.url('Coupon/ReceiveCouponCode');
-        return this.post(url, { couponId });
+        return this.postByJson(url, { couponId });
     }
 
     /** 获取订单可用的优惠劵 */
     orderAvailableCoupons(orderId: string) {
         let url = this.url('Coupon/GetAvailableCouponCodes');
-        return this.get<CouponCode[]>(url, { orderId });
+        return this.getByJson<CouponCode[]>(url, { orderId });
     }
 
     /** 获取店铺优惠劵数量 */
     storeCouponsCount() {
         let url = this.url('Coupon/GetStoreCouponsCount');
-        return this.get<number>(url, {});
+        return this.getByJson<number>(url, {});
     }
 
     private resizeImage(img: HTMLImageElement, max_width: number, max_height: number): string {
@@ -290,49 +290,49 @@ export class ShoppingService extends Service {
             imageDatas: imageDatas.join(','),
             imageThumbs: imageThumbs.join(','),
         };
-        var result = this.post<any>(this.url('Product/EvaluateProduct'), data)
+        var result = this.postByJson<any>(this.url('Product/EvaluateProduct'), data)
         return result;
     }
     //=====================================================================
     // Address
     receiptInfos() {
-        return this.get<ReceiptInfo[]>(this.url('Address/GetReceiptInfos'));
+        return this.getByJson<ReceiptInfo[]>(this.url('Address/GetReceiptInfos'));
     }
     receiptInfo(id: string) {
-        return this.get<ReceiptInfo>(this.url('Address/GetReceiptInfo'), { id })
+        return this.getByJson<ReceiptInfo>(this.url('Address/GetReceiptInfo'), { id })
             .then(o => {
                 o.RegionId = o.CountyId;
                 return o;
             });
     }
     provinces(): Promise<Region[]> {
-        var result = this.get<Region[]>(this.url('Address/GetProvinces'))
+        var result = this.getByJson<Region[]>(this.url('Address/GetProvinces'))
         return result;
     }
     cities(province: string): Promise<Region[]> {
         var guidRule = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         if (guidRule.test(province))
-            return this.get<Region[]>(this.url('Address/GetCities'), { provinceId: province });
+            return this.getByJson<Region[]>(this.url('Address/GetCities'), { provinceId: province });
 
-        return this.get<Region[]>(this.url('Address/GetCities'), { provinceName: province });;
+        return this.getByJson<Region[]>(this.url('Address/GetCities'), { provinceName: province });;
     }
     counties = (cityId: string) => {
-        var result = this.get<Region[]>(this.url('Address/GetCounties'), { cityId: cityId });
+        var result = this.getByJson<Region[]>(this.url('Address/GetCounties'), { cityId: cityId });
         return result;
     }
     saveReceiptInfo(receiptInfo: ReceiptInfo) {
         var self = this;
         let url = this.url('Address/SaveReceiptInfo');
-        var result = this.post<{ Id: string, IsDefault: boolean }>(url, receiptInfo);
+        var result = this.postByJson<{ Id: string, IsDefault: boolean }>(url, receiptInfo);
         return result;
     }
     setDefaultReceiptInfo(receiptInfoId: string) {
         let url = this.url('Address/SetDefaultReceiptInfo');
-        return this.put(url, { receiptInfoId });
+        return this.putByJson(url, { receiptInfoId });
     }
     deleteReceiptInfo(receiptInfoId: string) {
         let url = this.url('Address/DeleteReceiptInfo');
-        return this.delete(url, { receiptInfoId });
+        return this.deleteByJson(url, { receiptInfoId });
     }
 }
 

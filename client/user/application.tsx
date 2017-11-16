@@ -1,5 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
+import { Service, urlParams } from 'userServices/service';
 import { StationService } from 'userServices/stationService';
 import { WeiXinService } from 'userServices/weiXinService';
 import { Application as BaseApplication, Page as BasePage } from 'chitu.mobile';
@@ -12,13 +14,17 @@ export let config = {
     defaultUrl: 'home_index'
 }
 
-
-chitu.Page.tagName = "article";
-let topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
+interface MySiteMapNode extends chitu.SiteMapNode {
+    title?: string
+}
 
 export class Application extends BaseApplication {
+    private topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
+
     constructor(args?: { siteMap?: chitu.SiteMap<chitu.SiteMapNode> }) {
         super(args);
+
+        chitu.Page.tagName = "article";
     }
 
     public parseRouteString(routeString: string) {
@@ -33,8 +39,7 @@ export class Application extends BaseApplication {
         let cssPath = `css!modules` + path;
         requirejs([cssPath]);
 
-        page.displayStatic = topLevelPages.indexOf(page.name) >= 0;
-
+        page.displayStatic = this.topLevelPages.indexOf(page.name) >= 0;
         //===================================================
         // 生成样式
         if (!this.styleloaded) {
@@ -48,8 +53,15 @@ export class Application extends BaseApplication {
         }
         //===================================================
 
+        page.active.add(Application.on_pageActived);
+        page.closed.add(Application.on_pageClosed);
+
         return page;
     }
+
+    // showPage(routeString: string, args?: any) {
+    //     return super.showPage(routeString, args);
+    // }
 
     protected createPageElement(routeData: chitu.RouteData) {
         let element = document.createElement(chitu.Page.tagName);
@@ -65,45 +77,79 @@ export class Application extends BaseApplication {
 
         return element;
     }
+
+    private static on_pageClosed(sender: chitu.Page) {
+        sender.active.remove(Application.on_pageActived);
+    }
+
+    private static on_pageActived(page: chitu.Page) {
+        let stack = new Array<MySiteMapNode>();
+
+        let pageNode: MySiteMapNode;
+        stack.push(root);
+        while (stack.length > 0) {
+            let item = stack.pop();
+            if (item.pageName == page.name) {
+                pageNode = item;
+                break;
+            }
+            (item.children || []).forEach(c => stack.push(c));
+        }
+
+        if (pageNode)
+            document.title = pageNode.title || '';
+        else
+            document.title = storeName;
+    }
 }
 
-export let app: Application = window["app"] = window["app"] || new Application({
-    siteMap: {
-        root: {
-            pageName: 'home.index',
+
+
+
+let storeName = localStorage.getItem(`${urlParams.appKey}_storeName`) || '';
+ui.loadImageConfig.imageDisaplyText = storeName;
+
+var root: MySiteMapNode = {
+    pageName: 'home.index',
+    title: storeName,
+    children: [
+        {
+            pageName: 'home.class',
             children: [
                 {
-                    pageName: 'home.class',
+                    pageName: 'home.productList',
+                    children: [{ pageName: 'home.product', title: '商品详情' }]
+                }
+            ]
+        },
+        { pageName: 'shopping.shoppingCart', title: '用户中心' },
+        { pageName: 'home.class', title: '商品类别' },
+        {
+            pageName: 'user.index',
+            title: '用户中心',
+            children: [
+                {
+                    pageName: 'user.receiptList',
                     children: [
-                        {
-                            pageName: 'home.productList',
-                            children: [{ pageName: 'home.product' }]
-                        }
+                        { pageName: 'user.receiptEdit' }
                     ]
                 },
-                { pageName: 'shopping.shoppingCart' },
+                { pageName: 'user.favors', title: '我的收藏' },
+                { pageName: 'user.coupon', title: '优惠券' },
                 {
-                    pageName: 'user.index',
+                    pageName: 'user.accountSecurity.index', title: '账户安全',
                     children: [
-                        {
-                            pageName: 'user.receiptList',
-                            children: [
-                                { pageName: 'user.receiptEdit' }
-                            ]
-                        },
-                        { pageName: 'user.favors' },
-                        { pageName: 'user.coupon' },
-                        { pageName: 'user.accountSecurity.index' }
+                        { pageName: 'user.accountSecurity.loginPassword', title: '登录密码' },
+                        { pageName: 'user.accountSecurity.mobileBinding', title: '手机绑定' },
+                        { pageName: 'user.accountSecurity.paymentPassword', title: '支付密码' }
                     ]
                 }
             ]
         }
-    }
+    ]
+}
+
+
+export let app: Application = window["app"] = window["app"] || new Application({
+    siteMap: { root }
 });
-let weixin = new WeiXinService();
-weixin.openid().then(data => {
-    let openid = data;
-})
-
-
-

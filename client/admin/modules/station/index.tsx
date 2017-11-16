@@ -25,8 +25,10 @@ export default async function (page: chitu.Page) {
             if (!isValid)
                 return Promise.reject({});
 
-            var data = await station.saveImage(this.imageUpload.state.src);
-            this.state.store.ImagePath = data._id;
+            if (this.imageUpload.changed) {
+                var data = await station.saveImage(this.imageUpload.state.src);
+                this.state.store.ImagePath = data._id;
+            }
             return station.saveStore(this.state.store);
         }
         componentDidMount() {
@@ -137,6 +139,7 @@ class ImageUpload extends React.Component<ImageUploadProps, ImageUploadState>{
     private imageElement: HTMLImageElement;
     private width = 200;
     private height = 200;
+    private _chnaged = false;
     constructor(props) {
         super(props);
 
@@ -150,7 +153,11 @@ class ImageUpload extends React.Component<ImageUploadProps, ImageUploadState>{
 
         let data = await ui.imageFileToBase64(e.files[0], { width: this.width, height: this.height });
         this.state.src = data.base64;
+        this._chnaged = true;
         this.setState(this.state);
+    }
+    get changed() {
+        return this._chnaged;
     }
     render() {
         let src = this.state.src;

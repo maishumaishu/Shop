@@ -3,14 +3,18 @@ import * as chitu from 'maishu-chitu';
 
 let userToken = new chitu.ValueStore<string>(localStorage.getItem('userToken'));
 
+export let urlParams: { code?: string, appKey?: string, state?: string } = {};
+if (location.search)
+    urlParams = parseUrlParams(location.search.substr(1));
+
+
 let appToken: string;
 export let tokens = {
     get appToken() {
         if (appToken == null) {
             let search = location.search;
             console.assert(search != null, 'search cannt null.');
-            let query = parseUrlParams(location.search.substr(1));
-            appToken = query['appKey'];
+            appToken = urlParams.appKey;
         }
 
         return appToken;
@@ -73,17 +77,10 @@ export abstract class Service extends chitu.Service {
 
         return super.ajax<T>(url, options);
     }
-    get<T>(url: string, data?: any): Promise<T> {
-        return super.getByJson(url, data);
-    }
-    post<T>(url: string, data?: any): Promise<T> {
-        return super.postByJson(url, data);
-    }
-    put<T>(url: string, data?: any): Promise<T> {
-        return super.putByJson(url, data);
-    }
-    delete<T>(url: string, data?: any): Promise<T> {
-        return super.deleteByJson(url, data);
+
+    static get storeName() {
+        let key = `${urlParams.appKey}`;
+        return "";
     }
 }
 

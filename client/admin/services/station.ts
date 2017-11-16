@@ -77,7 +77,7 @@ export class StationService extends Service {
     }
     pageDatas() {
         let url = this.url('Page/GetPageDatas');
-        return this.get<PageData[]>(url).then(o => {
+        return this.getByJson<PageData[]>(url).then(o => {
             return o || [];
         });
     }
@@ -152,7 +152,7 @@ export class StationService extends Service {
      */
     getImageBase64(name: string, maxWidth?: number): Promise<string> {
         let url = `${Service.config.siteUrl}Page/GetImage`;
-        return this.get<string>(url, { name, maxWidth });
+        return this.getByJson<string>(url, { name, maxWidth });
     }
     imageUrl(pageId: string, fileName: string) {
         let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-key=${Service.appToken}`;
@@ -173,7 +173,7 @@ export class StationService extends Service {
     //============================================================
     controlData(name: string) {
         let url = this.url('Page/GetControlData');
-        return this.get<ControlDescrtion>(url, { query: JSON.stringify({ controlName: name }) });
+        return this.getByJson<ControlDescrtion>(url, { query: JSON.stringify({ controlName: name }) });
     }
     saveControlData(data: ControlDescrtion, name: string) {
         let url = this.url('Page/SaveControlData');
@@ -204,7 +204,7 @@ export class StationService extends Service {
     }
     store() {
         let url = this.url('Store/Get');
-        return this.get<StoreInfo>(url);
+        return this.getByJson<StoreInfo>(url);
     }
     //============================================================
 }

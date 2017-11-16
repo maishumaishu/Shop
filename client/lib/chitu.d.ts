@@ -195,10 +195,10 @@ declare namespace chitu {
         postByJson<T>(url: string, data?: Object): Promise<T>;
         deleteByJson<T>(url: string, data?: Object): Promise<T>;
         putByJson<T>(url: string, data?: Object): Promise<T>;
-        get<T>(url: string, data?: any): Promise<T>;
-        post<T>(url: string, data?: any): Promise<T>;
-        put<T>(url: string, data?: any): Promise<T>;
-        delete<T>(url: string, data?: any): Promise<T>;
+        getByJson<T>(url: string, data?: any): Promise<T>;
+        postByJson<T>(url: string, data?: any): Promise<T>;
+        putByJson<T>(url: string, data?: any): Promise<T>;
+        deleteByJson<T>(url: string, data?: any): Promise<T>;
         private ajaxByForm<T>(url, data, method);
         private ajaxByJSON<T>(url, data, method);
     }

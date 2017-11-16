@@ -5,7 +5,7 @@ import { FormValidator, rules } from 'dilu';
 import VerifyCodeButton from 'components/verifyCodeButton';
 
 let member = new MemberService();
-requirejs(['css!content/app/user/accountSecurity/wizard']);
+// requirejs(['css!content/app/user/accountSecurity/wizard']);
 class WizardComponent extends React.Component<{ userInfo: UserInfo } & React.Props<WizardComponent>, { step: number }>{
     smsId: string;
     verifyCode: string;
@@ -47,7 +47,7 @@ class WizardComponent extends React.Component<{ userInfo: UserInfo } & React.Pro
     nextStepControl: JSX.Element;
     componentDidMount() {
         this.validator = new FormValidator(
-            { element:this.stepOneForm['verifyCode'],  rules: [rules.required()]} 
+            { element: this.verifyCodeInput, rules: [rules.required()] }
         );
         // this.validator.registerCallback('verifyCodeCheck', (value) => {
 
@@ -75,48 +75,48 @@ class WizardComponent extends React.Component<{ userInfo: UserInfo } & React.Pro
                 <hr className="row" />
                 <div name="stepOne" className="form-horizontal" style={{ display: step == 0 ? 'block' : 'none' }}
                     ref={(e: HTMLFormElement) => this.stepOneForm = e || this.stepOneForm}>
-                    {userInfo.Mobile ?
-                        <div>
-                            <div className="form-group">
-                                <div className="col-xs-12">你当前的手机号码是<span>{userInfo.Mobile}</span></div>
+                    {/* {userInfo.Mobile ? */}
+                    <div style={{ display: userInfo.Mobile ? null : 'none' }}>
+                        <div className="form-group">
+                            <div className="col-xs-12">你当前的手机号码是<span>{userInfo.Mobile}</span></div>
+                        </div>
+                        <div className="form-group">
+                            <div className="col-xs-6">
+                                <input type="text" name="verifyCode" className="form-control" placeholder="验证码"
+                                    ref={(e: HTMLInputElement) => {
+                                        if (!e) return;
+                                        this.verifyCodeInput = e;
+                                        this.verifyCodeInput.onchange = () => {
+                                            this.verifyCode = this.verifyCodeInput.value;
+                                        }
+                                    }} />
                             </div>
-                            <div className="form-group">
-                                <div className="col-xs-6">
-                                    <input type="text" name="verifyCode" className="form-control" placeholder="验证码"
-                                        ref={(e: HTMLInputElement) => {
-                                            if (!e) return;
-                                            this.verifyCodeInput = e;
-                                            this.verifyCodeInput.onchange = () => {
-                                                this.verifyCode = this.verifyCodeInput.value;
-                                            }
-                                        }} />
-                                </div>
-                                <div className="col-xs-6">
-                                    <VerifyCodeButton get_mobile={() => userInfo.Mobile} set_smsId={(value: string) => this.smsId = value} type='changeMobile' />
-                                </div>
-                                <div className="col-xs-12">
-                                    <span className="verifyCode validationMessage"
-                                        ref={(e: HTMLSpanElement) => this.verifyCodeErrorElement = e || this.verifyCodeErrorElement}></span>
-                                </div>
+                            <div className="col-xs-6">
+                                <VerifyCodeButton get_mobile={() => userInfo.Mobile} set_smsId={(value: string) => this.smsId = value} type='changeMobile' />
                             </div>
-                            <div className="form-group">
-                                <div className="col-xs-12">
-                                    <button type="button" className="btn btn-success btn-block"
-                                        ref={(e: HTMLButtonElement) => {
-                                            if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.nextStep());
-                                        }}>下一步</button>
-                                </div>
-                            </div>
-                        </div> :
-                        <div>
-                            <div className="form-group">
-                                <div className="col-xs-12">
-                                    <div className="alert alert-danger">需要绑定手机号码，才能进行设置，请先绑定手机号码。</div>
-                                </div>
+                            <div className="col-xs-12">
+                                <span className="verifyCode validationMessage"
+                                    ref={(e: HTMLSpanElement) => this.verifyCodeErrorElement = e || this.verifyCodeErrorElement}></span>
                             </div>
                         </div>
-                    }
+                        <div className="form-group">
+                            <div className="col-xs-12">
+                                <button type="button" className="btn btn-success btn-block"
+                                    ref={(e: HTMLButtonElement) => {
+                                        if (!e) return;
+                                        e.onclick = ui.buttonOnClick(() => this.nextStep());
+                                    }}>下一步</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{ display: userInfo.Mobile ? 'none' : null }}>
+                        <div className="form-group">
+                            <div className="col-xs-12">
+                                <div className="alert alert-danger">需要绑定手机号码，才能进行设置，请先绑定手机号码。</div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* } */}
                 </div>
 
                 <div name="stepTwo" className="form-horizontal" style={{ display: step == 1 ? 'block' : 'none' }}>

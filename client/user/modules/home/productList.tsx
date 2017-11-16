@@ -31,13 +31,17 @@ export default function (page: chitu.Page) {
 
     class ProductListView extends React.Component<
         { shop: ShoppingService, categoryId: string } & React.Props<ProductListView>,
-        { categoryId: string }>{
+        { categoryId: string, title: string }>{
 
         private dataView: HTMLElement;
         private dataList: HTMLElement;
         constructor(props) {
             super(props)
-            this.state = { categoryId: this.props.categoryId };
+            this.state = { categoryId: this.props.categoryId, title: '' };
+            shop.category(this.props.categoryId).then(c => {
+                this.state.title = c.Name;
+                this.setState(this.state);
+            })
         }
 
         private createDataList(element: HTMLElement, categoryId: string) {
@@ -74,6 +78,9 @@ export default function (page: chitu.Page) {
             }
 
             return [
+                <header key="header">
+                    {defaultNavBar(page, { title: this.state.title })}
+                </header>,
                 <section key="view0" ref={(e: any) => this.dataView = e || this.dataView}>
                     {/* <DataList className="products" scroller={() => this.dataView} loadData={loadProducts}
                     ref={e => this.dataList = e || this.dataList}
@@ -88,7 +95,7 @@ export default function (page: chitu.Page) {
                             </div>
                         </a>
                     )} /> */}
-                    <div ref={(e: any) => this.createDataList(e, categoryId)}></div>
+                    <div ref={(e: any) => this.createDataList(e, categoryId)} style={{ paddingTop: 10 }}></div>
                 </section >
             ]
         }
@@ -101,10 +108,13 @@ export default function (page: chitu.Page) {
     let productListView: ProductListView;
     ReactDOM.render(<ProductListView shop={shop} categoryId={categoryId}
         ref={e => productListView = e || productListView} />, page.element);
-    page.active.add(() => {
+
+    page.active.add(async () => {
         if (productListView.state.categoryId == page.routeData.values.categoryId)
             return;
 
+        let category = await shop.category(categoryId);
+        productListView.state.title = category.Name;
         productListView.state.categoryId = page.routeData.values.categoryId;
         productListView.setState(productListView.state);
     })

@@ -81,14 +81,11 @@ requirejs(['build'], function () {
         window['ReactDOM'] = ReactDOM;
         window['h'] = React.createElement;
 
-        let storeName = localStorage.getItem(`${urlParams.appKey}_storeName`) || '';
-        ui.loadImageConfig.imageDisaplyText = storeName;
         ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
 
         site.app.run();
     })
 })
-
 
 
 // import * as React from 'react';

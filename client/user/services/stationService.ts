@@ -112,7 +112,7 @@ export class StationService extends Service {
 
     newsList(pageIndex: number) {
         let url = this.url('Info/GetNewsList');
-        return this.get<News[]>(url, { pageIndex }).then(items => {
+        return this.getByJson<News[]>(url, { pageIndex }).then(items => {
             items.forEach(o => o.ImgUrl = imageUrl(o.ImgUrl));
             return items;
         });
@@ -120,7 +120,7 @@ export class StationService extends Service {
 
     news(newsId: string): Promise<News> {
         let url = this.url('Info/GetNews');
-        return this.get<News>(url, { newsId }).then(item => {
+        return this.getByJson<News>(url, { newsId }).then(item => {
             item.ImgUrl = imageUrl(item.ImgUrl);
             let div = document.createElement('div');
             div.innerHTML = item.Content;
@@ -136,15 +136,15 @@ export class StationService extends Service {
     }
 
     searchKeywords() {
-        return this.get<Array<string>>(this.url('Home/GetSearchKeywords'));
+        return this.getByJson<Array<string>>(this.url('Home/GetSearchKeywords'));
     }
 
     historySearchWords() {
-        return this.get<Array<string>>(this.url('Home/HistorySearchWords'));
+        return this.getByJson<Array<string>>(this.url('Home/HistorySearchWords'));
     }
 
     advertItems(): Promise<{ ImgUrl: string, Id: string }[]> {
-        return this.get<{ ImgUrl: string, Id: string }[]>(this.url('Home/GetAdvertItems')).then(items => {
+        return this.getByJson<{ ImgUrl: string, Id: string }[]>(this.url('Home/GetAdvertItems')).then(items => {
             items.forEach(o => o.ImgUrl = imageUrl(o.ImgUrl));
             return items;
         });
@@ -153,7 +153,7 @@ export class StationService extends Service {
     proudcts(pageIndex?: number): Promise<HomeProduct[]> {
         pageIndex = pageIndex === undefined ? 0 : pageIndex;
         let url = this.url('Home/GetHomeProducts');
-        return this.get<HomeProduct[]>(url, { pageIndex }).then((products) => {
+        return this.getByJson<HomeProduct[]>(url, { pageIndex }).then((products) => {
             products.forEach(o => o.ImagePath = imageUrl(o.ImagePath));
             return products;
         });
@@ -195,7 +195,7 @@ export class StationService extends Service {
     }
     defaultPageData() {
         let url = this.url('Page/GetDefaultPageData');
-        return this.get<PageData>(url).then(pageData => this.fillPageData(pageData));
+        return this.getByJson<PageData>(url).then(pageData => this.fillPageData(pageData));
     }
     //============================================================
 
@@ -213,7 +213,7 @@ export class StationService extends Service {
     }
     saveControlData(data: ControlData) {
         let url = this.url('Page/SaveControlData');
-        return this.post(url, { data }).then(result => {
+        return this.postByJson(url, { data }).then(result => {
             Object.assign(data, result);
         });
     }
@@ -250,6 +250,6 @@ export class StationService extends Service {
 
     store() {
         let url = this.url('Store/Get');
-        return this.get<StoreInfo>(url);
+        return this.getByJson<StoreInfo>(url);
     }
 }

@@ -39,7 +39,9 @@ Service.error.add((sender, err) => {
             //     app.redirect('user_login', { return: currentPage.routeData.routeString });
             // }
             //========================================================
-            app.redirect('user_login', { return: currentPage.routeData.routeString });
+            app.showPage('user_login', { return: currentPage.routeData.routeString });
+            let url = location.href;
+            url = url.replace(location.hash, '#user_login');
             break;
         case '725':
             ui.alert({ title: '错误', message: 'application-key 配置错误' });
