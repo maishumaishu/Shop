@@ -49,6 +49,9 @@ requirejs.config({
         },
         um_zh: {
             deps: ['um']
+        },
+        qrcode: {
+            exports: 'QRCode'
         }
     },
     paths: {
@@ -79,6 +82,7 @@ requirejs.config({
         'jquery.validate': 'scripts/jquery.validate',
         'jquery-ui': 'scripts/jquery-ui',
         'jquery.ui.widget': 'scripts/jquery.ui.widget',
+        'qrcode': 'scripts/qrcode',
         'react-dom': 'scripts/react-dom',
         'prop-types': 'scripts/prop-types',
 
@@ -95,7 +99,8 @@ requirejs.config({
         'maishu-chitu': 'scripts/chitu',
         'user': '../user',
         'chitu.mobile': 'scripts/chitu.mobile',
-        'adminComponents': 'components'
+        'adminComponents': 'components',
+        'share': '../share'
     }
 });
 var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];

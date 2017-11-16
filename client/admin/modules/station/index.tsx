@@ -4,6 +4,7 @@ import { default as site } from 'site'
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'adminServices/service';
 import { FormValidator, rules } from 'dilu';
+import QRCode = require('qrcode');
 
 export default async function (page: chitu.Page) {
 
@@ -12,6 +13,7 @@ export default async function (page: chitu.Page) {
     let station = page.createService(StationService);
 
     class StationIndexPage extends React.Component<{ store: StoreInfo }, { store: StoreInfo }>{
+        private qrcodeElement: HTMLElement;
         private nameInput: HTMLInputElement;
         private imageUpload: ImageUpload;
         private validator: FormValidator;
@@ -31,11 +33,20 @@ export default async function (page: chitu.Page) {
             }
             return station.saveStore(this.state.store);
         }
+
         componentDidMount() {
             let { required } = rules;
             this.validator = new FormValidator(
                 { element: this.nameInput, rules: [required()] }
             )
+
+            // let qrcode = new QRCode(this.qrcodeElement, site.userClientUrl);
+            let qrcode = new QRCode(this.qrcodeElement, {
+                text: site.userClientUrl,
+                width: 160,
+                height: 160,
+            });
+            qrcode.makeCode(site.userClientUrl);
         }
         render() {
             let { store } = this.state;
@@ -45,11 +56,13 @@ export default async function (page: chitu.Page) {
                     <ul className="nav nav-tabs">
                         <li className="dropdown pull-right">
                             <button className="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
-                                访问店铺
+                                <i className="icon-sitemap"></i>
+                                <span>访问店铺</span>
                             </button>
                             <div className="dropdown-menu dropdown-menu-right" style={{ padding: 20 }}>
                                 <div style={{ width: '100%', textAlign: 'center' }}>手机扫码访问</div>
-                                <img src="https://h5.youzan.com/v2/common/url/create?type=homepage&kdt_id=764664" style={{ width: 180, height: 180 }} />
+                                <div style={{ width: 180, height: 180, padding: 10 }}
+                                    ref={(e: HTMLElement) => this.qrcodeElement = e || this.qrcodeElement} />
                                 <div style={{ width: '100%' }}>
                                     <div className="pull-left">复制页面链接</div>
                                     <div className="pull-right">
