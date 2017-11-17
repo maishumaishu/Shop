@@ -28,16 +28,17 @@ function parseUrlParams(query: string) {
     return urlParams;
 }
 
+let { protocol } = location;
 export class Service extends chitu.Service {
     static error = chitu.Callbacks<Service, ServiceError>()
     static config = {
         serviceHost: remote_service_host,
-        shopUrl: `https://${remote_service_host}/AdminShop/`,
-        weixinUrl: `https://${remote_service_host}/AdminWeiXin/`,
-        siteUrl: `https://${remote_service_host}/AdminSite/`,
-        memberUrl: `https://${remote_service_host}/AdminMember/`,
-        accountUrl: `https://${remote_service_host}/AdminAccount/`,
-        imageUrl: `https://${remote_service_host}/UserServices/Site/`
+        shopUrl: `${protocol}//${remote_service_host}/AdminShop/`,
+        weixinUrl: `${protocol}//${remote_service_host}/AdminWeiXin/`,
+        siteUrl: `${protocol}//${remote_service_host}/AdminSite/`,
+        memberUrl: `${protocol}//${remote_service_host}/AdminMember/`,
+        accountUrl: `${protocol}//${remote_service_host}/AdminAccount/`,
+        imageUrl: `${protocol}//${remote_service_host}/UserServices/Site/`
     }
 
     constructor() {
