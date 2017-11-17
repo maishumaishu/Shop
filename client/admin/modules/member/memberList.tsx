@@ -33,7 +33,7 @@ export default function (page: chitu.Page) {
             let gridView = wz.appendGridView(page.element, {
                 dataSource: self.dataSource,
                 columns: [
-                    new wz.BoundField({ dataField: 'Id', headerText: '编号' }),
+                    // new wz.BoundField({ dataField: 'Id', headerText: '编号' }),
                     new wz.BoundField({ dataField: 'Mobile', headerText: '手机' }),
                     new wz.BoundField({ dataField: 'NickName', headerText: '昵称' }),
                     new wz.CustomField({
@@ -51,7 +51,7 @@ export default function (page: chitu.Page) {
                     }),
                     new wz.CustomField({
                         headerText: '操作',
-                        itemStyle: { textAlign: 'center', width: '120px' } as CSSStyleDeclaration,
+                        itemStyle: { textAlign: 'center', width: '140px' } as CSSStyleDeclaration,
                         createItemCell(dataItem: UserInfo) {
                             let cell = new wuzhui.GridViewCell();
                             ReactDOM.render(
