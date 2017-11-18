@@ -121,7 +121,7 @@ module.exports = function (grunt) {
         less: {
             admin: {
                 options: {
-                    sourceMap: true
+                    sourceMap: false
                 },
                 files: [{
                     expand: true,
@@ -188,13 +188,14 @@ module.exports = function (grunt) {
                         ui: 'scripts/ui',
                         'maishu-chitu': 'scripts/chitu',
                         'user': './',
-                        'userServices': './services'
+                        'userServices': './services',
+                        'share': '../share'
                     },
-                    shim:{
+                    shim: {
                         dilu: {
                             exports: 'dilu'
                         },
-                        ui:{
+                        ui: {
                             exports: 'ui'
                         }
                     }

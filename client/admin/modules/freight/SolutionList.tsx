@@ -1,11 +1,11 @@
 
 import { default as shopping } from 'adminServices/shopping';
-import site = require('site');
+import * as site from 'site';
 import * as wz from 'myWuZhui';
 
 export default function (page: chitu.Page) {
 
-page.element.className = 'admin-pc';
+    page.element.className = 'admin-pc';
     class Page extends React.Component<any, any>{
         private gridViewElement: HTMLTableElement;
         private dialogElement: HTMLElement;
@@ -111,7 +111,10 @@ page.element.className = 'admin-pc';
                         <ul id="myTab" className="nav nav-tabs">
                             <li className="pull-right">
                                 <button data-bind="click:newItem" className="btn btn-primary btn-sm"
-                                    onClick={() => this.showDialog({})}>新建运费模板</button>
+                                    onClick={() => this.showDialog({})}>
+                                    <i className="icon-plus"></i>
+                                    <span>新建运费模板</span>
+                                </button>
                             </li>
                         </ul>
                     </div>

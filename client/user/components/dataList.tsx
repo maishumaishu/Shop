@@ -133,6 +133,129 @@ function scrollOnBottom(element: HTMLElement, callback: Function, deltaHeight?: 
     });
 }
 
+// define('datalist', function () {
+//     return `
+//         .datalist-footer {
+//             text-align: center;
+//             height: 50px;
+//             padding-top: 10px;
+//         }
+//     `;
+// })
+
+requirejs(['css!components/dataList']);
+type DataListStatus = 'loading' | 'completed' | 'finish' | 'fail' | 'init';
+export class MyDataList<T> {
+    private _status: DataListStatus = 'init';
+    private element: HTMLElement;
+    private renderItem: (dataItem: T, index: number) => HTMLElement;
+    private pageIndex: number = 0;
+
+    private loadData: (pageIndex: number) => Promise<T[]>;
+    private itemsElement: HTMLElement;
+    private footerElement: HTMLElement;
+    private preRecordsCount = 0;
+
+    constructor(args: {
+        element: HTMLElement,
+        item: (dataItem: T, index: number) => HTMLElement,
+        loadData: ((pageIndex: number) => Promise<Array<any>>),
+    }) {
+
+        args = args || {} as any;
+
+        if (!args.element)
+            throw errors.argumentNull('element');
+
+        if (!args.item)
+            throw errors.argumentNull('item');
+
+        if (!args.loadData)
+            throw errors.argumentNull('loadData');
+
+        this.loadData = args.loadData;
+        this.renderItem = args.item;
+        this.element = args.element;
+
+        this.itemsElement = document.createElement("div");
+        this.itemsElement.className = "datalist-items clearfix";
+        this.footerElement = document.createElement('div');
+        this.footerElement.className = "datalist-footer";
+        this.footerElement.onclick = () => {
+            if (this.status != 'fail')
+                return;
+
+            this.loadDataItems();
+        }
+
+        this.element.appendChild(this.itemsElement);
+        this.element.appendChild(this.footerElement);
+
+        this.loadDataItems();
+        scrollOnBottom(args.element.parentElement, () => this.loadDataItems(), 50);
+    }
+
+    private loadDataItems() {
+        if (this.status == 'loading' || this.status == 'completed')
+            return;
+
+        this.status = 'loading';
+        this.loadData(this.pageIndex)
+            .then(items => {
+                var itemElements = items.map((o, i) => this.renderItem(o, i))
+                itemElements.forEach(o => this.itemsElement.appendChild(o));
+                this.pageIndex = this.pageIndex + 1;
+
+                if (items.length == 0 || items.length < this.preRecordsCount)
+                    this.status = 'completed';
+                else
+                    this.status = 'finish';
+
+                this.preRecordsCount = items.length;
+            })
+            .catch(() => {
+                this.status = 'fail';
+            })
+    }
+
+    get status(): DataListStatus {
+        return this._status;
+    }
+    set status(value: DataListStatus) {
+        this._status = value;
+        switch (value) {
+            case 'loading':
+                this.footerElement.innerHTML =
+                    `<i className="icon-spinner icon-spin"></i>
+                    <span>数据正在加载中...</span>`;
+                break;
+            case 'completed':
+                this.footerElement.innerHTML =
+                    `<div>
+                        <span>数据已全部加载完</span>
+                    </div>
+                    `;
+                break;
+            case 'fail':
+                this.footerElement.innerHTML =
+                    `<span>数据加载失败，点击加载</span>`
+                break;
+            default:
+            case 'finish':
+                this.footerElement.innerHTML = "";
+                break;
+        }
+    }
+
+    reset(loadData: (pageIndex: number) => Promise<T[]>) {
+        this.loadData = loadData;
+        this.pageIndex = 0;
+        this.itemsElement.innerHTML = "";
+        this.status = 'init';
+        this.loadDataItems();
+    }
+
+}
 
 export function dataList<T>(args: {
     element: HTMLElement,
@@ -140,38 +263,6 @@ export function dataList<T>(args: {
     loadData: ((pageIndex: number) => Promise<Array<any>>),
 }) {
 
-    args = args || {} as any;
+    return new MyDataList(args);
 
-    if (!args.element)
-        throw errors.argumentNull('element');
-
-    if (!args.item)
-        throw errors.argumentNull('item');
-
-    if (!args.loadData)
-        throw errors.argumentNull('loadData');
-
-
-    var pageIndex = 0;
-    var status: 'loading' | 'completed' | 'finish' | 'fail';
-    function loadDataItems() {
-        if (status == 'loading' || status == 'completed')
-            return;
-
-        status = 'loading';
-        args.loadData(pageIndex)
-            .then(items => {
-                var itemElements = items.map((o, i) => args.item(o, i))
-                itemElements.forEach(o => args.element.appendChild(o));
-                pageIndex = pageIndex + 1;
-                status = 'finish';
-            })
-            .catch(() => {
-                status = 'fail';
-            })
-    }
-
-    args.element.innerHTML = "";
-    loadDataItems()
-    scrollOnBottom(args.element.parentElement, () => loadDataItems(), 50);
 }

@@ -1,7 +1,7 @@
 import { defaultNavBar } from 'site';
-import { imageUrl } from 'userServices/service';
+import { imageUrl, config } from 'userServices/service';
 import { ShoppingService } from 'userServices/shoppingService';
-import { DataList, dataList } from 'components/dataList';
+import { DataList, dataList, MyDataList } from 'components/dataList';
 import { Tabs } from 'components/tabs';
 
 
@@ -33,8 +33,10 @@ export default async function (page: chitu.Page) {
         { shop: ShoppingService, categoryId: string } & React.Props<ProductListView>,
         { categoryId: string, title: string }>{
 
+        private dataListElement: HTMLElement;
         private dataView: HTMLElement;
-        private dataList: HTMLElement;
+        private dataList: MyDataList<Product>;
+
         constructor(props) {
             super(props)
             this.state = { categoryId: this.props.categoryId, title: '' };
@@ -44,11 +46,9 @@ export default async function (page: chitu.Page) {
             })
         }
 
-        private createDataList(element: HTMLElement, categoryId: string) {
-            if (!element) return;
-
-            dataList<Product>({
-                element,
+        componentDidMount() {
+            this.dataList = dataList<Product>({
+                element: this.dataListElement,
                 loadData: (pageIndex) => {
                     return this.props.shop.products(categoryId, pageIndex)
                 },
@@ -57,9 +57,10 @@ export default async function (page: chitu.Page) {
                     element.href = `#home_product?id=${o.Id}`
                     element.className = "col-xs-6 text-center item";
                     ReactDOM.render([
-                        <img key="img" src={imageUrl(o.ImagePath, 100, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 100, height: 100 } }) : null} />,
+                        <img key="img" className="img-responsive" src={imageUrl(o.ImagePath, 150, 150)}
+                            ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 150, height: 150 } }) : null} />,
                         <div key="name" className="bottom">
-                            <div className="interception">{o.Name}</div>
+                            <div className="interception" style={{ textAlign: 'left' }}>{o.Name}</div>
                             <div>
                                 <div className="price pull-left">￥{o.Price.toFixed(2)}</div>
                             </div>
@@ -68,13 +69,14 @@ export default async function (page: chitu.Page) {
                     ], element);
                     return element
                 }
-            })
+            });
         }
 
         render() {
-            let categoryId = this.state.categoryId;
-            let loadProducts = (pageIndex: number) => {
-                return this.props.shop.products(categoryId, pageIndex);
+
+            if (this.dataList != null) {
+                let categoryId = this.state.categoryId;
+                this.dataList.reset((pageIndex) => this.props.shop.products(categoryId, pageIndex))
             }
 
             return [
@@ -95,7 +97,7 @@ export default async function (page: chitu.Page) {
                             </div>
                         </a>
                     )} /> */}
-                    <div ref={(e: any) => this.createDataList(e, categoryId)} style={{ paddingTop: 10 }}></div>
+                    <div ref={(e: HTMLElement) => this.dataListElement = e || this.dataListElement} style={{ paddingTop: 10 }}></div>
                 </section >
             ]
         }

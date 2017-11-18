@@ -164,8 +164,8 @@ export default class SingleColumnProductControl extends Control<Props, State> {
                 {products.filter(o => o != null).map(o =>
                     <div key={o.Id} className="product single">
                         <div className={leftClassName} onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
-                            <img className="image img-responsive" src={imageUrl(o.ImagePath, 100)}
-                                ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 100, height: 100 } }) : null} />
+                            <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
+                                ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 300, height: 300 } }) : null} />
                         </div>
                         <div className={`content ${rightClassName}`}>
                             <div className="name interception" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>

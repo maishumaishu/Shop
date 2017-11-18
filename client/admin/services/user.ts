@@ -22,14 +22,14 @@ export interface Application {
     token: string,
 }
 
-
+let { protocol } = location;
 export class UserService extends Service {
     private url(path: string) {
-        let url = `https://${Service.config.serviceHost}/${path}`;
+        let url = `${protocol}//${Service.config.serviceHost}/${path}`;
         return url;
     }
     login(username, password) {
-        let url = `https://${Service.config.serviceHost}/admin/login`;
+        let url = `${protocol}//${Service.config.serviceHost}/admin/login`;
         return this.get<{ token: string, userId: string, appToken: string }>(url, { username, password }).then((o) => {
             Service.token = o.token;
             Service.userId = o.userId;
@@ -39,7 +39,7 @@ export class UserService extends Service {
     }
     async register(model: RegisterModel) {
         (model.user as any).group = 'owner';
-        let url = `https://${Service.config.serviceHost}/admin/register`;
+        let url = `${protocol}//${Service.config.serviceHost}/admin/register`;
         return this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
             .then((result) => {
                 // Service.appToken = result.appToken;
@@ -48,15 +48,15 @@ export class UserService extends Service {
             });
     }
     private createApplication() {
-        let url = `https://${Service.config.serviceHost}/application/add`;
+        let url = `${protocol}//${Service.config.serviceHost}/application/add`;
         return this.postByJson<{ token: string }>(url, { name: guid() });
     }
     isMobileRegister(mobile: string) {
-        let url = `https://${Service.config.serviceHost}/admin/isMobileRegister`;
+        let url = `${protocol}//${Service.config.serviceHost}/admin/isMobileRegister`;
         return this.get<boolean>(url, { mobile });
     }
     sendVerifyCode(mobile: string) {
-        let url = `https://${Service.config.serviceHost}/sms/sendVerifyCode`;
+        let url = `${protocol}//${Service.config.serviceHost}/sms/sendVerifyCode`;
         return this.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
     }
     applications(): Promise<Array<Application>> {
@@ -80,18 +80,24 @@ export class UserService extends Service {
         let url = this.url('admin/deleteApplication');
         return this.deleteByJson(url, { appId: app._id });
     }
-    recharge(userId: string, amount: number):Promise<{Balance:number}> {
+    recharge(userId: string, amount: number): Promise<{ Balance: number }> {
         let url = Service.config.accountUrl + 'Account/Recharge';
         return this.putByJson(url, { userId, amount });
     }
     async members(args: wuzhui.DataSourceSelectArguments) {
 
-        let membersResult = await this.get<wuzhui.DataSourceSelectResult<UserInfo>>(
-            Service.config.memberUrl + 'Member/List',
-            args
-        );
+        let url = `${location.protocol}//${Service.config.serviceHost}/user/list`;
+        let membersResult = await this.get<UserInfo[]>(url, args).then((data) => {
+            data.forEach((o) => {
+                let a = o as any;
+                o.Mobile = a.mobile;
+                o.Id = a._id;
+            })
+            return data;
+        });
 
-        let members = membersResult.dataItems;
+
+        let members = membersResult;//.dataItems;
         let ids = members.map(o => o.Id);
         let memberBalances = await this.get<Array<{ MemberId: string, Balance: number }>>(
             Service.config.accountUrl + 'Account/GetAccountBalances',

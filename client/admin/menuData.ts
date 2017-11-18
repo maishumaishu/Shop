@@ -104,14 +104,14 @@ export let menuData: MenuNode[] = [
             { Url: "member/memberList", Title: "会员列表" },
         ]
     },
-    {
-        Title: '财务',
-        Icon: 'icon-money',
-        Children: [
-            { Title: '我的收入', Url: 'finance/income', },
-            { Title: '储值资金', Url: 'finance/rechargeAmount' },
-        ]
-    },
+    // {
+    //     Title: '财务',
+    //     Icon: 'icon-money',
+    //     Children: [
+    //         { Title: '我的收入', Url: 'finance/income', },
+    //         { Title: '储值资金', Url: 'finance/rechargeAmount' },
+    //     ]
+    // },
     {
         Title: "设置",
         Icon: " icon-cog",

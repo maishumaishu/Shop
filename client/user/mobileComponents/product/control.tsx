@@ -436,7 +436,7 @@ export default class ProductControl extends Control<Props, State>{
                     <div className="carousel-inner">
                         {p.ImagePaths.map((o, i) => (
                             <div key={i} className={i == 0 ? "item active" : "item"} style={{ textAlign: "center" }}>
-                                <img src={imageUrl(o)} className="img-responsive-100 img-full"
+                                <img src={imageUrl(o, 300, 300)} className="img-responsive-100 img-full"
                                     ref={(e: HTMLImageElement) => {
                                         if (!e) return;
                                         ui.renderImage(e)

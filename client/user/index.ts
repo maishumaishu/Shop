@@ -66,11 +66,12 @@ requirejs.config({
         userServices: './services',
         // services: './services',
         ui: 'scripts/ui',
-        'user': '.'
+        'user': '.',
+        'share': '../share'
     }
 });
 
-// define('build', function () { });
+define('build', function () { });
 requirejs(['build'], function () {
     requirejs(["css!content/font-awesome"]);
     requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types', 'errorHandle'],

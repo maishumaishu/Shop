@@ -167,7 +167,17 @@ input[type="button"] {
 }
 
 button {
+  margin: 0;
   &:focus {
     outline: none;
+  }
+}
+
+td {
+  button {
+    margin-right: 4px;
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
