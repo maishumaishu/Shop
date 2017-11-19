@@ -45,12 +45,8 @@ export class Header extends Control<any, { status: ControlStatus }> {
     }
     _render() {
         let { status } = this.state;
+        let showBackButton = this.elementPage.name == 'shopping.shoppingCartNoMenu';
         return defaultNavBar(this.elementPage, {
-            left: (
-                status == 'edit' ? <button className="left-button" style={{ width: 'unset' }} onClick={() => this.cancle()}>
-                    取消
-                </button> : null
-            ),
             title: '购物车',
             right:
                 <button className="right-button" style={{ width: 'unset' }}
@@ -60,7 +56,8 @@ export class Header extends Control<any, { status: ControlStatus }> {
                         this.setState(this.state);
                     }}>
                     {status == 'normal' ? '编辑' : '完成'}
-                </button>
+                </button>,
+            showBackButton
 
         });
     }
@@ -206,25 +203,41 @@ export default class ShoppingCartControl extends Control<
 
         this.state = {
             status: 'normal',
-            items: ShoppingCartService.items.value,
+            items: [],
             deleteItems: [], inputCounts: {}
         };
 
         this.loadControlCSS();
-        this.refreshItems();
+        //this.refreshItems();
 
+        ShoppingCartService.items.add(ShoppingCartControl.on_shoppingCartChanged, this);
+        this.elementPage.active.add(() => {
+            ShoppingCartControl.on_shoppingCartChanged(ShoppingCartService.items.value, this);
+            ShoppingCartService.items.add(ShoppingCartControl.on_shoppingCartChanged, this);
+        })
+        this.elementPage.deactive.add(() => {
+            ShoppingCartService.items.remove(ShoppingCartControl.on_shoppingCartChanged);
+        })
+        ShoppingCartControl.on_shoppingCartChanged(ShoppingCartService.items.value, this);
+    }
+
+    private static on_shoppingCartChanged(items: ShoppingCartItem[], sender?: ShoppingCartControl) {
+        shoppingCart.calculateShoppingCartItems().then((items) => {
+            sender.state.items = items;
+            sender.setState(sender.state);
+        })
     }
 
     get persistentMembers() {
         return [];
     }
 
-    private refreshItems() {
-        shoppingCart.calculateShoppingCartItems().then((items) => {
-            this.state.items = items;
-            this.setState(this.state);
-        })
-    }
+    // private refreshItems() {
+    //     shoppingCart.calculateShoppingCartItems().then((items) => {
+    //         this.state.items = items;
+    //         this.setState(this.state);
+    //     })
+    // }
 
     private async selectItem(item: ShoppingCartItem) {
         if (this.state.status == 'edit') {
@@ -248,7 +261,7 @@ export default class ShoppingCartControl extends Control<
         let items: ShoppingCartItem[] = this.state.deleteItems;
         await shoppingCart.removeItems(items.map(o => o.Id));
         this.setDeleteItems([]);
-        this.refreshItems();
+        //this.refreshItems();
     }
     private decreaseCount(item: ShoppingCartItem) {
         let itemCount = this.state.inputCounts[item.Id] || item.Count;
@@ -315,8 +328,8 @@ export default class ShoppingCartControl extends Control<
         result.then(o => {
             this.state.status = 'normal';
             status.value = this.state.status;
-            // this.setState(this.state);
-            this.refreshItems();
+            this.setState(this.state);
+            // this.refreshItems();
         });
 
         return result;
@@ -383,7 +396,7 @@ export default class ShoppingCartControl extends Control<
     }
 
     componentDidMount() {
-        this.elementPage.active.add(() => this.refreshItems());
+        // this.elementPage.active.add(() => this.refreshItems());
     }
 
     _render(h) {
@@ -407,7 +420,6 @@ export default class ShoppingCartControl extends Control<
                                         :
                                         <img src={imageUrl(o.ImagePath)} className="img-responsive"
                                             ref={(e: any) => e ? ui.renderImage(e) : null} />}
-
                                 </a>
                                 <div style={{ marginLeft: 100 }}>
                                     <a href={`#home_product?id=${o.ProductId}`} >{o.Name}</a>

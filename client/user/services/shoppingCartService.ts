@@ -4,17 +4,22 @@ export class ShoppingCartService extends Service {
     private static _items = new chitu.ValueStore<ShoppingCartItem[]>([]);
     private SHOPPING_CART_STORAGE_NAME = 'shoppingCart';
     private isLogin: boolean;
+    private static _productsCount = new chitu.ValueStore<number>();
 
     private timeids = {} as { [key: string]: number };
 
     constructor() {
         super();
+        ShoppingCartService.items.add((items) => {
+            let count = ShoppingCartService.calculateProdusCount(items);
+            ShoppingCartService.productsCount.value = count;
+        })
     }
 
 
-    static calculateProdusCount(items: ShoppingCartItem[]) {
+    private static calculateProdusCount(items: ShoppingCartItem[]) {
         let count = 0;
-        items.filter(o => o.IsGiven != true && o.Selected == true)
+        items.filter(o => o.IsGiven != true)
             .forEach(o => count = count + o.Count);
 
         return count;
@@ -162,10 +167,11 @@ export class ShoppingCartService extends Service {
         return this.putByJson(url);
     }
 
-    get productsCount() {
-        let count = 0;
-        ShoppingCartService.items.value.forEach(o => count = count + o.Count);
-        return count;
+    static get productsCount() {
+        // let count = 0;
+        // ShoppingCartService.items.value.forEach(o => count = count + o.Count);
+        // return count;
+        return ShoppingCartService._productsCount;
     }
 
     get selectedCount() {
@@ -183,7 +189,7 @@ export class ShoppingCartService extends Service {
     }
 
     async calculateShoppingCartItems() {
-        let url = this.url('Calculate'); 
+        let url = this.url('Calculate');
         let result = await this.getByJson<ShoppingCartItem[]>(url).then(items => {
             items.forEach(o => o.ImagePath = o.ImagePath || (o as any).ImageUrl);
             return items;

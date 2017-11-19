@@ -26,6 +26,13 @@ declare namespace ui {
         confirm: (event: Event) => Promise<any>;
         container?: HTMLElement;
     }): void;
+    let showPanel: (args: {
+        header?: (headerElement: HTMLElement) => void;
+        body?: (bodyElement: HTMLElement) => void;
+        footer?: (footerElement: HTMLElement) => void;
+    }) => {
+        hide: () => void;
+    };
 }
 declare namespace ui {
     let errors: {
@@ -68,4 +75,22 @@ declare namespace ui {
         width: number;
         height: number;
     }): Promise<ImageFileToBase64Result>;
+}
+declare namespace ui {
+    class Panel {
+        private modalDialog;
+        private _body;
+        private _footer;
+        private _header;
+        private backdrop;
+        private panel;
+        private modal;
+        constructor(element: HTMLElement);
+        readonly header: HTMLElement;
+        readonly body: HTMLElement;
+        readonly footer: HTMLElement;
+        build(element: HTMLElement): void;
+        show(): void;
+        hide(): void;
+    }
 }

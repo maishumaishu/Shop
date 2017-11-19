@@ -4,44 +4,10 @@ import { ShoppingService } from 'userServices/shoppingService';
 import { Service } from 'userServices/service';
 import { userData } from 'userServices/userData';
 import { imageUrl, guid } from 'userServices/service';
+import { app, defaultNavBar } from 'site';
+// import { Panel } from 'components/panel';
+import { Panel } from 'ui';
 
-import { app } from 'site';
-import { Panel } from 'components/panel';
-
-
-// export interface Props extends ControlProps<ProductControl> {
-//     // productId?: string,
-//     product: Product
-// }
-// export interface State extends Props {
-
-// }
-
-// @component("product")
-// export default class ProductControl extends Control<Props, State>{
-//     private productView: ProductView;
-
-//     persistentMembers = [];
-
-//     constructor(props) {
-//         super(props);
-//         this.loadControlCSS();
-//     }
-//     get element() {
-//         return this.productView.element;
-//     }
-//     _render(h) {
-//         let shopping = new ShoppingService();
-//         let shoppingCart = new ShoppingCartService();
-
-//         let product: Product = this.props.product;
-//         let designer = this.context.designer;
-
-//         return (
-//             <ProductView shop={shopping} shoppingCart={shoppingCart} product={product} mobilePage={this.mobilePage} />
-//         );
-//     }
-// }
 
 export class Header extends Control<ControlProps<Footer>, any>{
     get persistentMembers(): string[] {
@@ -64,44 +30,24 @@ export class Header extends Control<ControlProps<Footer>, any>{
         })
     }
     componentDidMount() {
-        // let buttons = this.header.querySelectorAll('nav button');
-        // let title = this.header.querySelector('nav.bg-primary') as HTMLElement;
-
-        // this.productView.addEventListener('scroll', function (event) {
-        //     let p = this.scrollTop / 100;
-        //     p = p > 1 ? 1 : p;
-
-        //     let buttonOpacity = 0.5 + p;
-        //     buttonOpacity = buttonOpacity > 1 ? 1 : buttonOpacity;
-
-        //     title.style.opacity = `${p}`;
-        //     for (let i = 0; i < buttons.length; i++) {
-        //         (buttons[i] as HTMLElement).style.opacity = `${buttonOpacity}`;
-        //     }
-
-        // });
     }
     _render(h) {
-        return [
-            <nav className="bg-primary"></nav>,
-            <nav>
-                <button className="leftButton" onClick={() => app.back()}>
-                    <i className="icon-chevron-left"></i>
-                </button>
-                <button className="rightButton"
-                    ref={(e: HTMLButtonElement) => {
-                        if (!e) return;
-                        e.onclick = ui.buttonOnClick(() => this.favor());
-                    }}>
-                    <i className="icon-heart-empty" style={{ fontWeight: `800`, fontSize: `20px`, display: !this.state.isFavored ? 'block' : 'none' }} ></i>
-                    <i className="icon-heart" style={{ display: this.state.isFavored ? 'block' : 'none' }}></i>
-                </button>
-            </nav>
-        ]
+        return defaultNavBar(this.elementPage, { title: '商品详情' })
     }
 }
 
 export class Footer extends Control<ControlProps<Footer>, { productsCount: number }> {
+    private shoppingCart: ShoppingCartService;
+    constructor(props) {
+        super(props);
+        this.shoppingCart = this.elementPage.createService(ShoppingCartService);
+        this.state = { productsCount: ShoppingCartService.productsCount.value };
+        this.subscribe(ShoppingCartService.productsCount, (value) => {
+            this.state.productsCount = value;
+            this.setState(this.state);
+        })
+        // this.shoppingCart.productsCount
+    }
     get persistentMembers() {
         return [];
     }
@@ -112,20 +58,33 @@ export class Footer extends Control<ControlProps<Footer>, { productsCount: numbe
         let shoppingCart = this.elementPage.createService(ShoppingCartService); //this.props.shoppingCart;
         let product: Product = c.state.product;
         let id = product.Id;
-        let count = c.state.count;
 
-        let shoppingCartItem = {
-            Id: guid(),
-            Amount: product.Price * count,
-            Count: count,
-            ImagePath: product.ImagePath,
-            Name: product.Name,
-            ProductId: product.Id,
-            Selected: true,
-            Price: product.Price,
-        };
+        let count: number;
+        let shoppingCartItem = ShoppingCartService.items.value.filter(o => o.ProductId == product.Id)[0];
+        if (shoppingCartItem == null) {
+            shoppingCartItem = {
+                Id: guid(),
+                Amount: product.Price * count,
+                Count: count,
+                ImagePath: product.ImagePath,
+                Name: product.Name,
+                ProductId: product.Id,
+                Selected: true,
+                Price: product.Price,
+            };
+            count = 1;
+        }
+        else {
+            count = shoppingCartItem.Count + 1;
+        }
 
         return shoppingCart.setItemCount(product, count);
+    }
+    componentDidMount() {
+        // this.shoppingCart.onChanged(this, () => {
+        //     this.state.productsCount = this.shoppingCart.productsCount;
+        //     this.setState(this.state);
+        // })
     }
     _render(h) {
         let { productsCount } = this.state;
@@ -138,7 +97,8 @@ export class Footer extends Control<ControlProps<Footer>, { productsCount: numbe
                         : null
                     }
                 </a>
-                <button ref={(e: HTMLButtonElement) => ui.buttonOnClick(() => this.addToShoppingCart())} className="btn btn-primary pull-right" >加入购物车</button>
+                <button ref={(e: HTMLButtonElement) => e ? e.onclick = ui.buttonOnClick(() => this.addToShoppingCart()) : null}
+                    className="btn btn-primary pull-right" >加入购物车</button>
             </nav>
         );
     }
@@ -146,151 +106,10 @@ export class Footer extends Control<ControlProps<Footer>, { productsCount: numbe
 
 
 let productStore = new chitu.ValueStore<Product>();
-class ProductPanel extends React.Component<{ product: Product, parent: ProductControl, shop: ShoppingService } & React.Props<ProductPanel>,
-    { product: Product, count: number }> {
 
-    private panel: Panel;
-    constructor(props) {
-        super(props);
-        this.state = { product: this.props.product, count: this.props.parent.state.count };
-    }
-    private decrease() {
-        let count = this.state.count;
-        if (count == 1) {
-            return;
-        }
-
-        count = count - 1;
-        this.state.count = count;
-        this.setState(this.state);
-        this.props.parent.updateProductCount(count);
-    }
-    private increase() {
-        let count = this.state.count;
-        count = count + 1;
-        this.state.count = count;
-        this.setState(this.state);
-        this.props.parent.updateProductCount(count);
-    }
-    private onProductsCountInputChanged(event: Event) {
-        let value = Number.parseInt((event.target as HTMLInputElement).value);
-        if (!value) return;
-
-        this.state.count = value;
-        this.setState(this.state);
-        this.props.parent.updateProductCount(value);
-    }
-    private onFieldSelected(property: CustomProperty, name: string) {
-        property.Options.forEach(o => {
-            o.Selected = o.Name == name
-        })
-
-        var properties: { [name: string]: string } = {};
-        this.state.product.CustomProperties.forEach(o => {
-            properties[o.Name] = o.Options.filter(c => c.Selected)[0].Value;
-        });
-
-        let shop = this.props.shop;
-        return shop.productByProperies(this.state.product.GroupId, properties)
-            .then(o => {
-                this.state.product = o;
-                this.setState(this.state);
-                productStore.value = o;
-            });
-    }
-    show() {
-        this.panel.show('right');
-    } ProductView
-    render() {
-        let p = this.state.product;
-        return (
-            <Panel ref={(o) => {
-                if (!o) return;
-                this.panel = o
-            }}
-                header={
-                    <div>
-                        <ul className="nav nav-tabs bg-primary">
-                            <li className="text-left" style={{ width: '30%' }}>
-                                <button onClick={() => this.panel.hide()}>关闭</button>
-                            </li>
-                        </ul>
-                        <div style={{ paddingTop: "10px" }}>
-                            <div className="pull-left" style={{ width: 80, height: 80, marginLeft: 10 }}>
-                                <img className="img-responsive"
-                                    src={imageUrl(p.ImagePath)}
-                                    ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
-                            </div>
-                            <div style={{ marginLeft: 100, marginRight: 70 }}>
-                                <div>{p.Name}</div>
-                                <div className="price">￥{p.Price.toFixed(2)}</div>
-                            </div>
-                        </div>
-                        <div className="clearfix"></div>
-                    </div>
-                }
-                body={
-                    <div>
-                        {p.CustomProperties.map(o => (
-                            <div key={o.Name} className="container row">
-                                <div className="pull-left" style={{ width: 60 }}>
-                                    <span>{o.Name}</span>
-                                </div>
-                                {o.Options.map(c => (
-                                    <div key={c.Name} style={{ marginLeft: 60 }}>
-                                        <button className={c.Selected ? 'cust-prop selected' : 'cust-prop'}
-                                            ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.onFieldSelected(o, c.Name)) : null}
-                                        >{c.Name}</button>
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
-                    </div>
-                }
-                footer={
-                    <div>
-                        <div className="form-group">
-                            <div style={{ width: 60, textAlign: 'left' }} className="pull-left">
-                                <span>数量</span>
-                            </div>
-                            <div style={{ marginLeft: 60 }}>
-                                <div className="input-group">
-                                    <span className="input-group-btn">
-                                        <button className="btn btn-default" onClick={this.decrease.bind(this)}>
-                                            <span className="icon-minus"></span>
-                                        </button>
-                                    </span>
-                                    <input className="form-control" type="number" value={`${this.state.count}`}
-                                        onChange={this.onProductsCountInputChanged.bind(this)} />
-                                    <span className="input-group-btn">
-                                        <button className="btn btn-default" onClick={this.increase.bind(this)}>
-                                            <span className="icon-plus"></span>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="clearfix"></div>
-                        <button className="btn btn-primary btn-block"
-                            ref={(e: HTMLButtonElement) => {
-                                if (!e) return;
-                                e.onclick = ui.buttonOnClick(() => {
-                                    this.panel.hide();
-                                    return this.props.parent.addToShoppingCart();
-                                }, { toast: '成功添加到购物车' })
-                            }}>
-                            加入购物车
-                        </button>
-                    </div>
-                } />
-        );
-    }
-}
 
 export interface Props extends ControlProps<ProductControl> {
     product: Product,
-    //  shop: ShoppingService,
-    // shoppingCart: ShoppingCartService
 }
 
 export interface State {
@@ -309,12 +128,14 @@ export default class ProductControl extends Control<Props, State>{
     private productView: HTMLElement;
     // private header: HTMLElement;
     private introduceView: HTMLElement;
-    private productPanel: ProductPanel;
+    private panelElement: HTMLElement;
+    // private productPanel: ProductPanel;
     private isShowIntroduceView = false;
     private isShowProductView = false;
     private pageComponent: HTMLElement;
     private shopping: ShoppingService;
     private shoppingCart: ShoppingCartService;
+    private panel: Panel;
 
     constructor(props) {
         super(props);
@@ -350,16 +171,66 @@ export default class ProductControl extends Control<Props, State>{
         // subscribe(this, productStore, (value: Product) => {
         //     this.updateStateByProduct(value);
         // });
+
+        this.panelElement = document.createElement('div');
+        this.elementPage.element.appendChild(this.panelElement);
+        this.panel = new Panel(this.panelElement);
+    }
+
+    private decrease() {
+        let count = this.state.count;
+        if (count == 1) {
+            return;
+        }
+
+        count = count - 1;
+        this.state.count = count;
+        this.setState(this.state);
+        this.updateProductCount(count);
+    }
+
+    private increase() {
+        let count = this.state.count;
+        count = count + 1;
+        this.state.count = count;
+        this.setState(this.state);
+        this.updateProductCount(count);
+    }
+
+    private onFieldSelected(property: CustomProperty, name: string) {
+        property.Options.forEach(o => {
+            o.Selected = o.Name == name
+        })
+
+        var properties: { [name: string]: string } = {};
+        this.state.product.CustomProperties.forEach(o => {
+            properties[o.Name] = o.Options.filter(c => c.Selected)[0].Value;
+        });
+
+        return this.shopping.productByProperies(this.state.product.GroupId, properties)
+            .then(o => {
+                this.state.product = o;
+                this.setState(this.state);
+                productStore.value = o;
+            });
+    }
+
+    private onProductsCountInputChanged(event: { target }) {
+        let value = Number.parseInt((event.target as HTMLInputElement).value);
+        if (!value) return;
+
+        this.state.count = value;
+        this.setState(this.state);
+        this.updateProductCount(value);
     }
 
     get persistentMembers() {
         return [];
     }
 
-    private showPanel() {
-        this.productPanel.show();
-        return Promise.resolve();
-    }
+    // private showPanel() {
+    //     this.panel.show();
+    // }
     private productSelectedText(product: Product) {
         var str = '';
         var props = product.CustomProperties || [];
@@ -427,6 +298,79 @@ export default class ProductControl extends Control<Props, State>{
         console.assert(this.pageComponent != null);
         return this.element;
     }
+
+    renderPanel(p: Product) {
+        ReactDOM.render([
+            <ul key={10} className="nav nav-tabs bg-primary">
+                <li className="text-left" style={{ width: '30%' }}>
+                    <button onClick={() => this.panel.hide()}>关闭</button>
+                </li>
+            </ul>,
+            <div key={20} style={{ paddingTop: "10px" }}>
+                <div className="pull-left" style={{ width: 80, height: 80, marginLeft: 10 }}>
+                    <img className="img-responsive"
+                        src={imageUrl(p.ImagePath)}
+                        ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+                </div>
+                <div style={{ marginLeft: 100, marginRight: 70 }}>
+                    <div>{p.Name}</div>
+                    <div className="price">￥{p.Price.toFixed(2)}</div>
+                </div>
+            </div>,
+            <div key={30} className="clearfix"></div>],
+            this.panel.header);
+
+        ReactDOM.render(p.CustomProperties.map((o) => (
+            <div key={o.Name} className="container row">
+                <div className="pull-left" style={{ width: 60 }}>
+                    <span>{o.Name}</span>
+                </div>
+                {o.Options.map(c => (
+                    <div key={c.Name} style={{ marginLeft: 60 }}>
+                        <button className={c.Selected ? 'cust-prop selected' : 'cust-prop'}
+                            ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.onFieldSelected(o, c.Name)) : null}
+                        >{c.Name}</button>
+                    </div>
+                ))}
+            </div>
+        )), this.panel.body);
+
+        ReactDOM.render([
+            <div key={10} className="form-group">
+                <div style={{ width: 50, paddingTop: 8, textAlign: 'left' }} className="pull-left">
+                    <span>数量</span>
+                </div>
+                <div className="input-group">
+                    <span className="input-group-btn">
+                        <button className="btn btn-default" onClick={() => this.decrease()}>
+                            <span className="icon-minus"></span>
+                        </button>
+                    </span>
+                    <input className="form-control" type="number" value={`${this.state.count}`}
+                        onChange={(event) => this.onProductsCountInputChanged(event)} />
+                    <span className="input-group-btn">
+                        <button className="btn btn-default" onClick={() => this.increase()}>
+                            <span className="icon-plus"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>,
+            <div key={20} className="clearfix"></div>,
+            <button key={30} className="btn btn-primary btn-block"
+                ref={(e: HTMLButtonElement) => {
+                    if (!e) return;
+                    e.onclick = ui.buttonOnClick(() => {
+                        this.panel.hide();
+                        return this.addToShoppingCart();
+                    }, { toast: '成功添加到购物车' })
+                }}>
+                加入购物车
+                </button>
+        ], this.panel.footer);
+    }
+    componentDidUpdate() {
+        this.renderPanel(this.state.product);
+    }
     _render(h) {
         let p = this.state.product;
         let { productsCount, couponsCount } = this.state;
@@ -460,12 +404,9 @@ export default class ProductControl extends Control<Props, State>{
                         <span className="pull-left" style={{ display: p.Score == null ? 'none' : 'block' }}>积分：<strong className="price">{this.props.product.Score}</strong></span>
                         <span className="pull-right">{p.Unit}</span>
                         <div className="clearfix"></div>
-                        <p className="oldprice" style={{ display: p.MemberPrice != null && p.MemberPrice != p.Price ? 'block' : 'none' }}>
-                            促销价：<span className="price">￥{p.MemberPrice.toFixed(2)}</span>
-                        </p>
                     </li>
 
-                    <li className="list-group-item" onClick={() => this.showPanel()}>
+                    <li className="list-group-item" onClick={() => this.panel.show()}>
                         <span>
                             已选：{this.state.productSelectedText}
                         </span>
@@ -513,134 +454,22 @@ export default class ProductControl extends Control<Props, State>{
                 <hr />
 
             </div>,
-            <ProductPanel key="panel" ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.shopping} />,
+            // <ProductPanel key="panel" ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.shopping} />,
             <div key="content" className="product-control content"
                 style={{ background: 'whitesmoke' }} dangerouslySetInnerHTML={{ __html: this.state.content }}
                 ref={(e: HTMLElement) => {
                     if (!e) return;
-                    e.querySelectorAll('img').forEach(img => {
-                        ui.renderImage(img, { imageText: Service.storeName });
-                    });
+
+                    let imgs = e.querySelectorAll('img');
+                    for (let i = 0; i < imgs.length; i++) {
+                        ui.renderImage(imgs[i], { imageText: Service.storeName });
+                    }
                 }}>
             </div>
 
         ];
     }
 }
-
-{/* <div className="mobile-page product-control" ref={(e: HTMLElement) => this.pageComponent = e || this.pageComponent}>
-<header ref={(o: HTMLElement) => this.header = o || this.header}>
-    <nav className="bg-primary"></nav>
-    <nav>
-        <button className="leftButton" onClick={() => app.back()}>
-            <i className="icon-chevron-left"></i>
-        </button>
-        <button className="rightButton"
-            ref={(e: HTMLButtonElement) => {
-                if (!e) return;
-                e.onclick = ui.buttonOnClick(() => this.favor());
-            }}>
-            <i className="icon-heart-empty" style={{ fontWeight: `800`, fontSize: `20px`, display: !this.state.isFavored ? 'block' : 'none' }} ></i>
-            <i className="icon-heart" style={{ display: this.state.isFavored ? 'block' : 'none' }}></i>
-        </button>
-    </nav>
-</header>
-<section ref={(o: HTMLElement) => this.productView = this.productView || o}>
-    <div name="productImages" className="carousel slide">
-        <div className="carousel-inner">
-            {p.ImagePaths.map((o, i) => (
-                <div key={i} className={i == 0 ? "item active" : "item"} style={{ textAlign: "center" }}>
-                    <img src={imageUrl(o)} className="img-responsive-100 img-full" title="牛牛店宝"
-                        ref={(e: HTMLImageElement) => {
-                            if (!e) return;
-                            ui.renderImage(e)
-                        }} />
-                </div>
-            ))}
-        </div>
-    </div>
-    <ul className="list-group">
-        <li name="productName" className="list-group-item">
-            <h4 className="text-left" style={{ fontWeight: 'bold' }}>{p.Name}</h4>
-        </li>
-
-        <li className="list-group-item">
-            <span>类别：</span>
-            <a href="">{p.ProductCategoryName}</a>
-        </li>
-
-        <li className="list-group-item">
-            <span className="pull-left">价格：<strong className="price">￥{p.Price.toFixed(2)}</strong></span>
-            <span className="pull-left" style={{ display: p.Score == null ? 'none' : 'block' }}>积分：<strong className="price">{this.props.product.Score}</strong></span>
-            <span className="pull-right">{p.Unit}</span>
-            <div className="clearfix"></div>
-            <p className="oldprice" style={{ display: p.MemberPrice != null && p.MemberPrice != p.Price ? 'block' : 'none' }}>
-                促销价：<span className="price">￥{p.MemberPrice.toFixed(2)}</span>
-            </p>
-        </li>
-
-        <li className="list-group-item" onClick={() => this.showPanel()}>
-            <span>
-                已选：{this.state.productSelectedText}
-            </span>
-            <span className="pull-right">
-                <i className="icon-chevron-right"></i>
-            </span>
-        </li>
-
-        {p.Promotions.length > 0 ?
-            <li className="list-group-item">
-                {p.Promotions.map((o, i) => (
-                    <PromotionComponent key={i} promotion={o}></PromotionComponent>
-                ))}
-            </li> : null
-        }
-
-        {couponsCount ?
-            <li className="list-group-item" style={{ padding: '0px 0px 10px 0px' }} onClick={() => location.hash = '#shopping_storeCoupons'}>
-                <div className="pull-left">
-                    店铺优惠劵
-                </div>
-                <div className="pull-right">
-                    <span className="badge bg-primary" style={{ marginRight: 10 }}>{couponsCount}</span>
-                    <i className="icon-chevron-right"></i>
-                </div>
-            </li> : null}
-    </ul>
-    <hr />
-    <div className="container">
-        <h4 style={{ fontWeight: 'bold', width: '100%' }}>商品信息</h4>
-        {p.Arguments.map(o => (
-            <div key={o.key} style={{ marginBottom: '10px' }}>
-                <div className="pull-left" style={{ width: '100px' }}>{o.key}</div>
-                <div style={{ marginLeft: '100px' }}>{o.value}</div>
-                <div className="clearfix"></div>
-            </div>
-        ))}
-        <div style={{
-            height: '120px', paddingTop: '40px', textAlign: 'center',
-            display: p.Arguments == null || p.Arguments.length == 0 ? 'block' : 'none'
-        }}>
-            <h4>暂无商品信息</h4>
-        </div>
-    </div>
-    <hr />
-</section>
-<footer>
-    <nav>
-        <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
-            <i className="icon-shopping-cart"></i>
-            {this.state.productsCount ?
-                <span className="badge bg-primary">{productsCount}</span>
-                : null
-            }
-        </a>
-        <button ref={(e: HTMLButtonElement) => ui.buttonOnClick(() => this.addToShoppingCart())} className="btn btn-primary pull-right" >加入购物车</button>
-    </nav>
-</footer>
-<ProductPanel ref={(o) => this.productPanel = o} parent={this} product={this.props.product} shop={this.props.shop} />
-</div> */}
-
 
 class PromotionComponent extends React.Component<
     { promotion: Promotion, key: any },

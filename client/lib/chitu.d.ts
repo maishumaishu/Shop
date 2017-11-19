@@ -98,12 +98,13 @@ declare namespace chitu {
         fire(sender: S, args: A): void;
     }
     function Callbacks<S, A>(): Callback<S, A>;
+    type ValueChangedCallback<T> = (args: T, sender: any) => void;
     class ValueStore<T> {
-        private funcs;
+        private items;
         private _value;
         constructor(value?: T);
-        add(func: (value: T) => any): (args: T) => any;
-        remove(func: (value: T) => any): void;
+        add(func: ValueChangedCallback<T>, sender?: any): ValueChangedCallback<T>;
+        remove(func: ValueChangedCallback<T>): void;
         fire(value: T): void;
         value: T;
     }
@@ -111,7 +112,7 @@ declare namespace chitu {
 
 declare namespace chitu {
     interface PageDisplayConstructor {
-        new (app: Application): PageDisplayer;
+        new(app: Application): PageDisplayer;
     }
     interface PageDisplayer {
         show(page: Page): Promise<any>;
@@ -166,10 +167,10 @@ declare namespace chitu {
     }
 }
 interface PageActionConstructor {
-    new (page: chitu.Page): any;
+    new(page: chitu.Page): any;
 }
 interface PageConstructor {
-    new (args: chitu.PageParams): chitu.Page;
+    new(args: chitu.PageParams): chitu.Page;
 }
 declare class PageDisplayerImplement implements chitu.PageDisplayer {
     show(page: chitu.Page): Promise<void>;
@@ -182,7 +183,7 @@ interface ServiceError extends Error {
 declare function ajax<T>(url: string, options: RequestInit): Promise<T>;
 declare namespace chitu {
     interface ServiceConstructor<T> {
-        new (): T;
+        new(): T;
     }
     abstract class Service {
         error: Callback<Service, Error>;
@@ -206,6 +207,6 @@ declare namespace chitu {
 
 declare function combinePath(path1: string, path2: string): string;
 declare function loadjs(path: any): Promise<any>;
-declare module "maishu-chitu" { 
-            export = chitu; 
-        }
+declare module "maishu-chitu" {
+    export = chitu;
+}

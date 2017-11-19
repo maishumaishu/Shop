@@ -492,9 +492,9 @@ define(["require", "exports"], function (require, exports) {
             return elements[elements.length - 1].value;
         };
         ;
-        FormValidator.defaults = defaults;
         return FormValidator;
     }());
+    FormValidator.defaults = defaults;
     exports.FormValidator = FormValidator;
     exports.default = FormValidator;
 });

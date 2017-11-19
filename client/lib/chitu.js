@@ -465,18 +465,18 @@ return new Callback();
 chitu.Callbacks = Callbacks;
 var ValueStore = (function () {
 function ValueStore(value) {
-    this.funcs = new Array();
+    this.items = new Array();
     this._value = value;
 }
-ValueStore.prototype.add = function (func) {
-    this.funcs.push(func);
+ValueStore.prototype.add = function (func, sender) {
+    this.items.push({ func: func, sender: sender });
     return func;
 };
 ValueStore.prototype.remove = function (func) {
-    this.funcs = this.funcs.filter(function (o) { return o != func; });
+    this.items = this.items.filter(function (o) { return o.func != func; });
 };
 ValueStore.prototype.fire = function (value) {
-    this.funcs.forEach(function (o) { return o(value); });
+    this.items.forEach(function (o) { return o.func(value, o.sender); });
 };
 Object.defineProperty(ValueStore.prototype, "value", {
     get: function () {
@@ -670,6 +670,9 @@ Page.prototype.loadPageAction = function () {
                         actionResult_1 = action(this);
                         if (actionResult_1 != null && actionResult_1.then != null && actionResult_1.catch != null) {
                             actionResult_1.then(function () { return _this.on_loadComplete(); });
+                        }
+                        else {
+                            this.on_loadComplete();
                         }
                     }
                     else {

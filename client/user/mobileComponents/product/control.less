@@ -77,20 +77,7 @@
 
         display: none;
 
-        .cust-prop {
-            border: 1px solid @brand-primary;
-            margin-bottom: 8px;
-            margin-right: 10px;
-            border-radius: 4px;
-            padding: 4px 20px 4px 20px;
-            white-space: nowrap;
-            background-color: @bg-color;;
-
-            &.selected {
-                background-color: @brand-primary;
-                color: white;
-            }
-        }
+        
 
         nav {
             // background-color: @brand-primary;
@@ -156,12 +143,12 @@
 
     .badge {
         position: relative;
-        top: -40px;
-        left: 20px;
+        top: -16px;
+        left: 0px;
     }
 }
 
-.product-panel {
+.panel {
     .modal {
         transform: translateX(100%);
         transition: 0.4s ease-in;
@@ -207,12 +194,16 @@
                 }
                 .modal-footer {
                     position: fixed;
+                    // width: 100%;
                     bottom: 0px;
                     background-color: @bg-color;
                     input {
                         text-align: center;
                         -webkit-appearance: none;   //取消文本框的阴影
                     }
+                    // .input-group {
+                    //     width: ~'calc(100% - 60px)';
+                    // }
                 }
             }
         }
@@ -222,6 +213,21 @@
         //opacity: @modal-backdrop-opacity;
         transition: opacity 0.4s ease-in;
         position: fixed !important;
+    }
+
+    .cust-prop {
+        border: 1px solid @brand-primary;
+        margin-bottom: 8px;
+        margin-right: 10px;
+        border-radius: 4px;
+        padding: 4px 20px 4px 20px;
+        white-space: nowrap;
+        background-color: @bg-color;;
+
+        &.selected {
+            background-color: @brand-primary;
+            color: white;
+        }
     }
 }
 

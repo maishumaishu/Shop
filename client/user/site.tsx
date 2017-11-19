@@ -25,7 +25,8 @@ export function subscribe<T>(component: React.Component<any, any>, item: chitu.V
 
 //============================================================
 // ui
-export function defaultNavBar(elementPage: chitu.Page, options?: { title?: string, right?: JSX.Element, left?: JSX.Element }) {
+export function defaultNavBar(elementPage: chitu.Page,
+    options?: { title?: string, right?: JSX.Element, showBackButton?: boolean }) {
 
     if (isWeixin) {
         return weixinNavheader(elementPage, options);
@@ -39,19 +40,23 @@ export function defaultNavBar(elementPage: chitu.Page, options?: { title?: strin
 
     return (
         <nav className="bg-primary">
-            <div className="col-xs-3" style={{ padding: 0 }}>
-                <button name="back-button" className="left-button" style={{ opacity: 1 }} onClick={() => app.back()}>
-                    <i className="icon-chevron-left"></i>
-                </button>
-                {options.left}
+            <div className="pull-left" style={{ padding: 0, width: 60 }}>
+                {options.showBackButton == false ?
+                    <span dangerouslySetInnerHTML={{ __html: "&nbsp;" }}></span> :
+                    <button name="back-button" className="left-button" style={{ opacity: 1 }} onClick={() => app.back()}>
+                        <i className="icon-chevron-left"></i>
+                    </button>
+                }
+                {/* {options.left} */}
             </div>
-            <div className="col-xs-6" style={{ padding: 0 }}>
+            <div className="pull-right" style={{ padding: 0, width: 60 }}>
+                {options.right ? options.right :
+                    <span dangerouslySetInnerHTML={{ __html: "&nbsp;" }}></span>}
+            </div>
+            <div className="" style={{ padding: 0 }}>
                 <h4>
                     {title}
                 </h4>
-            </div>
-            <div className="col-xs-3" style={{ padding: 0 }}>
-                {options.right ? (options.right) : null}
             </div>
         </nav>
     );
@@ -70,15 +75,10 @@ function weixinNavheader(elementPage: chitu.Page, options?: { title?: string, ri
     return (
         <nav className="bg-primary">
             <div className="col-xs-3" style={{ padding: 0 }}>
-                <button name="back-button" className="left-button" style={{ opacity: 1 }}>
-                    <i className="icon-chevron-left"></i>
-                </button>
                 {options.left}
             </div>
             <div className="col-xs-6" style={{ padding: 0 }}>
-                <h4>
-                    {title}
-                </h4>
+
             </div>
             <div className="col-xs-3" style={{ padding: 0 }}>
                 {options.right ? (options.right) : null}

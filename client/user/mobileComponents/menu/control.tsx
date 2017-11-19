@@ -28,11 +28,11 @@ export default class MenuControl extends Control<Props, State>{
     constructor(props) {
         super(props);
 
-        let productsCount = ShoppingCartService.calculateProdusCount(ShoppingCartService.items.value);
+        let productsCount = ShoppingCartService.productsCount.value; //.calculateProdusCount(ShoppingCartService.items.value);
         this.state = { menuNodes: [], showIcon: false, productsCount };
 
-        this.subscribe(ShoppingCartService.items, (value) => {
-            this.state.productsCount = ShoppingCartService.calculateProdusCount(value);
+        this.subscribe(ShoppingCartService.productsCount, (value) => {
+            this.state.productsCount = value;
             this.setState(this.state);
         })
 

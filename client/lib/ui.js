@@ -220,6 +220,77 @@ var ui;
         ui.showDialog(confirmDialogElment);
     }
     ui.confirm = confirm;
+    ui.showPanel = (function () {
+        var panel = document.createElement('div');
+        panel.className = 'mobile-page panel';
+        panel.style.display = 'none';
+        document.body.appendChild(panel);
+        panel.innerHTML = "\n            <div class=\"modal\">\n                <div class=\"modal-dialog\">\n                    <div class=\"modal-content\">\n                        <div class=\"modal-header\">\n    \n                        </div>\n                        <div class=\"modal-body\">\n    \n                        </div>\n                        <div class=\"modal-footer\">\n    \n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-backdrop in\">\n            </div>\n        ";
+        var modal = panel.querySelector('.modal');
+        var backdrop = panel.querySelector('.modal-backdrop');
+        var header = panel.querySelector('.modal-header');
+        var footer = panel.querySelector('.modal-footer');
+        var body = panel.querySelector(".modal-body");
+        var modalDialog = panel.querySelector(".modal-dialog");
+        var isIOS = navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0;
+        //=====================================================================
+        // 点击非窗口区域，关窗口。并禁用上级元素的 touch 操作。
+        // let panel = this.panel; //this.refs['panel'] as HTMLElement;
+        // let modalDialog = this.modalDialog; //this.refs['modalDialog'] as HTMLElement;
+        panel.addEventListener('touchstart', function (event) {
+            var dialogRect = modalDialog.getBoundingClientRect();
+            for (var i = 0; i < event.touches.length; i++) {
+                var clientX = event.touches[i].clientX;
+                if (clientX < dialogRect.left) {
+                    hide();
+                    return;
+                }
+            }
+        });
+        if (isIOS) {
+            panel.addEventListener('touchstart', function (event) {
+                var tagName = event.target.tagName;
+                if (tagName == 'BUTTON' || tagName == 'INPUT' || tagName == 'A') {
+                    return;
+                }
+                event.stopPropagation();
+                event.preventDefault();
+            });
+        }
+        function hide() {
+            modal.style.removeProperty('transform');
+            backdrop.style.opacity = '0';
+            window.setTimeout(function () {
+                panel.style.display = 'none';
+            }, 500);
+        }
+        return function showPanel(args) {
+            args = args || {};
+            panel.style.display = 'block';
+            modal.style.display = 'block';
+            setTimeout(function () {
+                modal.style.transform = 'translateX(0)';
+                backdrop.style.opacity = '0.5';
+            }, 50);
+            var setBodyHeight = function () {
+                var headerHeight = header.getBoundingClientRect().height;
+                var footerHeight = footer.getBoundingClientRect().height;
+                var bodyHeight = window.innerHeight - headerHeight - footerHeight;
+                body.style.height = bodyHeight + "px";
+            };
+            window.addEventListener('resize', function () { return setBodyHeight(); });
+            setBodyHeight();
+            if (args.header)
+                args.header(header);
+            if (args.body)
+                args.body(body);
+            if (args.footer)
+                args.footer(footer);
+            return {
+                hide: function () { return hide(); }
+            };
+        };
+    })();
 })(ui || (ui = {}));
 var ui;
 (function (ui) {
@@ -377,4 +448,114 @@ var ui;
         });
     }
     ui.imageFileToBase64 = imageFileToBase64;
+})(ui || (ui = {}));
+var ui;
+(function (ui) {
+    var Panel = (function () {
+        function Panel(element) {
+            var _this = this;
+            if (!element)
+                throw ui.errors.argumentNull('element');
+            this.build(element);
+            var isIOS = navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0;
+            //=====================================================================
+            // 点击非窗口区域，关窗口。并禁用上级元素的 touch 操作。
+            // let panel = this.panel; //this.refs['panel'] as HTMLElement;
+            // let modalDialog = this.modalDialog; //this.refs['modalDialog'] as HTMLElement;
+            this.panel.addEventListener('touchstart', function (event) {
+                var dialogRect = _this.modalDialog.getBoundingClientRect();
+                for (var i = 0; i < event.touches.length; i++) {
+                    var clientX = event.touches[i].clientX;
+                    if (clientX < dialogRect.left) {
+                        _this.hide();
+                        return;
+                    }
+                }
+            });
+            //=========================================================
+            // 防止滚动面板时，事件穿透到面板底下的页面
+            if (isIOS) {
+                this.panel.addEventListener('touchstart', function (event) {
+                    var tagName = event.target.tagName;
+                    if (tagName == 'BUTTON' || tagName == 'INPUT' || tagName == 'A') {
+                        return;
+                    }
+                    event.stopPropagation();
+                    event.preventDefault();
+                });
+            }
+            //=========================================================
+        }
+        Object.defineProperty(Panel.prototype, "header", {
+            get: function () {
+                return this._header;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Panel.prototype, "body", {
+            get: function () {
+                return this._body;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Panel.prototype, "footer", {
+            get: function () {
+                return this._footer;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Panel.prototype.build = function (element) {
+            this.panel = element;
+            this.panel.className = 'panel';
+            this.panel.style.display = 'none';
+            // document.body.appendChild(panel);
+            this.panel.innerHTML = "\n                <div class=\"modal\">\n                    <div class=\"modal-dialog\">\n                        <div class=\"modal-content\">\n                            <div class=\"modal-header\">\n        \n                            </div>\n                            <div class=\"modal-body\">\n        \n                            </div>\n                            <div class=\"modal-footer\">\n        \n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-backdrop in\">\n                </div>\n            ";
+            this.modal = this.panel.querySelector('.modal');
+            this.backdrop = this.panel.querySelector('.modal-backdrop');
+            this._header = this.panel.querySelector('.modal-header');
+            this._footer = this.panel.querySelector('.modal-footer');
+            this._body = this.panel.querySelector(".modal-body");
+            this.modalDialog = this.panel.querySelector(".modal-dialog");
+        };
+        Panel.prototype.show = function () {
+            var _this = this;
+            // args = args || {};
+            this.panel.style.display = 'block';
+            this.modal.style.display = 'block';
+            setTimeout(function () {
+                _this.modal.style.transform = 'translateX(0)';
+                _this.backdrop.style.opacity = '0.5';
+            }, 50);
+            var setBodyHeight = function () {
+                var headerHeight = _this._header.getBoundingClientRect().height;
+                var footerHeight = _this._footer.getBoundingClientRect().height;
+                var bodyHeight = window.innerHeight - headerHeight - footerHeight;
+                _this._body.style.height = bodyHeight + "px";
+            };
+            window.addEventListener('resize', function () { return setBodyHeight(); });
+            setBodyHeight();
+            // if (args.header)
+            //     args.header(header);
+            // if (args.body)
+            //     args.body(body);
+            // if (args.footer)
+            //     args.footer(footer);
+            // return {
+            //     hide: () => hide()
+            // }
+        };
+        Panel.prototype.hide = function () {
+            var _this = this;
+            this.modal.style.removeProperty('transform');
+            this.backdrop.style.opacity = '0';
+            window.setTimeout(function () {
+                _this.panel.style.display = 'none';
+            }, 500);
+        };
+        return Panel;
+    }());
+    ui.Panel = Panel;
 })(ui || (ui = {}));

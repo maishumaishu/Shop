@@ -46,7 +46,7 @@ export class ShoppingService extends Service {
         }
 
         let url = this.url('Product/GetProducts');
-        var args = { startRowIndex: pageIndex * 20 } as wuzhui.DataSourceSelectArguments;
+        var args = { startRowIndex: pageIndex * config.pageSize } as wuzhui.DataSourceSelectArguments;
         if (categoryId != null) {
             args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
         }

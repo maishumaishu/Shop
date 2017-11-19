@@ -2,7 +2,7 @@
 (function () {
     //====================================================
     // 配置
-    let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`, `service4.alinq.org`];
+    let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`];//, `service4.alinq.org`
     //====================================================
     let Ping = {
         optimumServer: null as string
@@ -11,7 +11,7 @@
 
         this.opt = opt || {};
         this.favicon = this.opt.favicon || "/favicon.ico";
-        this.timeout = this.opt.timeout || 0;
+        this.timeout = this.opt.timeout || 2000;
 
         function ping(source: string, callback: (error: string, pong: number) => void) {
             this.img = new Image();

@@ -18,6 +18,36 @@ interface MySiteMapNode extends chitu.SiteMapNode {
     title?: string
 }
 
+export class Page extends BasePage {
+    constructor(params: chitu.PageParams) {
+        super(params);
+
+        this.showLoading();
+    }
+
+    showLoading() {
+        let loadingView = this.element.querySelector('section.loading') as HTMLElement;
+        if (loadingView == null) {
+            loadingView = document.createElement('section');
+            this.element.appendChild(loadingView);
+        }
+        else {
+            loadingView.style.removeProperty('display');
+        }
+
+        loadingView.className = 'loading';
+        loadingView.innerHTML = "数据正在加载中...";
+        loadingView.style.textAlign = "center";
+        loadingView.style.fontWeight = 'blod';
+    }
+    hideLoading() {
+        let loadingView = this.element.querySelector('section.loading') as HTMLElement;
+        if (loadingView != null) {
+            loadingView.style.display = 'none';
+        }
+    }
+}
+
 export class Application extends BaseApplication {
     private topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
 
@@ -25,6 +55,7 @@ export class Application extends BaseApplication {
         super(args);
 
         chitu.Page.tagName = "article";
+        this.pageType = Page;
     }
 
     public parseRouteString(routeString: string) {
