@@ -36,7 +36,7 @@ export class Header extends Control<ControlProps<Footer>, any>{
     }
 }
 
-export class Footer extends Control<ControlProps<Footer>, { productsCount: number }> {
+export class Footer extends Control<ControlProps<Footer> & { product: Product }, { productsCount: number }> {
     private shoppingCart: ShoppingCartService;
     constructor(props) {
         super(props);
@@ -88,6 +88,10 @@ export class Footer extends Control<ControlProps<Footer>, { productsCount: numbe
     }
     _render(h) {
         let { productsCount } = this.state;
+        let p = this.props.product;
+        let allowBuy = p.Stock > 0 && p.OffShelve != true;
+
+        let buttonText = p.Stock == 0 ? "商品已售罄" : p.OffShelve == true ? "商品已下架" : "加入购物车";
         return (
             <nav className="product-control-footer">
                 <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
@@ -97,8 +101,9 @@ export class Footer extends Control<ControlProps<Footer>, { productsCount: numbe
                         : null
                     }
                 </a>
-                <button ref={(e: HTMLButtonElement) => e ? e.onclick = ui.buttonOnClick(() => this.addToShoppingCart()) : null}
-                    className="btn btn-primary pull-right" >加入购物车</button>
+                <button disabled={!allowBuy} style={{ width: 120 }}
+                    ref={(e: HTMLButtonElement) => e ? e.onclick = ui.buttonOnClick(() => this.addToShoppingCart()) : null}
+                    className="btn btn-primary pull-right" >{buttonText}</button>
             </nav>
         );
     }

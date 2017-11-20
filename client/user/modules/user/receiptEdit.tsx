@@ -22,6 +22,7 @@ export default async function (page: chitu.Page) {
         ref={(e) => receiptEditPage = e || receiptEditPage} />, page.element);
 
     page.showing.add(async () => {
+        receiptEditPage.validator.clearErrors();
         let receiptInfo: ReceiptInfo = await getReceiptInfo(page.routeData.values, shop);
         receiptEditPage.state.receiptInfo = receiptInfo;
         receiptEditPage.setState(receiptEditPage.state);
@@ -52,7 +53,7 @@ class ReceiptEditPage extends React.Component<
     Props,
     { receiptInfo: ReceiptInfo }>{
     private formElement: HTMLFormElement;
-    private validator: FormValidator;
+    validator: FormValidator;
     constructor(props) {
         super(props);
 
@@ -174,7 +175,7 @@ class ReceiptEditPage extends React.Component<
                                 <input type="text" name="Mobile" className="form-control"
                                     value={receiptInfo.Mobile || ''}
                                     onChange={(e) => this.onInputChange(e)}
-                                    data-bind="value:Mobile,textInput:Mobile" placeholder="请填写收货人手机号码" />
+                                    placeholder="请填写收货人手机号码" />
                             </div>
                         </div>
                         <div className="form-group">
@@ -188,7 +189,9 @@ class ReceiptEditPage extends React.Component<
                                     <input type="hidden" value={receiptInfo.RegionId || ''} readOnly={true} />
                                 </span>
                                 <i className="icon-chevron-right"></i> */}
-                                <input type="text" className="form-control" placeholder="请选择地区" value={region} />
+                                <div type="text" className="form-control" style={{ color: !region ? '#aaaaaa' : null }} >
+                                    {region ? region : '请选择地区'}
+                                </div>
                                 <input type="hidden" name="RegionId" value={receiptInfo.RegionId || ''} readOnly={true} />
                             </div>
                         </div>

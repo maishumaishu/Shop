@@ -37,7 +37,8 @@ export default function (page: chitu.Page) {
                     app.back();
                 }
             } as ReceiptEditPageArguments;
-            app.showPage('user_receiptEdit', routeValues);
+            app.redirect('user_receiptEdit', routeValues);
+            
         }
         private editReceipt(receipt: ReceiptInfo) {
             let routeValues = {

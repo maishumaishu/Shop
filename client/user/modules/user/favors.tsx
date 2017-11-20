@@ -40,10 +40,10 @@ export default function (page: chitu.Page) {
         }
         render() {
             return [
-                <header>
+                <header key="h">
                     {defaultNavBar(page, { title: '我的收藏' })}
                 </header>,
-                <section ref={o => o ? this.dataView = o as HTMLElement : null}>
+                <section key="v" ref={o => o ? this.dataView = o as HTMLElement : null}>
                     <DataList className="container" loadData={this.loadFavorProducts} dataItem={(o: FavorProduct) => (
                         <div key={o.ProductId}>
                             <div className="item row">
