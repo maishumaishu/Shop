@@ -2,7 +2,7 @@ import { Control, ControlProps } from 'mobileComponents/common';
 import { imageUrl } from 'userServices/service';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { ShoppingService } from 'userServices/shoppingService';
-
+import { ProductImage } from 'user/components/productImage';
 import { app } from 'site';
 
 // let { ImageBox } = controls;
@@ -179,7 +179,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
                                 <div className="title interception">
                                     {o.Title}
                                 </div> : null}
-                            <div className="price">
+                            <div className="price-bar">
                                 <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
                                 </span>
@@ -200,33 +200,15 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         var productCounts = this.state.productCounts;
         return (
             <div className="singleColumnProductControl">
-                {products.filter(o => o != null).map(o =>
+                {products.filter(o => o != null).map((o,i) =>
                     <div key={o.Id} className="product double col-xs-6">
                         <div onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
-                            <img src={imageUrl(o.ImagePath, 200)}
-
-                                ref={(e: HTMLImageElement) => {
-                                    if (!e) return;
-                                    ui.renderImage(e, { imageSize: { width: 200, height: 200 } });
-                                }} />
-
-                            {o.OffShelve || o.Stock == 0 ?
-                                <div style={{
-                                    position: 'absolute', left: 20, top: 10, width: 'calc(100% - 40px)',
-                                    height: 'calc(100% - 100px)', 
-                                    // opacity: 0.5, backgroundColor: 'whitesmoke',
-                                    fontWeight: 'bold', fontSize: 24, textAlign: 'left'
-                                }}>
-                                    <div style={{ transform: 'rotate(-31deg)' }}>
-                                        {o.OffShelve ? '已下架' : '已售罄'}
-                                    </div>
-                                </div> : null
-                            }
+                            <ProductImage key={i} product={o} />
 
                             <div className="name" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                                 {o.Name}
                             </div>
-                            <div className="price" onClick={(e) => e.stopPropagation()}>
+                            <div className="price-bar" onClick={(e) => e.stopPropagation()}>
                                 <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
                                 </span>

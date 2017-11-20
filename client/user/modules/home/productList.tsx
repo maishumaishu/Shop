@@ -3,9 +3,10 @@ import { imageUrl, config } from 'userServices/service';
 import { ShoppingService } from 'userServices/shoppingService';
 import { DataList, dataList, MyDataList } from 'components/dataList';
 import { Tabs } from 'components/tabs';
+import { ProductImage } from 'user/components/productImage';
+import { Page } from 'user/application';
 
-
-export default async function (page: chitu.Page) {
+export default async function (page: Page) {
 
     class ProductListHeader extends React.Component<{ title: string }, {}>{
         render() {
@@ -57,8 +58,7 @@ export default async function (page: chitu.Page) {
                     element.href = `#home_product?id=${o.Id}`
                     element.className = "col-xs-6 text-center item";
                     ReactDOM.render([
-                        <img key="img" className="img-responsive" src={imageUrl(o.ImagePath, 150, 150)}
-                            ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 150, height: 150 } }) : null} />,
+                        <ProductImage key={o.Id} product={o} />,
                         <div key="name" className="bottom">
                             <div className="interception" style={{ textAlign: 'left' }}>{o.Name}</div>
                             <div>
@@ -84,20 +84,8 @@ export default async function (page: chitu.Page) {
                     {defaultNavBar(page, { title: this.state.title })}
                 </header>,
                 <section key="view0" ref={(e: any) => this.dataView = e || this.dataView}>
-                    {/* <DataList className="products" scroller={() => this.dataView} loadData={loadProducts}
-                    ref={e => this.dataList = e || this.dataList}
-                    dataItem={(o: Product) => (
-                        <a key={o.Id} href={`#home_product?id=${o.Id}`} className="col-xs-6 text-center item">
-                            <img src={imageUrl(o.ImagePath, 100, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 100, height: 100 } }) : null} />
-                            <div className="bottom">
-                                <div className="interception">{o.Name}</div>
-                                <div>
-                                    <div className="price pull-left">￥{o.Price.toFixed(2)}</div>
-                                </div>
-                            </div>
-                        </a>
-                    )} /> */}
-                    <div ref={(e: HTMLElement) => this.dataListElement = e || this.dataListElement} style={{ paddingTop: 10 }}></div>
+                    <div className="products"
+                        ref={(e: HTMLElement) => this.dataListElement = e || this.dataListElement} style={{ paddingTop: 10 }}></div>
                 </section >
             ]
         }
@@ -111,15 +99,18 @@ export default async function (page: chitu.Page) {
     ReactDOM.render(<ProductListView shop={shop} categoryId={categoryId}
         ref={e => productListView = e || productListView} />, page.element);
 
-    page.active.add(async () => {
-        categoryId = page.routeData.values.categoryId;
+    type Params = { categoryId: string };
+    page.showing.add(async (sender: Page, args: Params) => {
+        categoryId = args.categoryId;
         if (productListView.state.categoryId == categoryId)
             return;
 
+        sender.showLoading();
         let category = await shop.category(categoryId);
         productListView.state.title = category.Name;
         productListView.state.categoryId = categoryId;
         productListView.setState(productListView.state);
+        sender.hideLoading();
     })
 }
 
