@@ -31,7 +31,7 @@ export function defaultNavBar(elementPage: chitu.Page,
     if (isWeixin) {
         return weixinNavheader(elementPage, options);
     }
-    document.title = options.title || "";
+    // document.title = options.title || "";
     options = options || {};
     let title = options.title || '';
     let className = elementPage.element.className;

@@ -2,9 +2,7 @@ import { componentsDir, Control } from 'mobileComponents/common';
 import { StationService } from 'userServices/stationService';
 import { ShoppingService } from 'userServices/shoppingService';
 import { imageUrl } from 'userServices/service'
-
-const station = new StationService();
-const shopping = new ShoppingService();
+import { Page } from 'user/application';
 
 export interface State {
     showSecondLevel?: boolean,
@@ -18,9 +16,12 @@ export default class CategoriesControl extends Control<any, State> {
         this.state = { showIcons: false };
         this.loadControlCSS();
 
+        let shopping = this.elementPage.createService(ShoppingService);
+        (this.elementPage as Page).showLoading();
         shopping.categories().then(categories => {
             this.state.categories = categories;
             this.setState(this.state);
+            (this.elementPage as Page).hideLoading();
         })
     }
     get persistentMembers(): (keyof State)[] {

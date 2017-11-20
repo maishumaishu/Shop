@@ -165,7 +165,11 @@ export default class SingleColumnProductControl extends Control<Props, State> {
                     <div key={o.Id} className="product single">
                         <div className={leftClassName} onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                             <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
-                                ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 300, height: 300 } }) : null} />
+                                ref={(e: HTMLImageElement) => {
+                                    if (!e) return;
+                                    ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
+                                    // 
+                                }} />
                         </div>
                         <div className={`content ${rightClassName}`}>
                             <div className="name interception" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
@@ -198,14 +202,31 @@ export default class SingleColumnProductControl extends Control<Props, State> {
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
                     <div key={o.Id} className="product double col-xs-6">
-                        <div>
+                        <div onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                             <img src={imageUrl(o.ImagePath, 200)}
-                                onClick={() => app.redirect(`home_product?id=${o.Id}`)}
-                                ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 200, height: 200 } }) : null} />
+
+                                ref={(e: HTMLImageElement) => {
+                                    if (!e) return;
+                                    ui.renderImage(e, { imageSize: { width: 200, height: 200 } });
+                                }} />
+
+                            {o.OffShelve || o.Stock == 0 ?
+                                <div style={{
+                                    position: 'absolute', left: 20, top: 10, width: 'calc(100% - 40px)',
+                                    height: 'calc(100% - 100px)', 
+                                    // opacity: 0.5, backgroundColor: 'whitesmoke',
+                                    fontWeight: 'bold', fontSize: 24, textAlign: 'left'
+                                }}>
+                                    <div style={{ transform: 'rotate(-31deg)' }}>
+                                        {o.OffShelve ? '已下架' : '已售罄'}
+                                    </div>
+                                </div> : null
+                            }
+
                             <div className="name" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                                 {o.Name}
                             </div>
-                            <div className="price">
+                            <div className="price" onClick={(e) => e.stopPropagation()}>
                                 <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
                                 </span>

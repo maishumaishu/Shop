@@ -13,9 +13,9 @@ define(["require", "exports"], function (require, exports) {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4();
     }
-    var Errors = {
-        ruleNotExists: function (name) {
-            return new Error("Rule named " + name + " is not exists.");
+    let Errors = {
+        ruleNotExists(name) {
+            return new Error(`Rule named ${name} is not exists.`);
         }
     };
     var defaults = {
@@ -60,7 +60,7 @@ define(["require", "exports"], function (require, exports) {
             "default": function (field, defaultName) {
                 return field.value !== defaultName;
             },
-            matches: function (field, match) {
+            matches: (field, match) => {
                 // var el = this.form.querySelector(`[name="${matchName}"]`) as HTMLInputElement;
                 // if (el) {
                 return field.value === match;
@@ -209,21 +209,21 @@ define(["require", "exports"], function (require, exports) {
         errorClassName: 'validationMessage',
         callback: function (errors, fields, evt) {
             console.assert(evt != null && evt.validator instanceof FormValidator);
-            for (var i = 0; i < errors.length; i++) {
+            for (let i = 0; i < errors.length; i++) {
                 console.assert(errors[i].id != null && errors[i].id != '');
-                var errorTextElementId = getErrorElementId(errors[i].element);
-                var errorTextElement = document.getElementById(errorTextElementId);
+                let errorTextElementId = getErrorElementId(errors[i].element);
+                let errorTextElement = document.getElementById(errorTextElementId);
                 if (errorTextElement == null) {
-                    errorTextElement = evt.formElement.querySelector("." + errors[i].name + "." + defaults.errorClassName);
+                    errorTextElement = evt.formElement.querySelector(`.${errors[i].name}.${defaults.errorClassName}`);
                     if (errorTextElement == null) {
                         errorTextElement = document.createElement('span');
                         errorTextElement.className = defaults.errorClassName;
-                        var parent_1 = errors[i].element.parentElement;
+                        let parent = errors[i].element.parentElement;
                         if (errors[i].element.nextElementSibling) {
-                            parent_1.insertBefore(errorTextElement, errors[i].element.nextElementSibling);
+                            parent.insertBefore(errorTextElement, errors[i].element.nextElementSibling);
                         }
                         else {
-                            parent_1.appendChild(errorTextElement);
+                            parent.appendChild(errorTextElement);
                         }
                     }
                     errorTextElement.id = errorTextElementId;
@@ -231,12 +231,12 @@ define(["require", "exports"], function (require, exports) {
                 errorTextElement.style.display = 'block';
                 errorTextElement.innerHTML = errors[i].message;
             }
-            var errorNames = errors.map(function (o) { return o.name; });
-            var successFields = fields.filter(function (o) { return errorNames.indexOf(o.name) < 0; });
-            var errorElements = successFields
-                .map(function (o) { return o.element; }).filter(function (o) { return o != null; })
-                .map(function (o) { return document.getElementById(getErrorElementId(o)); }).filter(function (o) { return o != null; });
-            errorElements.forEach(function (o) {
+            let errorNames = errors.map(o => o.name);
+            let successFields = fields.filter(o => errorNames.indexOf(o.name) < 0);
+            let errorElements = successFields
+                .map(o => o.element).filter(o => o != null)
+                .map(o => document.getElementById(getErrorElementId(o))).filter(o => o != null);
+            errorElements.forEach(o => {
                 o.innerHTML = '';
                 o.style.display = 'none';
             });
@@ -252,10 +252,10 @@ define(["require", "exports"], function (require, exports) {
      * Define the regular expressions that will be used
      */
     var ruleRegex = /^(.+?)\[(.+)\]$/, numericRegex = /^[0-9]+$/, integerRegex = /^\-?[0-9]+$/, decimalRegex = /^\-?[0-9]*\.?[0-9]+$/, emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, alphaRegex = /^[a-z]+$/i, alphaNumericRegex = /^[a-z0-9]+$/i, alphaDashRegex = /^[a-z0-9_\-]+$/i, naturalRegex = /^[0-9]+$/i, naturalNoZeroRegex = /^[1-9][0-9]*$/i, ipRegex = /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/i, base64Regex = /[^a-zA-Z0-9\/\+=]/i, numericDashRegex = /^[\d\-\s]+$/, urlRegex = /^((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/, dateRegex = /\d{4}-\d{1,2}-\d{1,2}/;
-    var FormValidator = (function () {
-        function FormValidator(form, fields, callback) {
+    class FormValidator {
+        constructor(form, fields, callback) {
             if (!form)
-                throw new Error("Argument form can not be null.");
+                throw new Error(`Argument form can not be null.`);
             this.callback = callback || defaults.callback;
             this.fields = fields;
             this.form = form;
@@ -269,12 +269,7 @@ define(["require", "exports"], function (require, exports) {
             this.hooks = Object.assign({}, defaults.hooks);
             this.messages = Object.assign({}, defaults.messages);
         }
-        FormValidator.prototype.clearErrors = function () {
-            var _this = this;
-            var fieldNames = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                fieldNames[_i] = arguments[_i];
-            }
+        clearErrors(...fieldNames) {
             console.assert(fieldNames != null);
             //==========================================
             // 不传参数，清除所有错误。
@@ -282,80 +277,76 @@ define(["require", "exports"], function (require, exports) {
                 fieldNames = Object.getOwnPropertyNames(this.fields);
             }
             //==========================================
-            var fields = fieldNames.map(function (fieldName) {
-                var result = _this.fields[fieldName];
+            let fields = fieldNames.map(fieldName => {
+                let result = this.fields[fieldName];
                 if (result == null)
-                    console.warn("'" + fieldName + "' field is not exists.");
+                    console.warn(`'${fieldName}' field is not exists.`);
                 return result;
-            }).filter(function (o) { return o != null; });
-            var errorElements = fields.filter(function (o) { return o.element != null; })
-                .map(function (o) { return document.getElementById(getErrorElementId(o.element)); })
-                .filter(function (o) { return o != null; });
-            for (var i = 0; i < errorElements.length; i++) {
+            }).filter(o => o != null);
+            let errorElements = fields.filter(o => o.element != null)
+                .map(o => document.getElementById(getErrorElementId(o.element)))
+                .filter(o => o != null);
+            for (let i = 0; i < errorElements.length; i++) {
                 errorElements[i].innerHTML = '';
                 errorElements[i].style.display = 'none';
             }
-        };
+        }
         /*
         * @public
         * Registers a callback for a custom rule (i.e. callback_username_check)
         */
-        FormValidator.prototype.registerCallback = function (name, handler) {
+        registerCallback(name, handler) {
             if (name && typeof name === 'string' && handler && typeof handler === 'function') {
                 this.handlers[name] = handler;
             }
             // return this for chaining
             return this;
-        };
+        }
         ;
         /*
          * @public
          * Registers a conditional for a custom 'depends' rule
          */
-        FormValidator.prototype.registerConditional = function (name, conditional) {
+        registerConditional(name, conditional) {
             if (name && typeof name === 'string' && conditional && typeof conditional === 'function') {
                 this.conditionals[name] = conditional;
             }
             // return this for chaining
             return this;
-        };
+        }
         ;
         /*
          * @public
          * Runs the validation when the form is submitted.
          */
-        FormValidator.prototype.validateForm = function () {
+        validateForm() {
             //this.clearErrors();
             return this._validateFields(this.fields);
-        };
+        }
         ;
-        FormValidator.prototype.validateFields = function () {
-            var fieldNames = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                fieldNames[_i] = arguments[_i];
-            }
+        validateFields(...fieldNames) {
             fieldNames = fieldNames || new Array();
-            var fields = {};
-            for (var i = 0; i < fieldNames.length; i++) {
-                var field = this.fields[fieldNames[i]];
+            let fields = {};
+            for (let i = 0; i < fieldNames.length; i++) {
+                let field = this.fields[fieldNames[i]];
                 if (field == null) {
-                    console.warn("Field '" + fieldNames[i] + "' is not exists.");
+                    console.warn(`Field '${fieldNames[i]}' is not exists.`);
                     continue;
                 }
                 fields[fieldNames[i]] = field;
             }
             return this._validateFields(fields);
-        };
-        FormValidator.prototype._validateFields = function (fields) {
+        }
+        _validateFields(fields) {
             //this.errors = [];
-            var errors = [];
+            let errors = [];
             for (var key in fields) {
                 if (!this.fields.hasOwnProperty(key))
                     continue;
-                var field = this.fields[key];
+                let field = this.fields[key];
                 console.assert(field != null);
-                var element = this.form.querySelector("[name=\"" + field.name + "\"]");
-                var elements = this.form.querySelectorAll("[name=\"" + field.name + "\"]");
+                let element = this.form.querySelector(`[name="${field.name}"]`);
+                let elements = this.form.querySelectorAll(`[name="${field.name}"]`);
                 if (!element)
                     continue;
                 // let elementId = element.id;
@@ -365,7 +356,7 @@ define(["require", "exports"], function (require, exports) {
                 field.id = element.id;
                 field.element = element;
                 // field.type = element.type;
-                var value = FormValidator.attributeValue(elements, 'value');
+                let value = FormValidator.attributeValue(elements, 'value');
                 // if (typeof value == 'string')
                 field.value = value; //attributeValue(elements, 'value') as string;
                 // else
@@ -375,7 +366,7 @@ define(["require", "exports"], function (require, exports) {
                  * If the field has a depends conditional, only validate the field
                  * if it passes the custom function
                  */
-                var error = void 0;
+                let error;
                 // if (field.depends && typeof field.depends === "function") {
                 //     if (field.depends.call(this, field)) {
                 //         error = this._validateField(field);
@@ -391,44 +382,44 @@ define(["require", "exports"], function (require, exports) {
                     errors.push(error);
             }
             if (typeof this.callback === 'function') {
-                var _fields = Object.getOwnPropertyNames(fields).map(function (o) { return fields[o]; });
+                let _fields = Object.getOwnPropertyNames(fields).map(o => fields[o]);
                 this.callback(errors, _fields, { formElement: this.form, validator: this });
             }
             if (errors.length > 0) {
                 return false;
             }
             return true;
-        };
+        }
         /*
          * @private
          * Looks at the fields value and evaluates it against the given rules
          */
-        FormValidator.prototype._validateField = function (field) {
+        _validateField(field) {
             var rules = this.hooks;
             var rule = {};
-            var dependsRules;
+            let dependsRules;
             if (field.depends) {
                 dependsRules = field.depends();
             }
-            var fieldRules = (field.rules || []).concat(dependsRules || []);
-            for (var i = 0; i < fieldRules.length; i++) {
-                var rule_1 = void 0;
+            let fieldRules = (field.rules || []).concat(dependsRules || []);
+            for (let i = 0; i < fieldRules.length; i++) {
+                let rule;
                 if (typeof fieldRules[i] == 'string') {
-                    rule_1 = { name: fieldRules[i], params: null };
+                    rule = { name: fieldRules[i], params: null };
                 }
                 else {
-                    rule_1 = fieldRules[i];
+                    rule = fieldRules[i];
                 }
-                var func = rules[rule_1.name];
+                let func = rules[rule.name];
                 if (func == null)
-                    throw Errors.ruleNotExists(rule_1.name);
-                var params = [field];
-                if (rule_1.params) {
-                    var arr = rule_1.params;
-                    for (var i_1 = 0; i_1 < arr.length; i_1++) {
+                    throw Errors.ruleNotExists(rule.name);
+                let params = [field];
+                if (rule.params) {
+                    var arr = rule.params;
+                    for (let i = 0; i < arr.length; i++) {
                         var value;
-                        for (var j = 0; j < rule_1.params.length; j++) {
-                            var q = this.form.querySelectorAll("[name=\"" + rule_1.params[j] + "\"]");
+                        for (let j = 0; j < rule.params.length; j++) {
+                            var q = this.form.querySelectorAll(`[name="${rule.params[j]}"]`);
                             if (q.length > 0) {
                                 var attrName = (q[0].type == 'radio' || q[0].type == 'checkbox') ? 'checked' : 'value';
                                 value = FormValidator.attributeValue(q, attrName);
@@ -437,30 +428,30 @@ define(["require", "exports"], function (require, exports) {
                         }
                     }
                 }
-                var result = func.apply(void 0, params);
+                var result = func(...params);
                 if (!result) {
-                    var message = field.messages[rule_1.name] || this.messages[rule_1.name] || this.messages['default'];
+                    let message = field.messages[rule.name] || this.messages[rule.name] || this.messages['default'];
                     message = message.replace('%s', field.display);
                     var errorObject = {
                         id: field.id,
                         display: field.display,
                         element: field.element,
                         name: field.name,
-                        message: message,
+                        message,
                         rule: func
                     };
                     return errorObject;
                 }
             }
             return null;
-        };
+        }
         ;
         /**
          * private function _getValidDate: helper function to convert a string date to a Date object
          * @param date (String) must be in format yyyy-mm-dd or use keyword: today
          * @returns {Date} returns false if invalid
          */
-        FormValidator.prototype._getValidDate = function (date) {
+        _getValidDate(date) {
             if (!date.match('today') && !date.match(dateRegex)) {
                 return false;
             }
@@ -472,9 +463,9 @@ define(["require", "exports"], function (require, exports) {
                 validDate.setDate(validDateArray[2]);
             }
             return validDate;
-        };
+        }
         ;
-        FormValidator.attributeValue = function (elements, attributeName) {
+        static attributeValue(elements, attributeName) {
             console.assert(elements != null);
             if (elements.length == 0)
                 return null;
@@ -482,7 +473,7 @@ define(["require", "exports"], function (require, exports) {
                 return elements[0][attributeName];
             if (elements[0].type === 'radio' || elements[0].type === 'checkbox') {
                 var i;
-                var elementLength = elements.length;
+                let elementLength = elements.length;
                 for (i = 0; i < elementLength; i++) {
                     if (elements[i].checked) {
                         return elements[i][attributeName];
@@ -490,10 +481,9 @@ define(["require", "exports"], function (require, exports) {
                 }
             }
             return elements[elements.length - 1].value;
-        };
+        }
         ;
-        return FormValidator;
-    }());
+    }
     FormValidator.defaults = defaults;
     exports.FormValidator = FormValidator;
     exports.default = FormValidator;

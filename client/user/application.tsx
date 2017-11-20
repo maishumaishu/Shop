@@ -68,12 +68,14 @@ export class Application extends BaseApplication {
         if (!element) throw new Error("argument element is null.");
 
         this.emtpyPageElement = element;
-        define("modules/empty", function () {
-            return "";
+        define("modules/empty", ["exports"], function (exports) {
+            exports.default = function (page: Page) {
+                page.hideLoading();
+            }
         })
 
         let routeData = this.parseRouteString("empty");
-        let page = super.createPage(routeData) as BasePage;
+        let page = super.createPage(routeData) as Page;
         return page;
     }
 
