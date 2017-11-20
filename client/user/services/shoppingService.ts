@@ -50,21 +50,43 @@ export class ShoppingService extends Service {
         if (categoryId != null) {
             args.filter = `ProductCategoryId=Guid.Parse('${categoryId}')`;
         }
+
+        let result: { Products: Product[] };
         return this.getByJson<{ Products: Array<Product> }>(url, args).then(o => {
-            return o.Products;
-        });
+            let ids = o.Products.map(a => a.Id);
+            return this.productStocks(ids).then((a) => {
+                for (let i = 0; i < o.Products.length; i++) {
+                    let stockRecord = a.filter(c => c.ProductId == o.Products[i].Id)[0];
+                    if (stockRecord) {
+                        o.Products[i].Stock = stockRecord.Quantity;
+                    }
+                }
+                return o.Products;
+            })
+        })
     }
 
-    productsByIds(productIds: string[]) {
+    private productStocks(productIds: string[]) {
+        let url = this.url('Product/GetProductStocks');
+        return this.getByJson<Array<{ ProductId: string, Quantity: number }>>(url, { productIds: productIds });
+    }
+
+    async  productsByIds(productIds: string[]) {
         if (!productIds || productIds.length == 0)
             return [];
 
         var url = this.url('Product/GetProductsByIds');
-        return this.getByJson<Product[]>(url, { ids: productIds })
-            .then(items => {
-                items.forEach(o => o.ImagePath = imageUrl(o.ImagePath, 100));
-                return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);;
-            });
+        var arr = await Promise.all([this.getByJson<Product[]>(url, { ids: productIds }), this.productStocks(productIds)]);
+        let items = arr[0];
+        let stcokRecords = arr[1];
+
+        items.forEach(item => {
+            let stockRecord = stcokRecords.filter(o => o.ProductId == item.Id)[0];
+            if (stockRecord)
+                item.Stock = stockRecord.Quantity;
+        });
+
+        return items.filter(o => productIds.indexOf(o.Id) >= 0);
     }
     /**
      * 

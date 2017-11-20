@@ -7,15 +7,18 @@ export class ShoppingService extends Service {
     url(path: string) {
         return `${Service.config.shopUrl}${path}`;
     }
-    product(productId: string) {
+    async product(productId: string) {
         let url = Service.config.shopUrl + 'Product/GetProduct';
-        let data = { productId: productId };
-        return this.getByJson<Product>(url, data).then((data) => {
-            data.Fields = data.Fields || [];
-            data.Arguments = data.Arguments || [];
+        // let data = { productId: productId };
+        let arr = await Promise.all([this.getByJson<Product>(url, { productId }), this.productStocks([productId])])
+        // return this.getByJson<Product>(url, data).then((data) => {
+        let data = arr[0];
+        data.Stock = arr[1][0] != null ? arr[1][0].Quantity : null;
+        data.Fields = data.Fields || [];
+        data.Arguments = data.Arguments || [];
 
-            return data;
-        });
+        return data;
+        // });
     }
     products(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
@@ -129,7 +132,7 @@ export class ShoppingService extends Service {
         let url = this.url('Product/SetStock');
         return this.putByJson<any>(url, { productId: productId, quantity: quantity });
     }
-    getProductStocks(productIds: string[]) {
+    productStocks(productIds: string[]) {
         let url = this.url('Product/GetProductStocks');
         return this.getByJson<Array<{ ProductId: string, Quantity: number }>>(url, { productIds: productIds });
     }
