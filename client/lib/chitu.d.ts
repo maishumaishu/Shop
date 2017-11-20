@@ -1,3 +1,4 @@
+
 declare namespace chitu {
     interface SiteMapNode {
         pageName: string;
@@ -83,7 +84,7 @@ declare class Errors {
     static createPageFail(pageName: string): Error;
     static actionTypeError(pageName: string): Error;
     static canntFindAction(pageName: any): Error;
-    static exportsCanntNull(pageName: string): void;
+    static exportsCanntNull(pageName: string): Error;
     static scrollerElementNotExists(): Error;
     static resourceExists(resourceName: string, pageName: string): Error;
     static siteMapRootCanntNull(): Error;
@@ -112,7 +113,7 @@ declare namespace chitu {
 
 declare namespace chitu {
     interface PageDisplayConstructor {
-        new(app: Application): PageDisplayer;
+        new (app: Application): PageDisplayer;
     }
     interface PageDisplayer {
         show(page: Page): Promise<any>;
@@ -135,16 +136,16 @@ declare namespace chitu {
         private _displayer;
         static tagName: string;
         error: Callback<Page, Error>;
-        load: Callback<this, null>;
+        load: Callback<this, any>;
         loadComplete: Callback<this, any>;
-        showing: Callback<this, null>;
-        shown: Callback<this, null>;
-        hiding: Callback<this, null>;
-        hidden: Callback<this, null>;
-        closing: Callback<this, null>;
-        closed: Callback<this, null>;
-        active: Callback<this, null>;
-        deactive: Callback<this, null>;
+        showing: Callback<this, any>;
+        shown: Callback<this, any>;
+        hiding: Callback<this, any>;
+        hidden: Callback<this, any>;
+        closing: Callback<this, any>;
+        closed: Callback<this, any>;
+        active: Callback<this, any>;
+        deactive: Callback<this, any>;
         constructor(params: PageParams);
         private on_load();
         private on_loadComplete();
@@ -167,10 +168,10 @@ declare namespace chitu {
     }
 }
 interface PageActionConstructor {
-    new(page: chitu.Page): any;
+    new (page: chitu.Page): any;
 }
 interface PageConstructor {
-    new(args: chitu.PageParams): chitu.Page;
+    new (args: chitu.PageParams): chitu.Page;
 }
 declare class PageDisplayerImplement implements chitu.PageDisplayer {
     show(page: chitu.Page): Promise<void>;
@@ -183,7 +184,7 @@ interface ServiceError extends Error {
 declare function ajax<T>(url: string, options: RequestInit): Promise<T>;
 declare namespace chitu {
     interface ServiceConstructor<T> {
-        new(): T;
+        new (): T;
     }
     abstract class Service {
         error: Callback<Service, Error>;
@@ -207,6 +208,6 @@ declare namespace chitu {
 
 declare function combinePath(path1: string, path2: string): string;
 declare function loadjs(path: any): Promise<any>;
-declare module "maishu-chitu" {
-    export = chitu;
-}
+declare module "maishu-chitu" { 
+            export = chitu; 
+        }
