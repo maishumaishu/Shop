@@ -165,10 +165,15 @@ interface UserInfo {
 
     HeadImageUrl: string;
     Gender: string;
-    UserId: string;
+    // UserId: string;
     CreateDateTime: string;
     Mobile: string,
     Balance: number,
+}
+
+interface User {
+    _id: string,
+    mobile: string
 }
 
 

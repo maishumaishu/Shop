@@ -14,6 +14,64 @@ var ts_options = {
 };
 module.exports = function (grunt) {
     grunt.initConfig({
+        babel: {
+            source: {
+                options: {
+                    sourceMap: false,
+                    presets: ["es2015"],
+                },
+                files: [{
+                    expand: true,
+                    cwd: `out/es6`,
+                    src: [`**/*.js`],
+                    dest: `out/es5`
+                }]
+            }
+        },
+        copy: {
+            js_es6: {
+                files: [{
+                    expand: true,
+                    cwd: `client/lib/es6`,
+                    src: [`**/*.js`],
+                    dest: `out/es6/scripts`
+                }]
+            },
+            js_es5: {
+                files: [{
+                    expand: true,
+                    cwd: `client/lib`,
+                    src: [`**/*.js`, '!es6/*'],
+                    dest: `out/es5/scripts`
+                }]
+            },
+            // 将生成的 es6 文件 copy 到 wwww
+            es6_www: {
+                files: [{
+                    expand: true,
+                    cwd: `out/es6/`,
+                    src: `**/*.js`,
+                    dest: `www`
+                }]
+            },
+            // 将生成的 es5 文件 copy 到 wwww
+            es5_www: {
+                files: [{
+                    expand: true,
+                    cwd: `out/es5/`,
+                    src: `**/*.js`,
+                    dest: `www`
+                }]
+            },
+            client: {
+                files: [{
+                    expand: true,
+                    cwd: 'client',
+                    src: ['admin/*.html', 'user/*.html'],
+                    dest: 'www'
+                }]
+            }
+        },
         shell: {
             admin: {
                 command: `tsc -p ${admin_src}`,
@@ -37,7 +95,7 @@ module.exports = function (grunt) {
                     // 服务器地址(可以使用主机名localhost，也能使用IP)
                     hostname: '192.168.1.7',
                     // hostname: '127.0.0.1',
-                    keepalive: true,
+                    // keepalive: true,
                     livereload: 20453,
                     // 物理路径(默认为. 即根目录) 注：使用'.'或'..'为路径的时，可能会返回403 Forbidden. 此时将该值改为相对路径 如：/grunt/reloard。
                     base: 'www',
@@ -46,64 +104,64 @@ module.exports = function (grunt) {
                 }
             }
         },
-        copy: {
-            admin: {
-                files: [{
-                        expand: true,
-                        cwd: admin_src,
-                        src: ['**/*.css', '**/*.html', 'content/font/*.*'],
-                        dest: admin_dest
-                    },
-                    {
-                        expand: true,
-                        cwd: `${lib}`,
-                        src: ['ueditor/**/*.*'],
-                        dest: `${admin_dest}/scripts`
-                    },
-                    {
-                        expand: true,
-                        cwd: `${lib}`,
-                        src: ['umeditor/**/*.*'],
-                        dest: `${admin_dest}/scripts`
-                    },
-                    {
-                        expand: true,
-                        cwd: `${lib}`,
-                        src: ['*.js'],
-                        dest: `${admin_dest}/scripts`
-                    },
-                    {
-                        expand: true,
-                        cwd: `${admin_src}/lib/bootstrap-3.3.7/fonts`,
-                        src: ['*.*'],
-                        dest: `${admin_dest}/content/font`
-                    },
-                    // { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` },
-                    // { expand: true, cwd: `${user_src}/dest`, src: ['userServices.js'], dest: `${admin_dest}/mobile` }
-                ]
-            },
-            user: {
-                files: [{
-                        expand: true,
-                        cwd: user_src,
-                        src: ['**/*.html', '**/*.css', '**/*.png', 'content/font/*.*'],
-                        dest: user_dest
-                    },
-                    {
-                        expand: true,
-                        cwd: lib,
-                        src: ['*.js'],
-                        dest: `${user_dest}/scripts`
-                    },
-                    {
-                        expand: true,
-                        cwd: user_src,
-                        src: ['*.js'],
-                        dest: user_dest
-                    }
-                ]
-            }
-        },
+        // copy: {
+        //     admin: {
+        //         files: [{
+        //                 expand: true,
+        //                 cwd: admin_src,
+        //                 src: ['**/*.css', '**/*.html', 'content/font/*.*'],
+        //                 dest: admin_dest
+        //             },
+        //             {
+        //                 expand: true,
+        //                 cwd: `${lib}`,
+        //                 src: ['ueditor/**/*.*'],
+        //                 dest: `${admin_dest}/scripts`
+        //             },
+        //             {
+        //                 expand: true,
+        //                 cwd: `${lib}`,
+        //                 src: ['umeditor/**/*.*'],
+        //                 dest: `${admin_dest}/scripts`
+        //             },
+        //             {
+        //                 expand: true,
+        //                 cwd: `${lib}`,
+        //                 src: ['*.js'],
+        //                 dest: `${admin_dest}/scripts`
+        //             },
+        //             {
+        //                 expand: true,
+        //                 cwd: `${admin_src}/lib/bootstrap-3.3.7/fonts`,
+        //                 src: ['*.*'],
+        //                 dest: `${admin_dest}/content/font`
+        //             },
+        //             // { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` },
+        //             // { expand: true, cwd: `${user_src}/dest`, src: ['userServices.js'], dest: `${admin_dest}/mobile` }
+        //         ]
+        //     },
+        //     user: {
+        //         files: [{
+        //                 expand: true,
+        //                 cwd: user_src,
+        //                 src: ['**/*.html', '**/*.css', '**/*.png', 'content/font/*.*'],
+        //                 dest: user_dest
+        //             },
+        //             {
+        //                 expand: true,
+        //                 cwd: lib,
+        //                 src: ['*.js'],
+        //                 dest: `${user_dest}/scripts`
+        //             },
+        //             {
+        //                 expand: true,
+        //                 cwd: user_src,
+        //                 src: ['*.js'],
+        //                 dest: user_dest
+        //             }
+        //         ]
+        //     },
+        // },
         cssmin: {
             options: {
                 mergeIntoShorthands: false,
@@ -204,28 +262,64 @@ module.exports = function (grunt) {
         },
         uglify: {
             out: {
+                options: {
+                    mangle: false
+                },
                 files: [{
                     expand: true,
-                    cwd: `${out}`,
-                    src: '**/*.js',
+                    cwd: `out/es5`,
+                    src: ['user/services/*.js', 'user/mobileComponents/*.js', 'user/mobileComponents/**/*.js'],
                     dest: `www`
                 }]
             }
         },
+        watch: {
+            livereload: {
+                options: {
+                    livereload: 20453 //监听前面声明的端口  35729
+                },
+                files: [
+                    `out/es6/**/*`
+                ]
+            }
+        }
     });
+
+    //===============================================================
+    grunt.event.on('watch', function (action, filepath, target) {
+        grunt.log.writeln(`action:${action}\n`);
+        grunt.log.writeln(`filepath:${filepath}\n`);
+        grunt.log.writeln(`target:${target}\n`);
+
+        let target_pathname = filepath.replace('out/es6', 'www');
+        grunt.log.writeln(`target_pathname:${target_pathname}\n`);
+
+        grunt.file.copy(filepath, `${target_pathname}`);
+
+    });
+    //===============================================================
 
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.registerTask('admin', ['less:admin', 'less:mobileComponents', 'copy:admin']);
-    grunt.registerTask('user', ['less:user', 'copy:user']);
-    grunt.registerTask('default', ['admin', 'user']);
-    grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
+    // grunt.registerTask('user', ['less:user', 'copy:user']);
+    // grunt.registerTask('default', ['admin', 'user']);
+    // grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
+
+    grunt.registerTask('build-es6', ['shell', 'copy:js_es6']);
+    grunt.registerTask('build-es5', ['shell', 'copy:js_es5', 'copy:js_es6', 'babel']);
+    grunt.registerTask('run', ['connect', 'watch']);
+    // grunt.registerTask('build-run', ['build', 'run']);
+    // grunt.registerTask('dev', ['es6', 'run']);
+    grunt.registerTask('release', ['build-es5', 'copy:es5_www', 'uglify']);
+    grunt.registerTask('dev', ['build-es6', 'copy:es6_www', 'connect', 'watch']);
 }
 
 /**

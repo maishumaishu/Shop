@@ -20,7 +20,7 @@ export interface Props extends React.Props<MobilePageDesigner> {
     showPageEditor?: boolean,
     showMenuSwitch?: boolean,
     save: (pageData: PageData) => Promise<any>,
-    elementPage: chitu.Page
+    userStation: UserStation
 }
 
 export interface State {
@@ -57,7 +57,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         console.assert(pageData.footer.controls != null, 'footer controls is null.');
 
         this.state = { editors: [], pageData };
-        this.userStation = this.props.elementPage.createService(UserStation);
+        this.userStation = this.props.userStation; //this.props.elementPage.createService(UserStation);
         let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
         if (!existsStyleControl) {
             this.userStation.pages.style().then(stylePageData => {
@@ -150,7 +150,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         });
     }
 
-    selecteControl(control: React.Component<any, any> & { id?: string }, controlType: React.ComponentClass<any>) {
+    selecteControl(control: Control<any, any> & { id?: string }, controlType: React.ComponentClass<any>) {
         if (!control.id)
             control.id = guid();
 
@@ -194,8 +194,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         requirejs([editorPathName], (exports) => {
             let editorType = exports.default;
             console.assert(editorType != null, 'editor type is null');
-            console.assert(this.props.elementPage != null, 'element page is null');
-            let editorReactElement = React.createElement(editorType, { control, elementPage: this.props.elementPage } as EditorProps);
+            console.assert(control.elementPage != null, 'element page is null');
+            let editorReactElement = React.createElement(editorType, { control, elementPage: control.elementPage } as EditorProps);
             ReactDOM.render(editorReactElement, editorElement);
         })
 
@@ -268,6 +268,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                         // let routeData = userApp.parseRouteString("");
 
                         setTimeout(() => {
+                            // debugger;
                             this.renederVirtualMobile(e.screenElement, pageData);
 
                         }, 100);

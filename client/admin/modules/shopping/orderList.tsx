@@ -34,7 +34,7 @@ export default function (page: chitu.Page) {
             }),
             new wz.BoundField({
                 dataField: 'StatusText', headerText: '状态',
-                itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
+                itemStyle: { textAlign: 'center', width: '80px' } as CSSStyleDeclaration,
             }),
             new wz.BoundField({
                 dataField: 'Amount', headerText: '金额', dataFormatString: '￥{0:C2}',
@@ -43,7 +43,7 @@ export default function (page: chitu.Page) {
             new wz.CustomField({
                 createItemCell: createCommandCell,
                 headerText: '操作',
-                headerStyle: { width: '110px' } as CSSStyleDeclaration,
+                headerStyle: { width: '140px' } as CSSStyleDeclaration,
                 itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
             })
         ],
@@ -58,14 +58,23 @@ export default function (page: chitu.Page) {
                 ReactDOM.render(
                     <div>
                         {value == 'Send' ?
-                            <button className="btn btn-minier" style={{ width: 50 }}>已发货</button> :
-                            <button className="btn btn-primary btn-minier" style={{ width: 50 }}
-                                onClick={() => showSendDialog()}>发&nbsp;&nbsp;货</button>}
-                        <button className="btn btn-default btn-minier" style={{ marginLeft: 4 }}
+                            <button className="btn btn-success btn-minier">
+                                <i className="icon-truck"></i>
+                                <span>已发货</span>
+                            </button> :
+                            <button className="btn btn-success btn-minier"
+                                onClick={() => showSendDialog()}>
+                                <i className="icon-truck"></i>
+                                <span>待发货</span>
+                            </button>}
+                        <button className="btn btn-info btn-minier" style={{ marginLeft: 4 }}
                             ref={(e: HTMLButtonElement) => {
                                 if (!e) return;
                                 e.onclick = (e) => showOrderDetailDialog(dataItem);
-                            }}>详细</button>
+                            }}>
+                            <i className="icon-cog"></i>
+                            <span>详细</span>
+                        </button>
                     </div>
                     , element)
             }
@@ -87,7 +96,7 @@ export default function (page: chitu.Page) {
         renderTabs(status)
     }
 
-    function exportData(){
+    function exportData() {
 
     }
 
@@ -123,7 +132,7 @@ export default function (page: chitu.Page) {
             </li>
             <li className="pull-right">
                 <button onClick={() => exportData()} className="btn btn-sm btn-primary" data-toggle="dropdown">
-                    <i className="icon-download-alt"/>
+                    <i className="icon-download-alt" />
                     <span>导出发货单</span>
                 </button>
                 <div className="form-horizontal" style={{ display: 'none' }} data-role="export">

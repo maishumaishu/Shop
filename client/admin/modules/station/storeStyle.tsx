@@ -14,12 +14,15 @@
 
 import { ComponentDesigner } from 'componentDesigner';
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { default as station} from 'adminServices/station';
+import { StationService as AdminStation } from 'adminServices/station';
+import { StationService as UserStation } from 'userServices/stationService';
 export default function (page: chitu.Page) {
-    station.stylePage().then(pageData => {
+    let userStation = page.createService(UserStation)
+    let adminStation = page.createService(AdminStation);
+    userStation.pages.style().then(pageData => {
         ReactDOM.render(
             <MobilePageDesigner pageData={pageData}
-                save={station.savePageData.bind(station)}  elementPage={page}>
+                save={(p) => adminStation.savePageData(p)} userStation={userStation}>
             </MobilePageDesigner>, page.element);
     })
 }

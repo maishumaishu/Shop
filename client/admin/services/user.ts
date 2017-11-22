@@ -1,4 +1,5 @@
 import { default as Service } from 'services/service';
+import { userInfo } from 'userServices/memberService';
 
 function guid() {
     function s4() {
@@ -87,28 +88,34 @@ export class UserService extends Service {
     async members(args: wuzhui.DataSourceSelectArguments) {
 
         let url = `${location.protocol}//${Service.config.serviceHost}/user/list`;
-        let membersResult = await this.get<UserInfo[]>(url, args).then((data) => {
-            data.forEach((o) => {
-                let a = o as any;
-                o.Mobile = a.mobile;
-                o.Id = a._id;
-            })
-            return data;
-        });
+        let users = await this.get<User[]>(url, args);
 
-
-        let members = membersResult;//.dataItems;
-        let ids = members.map(o => o.Id);
-        let memberBalances = await this.get<Array<{ MemberId: string, Balance: number }>>(
+        let ids = users.map(o => o._id);
+        let memberBalances = await this.get<wuzhui.DataSourceSelectResult<{ Id: string, Balance: number }>>(
             Service.config.accountUrl + 'Account/GetAccountBalances',
             { userIds: ids.join(',') }
         );
 
-        for (let i = 0; i < members.length; i++) {
-            members[i].Balance = (memberBalances.filter(o => o.MemberId == members[i].Id)[0] || { Balance: 0 } as UserInfo).Balance;
+        let members = new Array<UserInfo>();//.dataItems;
+        for (let i = 0; i < users.length; i++) {
+            console.assert(users.length == memberBalances.dataItems.length);
+
+            let u = {} as UserInfo;
+            let r = memberBalances.dataItems[i];
+            if (r) {
+                u.Balance = r.Balance;
+                u.Id = r.Id;
+            }
+
+            u.Id = u.Id || users[i]._id;
+            u.Mobile = users[i].mobile;
+            u.Balance = u.Balance || 0;
+            members.push(u);
         }
 
         return members;
+        // let url = this.url('AdminMember/Member/GetUserInfos');
+        // return this.get<wuzhui.DataSourceSelectResult<UserInfo>>(url, args);
     }
 
 

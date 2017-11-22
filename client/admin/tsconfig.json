@@ -3,13 +3,14 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../../www",
+        "outDir": "../../out/es6",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
         "paths": {
             "*": [
-                "lib/*"
+                "lib/*",
+                "lib/es6/*"
             ],
             "mobileComponents/*": [
                 "user/mobileComponents/*"
@@ -28,18 +29,12 @@
                 "user/services/*"
             ]
         },
-        "experimentalDecorators": true,
-        "lib": [
-            "dom",
-            "scripthost",
-            "es2015"
-        ]
+        "experimentalDecorators": true
     },
     "include": [
 
         "../lib/*.d.ts",
-        "../lib/typings/*.d.ts",
-        "../lib/typings/**/*.d.ts",
+        "../lib/**/*.d.ts",
 
         "../share/*.ts",
         "../share/**/*.ts",

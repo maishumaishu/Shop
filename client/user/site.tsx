@@ -27,6 +27,12 @@ export function subscribe<T>(component: React.Component<any, any>, item: chitu.V
 // ui
 export function defaultNavBar(elementPage: chitu.Page,
     options?: { title?: string, right?: JSX.Element, showBackButton?: boolean }) {
+    //=============================
+    // window['admin-app'] 表明为设计时
+    if (window['admin-app']) {
+        return;
+    }
+    //=============================
 
     if (isWeixin) {
         return weixinNavheader(elementPage, options);

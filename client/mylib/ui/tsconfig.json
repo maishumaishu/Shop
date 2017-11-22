@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "module": "none",
         "sourceMap": false,
         "declaration": true,
-        "outFile": "../../lib/ui.js",
+        "outFile": "../../lib/es6/ui.js",
         "lib": [
             "dom",
             "scripthost",

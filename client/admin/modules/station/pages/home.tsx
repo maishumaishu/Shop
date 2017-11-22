@@ -8,7 +8,7 @@ export default function (page: chitu.Page) {
     userStation.pages.home().then(pageData => {
         ReactDOM.render(
             <MobilePageDesigner pageData={pageData} showComponentPanel={true} showMenuSwitch={true}
-                save={(p) => adminStation.savePageData(p)} elementPage={page}>
+                save={(p) => adminStation.savePageData(p)} userStation={userStation}>
             </MobilePageDesigner>, page.element);
     })
 }

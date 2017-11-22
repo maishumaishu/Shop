@@ -246,7 +246,7 @@ class Application extends chitu.Application {
 //     //========================================
 // })
 
-let app = window['app'] = window['app'] || new Application();
+let app = window['admin-app'] = window['admin-app'] || new Application();
 
 if (Service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
     app.redirect('user/login');

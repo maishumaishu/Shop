@@ -10,7 +10,7 @@ export interface Props extends React.Props<MobilePage> {
     elementPage: chitu.Page;
     designTime?: {
         controlSelected?: (
-            control: React.Component<any, any>,
+            control: Control<any, any>,
             controlType: React.ComponentClass<any>
         ) => void
     };

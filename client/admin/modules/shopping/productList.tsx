@@ -134,7 +134,7 @@ class Page extends React.Component<{}, PageState>{
         // dataSource.ajaxMethods.delete = 'delete';
         dataSource.selected.add((sender, args) => {
             let productIds = args.items.map(o => o.Id as string);
-            shopping.getProductStocks(productIds).then(data => {
+            shopping.productStocks(productIds).then(data => {
                 data.map(o => ({ Id: o.ProductId, Stock: o.Quantity } as Product))
                     .forEach(o => dataSource.updated.fire(dataSource, { item: o }));
             });

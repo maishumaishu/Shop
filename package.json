@@ -19,7 +19,7 @@
     "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-stylus": "~1.2.0",
     "grunt-contrib-uglify": "~1.0.1",
-    "grunt-shell": "^2.1.0",
-    "typescript": "^2.3.4"
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-shell": "^2.1.0"
   }
 }

@@ -7,8 +7,9 @@ export default async function (page: chitu.Page) {
     let adminStation = page.createService(AdminStation);
     let userStation = page.createService(UserStation);
     let pageData = await userStation.pages.shoppingCart();
+    
     ReactDOM.render(
         <MobilePageDesigner pageData={pageData} showMenuSwitch={true}
-            save={adminStation.savePageData.bind(adminStation)} elementPage={page} >
+            save={adminStation.savePageData.bind(adminStation)} userStation={userStation}>
         </MobilePageDesigner>, page.element);
 }

@@ -1,6 +1,7 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
 import { StationService, guid } from 'adminServices/station';
 import { componentsDir } from 'mobileComponents/common';
+import { StationService as UserStation } from 'userServices/stationService';
 
 let station = new StationService();
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
@@ -51,11 +52,12 @@ export default async function (page: chitu.Page) {
             })
         }
         render() {
+            let userStation = page.createService(UserStation);
             return (
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
                     save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true} 
                     // TODO: elementPage 应该为移动端的 chitu.Page 
-                    elementPage={page}>
+                    userStation={userStation}>
                 </MobilePageDesigner>
             );
         }

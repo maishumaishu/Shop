@@ -1,6 +1,7 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
 import { guid } from 'services/service';
-import { StationService } from 'services/station'
+import { StationService } from 'services/station';
+import { StationService as UserStation } from 'userServices/stationService';
 import { default as StyleControl } from 'mobileComponents/style/control';
 
 interface Props extends React.Props<ComponentDesigner> {
@@ -75,8 +76,9 @@ export class ComponentDesigner extends React.Component<Props, State>{
     }
     render() {
         let pageData = this.state.pageData;
+        let userStation = this.props.elementPage.createService(UserStation);
         return (
-            <MobilePageDesigner pageData={pageData} save={(pageData) => this.save(pageData)} elementPage={this.props.elementPage} >
+            <MobilePageDesigner pageData={pageData} save={(pageData) => this.save(pageData)} userStation={userStation}>
                 {this.props.children}
             </MobilePageDesigner>
         );

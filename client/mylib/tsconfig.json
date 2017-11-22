@@ -3,7 +3,7 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../lib",
+        "outDir": "../lib/es6",
         "jsx": "react",
         "declaration": true,
         "lib": [
