@@ -143,7 +143,7 @@ function scrollOnBottom(element: HTMLElement, callback: Function, deltaHeight?: 
 //     `;
 // })
 
-requirejs(['css!components/dataList']);
+requirejs(['css!user/components/dataList']);
 type DataListStatus = 'loading' | 'completed' | 'finish' | 'fail' | 'init';
 export class MyDataList<T> {
     private _status: DataListStatus = 'init';
