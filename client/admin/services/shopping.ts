@@ -246,9 +246,9 @@ export class ShoppingService extends Service {
     private orderStatusText(value: string) {
         switch (value) {
             case 'Confirmed':
-                return 'confirm_text';
+                return '已确认';
             case 'Send':
-                return 'send_text';
+                return '已发货';
             case 'WaitingForPayment':
                 return '待付款';
             case 'Canceled':
@@ -266,6 +266,10 @@ export class ShoppingService extends Service {
             result.dataItems.forEach(c => c.StatusText = this.orderStatusText(c.Status));
             return result;
         });
+    }
+    shipInfo(orderId: string) {
+        let url = this.url('Order/GetShipInfo');
+        return this.get<ShipInfo>(url, { orderId });
     }
     //================================================================
 }
