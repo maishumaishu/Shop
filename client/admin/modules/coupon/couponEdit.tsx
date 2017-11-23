@@ -42,8 +42,8 @@ export default async function (page: chitu.Page) {
             }
 
             let coupon = this.state.coupon;
-            coupon.ValidBegin = new Date(this.validBeginInput.value);
-            coupon.ValidEnd = new Date(this.validEndInput.value);
+            // coupon.ValidBegin = new Date(this.validBeginInput.value);
+            // coupon.ValidEnd = new Date(this.validEndInput.value);
             return shopping.saveCoupon(coupon);
         }
         componentDidMount() {
@@ -132,7 +132,8 @@ export default async function (page: chitu.Page) {
                                     ref={(e: HTMLInputElement) => this.amountInput = e || this.amountInput}
                                     value={coupon.Amount == null ? "" : `${coupon.Amount}`}
                                     onChange={(e) => {
-                                        coupon.Amount = Number.parseFloat((e.target as HTMLInputElement).value);
+                                        var value = Number.parseFloat((e.target as HTMLInputElement).value);
+                                        coupon.Amount = isNaN(value) ? null : value;
                                         this.setState(this.state);
                                     }} />
                             </div>
@@ -180,15 +181,15 @@ export default async function (page: chitu.Page) {
     let coupon = await shopping.coupon(page.routeData.values.id);
     ReactDOM.render(<CouponEditPage coupon={coupon} ref={(e) => couponEditPage = e} />, page.element);
 
-    // function updatePageState() {
-    //     if (page.routeData.values.id) {
-    //         shopping.coupon(page.routeData.values.id).then(coupon => {
-    //             couponEditPage.state.coupon = coupon;
-    //             couponEditPage.setState(couponEditPage.state);
-    //         });
-    //     }
-    // }
+    function updatePageState(sender, args) {
+        // if (page.routeData.values.id) {
+        shopping.coupon(args.id).then(coupon => {
+            couponEditPage.state.coupon = coupon;
+            couponEditPage.setState(couponEditPage.state);
+        });
+        // }
+    }
 
     // updatePageState();
-    // page.showing.add(() => updatePageState());
+    page.showing.add((sender, args) => updatePageState(sender, args));
 }

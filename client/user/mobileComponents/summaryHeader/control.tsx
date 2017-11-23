@@ -44,7 +44,7 @@ export default class SummaryHeaderControl extends common.Control<Props, State>{
         return (
             <div className="summaryHeader">
                 <div className="headerImage pull-left">
-                    <img src={src} />
+                    <img src={src} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                 </div>
                 <div className="headerContent">
                     <h4 className="title">{store.Name}</h4>

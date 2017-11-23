@@ -152,7 +152,10 @@ export default function (page: chitu.Page) {
                                 <a data-toggle="tab" href="#" onClick={() => this.switchTab('expired')}>已过期</a>
                             </li>
                             <li className="pull-right">
-                                <button href="/ExportExcel.aspx?type=couponCodes" className="btn btn-sm btn-primary">导出</button>
+                                <button href="/ExportExcel.aspx?type=couponCodes" className="btn btn-sm btn-primary">
+                                    <i className="icon-download-alt"></i>
+                                    <span>导出</span>
+                                </button>
                             </li>
                             <li className="pull-right">
                                 <button className="btn btn-sm btn-primary"
@@ -160,11 +163,17 @@ export default function (page: chitu.Page) {
                                         if (!o) return;
                                         o.onclick = () => this.showGenerateDialog();
 
-                                    }}>生成优惠码</button>
+                                    }}>
+                                    <i className="icon-cog"></i>
+                                    <span>生成优惠码</span>
+                                </button>
                             </li>
 
                             <li className="pull-right">
-                                <a id="btnSearch" data-bind="click: search" className="btn btn-sm btn-primary">查找</a>
+                                <button id="btnSearch" data-bind="click: search" className="btn btn-sm btn-primary">
+                                    <i className="icon-search"></i>
+                                    <span>查找</span>
+                                </button>
                             </li>
                             <li className="pull-right">
                                 <input data-bind="value: filter.searchText" id="txtSearch" className="nav-search-input form-control" type="text" placeholder="输入要查找的优惠码或优惠券编号" style={{ width: 300 }} />
@@ -180,7 +189,7 @@ export default function (page: chitu.Page) {
                                         <span aria-hidden="true">&times;</span>
                                         <span className="sr-only">Close</span>
                                     </button>
-                                    <h4 className="modal-title">生产优惠码</h4>
+                                    <h4 className="modal-title">生成优惠码</h4>
                                 </div>
                                 <div className="modal-body form-horizontal">
                                     <div className="form-group">

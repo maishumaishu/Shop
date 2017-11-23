@@ -41,7 +41,7 @@ export function formatDate(date: Date | string): string {
         return date;
 
     let d = date as Date;
-    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours() + 1}:${d.getMinutes()}`;
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
 }
 
 

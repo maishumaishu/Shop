@@ -30,7 +30,7 @@ export function defaultNavBar(elementPage: chitu.Page,
     //=============================
     // window['admin-app'] 表明为设计时
     if (window['admin-app']) {
-        return;
+        return null;
     }
     //=============================
 

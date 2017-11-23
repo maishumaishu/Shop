@@ -183,3 +183,8 @@ interface RegionFreight {
     RegionName: string,
     SolutionId: string
 }
+
+interface ShipInfo {
+    ExpressBillNo: string;
+    ExpressCompany: string;
+}

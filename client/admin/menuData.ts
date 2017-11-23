@@ -91,10 +91,11 @@ export let menuData: MenuNode[] = [
                             { Url: "coupon/couponEdit", Title: "优惠券编辑", Visible: false },
                         ]
                     },
-                    { Url: "coupon/couponCodeList", Title: "优惠码" },
                     { Url: "coupon/couponSetting", Title: "赠劵规则" }
-                ]
+                ],
+
             },
+            { Url: "coupon/couponCodeList", Title: "优惠码" }
         ]
     },
     {

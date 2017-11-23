@@ -6,99 +6,85 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var ui;
 (function (ui) {
-    function buttonOnClick(callback, args) {
-        var _this = this;
+    function buttonOnClick(arg1, arg2, arg3) {
+        let element;
+        let callback;
+        let args;
+        if (typeof (arg1) == 'function') {
+            callback = arg1;
+            args = arg2;
+        }
+        else if (typeof (arg2) == 'function') {
+            element = arg1;
+            callback = arg2;
+            args = args;
+        }
+        else {
+            throw new Error("Arguments error");
+        }
         args = args || {};
-        var execute = function (event) { return __awaiter(_this, void 0, void 0, function () {
-            var button, exc_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        button = event.target;
-                        button.setAttribute('disabled', '');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, 4, 5]);
-                        return [4 /*yield*/, callback(event)];
-                    case 2:
-                        _a.sent();
-                        if (args.toast) {
-                            showToastMessage(args.toast);
-                        }
-                        return [3 /*break*/, 5];
-                    case 3:
-                        exc_1 = _a.sent();
-                        console.error(exc_1);
-                        throw exc_1;
-                    case 4:
-                        button.removeAttribute('disabled');
-                        return [7 /*endfinally*/];
-                    case 5: return [2 /*return*/];
+        let execute = (event) => __awaiter(this, void 0, void 0, function* () {
+            let button = event.target;
+            button.setAttribute('disabled', '');
+            try {
+                yield callback(event);
+                if (args.toast) {
+                    showToastMessage(args.toast);
                 }
-            });
-        }); };
-        return function (event) {
+            }
+            catch (exc) {
+                console.error(exc);
+                throw exc;
+            }
+            finally {
+                button.removeAttribute('disabled');
+            }
+        });
+        let result = function (event) {
             if (!args.confirm) {
                 execute(event);
                 return;
             }
-            var text = typeof args.confirm == 'string' ?
+            let text = typeof args.confirm == 'string' ?
                 args.confirm :
                 args.confirm();
-            ui.confirm({ message: text, confirm: function (event) { return execute(event); } });
+            ui.confirm({ message: text, confirm: (event) => execute(event) });
         };
+        if (element)
+            element.onclick = result;
+        return result;
     }
     ui.buttonOnClick = buttonOnClick;
     function showToastMessage(msg) {
         if (!msg)
             throw new Error('Argument msg is null.');
-        var dialogContainer = ui.dialogConfig.dialogContainer || document.body;
-        var toastDialogElement = document.createElement('div');
+        let dialogContainer = ui.dialogConfig.dialogContainer || document.body;
+        let toastDialogElement = document.createElement('div');
         toastDialogElement.className = 'modal fade in';
         toastDialogElement.style.marginTop = '20px';
         console.assert(dialogContainer != null, 'dialog container is null.');
         dialogContainer.appendChild(toastDialogElement);
-        toastDialogElement.innerHTML = "\n                        <div class=\"modal-dialog\">\n                            <div class=\"modal-content\">\n                                <div class=\"modal-body form-horizontal\">\n                                </div>\n                            </div>\n                        </div>\n                    ";
-        var modalBody = toastDialogElement.querySelector('.modal-body');
+        toastDialogElement.innerHTML = `
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body form-horizontal">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+        let modalBody = toastDialogElement.querySelector('.modal-body');
         console.assert(modalBody != null);
         if (typeof msg == 'string')
-            modalBody.innerHTML = "<h5>" + msg + "</h5>";
+            modalBody.innerHTML = `<h5>${msg}</h5>`;
         else
             modalBody.appendChild(msg);
         // let dialog = new Dialog(toastDialogElement);
         // dialog.show();
         ui.showDialog(toastDialogElement);
-        setTimeout(function () {
-            ui.hideDialog(toastDialogElement).then(function () {
+        setTimeout(() => {
+            ui.hideDialog(toastDialogElement).then(() => {
                 toastDialogElement.remove();
             });
         }, 500);
@@ -114,17 +100,17 @@ var ui;
     };
     function addClassName(element, className) {
         console.assert(className != null, 'class is null');
-        var c1 = (element.className || '').split(/\s+/);
-        var c2 = className.split(/\s+/);
-        var itemsToAdd = c2.filter(function (o) { return c1.indexOf(o) < 0; });
-        c1.push.apply(c1, itemsToAdd);
+        let c1 = (element.className || '').split(/\s+/);
+        let c2 = className.split(/\s+/);
+        var itemsToAdd = c2.filter(o => c1.indexOf(o) < 0);
+        c1.push(...itemsToAdd);
         element.className = c1.join(' ');
     }
     function removeClassName(element, className) {
         console.assert(className != null, 'class is null');
-        var c1 = (element.className || '').split(/\s+/);
-        var c2 = className.split(/\s+/);
-        var itemsRemain = c1.filter(function (o) { return c2.indexOf(o) < 0; });
+        let c1 = (element.className || '').split(/\s+/);
+        let c2 = className.split(/\s+/);
+        var itemsRemain = c1.filter(o => c2.indexOf(o) < 0);
         element.className = itemsRemain.join(' ');
     }
     /** 弹窗
@@ -133,20 +119,20 @@ var ui;
     function showDialog(element) {
         removeClassName(element, 'out');
         element.style.display = 'block';
-        setTimeout(function () {
+        setTimeout(() => {
             addClassName(element, 'modal fade in');
         }, 100);
-        var closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
-        for (var i = 0; i < closeButtons.length; i++) {
-            closeButtons[i].onclick = function () { return hideDialog(element); };
+        let closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
+        for (let i = 0; i < closeButtons.length; i++) {
+            closeButtons[i].onclick = () => hideDialog(element);
         }
     }
     ui.showDialog = showDialog;
     function hideDialog(element) {
         removeClassName(element, 'in');
         addClassName(element, 'modal fade out');
-        return new Promise(function (reslove, reject) {
-            setTimeout(function () {
+        return new Promise((reslove, reject) => {
+            setTimeout(() => {
                 element.style.removeProperty('display');
                 reslove();
             }, 1000);
@@ -154,12 +140,32 @@ var ui;
     }
     ui.hideDialog = hideDialog;
     function alert(args) {
-        var element = document.createElement('div');
+        let element = document.createElement('div');
         dialogContainer().appendChild(element);
         if (typeof args == 'string') {
             args = { title: '&nbsp;', message: args };
         }
-        element.innerHTML = "\n            <div class=\"modal-dialog\">\n                \n                <div class=\"modal-content\">\n                    <div class=\"modal-header\">\n                        <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                            <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n                        </button>\n                        <h4 class=\"modal-title\">" + args.title + "</h4>\n                    </div>\n                    <div class=\"modal-body\">\n                        <h5>" + args.message + "</h5>\n                    </div>\n                    <div class=\"modal-footer\">\n                        <button name=\"ok\" type=\"button\" class=\"btn btn-primary\">\n                            \u786E\u5B9A\n                        </button>\n                    </div>\n                </div>\n            </div>\n        ";
+        element.innerHTML = `
+            <div class="modal-dialog">
+                
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">${args.title}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5>${args.message}</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button name="ok" type="button" class="btn btn-primary">
+                            确定
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
         // $(element).modal();
         // $(element).on('hidden.bs.modal', () => {
         //     $(element).remove();
@@ -167,20 +173,20 @@ var ui;
         // var dialog = new Dialog(element);
         // dialog.show();
         ui.showDialog(element);
-        var titleElement = element.querySelector('.modal-title');
-        var modalFooter = element.querySelector('.modal-footer');
-        var cancelButton = modalFooter.querySelector('[name="cancel"]');
-        var okButton = modalFooter.querySelector('[name="ok"]');
-        okButton.onclick = function () { return ui.hideDialog(element); }; //dialog.hide()
+        let titleElement = element.querySelector('.modal-title');
+        let modalFooter = element.querySelector('.modal-footer');
+        let cancelButton = modalFooter.querySelector('[name="cancel"]');
+        let okButton = modalFooter.querySelector('[name="ok"]');
+        okButton.onclick = () => ui.hideDialog(element); //dialog.hide()
     }
     ui.alert = alert;
     function confirm(args) {
         // if (typeof args == 'string')
         //     args = { title: args };
-        var title;
-        var message;
-        var execute = args.confirm;
-        var container = args.container || document.body;
+        let title;
+        let message;
+        let execute = args.confirm;
+        let container = args.container || document.body;
         if (typeof args == 'string') {
             message = args;
         }
@@ -188,32 +194,54 @@ var ui;
             title = args.title;
             message = args.message;
         }
-        var confirmDialogElment;
+        let confirmDialogElment;
         confirmDialogElment = document.createElement('div');
         confirmDialogElment.className = 'modal fade';
         confirmDialogElment.style.marginTop = '20px';
         console.assert(dialogContainer != null, 'dialog container is null');
         dialogContainer().appendChild(confirmDialogElment);
-        confirmDialogElment.innerHTML = "\n                    <div class=\"modal-dialog\">\n                        <div class=\"modal-content\">\n                            <div class=\"modal-header\">\n                                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                                    <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n                                </button>\n                                <h4 class=\"modal-title\">\u786E\u8BA4</h4>\n                            </div>\n                            <div class=\"modal-body form-horizontal\">\n                               \n                            </div>\n                            <div class=\"modal-footer\">\n                                <button name=\"cancel\" type=\"button\" class=\"btn btn-default\">\n                                    \u53D6\u6D88\n                                </button>\n                                <button name=\"ok\" type=\"button\" class=\"btn btn-primary\">\n                                    \u786E\u5B9A\n                                </button>\n                            </div>\n                        </div>\n                    </div>\n                ";
-        var modalHeader = confirmDialogElment.querySelector('.modal-header');
-        var modalBody = confirmDialogElment.querySelector('.modal-body');
-        var modalFooter = confirmDialogElment.querySelector('.modal-footer');
-        modalBody.innerHTML = "<h5>" + message + "</h5>";
+        confirmDialogElment.innerHTML = `
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title">确认</h4>
+                            </div>
+                            <div class="modal-body form-horizontal">
+                               
+                            </div>
+                            <div class="modal-footer">
+                                <button name="cancel" type="button" class="btn btn-default">
+                                    取消
+                                </button>
+                                <button name="ok" type="button" class="btn btn-primary">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        let modalHeader = confirmDialogElment.querySelector('.modal-header');
+        let modalBody = confirmDialogElment.querySelector('.modal-body');
+        let modalFooter = confirmDialogElment.querySelector('.modal-footer');
+        modalBody.innerHTML = `<h5>${message}</h5>`;
         if (title) {
             modalHeader.querySelector('h4').innerHTML = title;
         }
-        var cancelButton = modalFooter.querySelector('[name="cancel"]');
-        var okButton = modalFooter.querySelector('[name="ok"]');
-        var closeButton = modalHeader.querySelector('.close');
+        let cancelButton = modalFooter.querySelector('[name="cancel"]');
+        let okButton = modalFooter.querySelector('[name="ok"]');
+        let closeButton = modalHeader.querySelector('.close');
         closeButton.onclick = cancelButton.onclick = function () {
-            ui.hideDialog(confirmDialogElment).then(function () {
+            ui.hideDialog(confirmDialogElment).then(() => {
                 confirmDialogElment.remove();
             });
         };
         okButton.onclick = function (event) {
             execute(event)
-                .then(function () { return ui.hideDialog(confirmDialogElment); })
-                .then(function () {
+                .then(() => ui.hideDialog(confirmDialogElment))
+                .then(() => {
                 confirmDialogElment.remove();
             });
         };
@@ -221,26 +249,44 @@ var ui;
     }
     ui.confirm = confirm;
     ui.showPanel = (function () {
-        var panel = document.createElement('div');
+        let panel = document.createElement('div');
         panel.className = 'mobile-page panel';
         panel.style.display = 'none';
         document.body.appendChild(panel);
-        panel.innerHTML = "\n            <div class=\"modal\">\n                <div class=\"modal-dialog\">\n                    <div class=\"modal-content\">\n                        <div class=\"modal-header\">\n    \n                        </div>\n                        <div class=\"modal-body\">\n    \n                        </div>\n                        <div class=\"modal-footer\">\n    \n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-backdrop in\">\n            </div>\n        ";
-        var modal = panel.querySelector('.modal');
-        var backdrop = panel.querySelector('.modal-backdrop');
-        var header = panel.querySelector('.modal-header');
-        var footer = panel.querySelector('.modal-footer');
-        var body = panel.querySelector(".modal-body");
-        var modalDialog = panel.querySelector(".modal-dialog");
-        var isIOS = navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0;
+        panel.innerHTML = `
+            <div class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+    
+                        </div>
+                        <div class="modal-body">
+    
+                        </div>
+                        <div class="modal-footer">
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-backdrop in">
+            </div>
+        `;
+        let modal = panel.querySelector('.modal');
+        let backdrop = panel.querySelector('.modal-backdrop');
+        let header = panel.querySelector('.modal-header');
+        let footer = panel.querySelector('.modal-footer');
+        let body = panel.querySelector(".modal-body");
+        let modalDialog = panel.querySelector(".modal-dialog");
+        let isIOS = navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0;
         //=====================================================================
         // 点击非窗口区域，关窗口。并禁用上级元素的 touch 操作。
         // let panel = this.panel; //this.refs['panel'] as HTMLElement;
         // let modalDialog = this.modalDialog; //this.refs['modalDialog'] as HTMLElement;
-        panel.addEventListener('touchstart', function (event) {
-            var dialogRect = modalDialog.getBoundingClientRect();
-            for (var i = 0; i < event.touches.length; i++) {
-                var clientX = event.touches[i].clientX;
+        panel.addEventListener('touchstart', (event) => {
+            let dialogRect = modalDialog.getBoundingClientRect();
+            for (let i = 0; i < event.touches.length; i++) {
+                let { clientX } = event.touches[i];
                 if (clientX < dialogRect.left) {
                     hide();
                     return;
@@ -248,8 +294,8 @@ var ui;
             }
         });
         if (isIOS) {
-            panel.addEventListener('touchstart', function (event) {
-                var tagName = event.target.tagName;
+            panel.addEventListener('touchstart', (event) => {
+                let tagName = event.target.tagName;
                 if (tagName == 'BUTTON' || tagName == 'INPUT' || tagName == 'A') {
                     return;
                 }
@@ -260,7 +306,7 @@ var ui;
         function hide() {
             modal.style.removeProperty('transform');
             backdrop.style.opacity = '0';
-            window.setTimeout(function () {
+            window.setTimeout(() => {
                 panel.style.display = 'none';
             }, 500);
         }
@@ -268,17 +314,17 @@ var ui;
             args = args || {};
             panel.style.display = 'block';
             modal.style.display = 'block';
-            setTimeout(function () {
+            setTimeout(() => {
                 modal.style.transform = 'translateX(0)';
                 backdrop.style.opacity = '0.5';
             }, 50);
-            var setBodyHeight = function () {
-                var headerHeight = header.getBoundingClientRect().height;
-                var footerHeight = footer.getBoundingClientRect().height;
-                var bodyHeight = window.innerHeight - headerHeight - footerHeight;
-                body.style.height = bodyHeight + "px";
+            let setBodyHeight = () => {
+                let headerHeight = header.getBoundingClientRect().height;
+                let footerHeight = footer.getBoundingClientRect().height;
+                let bodyHeight = window.innerHeight - headerHeight - footerHeight;
+                body.style.height = `${bodyHeight}px`;
             };
-            window.addEventListener('resize', function () { return setBodyHeight(); });
+            window.addEventListener('resize', () => setBodyHeight());
             setBodyHeight();
             if (args.header)
                 args.header(header);
@@ -287,7 +333,7 @@ var ui;
             if (args.footer)
                 args.footer(footer);
             return {
-                hide: function () { return hide(); }
+                hide: () => hide()
             };
         };
     })();
@@ -295,9 +341,9 @@ var ui;
 var ui;
 (function (ui) {
     ui.errors = {
-        argumentNull: function (paramName) {
-            var msg = "Argumnet " + paramName + " can not be null or empty.";
-            var error = new Error();
+        argumentNull(paramName) {
+            let msg = `Argumnet ${paramName} can not be null or empty.`;
+            let error = new Error();
             error.message = msg;
             return error;
         }
@@ -311,31 +357,31 @@ var ui;
         /** 图片显示的文字 */
         imageDisaplyText: '',
     };
-    var config = ui.loadImageConfig;
-    var draws = {
-        text: function (imageText, options) {
-            return function (ctx, canvasWidth, canvasHeight) {
+    let config = ui.loadImageConfig;
+    let draws = {
+        text: (imageText, options) => {
+            return (ctx, canvasWidth, canvasHeight) => {
                 // let fontSize1 = Math.floor(canvasHeight / 3 * 0.8);
-                var fontSize = Math.floor((canvasWidth / imageText.length) * 0.6);
-                var bgColor = 'whitesmoke';
-                var textColor = '#999';
+                let fontSize = Math.floor((canvasWidth / imageText.length) * 0.6);
+                let bgColor = 'whitesmoke';
+                let textColor = '#999';
                 // let fontSize = Math.min(fontSize1, fontSize2);
                 options = Object.assign({
-                    fontSize: fontSize,
-                    bgColor: bgColor,
-                    textColor: textColor
+                    fontSize,
+                    bgColor,
+                    textColor
                 }, options);
                 ctx.fillStyle = options.bgColor; //'whitesmoke';
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                 // 设置字体
-                ctx.font = "Bold " + options.fontSize + "px Arial";
+                ctx.font = `Bold ${options.fontSize}px Arial`;
                 // 设置对齐方式
                 ctx.textAlign = "left";
                 // 设置填充颜色
                 ctx.fillStyle = options.textColor; //"#999";
-                var textWidth = fontSize * imageText.length;
-                var startX = Math.floor((canvasWidth - textWidth) * 0.5);
-                var startY = Math.floor((canvasHeight - options.fontSize) * 0.3);
+                let textWidth = fontSize * imageText.length;
+                let startX = Math.floor((canvasWidth - textWidth) * 0.5);
+                let startY = Math.floor((canvasHeight - options.fontSize) * 0.3);
                 // 设置字体内容，以及在画布上的位置
                 ctx.fillText(imageText, startX, Math.floor(canvasHeight * 0.6));
             };
@@ -346,15 +392,15 @@ var ui;
         canvas.width = width; //img_width;
         canvas.height = height; //img_height;
         var ctx = canvas.getContext('2d');
-        var draw = typeof obj == 'string' ? draws.text(obj, options) : obj;
+        let draw = typeof obj == 'string' ? draws.text(obj, options) : obj;
         draw(ctx, width, height);
         return canvas.toDataURL();
     }
     ui.generateImageBase64 = generateImageBase64;
     function loadImageByUrl(url) {
     }
-    var PREVIEW_IMAGE_DEFAULT_WIDTH = 200;
-    var PREVIEW_IMAGE_DEFAULT_HEIGHT = 200;
+    const PREVIEW_IMAGE_DEFAULT_WIDTH = 200;
+    const PREVIEW_IMAGE_DEFAULT_HEIGHT = 200;
     /**
      * 在 IMG 元素上渲染图片
      * @param element 要渲染的 IMG 元素
@@ -364,7 +410,7 @@ var ui;
         options = options || {};
         if (!element)
             throw ui.errors.argumentNull('element');
-        var imageUrl = element.src || '';
+        let imageUrl = element.src || '';
         if (imageUrl.indexOf('data:image/png;base64') == 0 || element['rendered']) {
             return;
         }
@@ -377,7 +423,7 @@ var ui;
                 if (arr.length >= 2) {
                     var width = new Number(arr[1]).valueOf();
                     var height = new Number(arr[2]).valueOf();
-                    options.imageSize = { width: width, height: height };
+                    options.imageSize = { width, height };
                 }
             }
         }
@@ -388,19 +434,19 @@ var ui;
             options.imageText = element.title || '';
             ;
         }
-        var s = options.imageSize;
+        let s = options.imageSize;
         //设置默认的图片
         var src_replace = generateImageBase64(s.width, s.height, draws.text(options.imageText || config.imageDisaplyText)); //getPreviewImage(imageText || config.imageDisaplyText, img_width, img_height);
         element.setAttribute('src', src_replace);
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             if (options.loadImage) {
                 options.loadImage()
-                    .then(function (base64) { return base64 ? Promise.resolve(base64) : Promise.reject({}); })
-                    .catch(function () {
-                    var base64 = generateImageBase64(s.width, s.height, draws.text('加载图片失败', { fontSize: 24 }));
+                    .then(base64 => base64 ? Promise.resolve(base64) : Promise.reject({}))
+                    .catch(() => {
+                    let base64 = generateImageBase64(s.width, s.height, draws.text('加载图片失败', { fontSize: 24 }));
                     return Promise.resolve(base64);
                 })
-                    .then(function (base64) {
+                    .then((base64) => {
                     element.src = base64;
                     element['rendered'] = true;
                 });
@@ -420,19 +466,19 @@ var ui;
     function imageFileToBase64(imageFile, size) {
         if (!imageFile)
             throw ui.errors.argumentNull('imageFile');
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             var reader = new FileReader();
             reader.readAsArrayBuffer(imageFile);
-            reader.onload = function (ev) {
+            reader.onload = (ev) => {
                 var blob = new Blob([event.target['result']]);
                 window['URL'] = window['URL'] || window['webkitURL'];
                 var blobURL = window['URL'].createObjectURL(blob);
                 var image = new Image();
                 image.src = blobURL;
-                image.onload = function () {
+                image.onload = () => {
                     var canvas = document.createElement('canvas');
-                    var width = image.width;
-                    var height = image.height;
+                    let width = image.width;
+                    let height = image.height;
                     if (size) {
                         width = size.width;
                         height = size.height;
@@ -441,8 +487,8 @@ var ui;
                     canvas.height = height;
                     var ctx = canvas.getContext("2d");
                     ctx.drawImage(image, 0, 0, width, height);
-                    var data = canvas.toDataURL("/jpeg", 0.7);
-                    resolve({ base64: data, width: width, height: height });
+                    let data = canvas.toDataURL("/jpeg", 0.7);
+                    resolve({ base64: data, width, height });
                 };
             };
         });
@@ -451,23 +497,22 @@ var ui;
 })(ui || (ui = {}));
 var ui;
 (function (ui) {
-    var Panel = (function () {
-        function Panel(element) {
-            var _this = this;
+    class Panel {
+        constructor(element) {
             if (!element)
                 throw ui.errors.argumentNull('element');
             this.build(element);
-            var isIOS = navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0;
+            let isIOS = navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0;
             //=====================================================================
             // 点击非窗口区域，关窗口。并禁用上级元素的 touch 操作。
             // let panel = this.panel; //this.refs['panel'] as HTMLElement;
             // let modalDialog = this.modalDialog; //this.refs['modalDialog'] as HTMLElement;
-            this.panel.addEventListener('touchstart', function (event) {
-                var dialogRect = _this.modalDialog.getBoundingClientRect();
-                for (var i = 0; i < event.touches.length; i++) {
-                    var clientX = event.touches[i].clientX;
+            this.panel.addEventListener('touchstart', (event) => {
+                let dialogRect = this.modalDialog.getBoundingClientRect();
+                for (let i = 0; i < event.touches.length; i++) {
+                    let { clientX } = event.touches[i];
                     if (clientX < dialogRect.left) {
-                        _this.hide();
+                        this.hide();
                         return;
                     }
                 }
@@ -475,8 +520,8 @@ var ui;
             //=========================================================
             // 防止滚动面板时，事件穿透到面板底下的页面
             if (isIOS) {
-                this.panel.addEventListener('touchstart', function (event) {
-                    var tagName = event.target.tagName;
+                this.panel.addEventListener('touchstart', (event) => {
+                    let tagName = event.target.tagName;
                     if (tagName == 'BUTTON' || tagName == 'INPUT' || tagName == 'A') {
                         return;
                     }
@@ -486,56 +531,61 @@ var ui;
             }
             //=========================================================
         }
-        Object.defineProperty(Panel.prototype, "header", {
-            get: function () {
-                return this._header;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Panel.prototype, "body", {
-            get: function () {
-                return this._body;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Panel.prototype, "footer", {
-            get: function () {
-                return this._footer;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Panel.prototype.build = function (element) {
+        get header() {
+            return this._header;
+        }
+        get body() {
+            return this._body;
+        }
+        get footer() {
+            return this._footer;
+        }
+        build(element) {
             this.panel = element;
             this.panel.className = 'panel';
             this.panel.style.display = 'none';
             // document.body.appendChild(panel);
-            this.panel.innerHTML = "\n                <div class=\"modal\">\n                    <div class=\"modal-dialog\">\n                        <div class=\"modal-content\">\n                            <div class=\"modal-header\">\n        \n                            </div>\n                            <div class=\"modal-body\">\n        \n                            </div>\n                            <div class=\"modal-footer\">\n        \n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"modal-backdrop in\">\n                </div>\n            ";
+            this.panel.innerHTML = `
+                <div class="modal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+        
+                            </div>
+                            <div class="modal-body">
+        
+                            </div>
+                            <div class="modal-footer">
+        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-backdrop in">
+                </div>
+            `;
             this.modal = this.panel.querySelector('.modal');
             this.backdrop = this.panel.querySelector('.modal-backdrop');
             this._header = this.panel.querySelector('.modal-header');
             this._footer = this.panel.querySelector('.modal-footer');
             this._body = this.panel.querySelector(".modal-body");
             this.modalDialog = this.panel.querySelector(".modal-dialog");
-        };
-        Panel.prototype.show = function () {
-            var _this = this;
+        }
+        show() {
             // args = args || {};
             this.panel.style.display = 'block';
             this.modal.style.display = 'block';
-            setTimeout(function () {
-                _this.modal.style.transform = 'translateX(0)';
-                _this.backdrop.style.opacity = '0.5';
+            setTimeout(() => {
+                this.modal.style.transform = 'translateX(0)';
+                this.backdrop.style.opacity = '0.5';
             }, 50);
-            var setBodyHeight = function () {
-                var headerHeight = _this._header.getBoundingClientRect().height;
-                var footerHeight = _this._footer.getBoundingClientRect().height;
-                var bodyHeight = window.innerHeight - headerHeight - footerHeight;
-                _this._body.style.height = bodyHeight + "px";
+            let setBodyHeight = () => {
+                let headerHeight = this._header.getBoundingClientRect().height;
+                let footerHeight = this._footer.getBoundingClientRect().height;
+                let bodyHeight = window.innerHeight - headerHeight - footerHeight;
+                this._body.style.height = `${bodyHeight}px`;
             };
-            window.addEventListener('resize', function () { return setBodyHeight(); });
+            window.addEventListener('resize', () => setBodyHeight());
             setBodyHeight();
             // if (args.header)
             //     args.header(header);
@@ -546,16 +596,14 @@ var ui;
             // return {
             //     hide: () => hide()
             // }
-        };
-        Panel.prototype.hide = function () {
-            var _this = this;
+        }
+        hide() {
             this.modal.style.removeProperty('transform');
             this.backdrop.style.opacity = '0';
-            window.setTimeout(function () {
-                _this.panel.style.display = 'none';
+            window.setTimeout(() => {
+                this.panel.style.display = 'none';
             }, 500);
-        };
-        return Panel;
-    }());
+        }
+    }
     ui.Panel = Panel;
 })(ui || (ui = {}));
