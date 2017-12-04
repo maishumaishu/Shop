@@ -19,7 +19,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
     }
     render() {
         let bg = this.state.bg ? imageUrl(this.state.bg) :
-           Control.default_bg
+            Control.default_bg
 
         return (
             <div className="member-editor well">
@@ -90,7 +90,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                             }} />显示等级
                     </span>
                 </div> */}
-                {/* <div>
+                <div>
                     <label>销售员中心</label>
                     <span>
                         <label>
@@ -116,7 +116,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                 }} />只对销售员显示
                         </label>
                     </span>
-                </div> */}
+                </div>
             </div>
         );
     }

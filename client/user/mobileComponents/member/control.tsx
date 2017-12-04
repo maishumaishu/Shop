@@ -38,7 +38,8 @@ export default class MemberControl extends Control<Props, State>{
         this.state = {
             balance: userData.balance.value,
             score: userData.score.value,
-            userInfo: {} as UserInfo
+            userInfo: {} as UserInfo,
+            sellsCenter: 'showToMember'
         };
 
         this.state.balance = userData.balance.value;
@@ -184,12 +185,16 @@ export default class MemberControl extends Control<Props, State>{
                             </a> : null
                     }
                 </div>
-                {/* <div className="list-group">
-                    <a className="list-group-item">
-                        <span className="icon-chevron-right pull-right"></span>
-                        <strong>销售员中心</strong>
-                    </a>
-                </div> */}
+                {
+                    sellsCenter ?
+                        <div className="list-group">
+                            <a className="list-group-item">
+                                <span className="icon-chevron-right pull-right"></span>
+                                <strong>销售员中心</strong>
+                            </a>
+                        </div> : null
+                }
+
                 <div className="list-group">
                     <a className="list-group-item" href="#user_accountSecurity_index">
                         <span className="icon-chevron-right pull-right"></span>
