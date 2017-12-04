@@ -162,7 +162,7 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
         let listType = this.state.listType;
 
         return (
-            <div>
+            <form>
                 {/* <i className=" icon-remove" style={{ display: 'table-cell' }}></i>
                 <h5 style={{ display: 'table-cell', paddingLeft: 8 }}>商品列表</h5>
                 <hr style={{ marginTop: 18 }} /> */}
@@ -227,7 +227,7 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
                 <div className="clearfix"></div>
 
                 <ProductSelectDialog shopping={shopping as any} ref={(e: ProductSelectDialog) => this.productsDialog = e || this.productsDialog} />
-            </div>
+            </form>
         );
     }
 }
