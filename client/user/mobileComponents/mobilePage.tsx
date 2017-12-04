@@ -84,18 +84,18 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
     //======================================================================================
     // For Design Time
-    controlCreated(control: Control<any, any>, controlType: React.ComponentClass<any>) {
-        this.createdControlCount = this.createdControlCount + 1;
-        var total = this.headerControlsCount + this.footerControlsCount + this.viewControlsCount;
-        if (this.createdControlCount == total && this.selecteControl != null &&
-            this.props.designTime.controlSelected != null) {
-            let c = this.selecteControl;
-            // 加上延时，否则编辑器有可能显示不出来
-            setTimeout(() => {
-                this.props.designTime.controlSelected(c.control, c.controlType);
-            }, 100);
-        }
-    }
+    // controlCreated(control: Control<any, any>, controlType: React.ComponentClass<any>) {
+    //     this.createdControlCount = this.createdControlCount + 1;
+    //     var total = this.headerControlsCount + this.footerControlsCount + this.viewControlsCount;
+    //     if (this.createdControlCount == total && this.selecteControl != null &&
+    //         this.props.designTime.controlSelected != null) {
+    //         let c = this.selecteControl;
+    //         // 加上延时，否则编辑器有可能显示不出来
+    //         setTimeout(() => {
+    //             this.props.designTime.controlSelected(c.control, c.controlType);
+    //         }, 100);
+    //     }
+    // }
     //======================================================================================
 
     renderControls(controls: ControlDescription[]) {
@@ -158,7 +158,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                         this.selecteControl = c;
                     }
 
-                    this.controlCreated(c.control, c.controlType);
+                    // this.controlCreated(c.control, c.controlType);
                 }} />
         );
     }
@@ -178,7 +178,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
     renderFooter(pageData: PageData): JSX.Element {
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
-        this.footerControlsCount = footerControls.length;
         return (
             <footer key="footer" className="page-footer">
                 {this.renderControls(footerControls)}
@@ -189,10 +188,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
     renderViews(pageData: PageData) {
         let views = pageData.views || [];
-        this.viewControlsCount = 0;
-        for (let i = 0; i < views.length; i++) {
-            this.viewControlsCount = this.viewControlsCount + (views[i].controls || []).length;
-        }
 
         let designMode = this.props.designTime;
         if (designMode) {
@@ -281,11 +276,36 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     render() {
         let children = React.Children.toArray(this.props.children) || [];
         let pageData = this.state.pageData;
-        return [
+
+        if (pageData.header && pageData.header.controls)
+            this.headerControlsCount = pageData.header.controls.length;
+
+        if (pageData.footer && pageData.footer.controls)
+            this.footerControlsCount = pageData.footer.controls.length;
+
+        let views = pageData.views || [];
+        this.viewControlsCount = 0;
+        for (let i = 0; i < views.length; i++) {
+            this.viewControlsCount = this.viewControlsCount + (views[i].controls || []).length;
+        }
+
+        var result = [
             this.renderHeader(pageData),
             ...this.renderViews(pageData),
             this.renderFooter(pageData)
-        ]
+        ];
+
+        if (this.props.designTime && this.props.designTime.controlSelected) {
+            // 加上延时，否则编辑器有可能显示不出来
+            setTimeout(() => {
+                if (this.selecteControl != null) {
+                    let c = this.selecteControl;
+                    this.props.designTime.controlSelected(c.control, c.controlType);
+                }
+            }, 1000);
+        }
+
+        return result;
     }
 }
 
