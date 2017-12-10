@@ -243,7 +243,7 @@ export class ShoppingService extends Service {
     }
     //================================================================
     // 订单
-    private orderStatusText(value: string) {
+    static orderStatusText(value: string) {
         switch (value) {
             case 'Confirmed':
                 return '已确认';
@@ -263,7 +263,7 @@ export class ShoppingService extends Service {
     orders(args: wuzhui.DataSourceSelectArguments) {
         let url = this.url('Order/GetOrders');
         return this.getByJson<wuzhui.DataSourceSelectResult<Order>>(url, args).then(result => {
-            result.dataItems.forEach(c => c.StatusText = this.orderStatusText(c.Status));
+            result.dataItems.forEach(c => c.StatusText = ShoppingService.orderStatusText(c.Status));
             return result;
         });
     }

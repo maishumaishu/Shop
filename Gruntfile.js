@@ -29,7 +29,7 @@ module.exports = function (grunt) {
             }
         },
         copy: {
-            js_es6: {
+            lib_es6: {
                 files: [{
                     expand: true,
                     cwd: `client/lib/es6`,
@@ -37,7 +37,7 @@ module.exports = function (grunt) {
                     dest: `out/es6/scripts`
                 }]
             },
-            js_es5: {
+            lib_es5: {
                 files: [{
                     expand: true,
                     cwd: `client/lib`,
@@ -57,11 +57,18 @@ module.exports = function (grunt) {
             // 将生成的 es5 文件 copy 到 wwww
             es5_www: {
                 files: [{
-                    expand: true,
-                    cwd: `out/es5/`,
-                    src: `**/*.js`,
-                    dest: `www`
-                }]
+                        expand: true,
+                        cwd: `out/es5/`,
+                        src: `**/*.js`,
+                        dest: `www`
+                    },
+                    {
+                        expand: true,
+                        cwd: `out/es6/user`,
+                        src: `boot.js`,
+                        dest: `www/user`
+                    }
+                ]
             },
             client: {
                 files: [{
@@ -93,8 +100,8 @@ module.exports = function (grunt) {
                     // 服务器端口号
                     port: 2626,
                     // 服务器地址(可以使用主机名localhost，也能使用IP)
-                    hostname: '192.168.1.7',
-                    // hostname: '127.0.0.1',
+                    // hostname: '192.168.1.7',
+                    hostname: '0.0.0.0',
                     // keepalive: true,
                     livereload: 20453,
                     // 物理路径(默认为. 即根目录) 注：使用'.'或'..'为路径的时，可能会返回403 Forbidden. 此时将该值改为相对路径 如：/grunt/reloard。
@@ -104,64 +111,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        // copy: {
-        //     admin: {
-        //         files: [{
-        //                 expand: true,
-        //                 cwd: admin_src,
-        //                 src: ['**/*.css', '**/*.html', 'content/font/*.*'],
-        //                 dest: admin_dest
-        //             },
-        //             {
-        //                 expand: true,
-        //                 cwd: `${lib}`,
-        //                 src: ['ueditor/**/*.*'],
-        //                 dest: `${admin_dest}/scripts`
-        //             },
-        //             {
-        //                 expand: true,
-        //                 cwd: `${lib}`,
-        //                 src: ['umeditor/**/*.*'],
-        //                 dest: `${admin_dest}/scripts`
-        //             },
-        //             {
-        //                 expand: true,
-        //                 cwd: `${lib}`,
-        //                 src: ['*.js'],
-        //                 dest: `${admin_dest}/scripts`
-        //             },
-        //             {
-        //                 expand: true,
-        //                 cwd: `${admin_src}/lib/bootstrap-3.3.7/fonts`,
-        //                 src: ['*.*'],
-        //                 dest: `${admin_dest}/content/font`
-        //             },
-        //             // { expand: true, cwd: 'lib/dest', src: ['*.js'], dest: `${admin_dest}` },
-        //             // { expand: true, cwd: `${user_src}/dest`, src: ['userServices.js'], dest: `${admin_dest}/mobile` }
-        //         ]
-        //     },
-        //     user: {
-        //         files: [{
-        //                 expand: true,
-        //                 cwd: user_src,
-        //                 src: ['**/*.html', '**/*.css', '**/*.png', 'content/font/*.*'],
-        //                 dest: user_dest
-        //             },
-        //             {
-        //                 expand: true,
-        //                 cwd: lib,
-        //                 src: ['*.js'],
-        //                 dest: `${user_dest}/scripts`
-        //             },
-        //             {
-        //                 expand: true,
-        //                 cwd: user_src,
-        //                 src: ['*.js'],
-        //                 dest: user_dest
-        //             }
-        //         ]
-        //     },
-        // },
         cssmin: {
             options: {
                 mergeIntoShorthands: false,
@@ -232,19 +181,19 @@ module.exports = function (grunt) {
                     out: `www/user/build.js`,
                     optimize: 'uglify', //'none',//
                     paths: {
-                        css: 'scripts/css',
-                        'chitu.mobile': 'scripts/chitu.mobile',
-                        dilu: 'scripts/dilu',
-                        react: 'scripts/react.production',
-                        'react-dom': 'scripts/react-dom.production',
-                        'prop-types': 'scripts/prop-types',
-                        polyfill: 'scripts/polyfill',
+                        css: '../scripts/css',
+                        'chitu.mobile': '../scripts/chitu.mobile',
+                        dilu: '../scripts/dilu',
+                        react: '../scripts/react.production',
+                        'react-dom': '../scripts/react-dom.production',
+                        'prop-types': '../scripts/prop-types',
+                        polyfill: '../scripts/polyfill',
                         // text: 'scripts/text',
                         // carousel: 'scripts/carousel',
                         // mobileComponents: 'pageComponents',
                         // mobileControls: 'scripts/mobileControls',
-                        ui: 'scripts/ui',
-                        'maishu-chitu': 'scripts/chitu',
+                        ui: '../scripts/ui',
+                        'maishu-chitu': '../scripts/chitu',
                         'user': './',
                         'userServices': './services',
                         'share': '../share'
@@ -268,7 +217,10 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: `out/es5`,
-                    src: ['user/services/*.js', 'user/mobileComponents/*.js', 'user/mobileComponents/**/*.js'],
+                    src: [
+                        'user/services/*.js', 'user/mobileComponents/*.js', 'user/mobileComponents/**/*.js',
+                        'admin/services/*.js', 'admin/*.js'
+                    ],
                     dest: `www`
                 }]
             }
@@ -313,12 +265,12 @@ module.exports = function (grunt) {
     // grunt.registerTask('default', ['admin', 'user']);
     // grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
 
-    grunt.registerTask('build-es6', ['shell', 'copy:js_es6']);
-    grunt.registerTask('build-es5', ['shell', 'copy:js_es5', 'copy:js_es6', 'babel']);
+    grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
+    grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
     grunt.registerTask('run', ['connect', 'watch']);
     // grunt.registerTask('build-run', ['build', 'run']);
     // grunt.registerTask('dev', ['es6', 'run']);
-    grunt.registerTask('release', ['build-es5', 'copy:es5_www', 'uglify']);
+    grunt.registerTask('release', ['build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
     grunt.registerTask('dev', ['build-es6', 'copy:es6_www', 'connect', 'watch']);
 }
 

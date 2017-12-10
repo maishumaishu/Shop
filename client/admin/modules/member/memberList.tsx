@@ -4,7 +4,6 @@ import { FormValidator, rules } from 'dilu';
 import { userInfo } from 'userServices/memberService';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// import { HTMLElement } from 'react';
 
 export default function (page: chitu.Page) {
     page.element.className = 'admin-pc';
@@ -151,7 +150,7 @@ export default function (page: chitu.Page) {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-primary"
+                                <button className="btn btn-default"
                                     onClick={() => ui.hideDialog(this.rechargeDialogElement)}>取消</button>
                                 <button className="btn btn-primary"
                                     ref={(e: HTMLButtonElement) => {

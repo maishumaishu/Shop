@@ -49,7 +49,7 @@ export default function (page: chitu.Page) {
                                         <i className="icon-trash"></i>
                                     </button>
                                     <a className="btn btn-info btn-minier" style={{ marginRight: 4 }}
-                                        href={`#Freight/FreightList?id=${dataItem.Id}&name=${encodeURI(dataItem.Name)}`}>设置运费</a>
+                                        href={`#freight/freightList?id=${dataItem.Id}&name=${encodeURI(dataItem.Name)}`}>设置运费</a>
                                 </div>, cell.element);
                             return cell;
                         },

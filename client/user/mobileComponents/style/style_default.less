@@ -30,7 +30,7 @@
 @import "../../../lib/bootstrap-3.3.7/less/badges.less";
 // @import "../../../lib/bootstrap-3.3.7/less/jumbotron.less";
 @import "../../../lib/bootstrap-3.3.7/less/thumbnails.less";
-// @import "../../../lib/bootstrap-3.3.7/less/alerts.less";
+@import "../../../lib/bootstrap-3.3.7/less/alerts.less";
 // @import "../../../lib/bootstrap-3.3.7/less/progress-bars.less";
 @import "../../../lib/bootstrap-3.3.7/less/media.less";
 @import "../../../lib/bootstrap-3.3.7/less/list-group.less";
@@ -136,6 +136,21 @@ body {
 .topbar-padding {
     section {
         padding-top: 50px;
+    }
+}
+
+.cust-prop {
+    border: 1px solid @brand-primary;
+    margin-bottom: 8px;
+    margin-right: 10px;
+    border-radius: 4px;
+    padding: 4px 20px 4px 20px;
+    white-space: nowrap;
+    background-color: @bg-color;;
+
+    &.selected {
+        background-color: @brand-primary;
+        color: white;
     }
 }
 

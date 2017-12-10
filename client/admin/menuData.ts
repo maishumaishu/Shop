@@ -123,7 +123,7 @@ export let menuData: MenuNode[] = [
                 Children: [
                     {
                         Url: "freight/solutionList", Title: "快递发货",
-                        Children: [{ Title: '运费设置', Url: 'Freight/FreightList' }]
+                        Children: [{ Title: '运费设置', Url: 'freight/freightList' }]
                     },
                     // { Url: "Freight/ProductFreightList", Title: "产品运费" },
                     { Url: 'freight/inCitySend', Title: '同城配送' },

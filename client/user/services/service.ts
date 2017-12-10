@@ -57,12 +57,11 @@ export abstract class Service extends chitu.Service {
         if (tokens.userToken.value)
             options.headers['user-token'] = tokens.userToken.value;
 
-        this.error.add((sender, error) => {
-            Service.error.fire(sender, error);
-        })
-
-
-        return super.ajax<T>(url, options);
+        let self = this;
+        return super.ajax<T>(url, options).catch(err => {
+            Service.error.fire(self, err);
+            return Promise.reject(err);
+        });
     }
 
     static get storeName() {

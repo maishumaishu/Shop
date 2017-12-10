@@ -109,6 +109,7 @@ interface Order {
     Status: string,
     // StatusText: string,
     Sum: number,
+    CustomerId:string,
 }
 interface OrderDetail {
     // Id: string,

@@ -9,19 +9,26 @@
     };
     function createPing(opt?: { favicon?: string, timeout?: number }) {
 
-        this.opt = opt || {};
-        this.favicon = this.opt.favicon || "/favicon.ico";
-        this.timeout = this.opt.timeout || 2000;
+        let self: {
+            opt: any,
+            favicon: string,
+            timeout: number,
+            img: HTMLImageElement,
+
+        } = {} as any;
+        self.opt = opt || {};
+        self.favicon = self.opt.favicon || "/favicon.ico";
+        self.timeout = self.opt.timeout || 2000;
 
         function ping(source: string, callback: (error: string, pong: number) => void) {
-            this.img = new Image();
+            self.img = new Image();
             var timer;
 
             var start = new Date() as any;
-            this.img.onload = pingCheck;
-            this.img.onerror = pingCheck;
-            if (this.timeout) {
-                timer = setTimeout(pingCheck, this.timeout);
+            self.img.onload = pingCheck;
+            self.img.onerror = pingCheck;
+            if (self.timeout) {
+                timer = setTimeout(pingCheck, self.timeout);
             }
 
             function pingCheck(e) {
@@ -43,17 +50,13 @@
                 source + opt.favicon + "&" + (+new Date()) :
                 source + opt.favicon + "?" + (+new Date());
 
-            this.img.src = src;
+            self.img.src = src;
         }
 
         return {
             ping
         }
     }
-
-
-
-
 
     let { protocol } = location;
     for (let i = 0; i < allServiceHosts.length; i++) {

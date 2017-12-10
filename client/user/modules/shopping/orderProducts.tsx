@@ -50,7 +50,7 @@ export default async function (page: chitu.Page) {
         }
         private showReceiptList() {
             let routeValue: ReceiptListRouteValues = { callback: this.setAddress, orderId: this.state.order.Id };
-            app.showPage('user_receiptList', routeValue);
+            app.redirect('user_receiptList', routeValue);
         }
         render() {
             let order = this.state.order;
@@ -62,7 +62,8 @@ export default async function (page: chitu.Page) {
                 </header>,
                 <footer key="f">
                     <div className="container" style={{ paddingTop: 10, paddingBottom: 10 }}>
-                        <button onClick={() => this.confirmOrder()} className="btn btn-block btn-primary">提交订单</button>
+                        <button onClick={() => this.confirmOrder()} className="btn btn-block btn-primary"
+                            disabled={(order.ReceiptAddress || "") == ""}>提交订单</button>
                     </div>
                 </footer>,
                 <section key="v">
@@ -154,7 +155,7 @@ export default async function (page: chitu.Page) {
                     </div>
                     <hr style={{ margin: 0, borderTopWidth: 10 }} />
                     <div className="container" style={{ padding: 10 }}>
-                        <input name="remark" type="text" multiple={true} style={{ width: '100%', height: 40, borderRadius: 4, border: '1px solid #dddddd' }}
+                        <input name="remark" type="text" multiple={true} style={{ width: '100%', height: 40, border: '1px solid #dddddd' }}
                             placeholder=" 若你对订单有特殊性要求，可以在此备注" />
                     </div>
 

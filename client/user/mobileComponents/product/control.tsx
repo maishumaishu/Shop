@@ -89,7 +89,7 @@ export class Footer extends Control<ControlProps<Footer> & { product: Product },
     _render(h) {
         let { productsCount } = this.state;
         let p = this.props.product;
-        let allowBuy = p.Stock > 0 && p.OffShelve != true;
+        let allowBuy = (p.Stock == null || p.Stock > 0) && p.OffShelve != true;
 
         let buttonText = p.Stock == 0 ? "商品已售罄" : p.OffShelve == true ? "商品已下架" : "加入购物车";
         return (

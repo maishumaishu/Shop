@@ -489,6 +489,7 @@ declare module React {
         crossOrigin?: string;
         data?: string;
         dateTime?: string;
+        defaultChecked?: boolean;
         defer?: boolean;
         dir?: string;
         disabled?: boolean;
