@@ -1,5 +1,14 @@
 /** 获取连接速度最快的服务器 */
 (function () {
+
+    async function get(url): Promise<any> {
+        let request = new XMLHttpRequest();
+        request.open("GET", url, false);
+        request.send(null);
+        let text = request.responseText;
+        return JSON.parse(text);
+    }
+
     //====================================================
     // 配置
     let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`];//, `service4.alinq.org`
@@ -112,6 +121,9 @@
             // host 为 IP，无法使用微信 auth
             if (/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/.test(host))
                 return;
+
+            if (host == 'localhost')
+                return;
             //======================================
 
             var url =
@@ -132,24 +144,21 @@
             history.pushState("", "", u);
         }
 
-
-
         function serviceUrl(path: string) {
             let { protocol } = location;
             let url = `${protocol}//service.alinq.cn/UserWeiXin/${path}?application-key=${urlParams.appKey}`;
             return url;
         }
+
         async function weixinSetting() {
-            let url = serviceUrl('WeiXin/GetConfig')
-            let response = await fetch(url);
-            return response.json();
+            let url = serviceUrl('WeiXin/GetConfig');
+            return get(url);
         }
 
         async function getOpenId(code: string) {
             let { protocol } = location;
             let url = serviceUrl('WeiXin/GetOpenId') + `&code=${code}`;
-            let response = await fetch(url);
-            return response.json();
+            return get(url);
         }
 
     })();
@@ -157,8 +166,7 @@
     (async function () {
         let { protocol } = location;
         let url = `${protocol}//service.alinq.cn/UserSite/Store/Get?application-key=${urlParams.appKey}`;
-        let response = await fetch(url);
-        let store = await response.json();
+        let store = await get(url);
         if (store != null && store.Name != null) {
             document.title = store.Name;
             localStorage.setItem(`${urlParams.appKey}_storeName`, store.Name);

@@ -129,7 +129,8 @@ export let menuData: MenuNode[] = [
                     { Url: 'freight/inCitySend', Title: '同城配送' },
                 ]
             },
-            { Url: 'weixin/setting', Title: '微信设置' }
+            { Url: 'weixin/setting', Title: '微信设置' },
+            { Url: 'shopping/paymentSetting', Title: '支付设置' }
         ]
     },
     {

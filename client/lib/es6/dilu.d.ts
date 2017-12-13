@@ -9,7 +9,7 @@ declare namespace dilu {
     type InputElement = HTMLElement & {
         name: string;
         value: string;
-    };
+    } | HTMLAreaElement;
     type ValidateField = {
         element: InputElement;
         rules: Rule[];
@@ -27,6 +27,8 @@ declare namespace dilu {
         check(): Promise<boolean>;
         private checkField(field);
         checkElement(inputElement: HTMLInputElement): Promise<boolean>;
+        static elementValue(element: InputElement): string;
+        private elementName(element);
     }
 }
 declare namespace dilu {
