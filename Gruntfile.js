@@ -57,24 +57,27 @@ module.exports = function (grunt) {
             // 将生成的 es5 文件 copy 到 wwww
             es5_www: {
                 files: [{
-                        expand: true,
-                        cwd: `out/es5/`,
-                        src: `**/*.js`,
-                        dest: `www`
-                    },
-                    {
-                        expand: true,
-                        cwd: `out/es6/user`,
-                        src: `boot.js`,
-                        dest: `www/user`
-                    }
+                    expand: true,
+                    cwd: `out/es5/`,
+                    src: `**/*.js`,
+                    dest: `www`
+                },
+                {
+                    expand: true,
+                    cwd: `out/es6/user`,
+                    src: `boot.js`,
+                    dest: `www/user`
+                }
                 ]
             },
             client: {
                 files: [{
                     expand: true,
                     cwd: 'client',
-                    src: ['admin/*.html', 'user/*.html'],
+                    src: [
+                        'admin/*.html', 'admin/**/*.css', 'admin/content/font/*',
+                        'user/*.html', 'user/**/*.png'
+                    ],
                     dest: 'www'
                 }]
             }
@@ -136,7 +139,7 @@ module.exports = function (grunt) {
                     src: ['**/*.less'],
                     dest: `${admin_dest}`,
                     ext: '.css'
-                }, ]
+                },]
             },
             user: {
                 options: {
@@ -163,7 +166,7 @@ module.exports = function (grunt) {
                     src: ['**/*.less'],
                     dest: `mobileComponents/dest/mobileComponents`,
                     ext: '.css'
-                }, ]
+                },]
             }
         },
         requirejs: {
