@@ -48,16 +48,19 @@ export abstract class Service extends chitu.Service {
         url = `${protocol}//${host}/${url}`;
 
         options = options || {};
-        options.headers = options.headers;
+        options.headers = options.headers || {};
 
-        if (!tokens.appToken)
-            throw new Error("app token error");
+        let self = this;
+        if (!tokens.appToken) {
+            let err = new Error("app token error");
+            Service.error.fire(self, err);
+            return;
+        }
 
         options.headers['application-key'] = tokens.appToken;
         if (tokens.userToken.value)
             options.headers['user-token'] = tokens.userToken.value;
 
-        let self = this;
         return super.ajax<T>(url, options).catch(err => {
             Service.error.fire(self, err);
             return Promise.reject(err);
