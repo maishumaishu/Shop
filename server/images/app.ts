@@ -190,7 +190,6 @@ async function resizeImage(buffer: Buffer, type: 'jpeg|png|webp', width: number,
             resolve(data);
         });
     })
-
 }
 
 async function upload(req: http.IncomingMessage, res: http.ServerResponse): Promise<any> {
@@ -198,7 +197,7 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
     //image
     let obj = await getPostObject(req);
     let image = obj["image"];
-    let appKey = obj["application-key"];
+    let appKey = obj["application-id"];
     if (image == null) {
         return errors.parameterRequired("image");
     }
@@ -206,15 +205,16 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
     if (appKey == null)
         return errors.parameterRequired('appKey');
 
-    let db = await mongodb.MongoClient.connect(settings.mongodb_nodeauth);
-    let tokens = db.collection('Token');
-    let token = await tokens.findOne({ _id: new mongodb.ObjectId(appKey) });
-    if (token == null)
-        return new Error(`Cannt find token by application key '${appKey}'.`);
+    let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
+    // let tokens = db.collection('Token');
+    // let token = await tokens.findOne({ _id: new mongodb.ObjectId(appKey) });
+    // if (token == null)
+    //     return new Error(`Cannt find token by application key '${appKey}'.`);
 
     let collection = db.collection(imageCollectionName);
 
-    return collection.insertOne({ data: image, appId: token.objectId });
+    let result = await collection.insertOne({ data: image, appId: appKey });
+    return result;
 }
 
 function getPostObject(request: http.IncomingMessage): Promise<any> {
@@ -250,6 +250,5 @@ function getPostObject(request: http.IncomingMessage): Promise<any> {
 
 server.listen(port, hostname, () => {
     console.log(`server running at http://${hostname}:${port}`);
-
 });
 
