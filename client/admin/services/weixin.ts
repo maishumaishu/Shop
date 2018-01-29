@@ -28,7 +28,7 @@ if (Service.token)
     headers['user-token'] = Service.token;
 
 if (location.search) {
-    headers['application-key'] = location.search.substr(1);
+    headers['application-id'] = location.search.substr(1);
 }
 export class WeiXinService extends Service {
     url(path) {

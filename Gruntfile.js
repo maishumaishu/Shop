@@ -76,21 +76,15 @@ module.exports = function (grunt) {
                     cwd: 'client',
                     src: [
                         'admin/*.html', 'admin/**/*.css', 'admin/content/font/*',
-                        'user/*.html', 'user/**/*.png'
+                        'user/*.html', 'user/**/*.png', 'user/content/font/*', 'user/content/*.css',
                     ],
                     dest: 'www'
                 }]
             }
         },
         shell: {
-            admin: {
-                command: `tsc -p ${admin_src}`,
-                options: {
-                    failOnError: false
-                }
-            },
-            user: {
-                command: `tsc -p ${user_src}`,
+            client: {
+                command: `tsc -p client`,
                 options: {
                     failOnError: false
                 }
@@ -101,7 +95,7 @@ module.exports = function (grunt) {
             www: {
                 options: {
                     // 服务器端口号
-                    port: 2626,
+                    port: 2828,
                     // 服务器地址(可以使用主机名localhost，也能使用IP)
                     // hostname: '192.168.1.7',
                     hostname: '0.0.0.0',
@@ -109,7 +103,7 @@ module.exports = function (grunt) {
                     livereload: 20453,
                     // 物理路径(默认为. 即根目录) 注：使用'.'或'..'为路径的时，可能会返回403 Forbidden. 此时将该值改为相对路径 如：/grunt/reloard。
                     base: 'www',
-                    open: true,
+                    open: false,
                     // protocol: 'https'
                 }
             }
@@ -226,7 +220,7 @@ module.exports = function (grunt) {
                     ],
                     dest: `www`
                 }]
-            }
+     }
         },
         watch: {
             livereload: {
@@ -246,7 +240,10 @@ module.exports = function (grunt) {
         grunt.log.writeln(`filepath:${filepath}\n`);
         grunt.log.writeln(`target:${target}\n`);
 
-        let target_pathname = filepath.replace('out/es6', 'www');
+        let arr = filepath.split(/\/|\\/);
+        arr.shift();
+        arr[0] = 'www';
+        let target_pathname = arr.join('/');//filepath.replace('out\es6', 'www');
         grunt.log.writeln(`target_pathname:${target_pathname}\n`);
 
         grunt.file.copy(filepath, `${target_pathname}`);
@@ -269,7 +266,7 @@ module.exports = function (grunt) {
     // grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
 
     grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
-    grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
+    grunt.registerTask('build-es5', ['shell', ' copy:lib_es5', 'copy:lib_es6', 'babel']);
     grunt.registerTask('run', ['connect', 'watch']);
     // grunt.registerTask('build-run', ['build', 'run']);
     // grunt.registerTask('dev', ['es6', 'run']);

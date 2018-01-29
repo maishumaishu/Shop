@@ -40,8 +40,8 @@ export class ShoppingCartService extends Service {
             let url = this.url('RemoveItem');
             return this.deleteByJson(url, { itemId });
         }
-        let url = this.url('UpdateItem');
-        let item = { Id: itemId, Count: count } as ShoppingCartItem;
+        let url = this.url('SetItemCount');
+        let item = { itemId, count };
         return this.putByJson(url, { item });
     }
 
@@ -136,18 +136,18 @@ export class ShoppingCartService extends Service {
     }
 
     async selectItem(itemId: string) {
-        let url = this.url('UpdateItem');
-        let item = { Id: itemId, Selected: true } as ShoppingCartItem;
-        await this.putByJson(url, { item });
+        let url = this.url('SelectItems');
+        // let item = { Id: itemId, Selected: true } as ShoppingCartItem;
+        await this.putByJson(url, { ids: [itemId], selected: true });
 
         ShoppingCartService.items.value.filter(o => o.Id == itemId)[0].Selected = true;
         ShoppingCartService.items.fire(ShoppingCartService.items.value);
     }
 
     async unselectItem(itemId: string) {
-        let url = this.url('UpdateItem');
+        let url = this.url('SelectItems');
         let item = { Id: itemId, Selected: false } as ShoppingCartItem;
-        await this.putByJson(url, { item });
+        await this.putByJson(url, { ids: [itemId], selected: false });
 
         ShoppingCartService.items.value.filter(o => o.Id == itemId)[0].Selected = false;
         ShoppingCartService.items.fire(ShoppingCartService.items.value);

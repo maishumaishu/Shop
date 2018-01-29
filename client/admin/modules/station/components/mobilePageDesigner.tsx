@@ -10,10 +10,18 @@ import { PropTypes } from 'prop-types';
 import { app as userApp } from 'user/application';
 
 import * as ui from 'ui';
+import { AppError, ErrorCodes } from 'share/common';
+import { UserLoginDialog } from 'adminComponents/userLoginDialog';
 
 
 // let station = new StationService();
-
+userApp.error.add((source, err: AppError) => {
+    if (err.name == ErrorCodes.UserNotLogin) {
+        UserLoginDialog.show();
+        return;
+    }
+    ui.alert({ title: 'USER ERROR', message: err.message });
+})
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData,
     showComponentPanel?: boolean,

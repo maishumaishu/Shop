@@ -53,7 +53,12 @@ export default function (page: chitu.Page) {
             )
         }
         async  sendVerifyCode() {
-            let isValid = await this.validator.check();
+            let element = (name) => this.formElement.querySelector(`[name='${name}']`) as HTMLInputElement;
+            let { required, matches } = rules;
+            let validator = new FormValidator(
+                { element: element("mobile"), rules: [required('请输入手机号码')] },
+            )
+            let isValid = await validator.check();
             if (isValid == false) {
                 return;
             }
@@ -73,7 +78,7 @@ export default function (page: chitu.Page) {
 
             await member.sentRegisterVerifyCode(this.formElement['mobile'].value)
                 .then((data) => {
-                    this.smsId = data.smsId;
+                    this.smsId = data.SmsId;
                 })
                 .catch(() => {
                     this.state.letfSeconds = 0;
@@ -83,7 +88,7 @@ export default function (page: chitu.Page) {
         async register() {
             let isValid = await this.validator.check();
             if (isValid == false)
-                return;
+                return Promise.reject(new Error("validate fail."));
 
             let mobile = this.formElement['mobile'].value;
             let password = this.formElement['password'].value;
@@ -98,10 +103,10 @@ export default function (page: chitu.Page) {
         }
         render() {
             return [
-                <header>
+                <header key="header">
                     {defaultNavBar(page, { title: "用户注册" })}
                 </header>,
-                <section>
+                <section key="body">
                     <div className="container">
                         <form className="form-horizontal"
                             ref={(o: HTMLFormElement) => this.formElement = o || this.formElement}>
@@ -140,8 +145,8 @@ export default function (page: chitu.Page) {
                                     <button type="button" className="btn btn-primary btn-block"
                                         ref={(e: HTMLButtonElement) => {
                                             if (!e) return;
-                                            e.onclick = ui.buttonOnClick(() => this.register(), { toast: '注册成功' });
-
+                                            // e.onclick = ui.buttonOnClick(() => this.register(), { toast: '注册成功' });
+                                            ui.buttonOnClick(e, () => this.register(), { toast: '注册成功' })
                                         }}>立即注册</button>
                                 </div>
                             </div>

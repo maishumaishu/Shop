@@ -67,7 +67,8 @@ requirejs.config({
         // services: './services',
         ui: '../scripts/ui',
         'user': '.',
-        'share': '../share'
+        'share': '../share',
+        'share/common': '../share/common',
     }
 });
 

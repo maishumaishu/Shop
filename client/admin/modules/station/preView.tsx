@@ -1,6 +1,5 @@
 import { Editor, EditorProps } from 'mobileComponents/editor'
 import { StationService } from 'userServices/stationService';
-import FormValidator from 'formValidator';
 import { VirtualMobile } from 'virtualMobile';
 // import { PageComponent, PageView, PageHeader, PageFooter } from 'mobileControls';
 

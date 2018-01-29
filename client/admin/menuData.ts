@@ -8,7 +8,7 @@ export interface MenuNode {
 };
 
 export let menuData: MenuNode[] = [
-    { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index', Visible: false },
+    { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index', Visible: true },
     {
         Title: "微店",
         Icon: "icon-home",

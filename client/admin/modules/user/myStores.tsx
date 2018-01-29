@@ -1,5 +1,5 @@
 import { default as userService, Application } from 'adminServices/user';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 // import { Page, app } from 'Application';
 import * as ui from 'ui';
 export default async function (page: chitu.Page) {
@@ -14,17 +14,22 @@ export default async function (page: chitu.Page) {
             this.state = { stores: apps };
         }
         componentDidMount() {
-            this.validator = new FormValidator(this.dialogElement, {
-                name: { rules: ['required'], display: '店铺名称' }
-            })
+            // this.validator = new FormValidator(this.dialogElement, {
+            //     name: { rules: ['required'], display: '店铺名称' }
+            // })
+            let nameElement = this.dialogElement.querySelector('[name="name"]') as HTMLInputElement;
+            this.validator = new FormValidator(
+                // { element: nameElement, rules: [rules.required()] }
+            )
         }
-        save(app: Application): Promise<any> {
-            if (!this.validator.validateForm()) {
+        async  save(app: Application): Promise<any> {
+            let isValid = await this.validator.check();
+            if (!isValid) {
                 return Promise.resolve();
             }
 
             let p: Promise<any>;
-            if (!app._id) {
+            if (!app.Id) {
                 p = userService.addApplication(app).then(data => {
                     this.state.stores.push(app);
                 });
@@ -49,7 +54,7 @@ export default async function (page: chitu.Page) {
             });
         }
         showDialog(app: Application) {
-            let msg = app._id == null ? '创建店铺成功' : '更新店铺成功';
+            let msg = app.Id == null ? '创建店铺成功' : '更新店铺成功';
             ReactDOM.render(
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
@@ -69,7 +74,7 @@ export default async function (page: chitu.Page) {
                                         ref={(e: HTMLInputElement) => {
                                             if (!e) return;
                                             this.nameInput = e;
-                                            e.value = app.name || '';
+                                            e.value = app.Name || '';
                                         }} />
                                 </div>
                             </div>
@@ -85,7 +90,7 @@ export default async function (page: chitu.Page) {
                                 ref={(e: HTMLButtonElement) => {
                                     if (!e) return;
                                     e.onclick = ui.buttonOnClick(() => {
-                                        app.name = this.nameInput.value;
+                                        app.Name = this.nameInput.value;
                                         return this.save(app);
                                     }, { toast: msg })
                                 }}>确定</button>
@@ -96,7 +101,7 @@ export default async function (page: chitu.Page) {
             ui.showDialog(this.dialogElement);
         }
         edit(app: Application) {
-            this.nameInput.value = app.name;
+            this.nameInput.value = app.Name;
             ui.showDialog(this.dialogElement);
         }
         render() {
@@ -109,14 +114,14 @@ export default async function (page: chitu.Page) {
                     </div>
                     <ul>
                         {stores.map(o =>
-                            <li key={o._id}>
+                            <li key={o.Id}>
                                 <div className="header">
                                     <p>
-                                        <span className="smaller lighter green interception">{o.name}</span>
+                                        <span className="smaller lighter green interception">{o.Name}</span>
                                         <i className="icon-remove pull-right"
                                             ref={(e: HTMLElement) => {
                                                 if (!e) return;
-                                                e.onclick = ui.buttonOnClick(() => this.delete(o), { confirm: `你确定要删除店铺'${o.name}'?` });
+                                                e.onclick = ui.buttonOnClick(() => this.delete(o), { confirm: `你确定要删除店铺'${o.Name}'?` });
                                             }} />
                                     </p>
                                 </div>
@@ -126,7 +131,7 @@ export default async function (page: chitu.Page) {
                                             名称
 					                        </div>
                                         <div className="text interception">
-                                            {o.name}
+                                            {o.Name}
                                         </div>
                                     </div>
                                 </div>
@@ -136,7 +141,7 @@ export default async function (page: chitu.Page) {
                                             onClick={() => this.showDialog(o)}>编辑</button>
                                     </div>
                                     <div className="col-xs-6">
-                                        <a href={`?appKey=${o.token}#home/index`} className="btn btn-success btn-block">详细</a>
+                                        <a href={`?appKey=${o.Id}#home/index`} className="btn btn-success btn-block">详细</a>
                                     </div>
                                 </div>
                             </li>

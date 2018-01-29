@@ -1,6 +1,6 @@
 import { default as site } from 'site';
 import { CommandField, createGridView, GridViewItemPopupEditor } from 'myWuZhui';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import { default as shopping } from 'adminServices/shopping'
 import { default as activity } from 'adminServices/activity'
 export default function (page: chitu.Page) {
@@ -54,7 +54,7 @@ export default function (page: chitu.Page) {
                             <li className="pull-right">
                                 <button href="#Shopping/BrandEdit" className="btn btn-sm btn-primary"
                                     onClick={() => this.itemEditor.show()} >
-                                    <i className="icon-plus"/>
+                                    <i className="icon-plus" />
                                     <span>添加</span>
                                 </button>
                             </li>
@@ -65,9 +65,9 @@ export default function (page: chitu.Page) {
                         ref={(e) => {
                             if (!e) return;
                             this.itemEditor = e;
-                            e.validator = new FormValidator(e.element, {
-                                Name: { rules: ['required'] }
-                            })
+                            e.validator = new FormValidator(
+                                { element: e.element as HTMLInputElement, rules: [rules.required()] }
+                            )
                         }}
                         saveDataItem={(dataItem) => {
                             if (dataItem.Id == null)

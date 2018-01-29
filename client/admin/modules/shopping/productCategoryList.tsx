@@ -1,7 +1,7 @@
 
 import { default as site } from 'site';
 import { customField } from 'myWuZhui';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import { ShoppingService } from 'adminServices/shopping';
 import * as ui from 'ui';
 
@@ -91,14 +91,16 @@ export default function (page: chitu.Page) {
                 ]
             });
         }
-        createValidator(formElement: HTMLElement) {
-            this.validator = new FormValidator(formElement, {
-                SortNumber: { rules: ['required'] },
-                Name: { rules: ['required'] },
-            });
+        createValidator(formElement: HTMLFormElement) {
+            let { required } = rules;
+            this.validator = new FormValidator(
+                { element: formElement["SortNumber"], rules: [required()] },
+                { element: formElement["Name"], rules: [required()] }
+            )
         }
-        save() {
-            if (!this.validator.validateForm()) {
+        async save() {
+            let isValid = await this.validator.check();
+            if (!isValid) {
                 return;
             }
 

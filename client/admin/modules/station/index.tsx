@@ -175,14 +175,14 @@ class ImageUpload extends React.Component<ImageUploadProps, ImageUploadState>{
     render() {
         let src = this.state.src;
         return [
-            <img key="img" style={{ width: this.width, height: this.height }}
+            <img key="img" style={{ width: this.width, height: this.height }} data-src={src}
                 ref={(e: HTMLImageElement) => {
                     this.imageElement = e || this.imageElement;
                     e ? ui.renderImage(e) : null;
                 }}
                 src={src} />,
             <input key="file" name="ImageUpload" type="file" id="ImageUpload" multiple={true}
-                style={{ position: 'absolute', top: 0, opacity: 0, height: '100%', width: '100%' }}
+                style={{ position: 'absolute', top: 0, opacity: 0, height: this.height, width: this.width }}
                 ref={(e: HTMLInputElement) => {
                     if (!e) return;
                     e.onchange = () => this.onFileChanged(e);

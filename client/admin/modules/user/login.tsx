@@ -1,7 +1,7 @@
 ﻿import { default as userService } from 'adminServices/user';
 import app from 'application';
 import { default as site } from 'site';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 
@@ -12,13 +12,20 @@ export default async function (page: chitu.Page) {
         usernameInput: HTMLInputElement;
         passwordInput: HTMLInputElement;
         componentDidMount() {
-            this.validator = new FormValidator(this.element, {
-                username: { rules: ['required'] },
-                password: { rules: ['required'] }
-            })
+            // this.validator = new FormValidator(this.element, {
+            //     username: { rules: ['required'] },
+            //     password: { rules: ['required'] }
+            // })
+            let usernameElement = this.element.querySelector('[name="username"]') as HTMLInputElement;
+            let passwordElement = this.element.querySelector('[name="password"]') as HTMLInputElement;
+            this.validator = new FormValidator(
+                { element: usernameElement, rules: [rules.required()] },
+                { element: passwordElement, rules: [rules.required()] }
+            )
         }
-        login() {
-            if (!this.validator.validateForm()) {
+        async login() {
+            let isValid = await this.validator.check();
+            if (!isValid) {
                 return Promise.resolve();
             }
             return userService.login(this.usernameInput.value, this.passwordInput.value)

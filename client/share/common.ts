@@ -1,3 +1,6 @@
+export interface AppError extends Error {
+    handled: boolean
+}
 export function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -6,6 +9,12 @@ export function guid() {
     }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
         s4() + '-' + s4() + s4() + s4();
+}
+
+export let ErrorCodes = {
+    Unkonwn: '600',
+    UserNotLogin: '601',
+    TokenInvalid: '724',
 }
 
 // export function imageUrl(path: string, width?: number) {

@@ -20,13 +20,13 @@ class Page extends React.Component<any, {
         //     this.setState(this.state);
         // });
 
-        Service.username.add((value) => {
+        Service.adminName.add((value) => {
             this.state.username = value;
             this.setState(this.state);
         })
 
         let url = (window.location.hash.substr(1) || '').split('?')[0];
-        this.state = { currentNode: this.findNodeByUrl(url), username: Service.username.value };
+        this.state = { currentNode: this.findNodeByUrl(url), username: Service.adminName.value };
     }
     hideSecond() {
 

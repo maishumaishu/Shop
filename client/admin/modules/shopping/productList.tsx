@@ -1,7 +1,6 @@
 import { default as shopping } from 'adminServices/shopping';
 import station from 'adminServices/station';
 import app from 'application';
-import bootbox = require('bootbox');
 import { default as site } from 'site';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';

@@ -5,7 +5,7 @@ import { Service, imageUrl, guid } from 'services/service';
 
 import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 
 import tips from 'tips';
 import ImageUpload from 'adminComponents/imageUpload';
@@ -24,7 +24,7 @@ export default function (page: chitu.Page) {
     };
     class ProductEditPage extends React.Component<{ product: Product }, PageState>{
         private validator: FormValidator;
-        private element: HTMLElement;
+        private element: HTMLFormElement;
         private introduceInput: HTMLInputElement;
         private introduceEditor: HTMLInputElement;
         private fieldPropertiies: PropertiesComponent;
@@ -49,14 +49,21 @@ export default function (page: chitu.Page) {
         }
         componentDidMount() {
             UE.createUEEditor(editorId, this.introduceInput);
-            this.validator = new FormValidator(this.element, {
-                name: { rules: ['required'] },
-                price: { rules: ['required'] },
-                introduce: { rules: ['required'] }
-            });
+            // this.validator = new FormValidator(this.element, {
+            //     name: { rules: ['required'] },
+            //     price: { rules: ['required'] },
+            //     introduce: { rules: ['required'] }
+            // });
+            let nameElement = this.element.querySelector('[name="name"]') as HTMLInputElement;
+            let priceElement = this.element.querySelector('[name="price"]') as HTMLInputElement;
+            this.validator = new FormValidator(
+                { element: nameElement, rules: [rules.required()] },
+                { element: priceElement, rules: [rules.required()] }
+            )
         }
-        save(): Promise<any> {
-            if (!this.validator.validateForm()) {
+        async save(): Promise<any> {
+            let isValid = await this.validator.check();
+            if (!isValid) {
                 return Promise.reject({});
             }
             this.state.product.Introduce = this.introduceInput.value;
@@ -107,8 +114,8 @@ export default function (page: chitu.Page) {
             let imagePaths = this.state.product.ImagePaths || [];
             let imagePath = this.state.product.ImagePath;
             return (
-                <div className="Shopping-ProductEdit"
-                    ref={(e: HTMLElement) => this.element = e || this.element}>
+                <form className="Shopping-ProductEdit"
+                    ref={(e: HTMLFormElement) => this.element = e || this.element}>
                     <div className="tabbable">
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
@@ -292,7 +299,7 @@ export default function (page: chitu.Page) {
                                 }} />
                         </div>
                     </div>
-                </div>
+                </form>
             );
         }
     }
