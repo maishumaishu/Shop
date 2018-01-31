@@ -1,7 +1,8 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
 import { urlParams } from 'share/common';
-export { guid, imageUrl } from 'share/common';
+export { guid, imageUrl, parseUrlParams } from 'share/common';
+export let systemWeiXinAppId = 'wx30ac5294d9f38751';
 
 let username = new chitu.ValueStore<string>();
 username.value = localStorage['username'];
@@ -10,7 +11,7 @@ username.add((value) => {
 })
 
 
-let remote_service_host = 'service.bailunmei.com' //'service.alinq.cn';
+let remote_service_host = 'userservices.alinq.cn' //'service.alinq.cn';
 function parseUrlParams(query: string) {
     let match,
         pl = /\+/g,  // Regex for replacing addition symbol with a space
@@ -40,9 +41,9 @@ export class Service extends chitu.Service {
     constructor() {
         super();
 
-        this.error.add((sender, error) => {
-            Service.error.fire(sender, error);
-        })
+        // this.error.add((sender, error) => {
+        //     Service.error.fire(sender, error);
+        // })
     }
 
     ajax<T>(url: string, options: RequestInit): Promise<T> {

@@ -1,7 +1,7 @@
 /** 获取连接速度最快的服务器 */
 (function () {
 
-    let service_domain = `service.bailunmei.com`;
+    let service_domain = `userservices.alinq.cn`;
     function get(url): Promise<any> {
         return new Promise((resolve, reject) => {
             let request = new XMLHttpRequest();

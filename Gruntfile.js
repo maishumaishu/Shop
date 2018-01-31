@@ -75,7 +75,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'client',
                     src: [
-                        'admin/*.html', 'admin/**/*.css', 'admin/content/font/*',
+                        'admin/*.html', 'admin/**/*.html', 'admin/**/*.css', 'admin/content/font/*',
                         'user/*.html', 'user/**/*.png', 'user/content/font/*', 'user/content/*.css',
                     ],
                     dest: 'www'
@@ -261,15 +261,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.registerTask('admin', ['less:admin', 'less:mobileComponents', 'copy:admin']);
-    // grunt.registerTask('user', ['less:user', 'copy:user']);
-    // grunt.registerTask('default', ['admin', 'user']);
-    // grunt.registerTask('admin_bt', ['less:admin_bt', 'copy:admin_bt']);
 
     grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
-    grunt.registerTask('build-es5', ['shell', ' copy:lib_es5', 'copy:lib_es6', 'babel']);
+    grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
     grunt.registerTask('run', ['connect', 'watch']);
-    // grunt.registerTask('build-run', ['build', 'run']);
-    // grunt.registerTask('dev', ['es6', 'run']);
+
     grunt.registerTask('release', ['build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
     grunt.registerTask('dev', ['build-es6', 'copy:es6_www', 'connect', 'watch']);
 }

@@ -114,12 +114,12 @@ export default function (page: chitu.Page) {
             let imagePaths = this.state.product.ImagePaths || [];
             let imagePath = this.state.product.ImagePath;
             return (
-                <form className="Shopping-ProductEdit"
+                <div className="Shopping-ProductEdit"
                     ref={(e: HTMLFormElement) => this.element = e || this.element}>
                     <div className="tabbable">
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
-                                <button className="btn btn-sm btn-primary" onClick={() => app.back()}>
+                                <button className="btn btn-sm btn-primary" onClick={() => history.back()}>
                                     <i className="icon-reply" />
                                     <span>返回</span>
                                 </button>
@@ -299,7 +299,7 @@ export default function (page: chitu.Page) {
                                 }} />
                         </div>
                     </div>
-                </form>
+                </div>
             );
         }
     }

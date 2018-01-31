@@ -751,7 +751,7 @@ function ajax(url, options) {
 return __awaiter(this, void 0, void 0, function () {
 function travelJSON(obj) {
     var datePattern = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
-    if (typeof obj === 'string' && obj.match(this.datePattern)) {
+    if (typeof obj === 'string' && obj.match(datePattern)) {
         return new Date(obj);
     }
     else if (typeof obj === 'string') {

@@ -6,6 +6,7 @@ import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/co
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { guid, StationService } from 'adminServices/station';
 import { StationService as UserStation } from 'userServices/stationService';
+import { MemberService } from 'userServices/memberService';
 import { PropTypes } from 'prop-types';
 import { app as userApp } from 'user/application';
 

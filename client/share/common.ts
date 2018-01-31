@@ -82,12 +82,16 @@ if (location.search)
     urlParams = parseUrlParams(location.search.substr(1));
 
 export function parseUrlParams(query: string) {
+    if (!query) throw new Error(`Argument query is null or empty.`);
+    if (query[0] == '?')
+        query = query.substr(1);
+
     let match,
         pl = /\+/g,  // Regex for replacing addition symbol with a space
         search = /([^&=]+)=?([^&]*)/g,
         decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
 
-    let urlParams = {};
+    let urlParams: any = {};
     while (match = search.exec(query))
         urlParams[decode(match[1])] = decode(match[2]);
 

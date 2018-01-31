@@ -46,6 +46,10 @@ export class WeiXinService extends Service {
         let url = this.url('WeiXin/GetMessageTemplateTypes');
         return this.get<any[]>(url);
     }
+    openId(code: string): Promise<string> {
+        let url = this.url('WeiXin/GetOpenId');
+        return this.get<string>(url, { code });
+    }
 }
 
 export default new WeiXinService();

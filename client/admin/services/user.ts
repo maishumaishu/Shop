@@ -22,6 +22,13 @@ export interface Application {
     Name: string
 }
 
+export interface Seller {
+    Id: string,
+    UserName: string,
+    OpenId: string,
+    Mobile: string,
+}
+
 let { protocol } = location;
 export class UserService extends Service {
     private url(path: string) {
@@ -114,8 +121,18 @@ export class UserService extends Service {
         // let url = this.url('AdminMember/Member/GetUserInfos');
         // return this.get<wuzhui.DataSourceSelectResult<UserInfo>>(url, args);
     }
-
-
+    me(): Promise<Seller> {
+        let url = `${Service.config.memberUrl}Seller/Me`;
+        return this.get<Seller>(url);
+    }
+    weixinBind(openId: string) {
+        let url = `${Service.config.memberUrl}Seller/Bind`;
+        return this.put(url, { openId });
+    }
+    weixinUnbind(openId: string) {
+        let url = `${Service.config.memberUrl}Seller/Unbind`;
+        return this.put(url, { openId });
+    }
 }
 
-export default new UserService();
+// export default new UserService();

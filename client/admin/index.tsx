@@ -37,14 +37,14 @@ requirejs.config({
         um: {
             deps: [
                 'jquery',
-                'css!scripts/umeditor/themes/default/css/umeditor.css',
-                'scripts/umeditor/third-party/template.min',
+                'css!../scripts/umeditor/themes/default/css/umeditor.css',
+                '../scripts/umeditor/third-party/template.min',
                 'um_config',
             ]
         },
         um_config: {
             deps: [
-                'scripts/umeditor/third-party/template.min'
+                '../scripts/umeditor/third-party/template.min'
             ]
         },
         um_zh: {
@@ -88,7 +88,7 @@ requirejs.config({
         'maishu-chitu': '../scripts/chitu',
         'chitu.mobile': '../scripts/chitu.mobile',
         'wuzhui': '../scripts/wuzhui',
-        
+
         ace: 'assets/js/uncompressed/ace',
 
         'ue': 'ueditor',
@@ -100,7 +100,8 @@ requirejs.config({
         virtualMobile: 'modules/station/components/virtualMobile',
         'user': '../user',
         'adminComponents': 'components',
-        'share': '../share'
+        'share': '../share',
+        'socket.io': 'http://maishu.alinq.cn:8015/socket.io/socket.io'
     }
 });
 requirejs(['css!content/jquery-ui-1.10.0.custom'])
@@ -113,6 +114,8 @@ requirejs(references, function (React, ReactDOM, app, ui) {
 
     app.default.run();
 });
+
+
 
 
 

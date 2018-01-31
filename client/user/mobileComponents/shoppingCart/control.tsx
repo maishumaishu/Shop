@@ -201,7 +201,7 @@ export default class ShoppingCartControl extends Control<
 
         this.shoppingCart = this.elementPage.createService(ShoppingCartService);
         this.shop = this.elementPage.createService(ShoppingService);
-      
+
         this.state = {
             status: 'normal',
             items: [],

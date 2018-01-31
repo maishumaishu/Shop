@@ -191,6 +191,7 @@ export class ShoppingCartService extends Service {
     async calculateShoppingCartItems() {
         let url = this.url('Calculate');
         let result = await this.getByJson<ShoppingCartItem[]>(url).then(items => {
+            items = items || [];
             items.forEach(o => o.ImagePath = o.ImagePath || (o as any).ImageUrl);
             return items;
         });

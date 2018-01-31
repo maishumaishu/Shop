@@ -1,3 +1,6 @@
+import { MemberService } from 'userServices/memberService';
+import { Service } from 'userServices/Service';
+import { default as adminApp } from 'application'
 export class UserLoginDialog extends React.Component<any, any>{
     private _element: HTMLElement;
     private static _instance: UserLoginDialog;
@@ -22,9 +25,16 @@ export class UserLoginDialog extends React.Component<any, any>{
     static hide() {
         this.instance._hide();
     }
+    login() {
+        console.assert(adminApp.currentPage != null);
+        let memberService = adminApp.currentPage.createService(MemberService);
+        memberService.login("18502146746", "1").then(o => {
+            location.reload();
+        });
+    }
     render() {
         return (
-            <form className="modal fade" ref={(e: HTMLElement) => this._element = e}>
+            <div className="modal fade" ref={(e: HTMLElement) => this._element = e}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -61,7 +71,7 @@ export class UserLoginDialog extends React.Component<any, any>{
                         <div className="modal-footer">
                             <div className="form-group row">
                                 <div className="col-sm-12">
-                                    <button className="btn btn-block btn-primary" >
+                                    <button className="btn btn-block btn-primary" onClick={() => this.login()} >
                                         登录
                                 </button>
                                 </div>
@@ -69,7 +79,7 @@ export class UserLoginDialog extends React.Component<any, any>{
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         );
     }
 }

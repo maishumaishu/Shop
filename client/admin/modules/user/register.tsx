@@ -1,13 +1,11 @@
 import { FormValidator, rules } from 'dilu';
-import { default as userService } from 'adminServices/user';
+import { UserService } from 'adminServices/user';
 import * as ui from 'ui';
 import app from 'application';
 
-var $ctrls = $('#sidebar, #breadcrumbs, #navbar-container > [role="navigation"]');
-$ctrls.hide();
-
 export default function (page: chitu.Page) {
 
+    let userService = page.createService(UserService);
     requirejs([`css!${page.routeData.actionPath}.css`]);
     class RegisterPage extends React.Component<{}, { buttonText: string, buttonEnable: boolean }>{
         private formElement: HTMLFormElement;

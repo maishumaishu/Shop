@@ -1,4 +1,4 @@
-﻿import { default as memberService } from 'adminServices/user';
+﻿import { UserService } from 'adminServices/user';
 import * as wz from 'myWuZhui';
 import { FormValidator, rules } from 'dilu';
 import { userInfo } from 'userServices/memberService';
@@ -6,6 +6,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 export default function (page: chitu.Page) {
+    let memberService = page.createService(UserService);
     page.element.className = 'admin-pc';
     let account = page
     class MemberListPage extends React.Component<{}, {}>{
