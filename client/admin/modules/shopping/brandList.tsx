@@ -3,6 +3,8 @@ import { CommandField, createGridView, GridViewItemPopupEditor } from 'myWuZhui'
 import { FormValidator, rules } from 'dilu';
 import { default as shopping } from 'adminServices/shopping'
 import { default as activity } from 'adminServices/activity'
+import 'wuzhui';
+
 export default function (page: chitu.Page) {
 
     class BrandListPage extends React.Component<{}, {}>{

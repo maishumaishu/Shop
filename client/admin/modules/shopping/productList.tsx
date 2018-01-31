@@ -5,6 +5,7 @@ import { default as site } from 'site';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import tips from 'tips';
+import 'wuzhui';
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
 type ProductStock = { unlimit: boolean, stock: number, productId: string, productName: string };

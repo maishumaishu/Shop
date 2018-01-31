@@ -1,3 +1,4 @@
+import 'wuzhui';
 import { FormValidator } from 'dilu';
 import * as ui from 'ui';
 

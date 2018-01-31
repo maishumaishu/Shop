@@ -1,12 +1,9 @@
 ﻿import { default as Service } from 'services/service'
 
-let bootbox = window['bootbox'];
+// let bootbox = window['bootbox'];
 
 class Site {
     constructor() {
-    }
-    showInfo(info) {
-        return bootbox.alert('提示', info);
     }
     config = {
         shopUrl: Service.config.shopUrl,
@@ -32,17 +29,6 @@ class Site {
 
 }
 
-
-export function formatDate(date: Date | string): string {
-    if (date == null)
-        return null;
-
-    if (typeof date == 'string')
-        return date;
-
-    let d = date as Date;
-    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
-}
 
 
 let site = new Site();

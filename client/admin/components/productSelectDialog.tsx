@@ -1,5 +1,6 @@
 import { imageUrl } from 'services/service';
 import { ShoppingService } from 'adminServices/shopping';
+import 'wuzhui';
 
 requirejs(['css!adminComponents/productSelectDialog']);
 

@@ -20,8 +20,6 @@ if (location.search) {
     headers['application-id'] = location.search.substr(1);
 }
 
-$.ajaxSettings.headers = headers;
-
 var baseUrl = Service.config.shopUrl + 'PromotionActivity/';
 let JData = window['JData'];
 export class ActivityService extends Service {

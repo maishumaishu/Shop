@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
-
+import 'jquery-ui';
 import MenuControl from 'mobileComponents/menu/control';
 import { Control, ControlProps } from 'mobileComponents/common';
 

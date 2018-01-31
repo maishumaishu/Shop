@@ -89,7 +89,7 @@ function page_load(sender: chitu.Page, args) {
             //$('#ImgUrl').val(Site.imageServerUrl + data.result.path);
             model.advertItem.imgUrl(data.result.path);
         }).on('fileuploadfail', function (error) {
-            site.showInfo('上传图片失败');
+            ui.alert('上传图片失败');
         });
     });
 

@@ -4,12 +4,12 @@ requirejs.config({
         ace: {
             deps: ['jquery', 'bootstrap']
         },
-        bootstrap: {
-            deps: ['jquery']
-        },
-        bootbox: {
-            deps: ['bootstrap']
-        },
+        // bootstrap: {
+        //     deps: ['jquery']
+        // },
+        // bootbox: {
+        //     deps: ['bootstrap']
+        // },
         'maishu-chitu': {
             deps: [
                 'polyfill'
@@ -18,11 +18,15 @@ requirejs.config({
         dilu: {
             exports: 'dilu'
         },
-        site: {
-            // deps: ['jquery.cookie', 'bootbox']
-        },
         application: {
             deps: ['maishu-chitu']
+        },
+        'jquery-ui': {
+            exports: 'window["$"]',
+            deps: [
+                'jquery',
+                'css!content/jquery-ui-1.10.0.custom'
+            ]
         },
         mobileControls: {
             exports: 'controls',
@@ -52,11 +56,14 @@ requirejs.config({
         },
         qrcode: {
             exports: 'QRCode'
+        },
+        wuzhui: {
+            deps: ['jquery']
         }
     },
     paths: {
-        bootstrap: '../scripts/bootstrap',
-        // chitu: 'scripts/chitu',
+        // bootstrap: '../scripts/bootstrap',
+        // chitu: '../scripts/chitu',
         css: '../scripts/css',
         dilu: '../scripts/dilu',
         formValidator: '../scripts/formValidator',
@@ -104,8 +111,8 @@ requirejs.config({
         'socket.io': 'http://maishu.alinq.cn:8015/socket.io/socket.io'
     }
 });
-requirejs(['css!content/jquery-ui-1.10.0.custom'])
-var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
+// requirejs(['css!content/jquery-ui-1.10.0.custom'])
+var references = ['react', 'react-dom', 'application'];
 requirejs(references, function (React, ReactDOM, app, ui) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
