@@ -11,7 +11,7 @@ username.add((value) => {
 })
 
 
-let remote_service_host = 'userservices.alinq.cn' //'service.alinq.cn';
+let remote_service_host = 'service1.alinq.cn';//'userservices.alinq.cn' //'service.alinq.cn';
 function parseUrlParams(query: string) {
     let match,
         pl = /\+/g,  // Regex for replacing addition symbol with a space

@@ -48,7 +48,7 @@ export let config = {
 
 
 let protocol = location.protocol;
-let service_domain = 'userservices.alinq.cn';
+let service_domain = 'service1.alinq.cn';
 
 
 export abstract class Service extends chitu.Service {
