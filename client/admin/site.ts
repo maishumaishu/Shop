@@ -30,10 +30,6 @@ class Site {
 }
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 2e39c4920d331aff5a2a51f341f36d2daf61ebd9
 
 let site = new Site();
 export default site; 

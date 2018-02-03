@@ -120,7 +120,7 @@ requirejs(references, function (React, ReactDOM, app, ui) {
 
     app.default.run();
     if (!location.hash)
-        (app as chitu.Application).redirect('home/index');
+        (app.default as chitu.Application).redirect('user/login');
 });
 
 

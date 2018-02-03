@@ -105,11 +105,7 @@ export class Application extends BaseApplication {
 
         return page;
     }
-
-    // showPage(routeString: string, args?: any) {
-    //     return super.showPage(routeString, args);
-    // }
-
+    
     protected createPageElement(routeData: chitu.RouteData) {
         if (routeData.routeString == 'empty')
             return this.emtpyPageElement;
