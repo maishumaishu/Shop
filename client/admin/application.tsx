@@ -21,17 +21,24 @@ class Page extends React.Component<any, {
 
         let url = (window.location.hash.substr(1) || '').split('?')[0];
         this.state = { currentNode: this.findNodeByUrl(url), username: Service.adminName.value };
-        window.addEventListener('hashchange', () => {
-            url = (window.location.hash.substr(1) || '').split('?')[0];
-            let currentNode = this.findNodeByUrl(url);
-            if (currentNode == this.state.currentNode)
-                return;
 
-            this.state.currentNode = currentNode;
-            this.state.username = Service.adminName.value;
-            this.setState(this.state);
+        app.pageCreated.add((sender, page) => {
+            page.showing.add(() => this.updateMenu());
+            page.hiding.add(() => this.updateMenu());
         })
     }
+
+    updateMenu() {
+        let url = (window.location.hash.substr(1) || '').split('?')[0];
+        let currentNode = this.findNodeByUrl(url);
+        if (currentNode == this.state.currentNode)
+            return;
+
+        this.state.currentNode = currentNode;
+        this.state.username = Service.adminName.value;
+        this.setState(this.state);
+    }
+
     findNodeByUrl(url: string): MenuNode {
         let stack = new Array<MenuNode>();
         for (let i = 0; i < menuData.length; i++) {
@@ -74,13 +81,13 @@ class Page extends React.Component<any, {
         let secondLevelNode: MenuNode;
         let thirdLevelNode: MenuNode;
 
-        if (currentNode == null) {
-            return (
-                <div ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
+        // if (currentNode == null) {
+        //     return (
+        //         <div ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
 
-                </div>
-            );
-        }
+        //         </div>
+        //     );
+        // }
 
         let firstLevelNodes = menuData.filter(o => o.Visible == null || o.Visible == true);
         let secondLevelNodes: Array<MenuNode> = [];
@@ -109,15 +116,18 @@ class Page extends React.Component<any, {
             }
         }
 
-        secondLevelNodes = firstLevelNode.Children || [].filter(o => o.Visible == null || o.Visible == true);;
-        thirdLevelNodes = (secondLevelNode.Children || []).filter(o => o.Visible == null || o.Visible == true);
+        if (firstLevelNode != null) {
+            secondLevelNodes = firstLevelNode.Children || [].filter(o => o.Visible == null || o.Visible == true);
+            thirdLevelNodes = (secondLevelNode.Children || []).filter(o => o.Visible == null || o.Visible == true);
+        }
+
         if (thirdLevelNodes.length == 0) {
             thirdLevelNodes.push(secondLevelNode);
             thirdLevelNode = secondLevelNode;
         }
 
         let nodeClassName = '';
-        if (firstLevelNode.Title == 'Others') {
+        if (firstLevelNode != null && firstLevelNode.Title == 'Others') {
             nodeClassName = 'hideFirst';
         }
         else if (secondLevelNodes.length == 0) {
@@ -173,10 +183,6 @@ class Page extends React.Component<any, {
         );
     }
 }
-
-let element = document.createElement('div');
-document.body.insertBefore(element, document.body.children[0]);
-ReactDOM.render(<Page />, element);
 
 class Application extends chitu.Application {
 
@@ -235,7 +241,13 @@ class Application extends chitu.Application {
 }
 
 let app: Application = window['admin-app'] = window['admin-app'] || new Application();
+
+let element = document.createElement('div');
+document.body.insertBefore(element, document.body.children[0]);
+ReactDOM.render(<Page />, element);
+
 export default app;
+
 
 
 
