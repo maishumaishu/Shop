@@ -2,7 +2,7 @@
 import { ActivityService } from 'adminServices/activity';
 import site from 'site';
 import app from 'application';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import { GridViewItemPopupEditor } from 'myWuZhui';
@@ -34,7 +34,7 @@ export default function (page: chitu.Page) {
                     new wz.CommandField({
                         leftButtons(dataItem) {
                             return [
-                                <button className="btn btn-minier btn-info" onClick={()=>app.redirect(`shopping/promotion/activityEdit?id=${dataItem.Id}`)}>
+                                <button className="btn btn-minier btn-info" onClick={() => app.redirect(`shopping/promotion/activityEdit?id=${dataItem.Id}`)}>
                                     <i className="icon-cog" />
                                     <span>设置</span>
                                 </button>
@@ -66,7 +66,7 @@ export default function (page: chitu.Page) {
                                         if (!e) return;
                                         e.onclick = () => this.add();
                                     }}>
-                                    <i className="icon-plus"/>
+                                    <i className="icon-plus" />
                                     <span>添加</span>
                                 </button>
                             </li>
@@ -76,10 +76,16 @@ export default function (page: chitu.Page) {
                         ref={(e) => {
                             if (!e) return;
                             this.itemEditor = e;
-                            e.validator = new FormValidator(e.element, {
-                                BeginDate: { rules: ['required'] },
-                                EndDate: { rules: ['required'] }
-                            })
+                            // e.validator = new FormValidator(e.element, {
+                            //     BeginDate: { rules: ['required'] },
+                            //     EndDate: { rules: ['required'] }
+                            // })
+                            let beginDateElement = e.element.querySelector('[name="BeginDate"]') as HTMLInputElement;
+                            let endDateElement = e.element.querySelector('[name="EndDate"]') as HTMLInputElement;
+                            e.validator = new FormValidator(
+                                { element: beginDateElement, rules: [rules.required()] },
+                                { element: endDateElement, rules: [rules.required()] },
+                            )
                         }}
                         saveDataItem={(dataItem) => {
                             if (dataItem.Id)

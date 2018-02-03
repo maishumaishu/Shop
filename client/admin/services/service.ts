@@ -1,7 +1,8 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
 import { urlParams } from 'share/common';
-export { guid, imageUrl } from 'share/common';
+export { guid, imageUrl, parseUrlParams } from 'share/common';
+export let systemWeiXinAppId = 'wx30ac5294d9f38751';
 
 let username = new chitu.ValueStore<string>();
 username.value = localStorage['username'];
@@ -10,11 +11,7 @@ username.add((value) => {
 })
 
 
-// let local_service_host = 'service.alinq.cn'; //'192.168.1.9:2800';// 'service.alinq.cn:2800';// 
-let remote_service_host = 'service.alinq.cn';
-
-
-
+let remote_service_host = 'service1.alinq.cn';//'userservices.alinq.cn' //'service.alinq.cn';
 function parseUrlParams(query: string) {
     let match,
         pl = /\+/g,  // Regex for replacing addition symbol with a space
@@ -38,27 +35,27 @@ export class Service extends chitu.Service {
         siteUrl: `${protocol}//${remote_service_host}/AdminSite/`,
         memberUrl: `${protocol}//${remote_service_host}/AdminMember/`,
         accountUrl: `${protocol}//${remote_service_host}/AdminAccount/`,
-        imageUrl: `${protocol}//${remote_service_host}/UserServices/Site/`
+        imageUrl: `${protocol}//image.alinq.cn/`
     }
 
     constructor() {
         super();
 
-        this.error.add((sender, error) => {
-            Service.error.fire(sender, error);
-        })
+        // this.error.add((sender, error) => {
+        //     Service.error.fire(sender, error);
+        // })
     }
 
     ajax<T>(url: string, options: RequestInit): Promise<T> {
         options = options || {} as RequestInit;
         options.headers = options.headers || {} as Headers;
         if (Service.token)
-            options.headers['user-token'] = Service.token;
+            options.headers['token'] = Service.token;
 
         if (location.search) {
             let query = parseUrlParams(location.search.substr(1));
             if (query['appKey']) {
-                options.headers['application-key'] = query['appKey'];
+                options.headers['application-id'] = query['appKey'];
             }
         }
 
@@ -85,9 +82,9 @@ export class Service extends chitu.Service {
         return urlParams.appKey;
     }
 
-    static get storeId() {
-        return Service.userId;
-    }
+    // static get storeId() {
+    //     return Service.userId;
+    // }
     static get token() {
         return localStorage['adminToken'];
     };
@@ -98,19 +95,43 @@ export class Service extends chitu.Service {
         }
         localStorage.setItem('adminToken', value);
     }
-    static get userId() {
-        return localStorage['userId'];
-    };
-    static set userId(value: string) {
-        if (value === undefined) {
-            localStorage.removeItem('userId');
-            return;
-        }
-        localStorage.setItem('userId', value);
-    }
-    static get username() {
+    // static get userId() {
+    //     return localStorage['userId'];
+    // };
+    // static set userId(value: string) {
+    //     if (value === undefined) {
+    //         localStorage.removeItem('userId');
+    //         return;
+    //     }
+    //     localStorage.setItem('userId', value);
+    // }
+    static get adminName() {
         return username;
     }
+}
+
+export function formatDate(date: Date | string): string {
+    if (date == null)
+        return null;
+
+    if (typeof date == 'string')
+        return date;
+
+    let d = date as Date;
+    let mm = d.getMonth() + 1;
+    let dd = d.getDate();
+    return `${d.getFullYear()}-${mm < 10 ? '0' + mm : mm}-${dd < 10 ? '0' + dd : dd}`;
+}
+
+export function formatDateTime(date: Date | string): string {
+    if (date == null)
+        return null;
+
+    if (typeof date == 'string')
+        return date;
+
+    let d = date as Date;
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
 }
 
 

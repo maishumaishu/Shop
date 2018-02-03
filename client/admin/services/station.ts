@@ -1,4 +1,4 @@
-﻿import { default as Service, guid } from 'services/service';
+﻿import { default as Service, guid, imageUrl } from 'services/service';
 import templates from 'services/data/templates'
 export { guid } from 'services/service';
 
@@ -142,7 +142,9 @@ export class StationService extends Service {
      * @param imageBase64 图片的 base64 字符串 
      */
     saveImage(imageBase64: string): Promise<{ _id: string }> {
-        let url = `${Service.config.siteUrl}Page/SaveImage`;
+        // let url = `${Service.config.siteUrl}Page/SaveImage`;
+        // return this.postByJson<{ _id: string }>(url, { name, image: imageBase64 });
+        let url = `${Service.config.imageUrl}upload`;
         return this.postByJson<{ _id: string }>(url, { name, image: imageBase64 });
     }
 
@@ -155,7 +157,7 @@ export class StationService extends Service {
         return this.getByJson<string>(url, { name, maxWidth });
     }
     imageUrl(pageId: string, fileName: string) {
-        let url = `${Service.config.imageUrl}Page/Image?pageId=${pageId}&name=${fileName}&storeId=${Service.storeId}&application-key=${Service.appToken}`;
+        let url = imageUrl(fileName);
         return url;
     }
     removeImage(_id: string) {

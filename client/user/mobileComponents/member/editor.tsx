@@ -102,7 +102,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                         this.state.sellsCenter = e.checked ? 'showToMember' : 'showToSells';
                                         this.setState(this.state);
                                     }
-                                }} />对所以会员显示
+                                }} />对所有会员显示
                         </label>
                         <label>
                             <input name="sells-center" type="radio"

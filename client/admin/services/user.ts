@@ -18,9 +18,15 @@ export interface RegisterModel {
 }
 
 export interface Application {
-    _id: string,
-    name: string,
-    token: string,
+    Id: string,
+    Name: string
+}
+
+export interface Seller {
+    Id: string,
+    UserName: string,
+    OpenId: string,
+    Mobile: string,
 }
 
 let { protocol } = location;
@@ -30,22 +36,20 @@ export class UserService extends Service {
         return url;
     }
     login(username, password) {
-        let url = `${protocol}//${Service.config.serviceHost}/admin/login`;
-        return this.get<{ token: string, userId: string, appToken: string }>(url, { username, password }).then((o) => {
-            Service.token = o.token;
-            Service.userId = o.userId;
-            Service.username.value = username;
-            // Service.appToken = o.appToken;
-        })
+        let url = `${Service.config.memberUrl}Seller/Login`;
+        return this.ajaxByForm<{ token: string }>(url, { username, password }, 'post')
+            .then(d => {
+                Service.token = d.token;
+            });
     }
     async register(model: RegisterModel) {
         (model.user as any).group = 'owner';
-        let url = `${protocol}//${Service.config.serviceHost}/admin/register`;
+        let url = `${Service.config.serviceHost}/admin/register`;
         return this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
             .then((result) => {
                 // Service.appToken = result.appToken;
                 Service.token = result.token;
-                Service.userId = result.userId;
+                // Service.userId = result.userId;
             });
     }
     private createApplication() {
@@ -62,7 +66,7 @@ export class UserService extends Service {
     }
     applications(): Promise<Array<Application>> {
         // let url = this.url(`application/list`);
-        let url = this.url('admin/applications')
+        let url = `${Service.config.memberUrl}Seller/GetApplications`;//this.url('admin/applications')
         return this.get<Application[]>(url);
     }
     addApplication(app: Application) {
@@ -79,7 +83,7 @@ export class UserService extends Service {
     deleteApplication(app: Application) {
         console.assert(app != null)
         let url = this.url('admin/deleteApplication');
-        return this.deleteByJson(url, { appId: app._id });
+        return this.deleteByJson(url, { appId: app.Id });
     }
     recharge(userId: string, amount: number): Promise<{ Balance: number }> {
         let url = Service.config.accountUrl + 'Account/Recharge';
@@ -91,17 +95,17 @@ export class UserService extends Service {
         let users = await this.get<User[]>(url, args);
 
         let ids = users.map(o => o._id);
-        let memberBalances = await this.get<wuzhui.DataSourceSelectResult<{ Id: string, Balance: number }>>(
+        let memberBalances = await this.get<{ Id: string, Balance: number }[]>(
             Service.config.accountUrl + 'Account/GetAccountBalances',
             { userIds: ids.join(',') }
         );
 
         let members = new Array<UserInfo>();//.dataItems;
         for (let i = 0; i < users.length; i++) {
-            console.assert(users.length == memberBalances.dataItems.length);
+            console.assert(users.length == memberBalances.length);
 
             let u = {} as UserInfo;
-            let r = memberBalances.dataItems[i];
+            let r = memberBalances[i];
             if (r) {
                 u.Balance = r.Balance;
                 u.Id = r.Id;
@@ -117,8 +121,18 @@ export class UserService extends Service {
         // let url = this.url('AdminMember/Member/GetUserInfos');
         // return this.get<wuzhui.DataSourceSelectResult<UserInfo>>(url, args);
     }
-
-
+    me(): Promise<Seller> {
+        let url = `${Service.config.memberUrl}Seller/Me`;
+        return this.get<Seller>(url);
+    }
+    weixinBind(openId: string) {
+        let url = `${Service.config.memberUrl}Seller/Bind`;
+        return this.put(url, { openId });
+    }
+    weixinUnbind(openId: string) {
+        let url = `${Service.config.memberUrl}Seller/Unbind`;
+        return this.put(url, { openId });
+    }
 }
 
-export default new UserService();
+// export default new UserService();

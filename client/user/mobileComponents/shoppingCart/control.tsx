@@ -6,7 +6,6 @@ import { StationService } from 'userServices/stationService';
 import { userData } from 'userServices/userData';
 import { app, defaultNavBar } from 'user/site';
 
-
 type ControlStatus = 'normal' | 'edit'
 let status = new chitu.ValueStore<ControlStatus>('normal');
 let deleteItemsCount = new chitu.ValueStore<number>(0);
@@ -187,10 +186,6 @@ export interface ShoppingCartState {
 
 }
 
-let shoppingCart = new ShoppingCartService();
-let shop = new ShoppingService();
-let station = new StationService();
-
 export interface ShoppingCartlProps extends ControlProps<ShoppingCartControl> {
     hideMenu: boolean, pageName: string,
 }
@@ -198,8 +193,14 @@ export default class ShoppingCartControl extends Control<
     ShoppingCartlProps,
     ShoppingCartState>{
 
+    private shoppingCart: ShoppingCartService;
+    private shop: ShoppingService;
+
     constructor(props) {
         super(props);
+
+        this.shoppingCart = this.elementPage.createService(ShoppingCartService);
+        this.shop = this.elementPage.createService(ShoppingService);
 
         this.state = {
             status: 'normal',
@@ -208,21 +209,21 @@ export default class ShoppingCartControl extends Control<
         };
 
         this.loadControlCSS();
-        //this.refreshItems();
 
-        ShoppingCartService.items.add(ShoppingCartControl.on_shoppingCartChanged, this);
+
+        ShoppingCartService.items.add(this.on_shoppingCartChanged, this);
         this.elementPage.active.add(() => {
-            ShoppingCartControl.on_shoppingCartChanged(ShoppingCartService.items.value, this);
-            ShoppingCartService.items.add(ShoppingCartControl.on_shoppingCartChanged, this);
+            this.on_shoppingCartChanged(ShoppingCartService.items.value, this);
+            ShoppingCartService.items.add(this.on_shoppingCartChanged, this);
         })
         this.elementPage.deactive.add(() => {
-            ShoppingCartService.items.remove(ShoppingCartControl.on_shoppingCartChanged);
+            ShoppingCartService.items.remove(this.on_shoppingCartChanged);
         })
-        ShoppingCartControl.on_shoppingCartChanged(ShoppingCartService.items.value, this);
+        this.on_shoppingCartChanged(ShoppingCartService.items.value, this);
     }
 
-    private static on_shoppingCartChanged(items: ShoppingCartItem[], sender?: ShoppingCartControl) {
-        shoppingCart.calculateShoppingCartItems().then((items) => {
+    private on_shoppingCartChanged(items: ShoppingCartItem[], sender?: ShoppingCartControl) {
+        sender.shoppingCart.calculateShoppingCartItems().then((items) => {
             sender.state.items = items;
             sender.setState(sender.state);
         })
@@ -252,14 +253,14 @@ export default class ShoppingCartControl extends Control<
         }
 
         if (item.Selected == false)
-            await shoppingCart.selectItem(item.Id);
+            await this.shoppingCart.selectItem(item.Id);
         else
-            await shoppingCart.unselectItem(item.Id);
+            await this.shoppingCart.unselectItem(item.Id);
 
     }
     async removeSelectedItems() {
         let items: ShoppingCartItem[] = this.state.deleteItems;
-        await shoppingCart.removeItems(items.map(o => o.Id));
+        await this.shoppingCart.removeItems(items.map(o => o.Id));
         this.setDeleteItems([]);
         //this.refreshItems();
     }
@@ -269,7 +270,7 @@ export default class ShoppingCartControl extends Control<
             ui.confirm({
                 message: `确定要删除'${item.Name}'吗？`,
                 confirm: async () => {
-                    await shoppingCart.removeItems([item.Id]);
+                    await this.shoppingCart.removeItems([item.Id]);
                     let deleteItems = this.state.deleteItems.filter(o => o.Id != item.Id);
                     this.setDeleteItems(deleteItems);
                 }
@@ -319,7 +320,7 @@ export default class ShoppingCartControl extends Control<
 
         let result: Promise<any>;
         if (itemIds.length > 0) {
-            result = shoppingCart.setItemsCount(itemIds, quantities);
+            result = this.shoppingCart.setItemsCount(itemIds, quantities);
         }
         else {
             result = Promise.resolve({});
@@ -336,7 +337,7 @@ export default class ShoppingCartControl extends Control<
     }
     checkAll() {
         if (this.state.status == 'normal') {
-            return shoppingCart.selectAll();
+            return this.shoppingCart.selectAll();
         }
 
         this.setDeleteItems(this.state.items);
@@ -344,7 +345,7 @@ export default class ShoppingCartControl extends Control<
 
     uncheckAll() {
         if (this.state.status == 'normal') {
-            return shoppingCart.unselectAll();
+            return this.shoppingCart.unselectAll();
         }
 
         this.setDeleteItems([]);
@@ -365,7 +366,7 @@ export default class ShoppingCartControl extends Control<
         var productIds = items.map(o => o.ProductId);
         var quantities = items.map(o => o.Count);
 
-        let result = shop.createOrder(productIds, quantities)
+        let result = this.shop.createOrder(productIds, quantities)
             .then((order) => {
                 app.redirect(`shopping_orderProducts?id=${order.Id}`)
             })

@@ -1,82 +1,37 @@
 /** 获取连接速度最快的服务器 */
 (function () {
 
-    async function get(url): Promise<any> {
-        let request = new XMLHttpRequest();
-        request.open("GET", url, false);
-        request.send(null);
-        let text = request.responseText;
-        return JSON.parse(text);
-    }
+    let service_domain = `service1.alinq.cn`;
+    function get(url): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let request = new XMLHttpRequest();
+            request.open("GET", url, true);
+            request.send(null);
+            request.onreadystatechange = () => {
+                if (request.readyState == 4) {
+                    let text = request.responseText;
+                    let obj = JSON.parse(text);
 
-    //====================================================
-    // 配置
-    let allServiceHosts = [`service.alinq.cn`, `service1.alinq.cn`];//, `service4.alinq.org`
-    //====================================================
-    let Ping = {
-        optimumServer: null as string
-    };
-    function createPing(opt?: { favicon?: string, timeout?: number }) {
-
-        let self: {
-            opt: any,
-            favicon: string,
-            timeout: number,
-            img: HTMLImageElement,
-
-        } = {} as any;
-        self.opt = opt || {};
-        self.favicon = self.opt.favicon || "/favicon.ico";
-        self.timeout = self.opt.timeout || 2000;
-
-        function ping(source: string, callback: (error: string, pong: number) => void) {
-            self.img = new Image();
-            var timer;
-
-            var start = new Date() as any;
-            self.img.onload = pingCheck;
-            self.img.onerror = pingCheck;
-            if (self.timeout) {
-                timer = setTimeout(pingCheck, self.timeout);
-            }
-
-            function pingCheck(e) {
-                if (timer) {
-                    clearTimeout(timer);
-                }
-                var pong = new Date() as any - start;
-
-                if (typeof callback === "function") {
-                    if (e.type === "error") {
-                        console.error("error loading resource");
-                        return callback("error", pong);
+                    if (request.status == 200) {
+                        resolve(obj);
+                        return;
                     }
-                    return callback(null, pong);
+                    else {
+                        reject(obj);
+                    }
+                    // document.getElementById("myDiv").innerHTML = request.responseText;
                 }
+
+                // reject(new Error(`state code:${request.status}`));
             }
 
-            let src = opt.favicon.indexOf('?') >= 0 ?
-                source + opt.favicon + "&" + (+new Date()) :
-                source + opt.favicon + "?" + (+new Date());
-
-            self.img.src = src;
-        }
-
-        return {
-            ping
-        }
-    }
-
-    let { protocol } = location;
-    for (let i = 0; i < allServiceHosts.length; i++) {
-        let url = `${protocol}//${allServiceHosts[i]}/`;
-        var p = createPing({ favicon: 'user/index' });
-        p.ping(url, (error, pong) => {
-            if (!Ping.optimumServer)
-                Ping.optimumServer = allServiceHosts[i];
+            setTimeout(() => {
+                reject(new Error("time out"));
+            }, 1000 * 10);
         })
+        // let text = request.responseText;
+        // return JSON.parse(text);
     }
-
 
 
     let urlParams: { code?: string, appKey?: string, state?: string } = {};
@@ -146,7 +101,7 @@
 
         function serviceUrl(path: string) {
             let { protocol } = location;
-            let url = `${protocol}//service.alinq.cn/UserWeiXin/${path}?application-key=${urlParams.appKey}`;
+            let url = `${protocol}//${service_domain}/UserWeiXin/${path}?application-key=${urlParams.appKey}`;
             return url;
         }
 
@@ -165,7 +120,7 @@
 
     (async function () {
         let { protocol } = location;
-        let url = `${protocol}//service.alinq.cn/UserSite/Store/Get?application-key=${urlParams.appKey}`;
+        let url = `${protocol}//${service_domain}/UserSite/Store/Get?application-id=${urlParams.appKey}`;
         let store = await get(url);
         if (store != null && store.Name != null) {
             document.title = store.Name;

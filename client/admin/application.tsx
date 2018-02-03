@@ -14,22 +14,23 @@ class Page extends React.Component<any, {
 }> {
     constructor(props) {
         super(props);
-        // window.addEventListener('hashchange', () => {
-        //     let url = (window.location.hash.substr(1) || '').split('?')[0];
-        //     this.state.currentNode = this.findNodeByUrl(url);
-        //     this.setState(this.state);
-        // });
-
-        Service.username.add((value) => {
+        Service.adminName.add((value) => {
             this.state.username = value;
             this.setState(this.state);
         })
 
         let url = (window.location.hash.substr(1) || '').split('?')[0];
-        this.state = { currentNode: this.findNodeByUrl(url), username: Service.username.value };
-    }
-    hideSecond() {
+        this.state = { currentNode: this.findNodeByUrl(url), username: Service.adminName.value };
+        window.addEventListener('hashchange', () => {
+            url = (window.location.hash.substr(1) || '').split('?')[0];
+            let currentNode = this.findNodeByUrl(url);
+            if (currentNode == this.state.currentNode)
+                return;
 
+            this.state.currentNode = currentNode;
+            this.state.username = Service.adminName.value;
+            this.setState(this.state);
+        })
     }
     findNodeByUrl(url: string): MenuNode {
         let stack = new Array<MenuNode>();
@@ -86,23 +87,19 @@ class Page extends React.Component<any, {
         let thirdLevelNodes: Array<MenuNode> = [];
         if (currentNode != null) {
             if (currentNode.Parent == null) {
-                // secondLevelNodes = currentNode.Children || [];
                 firstLevelNode = currentNode;
                 secondLevelNode = currentNode;
             }
             else if (currentNode.Parent.Parent == null) {
-                // secondLevelNodes = currentNode.Parent.Children || [];
                 firstLevelNode = currentNode.Parent;
                 secondLevelNode = currentNode;
             }
             else if (currentNode.Parent.Parent.Parent == null) {
-                // secondLevelNodes = currentNode.Parent.Parent.Children || [];
                 thirdLevelNode = currentNode;
                 secondLevelNode = thirdLevelNode.Parent;
                 firstLevelNode = secondLevelNode.Parent;
             }
             else if (currentNode.Parent.Parent.Parent.Parent == null) {
-                // secondLevelNodes = currentNode.Parent.Parent.Children || [];
                 thirdLevelNode = currentNode.Parent;
                 secondLevelNode = thirdLevelNode.Parent;
                 firstLevelNode = secondLevelNode.Parent;
@@ -157,19 +154,13 @@ class Page extends React.Component<any, {
                         <div className="container-fluid">
                             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                                 <ul className="nav navbar-nav" style={{ width: '100%' }}>
-                                    <li className="light-blue pull-right">
-                                        <a data-toggle="dropdown" href="#" className="dropdown-toggle">
-                                            <span name="username" style={{ paddingRight: 10 }}>{this.state.username}</span>
-                                            <i className="icon-caret-down"></i>
-                                        </a>
-                                        <ul className="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                                            <li>
-                                                <a href="#User/Logout">
-                                                    <i className="icon-off"></i>退出
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                    {Service.token ?
+                                        <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 12, cursor: 'pointer' }}
+                                            onClick={() => location.hash = '#user/login'}>
+                                            <i className="icon-off"></i>
+                                            <span style={{ paddingLeft: 4 }}>退出</span>
+                                        </li> : null
+                                    }
                                 </ul>
                             </div>
                         </div>
@@ -178,7 +169,7 @@ class Page extends React.Component<any, {
                         ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 }
@@ -192,6 +183,10 @@ class Application extends chitu.Application {
     constructor() {
         super();
 
+        if (Service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
+            this.redirect('user/login');
+        }
+
         this.pageCreated.add((app, page) => {
             page.load.add((sender, args) => {
                 let element = sender.element.querySelector('admin-pc');
@@ -200,6 +195,8 @@ class Application extends chitu.Application {
                 }
             });
         })
+
+        this.error.add((app, err) => this.errorHandle(err));
     }
 
     protected createPageElement(routeData: chitu.RouteData): HTMLElement {
@@ -212,46 +209,32 @@ class Application extends chitu.Application {
         return element;
     }
 
-    run() {
+    private errorHandle(err: Error) {
+        switch (err.name) {
+            case '600':     //600 为未知异常
+            default:
+                ui.alert({ title: '错误', message: err.message });
+                console.log(err);
+                break;
 
-
-
-        super.run();
+            case '710':
+            case '724':     //724 为 token 失效
+            case '601':     //601 为用户未登录异常
+                var currentPage = app.currentPage;
+                let isLoginPage = currentPage.name == 'user.login';
+                if (isLoginPage) {
+                    return;
+                }
+                app.redirect('user_login', { return: currentPage.routeData.routeString });
+                break;
+            case '725':
+                ui.alert({ title: '错误', message: 'application-key 配置错误' });
+                break;
+        }
     }
 }
 
-// var app = new Application();
-// app.error.add((sender, error) => {
-//     if (error.name == 'NotLogin' || error.name == `724`) {
-//         Service.token = '';
-//         // location.search = '';
-//         // app.redirect('user/login');
-//         location.href = 'index.html#user/login';
-//         return;
-//     };
-
-//     //========================================
-//     // 延迟处理错误，让其它模块先处理
-//     let timeoutId = setTimeout(() => {
-//         if (!error['handled']) {
-//             ui.alert({
-//                 title: '错误',
-//                 message: error.message
-//             });
-//         }
-
-//         clearTimeout(timeoutId);
-
-//     }, 100);
-//     //========================================
-// })
-
-let app = window['admin-app'] = window['admin-app'] || new Application();
-
-if (Service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
-    app.redirect('user/login');
-}
-
+let app: Application = window['admin-app'] = window['admin-app'] || new Application();
 export default app;
 
 

@@ -8,7 +8,7 @@ export interface MenuNode {
 };
 
 export let menuData: MenuNode[] = [
-    { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index', Visible: false },
+    { Title: '首页', Icon: 'icon-dashboard', Url: 'home/index', Visible: true },
     {
         Title: "微店",
         Icon: "icon-home",
@@ -117,7 +117,7 @@ export let menuData: MenuNode[] = [
         Title: "设置",
         Icon: " icon-cog",
         Children: [
-            { Title: "修改密码", Url: 'user/changePassword' },
+            { Title: "账号设置", Url: 'user/changePassword' },
             {
                 Title: "运费设置",
                 Children: [
@@ -129,8 +129,8 @@ export let menuData: MenuNode[] = [
                     { Url: 'freight/inCitySend', Title: '同城配送' },
                 ]
             },
-            { Url: 'weixin/setting', Title: '微信设置' },
-            { Url: 'shopping/paymentSetting', Title: '支付设置' }
+            { Url: 'shopping/paymentSetting', Title: '支付设置' },
+            { Url: 'weixin/setting', Title: '公众号设置' },
         ]
     },
     {

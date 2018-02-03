@@ -1,24 +1,36 @@
-﻿import { default as userService } from 'adminServices/user';
+﻿import { Service } from 'services/service';
+import { UserService } from 'adminServices/user';
 import app from 'application';
 import { default as site } from 'site';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 
 export default async function (page: chitu.Page) {
+
+    let userService = page.createService(UserService);
     class LoginPage extends React.Component<{}, {}>{
         validator: FormValidator;
         element: HTMLElement;
         usernameInput: HTMLInputElement;
         passwordInput: HTMLInputElement;
-        componentDidMount() {
-            this.validator = new FormValidator(this.element, {
-                username: { rules: ['required'] },
-                password: { rules: ['required'] }
-            })
+
+        constructor(props) {
+            super(props);
+            Service.token = '';
         }
-        login() {
-            if (!this.validator.validateForm()) {
+
+        componentDidMount() {
+            let usernameElement = this.element.querySelector('[name="username"]') as HTMLInputElement;
+            let passwordElement = this.element.querySelector('[name="password"]') as HTMLInputElement;
+            this.validator = new FormValidator(
+                { element: usernameElement, rules: [rules.required()] },
+                { element: passwordElement, rules: [rules.required()] }
+            )
+        }
+        async login() {
+            let isValid = await this.validator.check();
+            if (!isValid) {
                 return Promise.resolve();
             }
             return userService.login(this.usernameInput.value, this.passwordInput.value)

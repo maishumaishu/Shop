@@ -1,11 +1,11 @@
-import FormValidator from 'formValidator';
+import 'wuzhui';
+import { FormValidator } from 'dilu';
 import * as ui from 'ui';
 
 type GridViewItemPopupEditorProps = React.Props<GridViewItemPopupEditor> & {
     saveDataItem: (dataItem: any) => Promise<any>,
     name?: string
 };
-
 
 type CommandFieldParams = {
     itemEditor?: GridViewItemPopupEditor,
@@ -57,11 +57,12 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
 
         return value;
     }
-    private ok() {
+    private async ok() {
         let validator = this.validator;
         if (validator) {
             validator.clearErrors();
-            if (!validator.validateForm())
+            let isValid = await validator.check();
+            if (!isValid)
                 return Promise.reject({});
         }
 

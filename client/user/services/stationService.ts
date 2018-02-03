@@ -188,7 +188,7 @@ export class StationService extends Service {
     }
 
     pageData(pageId: string) {
-        let url = this.url('Page/GetPageData');
+        let url = this.url('Page/GetPageDataById');
         let data = { pageId };
         return this.getByJson<PageData>(url, { query: { _id: pageId } })
             .then(pageData => this.fillPageData(pageData));
@@ -200,9 +200,9 @@ export class StationService extends Service {
     //============================================================
 
     pageDataByName(name: string) {
-        let url = this.url('Page/GetPageData');
-        let query = { name };
-        return this.getByJson<PageData>(url, { query }).then(o => {
+        let url = this.url('Page/GetPageDataByName');
+        // let query = { name };
+        return this.getByJson<PageData>(url, { name }).then(o => {
             return o;
         });
     }

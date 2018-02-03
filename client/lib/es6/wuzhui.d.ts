@@ -90,18 +90,8 @@ declare namespace wuzhui {
     class ArrayDataSource<T> extends DataSource<T> {
     }
 }
+
 declare namespace wuzhui {
-    class Errors {
-        constructor(parameters: any);
-        static notImplemented(message?: string): Error;
-        static argumentNull(paramName: any): Error;
-        static controllBelonsAnother(): Error;
-        static columnsCanntEmpty(): Error;
-        static dataSourceCanntInsert(): Error;
-        static dataSourceCanntUpdate(): Error;
-        static dataSourceCanntDelete(): Error;
-        static primaryKeyNull(key: string): Error;
-    }
 }
 declare namespace wuzhui {
     enum GridViewRowType {
@@ -250,6 +240,12 @@ declare namespace wuzhui {
         render(): void;
     }
 }
+declare class ElementHelper {
+    static showElement(element: HTMLElement): void;
+    static hideElement(element: HTMLElement): void;
+    static isVisible(element: HTMLElement): boolean;
+    static data(element: HTMLElement, name: string, value?: any): any;
+}
 declare namespace wuzhui {
     function applyStyle(element: HTMLElement, value: CSSStyleDeclaration | string): void;
     class Callback<S, A> {
@@ -372,7 +368,6 @@ declare namespace wuzhui {
         nullText?: string;
     }
     class BoundField extends DataControlField {
-        private _sortType;
         private _valueElement;
         constructor(params: BoundFieldParams);
         private params();

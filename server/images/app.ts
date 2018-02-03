@@ -23,7 +23,6 @@ const errors = {
 
 type Action = (req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db, context?: any) => Promise<ActionResult>;
 type ActionResult = { data: any, contentType?: string, statusCode?: number }
-
 const contentTypes = {
     application_json: 'application/json',
     text_plain: 'text/plain',
@@ -107,10 +106,15 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
 
         res.end(result.data);
     }
-    catch (err) {
-        res.setHeader('Content-Type', 'text/plain');
+    catch (e) {
+        let err = e as Error;
+        res.setHeader('Content-Type', contentTypes.application_json);
         res.statusCode = 600;
-        res.end(err.message);
+
+        let { name,stack } = err;
+        var text = JSON.stringify({name,stack});
+        res.write(text);
+        res.end();
     }
     finally {
         if (db != null) {
@@ -119,7 +123,8 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
     }
 });
 
-async function imageFile(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db)
+
+async function imageFile(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db) 
     : Promise<ActionResult> {
 
     let urlInfo = url.parse(req.url);
@@ -145,7 +150,7 @@ async function imageFile(req: http.IncomingMessage, res: http.ServerResponse, db
     })
 }
 
-async function imageByName(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db) {
+async function imageByName(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db):Promise<ActionResult> {
     let urlInfo = url.parse(req.url);
     let collection = db.collection(imageCollectionName);
     var name = urlInfo.pathname.substr(1);
@@ -163,7 +168,7 @@ async function imageByName(req: http.IncomingMessage, res: http.ServerResponse, 
     return { data: buffer, contentType: imageContextTypes.jpeg };
 }
 
-async function imageById(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db, _id: mongodb.ObjectId) {
+async function imageById(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db, _id: mongodb.ObjectId):Promise<ActionResult> {
     let collection = db.collection(imageCollectionName);
     let item = await collection.findOne({ _id });
     if (item == null) {
@@ -190,32 +195,28 @@ async function resizeImage(buffer: Buffer, type: 'jpeg|png|webp', width: number,
             resolve(data);
         });
     })
-
 }
 
-async function upload(req: http.IncomingMessage, res: http.ServerResponse): Promise<any> {
+async function upload(req: http.IncomingMessage, res: http.ServerResponse): Promise<ActionResult> {
 
     //image
     let obj = await getPostObject(req);
     let image = obj["image"];
-    let appKey = obj["application-key"];
+    let appKey = obj["application-id"] || req.headers['application-id'];
     if (image == null) {
-        return errors.parameterRequired("image");
+        throw errors.parameterRequired("image");
     }
 
     if (appKey == null)
-        return errors.parameterRequired('appKey');
+        throw errors.parameterRequired('appKey');
 
-    let db = await mongodb.MongoClient.connect(settings.mongodb_nodeauth);
-    let tokens = db.collection('Token');
-    let token = await tokens.findOne({ _id: new mongodb.ObjectId(appKey) });
-    if (token == null)
-        return new Error(`Cannt find token by application key '${appKey}'.`);
-
+    let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
     let collection = db.collection(imageCollectionName);
 
-    return collection.insertOne({ data: image, appId: token.objectId });
+    let result = await collection.insertOne({ data: image, appId: appKey });
+    return { data:JSON.stringify({_id:result.insertedId}), contentType: contentTypes.application_json };
 }
+
 
 function getPostObject(request: http.IncomingMessage): Promise<any> {
     let method = (request.method || '').toLowerCase();
@@ -225,31 +226,31 @@ function getPostObject(request: http.IncomingMessage): Promise<any> {
         return Promise.resolve({});
 
     return new Promise((reslove, reject) => {
+        var text = "";
         request.on('data', (data: { toString: () => string }) => {
-            let text = data.toString();
-            try {
-                let obj;
+            text = text + data.toString();
+        });
+
+        request.on('end',()=>{
+            let obj;
+            try{
                 if (contentType.indexOf('application/json') >= 0) {
                     obj = JSON.parse(text)
                 }
                 else {
                     obj = querystring.parse(text);
                 }
-
                 reslove(obj);
             }
-            catch (err) {
-                // let err = errors.postDataNotJSON(text);
-                // console.assert(err != null);
+            catch(err) {
                 reject(err);
             }
-        });
+        })
     });
 }
 
 
-server.listen(port, hostname, () => {
+server.listen(port, () => {//hostname, 
     console.log(`server running at http://${hostname}:${port}`);
-
 });
 

@@ -55,7 +55,7 @@ export default function (page: chitu.Page) {
                         </button>
                     </li>
                 </ul>,
-                <form key={20} className="well">
+                <div key={20} className="well">
                     <div className="row form-group">
                         <label className="col-md-4" style={{ width: label_max_width }}>
                             微支付应用 ID
@@ -112,7 +112,7 @@ export default function (page: chitu.Page) {
                             允许个人转账支付
                         </label>
                     </div>
-                </form>
+                </div>
             ];
         }
     }

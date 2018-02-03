@@ -58,7 +58,7 @@ export default function (page: chitu.Page) {
 
             await member.sentRegisterVerifyCode(this.formElement['mobile'].value)
                 .then((data) => {
-                    this.smsId = data.smsId;
+                    this.smsId = data.SmsId;
                 });
 
             this.state.letfSeconds = 60;

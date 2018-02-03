@@ -1,0 +1,58 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": false,
+        "outDir": "../out/es6",
+        "jsx": "react",
+        "jsxFactory": "h",
+        "baseUrl": "../",
+        "paths": {
+            "*": [
+                "lib/*",
+                "lib/es6/*"
+            ],
+            "adminComponents/*": [
+                "client/admin/components/*"
+            ],
+            "adminServices/*": [
+                "client/admin/services/*"
+            ],
+            "componentDesigner": [
+                "client/admin/modules/station/components/componentDesigner"
+            ],
+            "mobileComponents/*": [
+                "client/user/mobileComponents/*"
+            ],
+            "mobilePageDesigner": [
+                "client/admin/modules/station/components/mobilePageDesigner"
+            ],
+            "userServices/*": [
+                "client/user/userServices/*",
+                "client/user/services/*"
+            ],
+            "virtualMobile": [
+                "client/admin/modules/station/components/virtualMobile"
+            ]
+        },
+        "experimentalDecorators": true
+    },
+    "exclude": [
+        "mylib"
+    ],
+    "include": [
+        "lib/*.d.ts",
+        "lib/**/*.d.ts",
+        "share/*.ts",
+        "share/**/*.ts",
+        "references.d.ts",
+        "admin/*.tsx",
+        "admin/**/*.tsx",
+        "admin/*.ts",
+        "admin/**/*.ts",
+        "user/*.tsx",
+        "user/**/*.tsx",
+        "user/*.ts",
+        "user/**/*.ts"
+    ]
+}

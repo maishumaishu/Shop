@@ -1,12 +1,9 @@
 ﻿import { default as Service } from 'services/service'
 
-let bootbox = window['bootbox'];
+// let bootbox = window['bootbox'];
 
 class Site {
     constructor() {
-    }
-    showInfo(info) {
-        return bootbox.alert('提示', info);
     }
     config = {
         shopUrl: Service.config.shopUrl,
@@ -33,7 +30,10 @@ class Site {
 }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2e39c4920d331aff5a2a51f341f36d2daf61ebd9
 
 let site = new Site();
 export default site; 

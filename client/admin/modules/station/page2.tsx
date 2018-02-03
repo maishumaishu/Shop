@@ -5,7 +5,7 @@ import { componentsDir } from 'mobileComponents/common';
 import { default as station } from 'adminServices/station';
 // import { Button } from 'common/controls';
 import app from 'application';
-import FormValidator from 'formValidator';
+import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import { alert } from 'ui';
@@ -66,8 +66,9 @@ export default async function (page: chitu.Page) {
             this.pageId = this.props.pageData._id;
         }
 
-        save(): Promise<any> {
-            if (!this.validator.validateForm()) {
+        async  save(): Promise<any> {
+            let isValid = await this.validator.check();
+            if (!isValid) {
                 return;
             }
             let elements = this.selectedContainer.querySelectorAll('li');
@@ -155,9 +156,13 @@ export default async function (page: chitu.Page) {
             };
             //=======================================================
             let formElement = page.element.querySelector('form') as HTMLElement;
-            this.validator = new FormValidator(formElement, {
-                name: { rules: ['required'], messages: { required: '请输入页面名称' } }
-            });
+            // this.validator = new FormValidator(formElement, {
+            //     name: { rules: ['required'], messages: { required: '请输入页面名称' } }
+            // });
+            let nameElement = formElement.querySelector('[name="name"]') as HTMLInputElement;
+            this.validator = new FormValidator(
+                { element: nameElement, rules: [rules.required('请输入页面名称')] }
+            )
         }
 
         /** 绑定手机控件的点击事件 */

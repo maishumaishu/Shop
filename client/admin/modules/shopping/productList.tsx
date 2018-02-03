@@ -1,11 +1,11 @@
 import { default as shopping } from 'adminServices/shopping';
 import station from 'adminServices/station';
 import app from 'application';
-import bootbox = require('bootbox');
 import { default as site } from 'site';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import tips from 'tips';
+import 'wuzhui';
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
 type ProductStock = { unlimit: boolean, stock: number, productId: string, productName: string };
@@ -164,33 +164,7 @@ class Page extends React.Component<{}, PageState>{
                     headerText: '序号',
                     headerStyle: { textAlign: 'center' } as CSSStyleDeclaration
                 }),
-                new wuzhui.CustomField({
-                    createItemCell(dataItem: Product) {
-                        let status: 'collapsed' | 'collapsing' | 'expanding' | 'expanded' = 'collapsed';
-                        let cell = new wuzhui.GridViewDataCell({
-                            dataItem,
-                            dataField: 'Name',
-                            render(element, value) {
-                                ReactDOM.render(
-                                    <div>
-                                        <span>
-                                            {dataItem.Name}
-                                        </span>
-                                        <span style={{ paddingLeft: 8 }}>
-                                            {(dataItem.Fields || []).map(o =>
-                                                <span key={o.key} className="badge badge-gray" style={{ paddingTop: 3 }}>{o.value}</span>
-                                            )}
-                                        </span>
-
-                                    </div>, element);
-                            }
-                        })
-                        return cell;
-                    },
-                    headerText: '名称',
-                    headerStyle: { textAlign: 'center' } as CSSStyleDeclaration,
-                    itemStyle: { textAlign: 'left' } as CSSStyleDeclaration,
-                }),
+                new NameField(self),
                 new wuzhui.BoundField({
                     dataField: 'SKU', headerText: 'SKU',
                     headerStyle: { textAlign: 'center' } as CSSStyleDeclaration
@@ -269,41 +243,7 @@ class Page extends React.Component<{}, PageState>{
                     headerStyle: { textAlign: 'center', width: '80px' } as CSSStyleDeclaration,
                     itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                 }),
-                new wuzhui.CustomField({
-                    createItemCell(dataItem: Product) {
-                        let cell = new wuzhui.GridViewCell();
-                        ReactDOM.render(<div>
-                            <button className="btn btn-minier btn-success" style={{ marginRight: 4 }}>
-                                商品链接
-                            </button>
-                            <button className="btn btn-minier btn-purple" style={{ marginRight: 4 }}>
-                                <i className="icon-copy" />
-                            </button>
-                            <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
-                                onClick={() => { app.redirect(`shopping/product/productEdit?id=${dataItem.Id}`) }}>
-                                <i className="icon-pencil"></i>
-                            </button>
-                            <button className="btn btn-minier btn-warning" title={tips.clickAddRegularProduct}
-                                onClick={() => app.redirect(`shopping/product/productEdit?parentId=${dataItem.Id}`)}>
-                                <i className="icon-plus"></i>
-                            </button>
-                            <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
-                                ref={(e: HTMLButtonElement) => {
-                                    if (!e) return;
-                                    e.onclick = ui.buttonOnClick(() => {
-                                        return self.removeProduct(dataItem);
-                                    }, { confirm: `确定删除商品'${dataItem.Name}'吗？` })
-                                }}>
-                                <i className="icon-trash"></i>
-                            </button>
-
-                        </div>, cell.element);
-                        return cell;
-                    },
-                    headerText: '操作',
-                    headerStyle: { textAlign: 'center', width: '210px' } as CSSStyleDeclaration,
-                    itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
-                })
+                new OperationField(self)
             ],
             pageSize: 10
         });
@@ -355,8 +295,8 @@ class Page extends React.Component<{}, PageState>{
 
                         </li>
                         <li data-bind="visible:tabs.current() == 'all'" className="pull-right">
-                            <button onClick={()=>app.redirect('shopping/product/productEdit')} className="btn btn-primary btn-sm pull-right">
-                                <i className="icon-plus"/>
+                            <button onClick={() => app.redirect('shopping/product/productEdit')} className="btn btn-primary btn-sm pull-right">
+                                <i className="icon-plus" />
                                 <span>添加</span>
                             </button>
                             <button className="btn btn-primary btn-sm pull-right"
@@ -487,6 +427,81 @@ class Page extends React.Component<{}, PageState>{
                 }
             </div>
         );
+    }
+}
+
+class NameField extends wuzhui.CustomField {
+    constructor(page: Page) {
+        super({
+            createItemCell(dataItem: Product) {
+                let status: 'collapsed' | 'collapsing' | 'expanding' | 'expanded' = 'collapsed';
+                let cell = new wuzhui.GridViewDataCell({
+                    dataItem,
+                    dataField: 'Name',
+                    render(element, value) {
+                        ReactDOM.render(
+                            <div>
+                                <span>
+                                    {dataItem.Name}
+                                </span>
+                                <span style={{ paddingLeft: 8 }}>
+                                    {(dataItem.Fields || []).map(o =>
+                                        <span key={o.key} className="badge badge-gray" style={{ paddingTop: 3 }}>{o.value}</span>
+                                    )}
+                                </span>
+
+                            </div>, element);
+                    }
+                })
+                return cell;
+            },
+            headerText: '名称',
+            headerStyle: { textAlign: 'center' } as CSSStyleDeclaration,
+            itemStyle: { textAlign: 'left' } as CSSStyleDeclaration,
+        })
+    }
+}
+
+class OperationField extends wuzhui.CustomField {
+
+    constructor(page: Page) {
+        super({
+            createItemCell(dataItem: Product) {
+                let cell = new wuzhui.GridViewCell();
+                ReactDOM.render(<div>
+                    <button className="btn btn-minier btn-success" style={{ marginRight: 4 }}>
+                        商品链接
+                    </button>
+                    <button className="btn btn-minier btn-purple" style={{ marginRight: 4 }}>
+                        <i className="icon-copy" />
+                    </button>
+                    <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
+                        onClick={() => { app.redirect(`shopping/product/productEdit?id=${dataItem.Id}`) }}>
+                        <i className="icon-pencil"></i>
+                    </button>
+                    <button className="btn btn-minier btn-warning" title={tips.clickAddRegularProduct}
+                        onClick={() => app.redirect(`shopping/product/productEdit?parentId=${dataItem.Id}`)}>
+                        <i className="icon-plus"></i>
+                    </button>
+                    <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
+                        ref={(e: HTMLButtonElement) => {
+                            if (!e) return;
+                            e.onclick = ui.buttonOnClick(() => {
+                                return page.removeProduct(dataItem);
+                            }, { confirm: `确定删除商品'${dataItem.Name}'吗？` })
+                        }}>
+                        <i className="icon-trash"></i>
+                    </button>
+
+                </div>, cell.element);
+                return cell;
+            },
+            headerText: '操作',
+            headerStyle: { textAlign: 'center', width: '210px' } as CSSStyleDeclaration,
+            itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
+        });
+
+
     }
 }
 

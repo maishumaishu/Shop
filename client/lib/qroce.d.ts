@@ -6,16 +6,17 @@ declare enum QRErrorCorrectLevel {
 }
 declare class QRCode {
     constructor(element: HTMLElement, text: string);
-    constructor(element: HTMLElement, options: {
+    constructor(element: HTMLElement, options?: {
         text: string,
         width: number,
         height: number,
+        typeNumber?: number,
         colorDark?: string,
         colorLight?: string,
         correctLevel?: QRErrorCorrectLevel
     });
     clear();
-    makeCode(text: string);
+    makeCode(text?: string);
 }
 
 declare module 'qrcode' {

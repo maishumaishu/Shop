@@ -6,17 +6,18 @@ export let userInfo = new chitu.ValueStore<UserInfo>();
 export class MemberService extends Service {
 
     private url(path: string) {
-        return `UserMember/${path}`;
+        return `UserShop/${path}`;
     }
 
     userInfo(): Promise<UserInfo> {
-        let url1 = this.url('Member/CurrentUserInfo');
-        let url2 = `user/userInfo`;
-        return Promise.all([this.getByJson<UserInfo>(url1), this.getByJson<{ mobile }>(url2)])
-            .then((data) => {
-                data[0].Mobile = data[1].mobile;
-                return data[0];
-            });
+        let url1 = this.url('User/CurrentUserInfo');
+        // let url2 = `user/userInfo`;
+        // return Promise.all([this.getByJson<UserInfo>(url1), this.getByJson<{ mobile }>(url2)])
+        //     .then((data) => {
+        //         data[0].Mobile = data[1].mobile;
+        //         return data[0];
+        //     });
+        return Promise.resolve({} as UserInfo);
     }
 
     saveUserInfo(userInfo): Promise<any> {
@@ -31,7 +32,7 @@ export class MemberService extends Service {
     sentVerifyCode(mobile: string, type: VerifyCodeType): Promise<{ smsId: string }> {
         console.assert(mobile != null);
         let url = `sms/sendVerifyCode`;
-        return this.getByJson(url, { mobile, type });
+        return this.putByJson(url, { mobile, type });
     }
 
     checkVerifyCode(smsId: string, verifyCode: string) {
@@ -41,25 +42,29 @@ export class MemberService extends Service {
 
 
     /** 发送验证码到指定的手机 */
-    sentRegisterVerifyCode(mobile: string): Promise<{ smsId: string }> {
-        // console.assert(mobile != null);
-        // let url = `http://${config.service.host}/sms/sendVerifyCode`;
-        // return this.get(url, { mobile, type: 'register' });
-        return this.sentVerifyCode(mobile, 'reigster');
+    sentRegisterVerifyCode(mobile: string): Promise<{ SmsId: string }> {
+        console.assert(mobile != null);
+        let url = `UserMember/SMS/SendRegisterVerifyCode`;
+        return this.postByJson(url, { mobile, type: 'register' });
+        // return this.sentVerifyCode(mobile, 'reigster');
     }
 
     /** 用户注册 */
     register(data: RegisterModel) {
         console.assert(data != null);
-        let url = `user/register`;
-        return this.postByJson<{ token: string, userId: string }>(url, data).then((data) => {
+        let url = `UserMember/User/Register`;
+        let { mobile, password } = data.user;
+        let { smsId, verifyCode } = data;
+
+        let obj = { username: mobile, password, smsId, verifyCode };
+        return this.postByJson<{ token: string }>(url, obj).then((data) => {
             tokens.userToken.value = data.token;
             return data;
         });
     }
 
     login(username: string, password: string): Promise<{ token: string, userId: string }> {
-        let url = `user/login`;
+        let url = `UserMember/User/Login`;
         return this.postByJson<{ token: string, userId: string }>(url, { username, password }).then((result) => {
             tokens.userToken.value = result.token;
             return result;

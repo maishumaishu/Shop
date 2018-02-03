@@ -1,13 +1,11 @@
-import FormValidator from 'formValidator';
-import { default as userService } from 'adminServices/user';
+import { FormValidator, rules } from 'dilu';
+import { UserService } from 'adminServices/user';
 import * as ui from 'ui';
 import app from 'application';
 
-var $ctrls = $('#sidebar, #breadcrumbs, #navbar-container > [role="navigation"]');
-$ctrls.hide();
-
 export default function (page: chitu.Page) {
 
+    let userService = page.createService(UserService);
     requirejs([`css!${page.routeData.actionPath}.css`]);
     class RegisterPage extends React.Component<{}, { buttonText: string, buttonEnable: boolean }>{
         private formElement: HTMLFormElement;
@@ -27,27 +25,44 @@ export default function (page: chitu.Page) {
         }
 
         componentDidMount() {
-            this.registerValidation = new FormValidator(this.formElement, {
-                mobile: { rules: ['required', 'mobile'] },
-                verifyCode: { rules: ['required'] },
-                password: { rules: ['required'] },
-                confirmPassword: { rules: ['required', { name: 'matches', params: ['password'] }] }
-            });
+            let mobile = this.formElement.querySelector('[name="mobile"]') as HTMLInputElement;
+            let verifyCode = this.formElement.querySelector('[name="verifyCode"]') as HTMLInputElement;
+            let password = this.formElement.querySelector('[name="password"]') as HTMLInputElement;
+            let confirmPassword = this.formElement.querySelector('[name="confirmPassword"]') as HTMLInputElement;
+            // this.registerValidation = new FormValidator(this.formElement, {
+            //     mobile: { rules: ['required', 'mobile'] },
+            //     verifyCode: { rules: ['required'] },
+            //     password: { rules: ['required'] },
+            //     confirmPassword: { rules: ['required', { name: 'matches', params: ['password'] }] }
+            // });
 
-            this.registerValidation.messages['mobile'] = '手机号码不正确';
-            this.registerValidation.messages['matches'] = '两次输入的密码不正确';
+            // this.registerValidation.messages['mobile'] = '手机号码不正确';
+            // this.registerValidation.messages['matches'] = '两次输入的密码不正确';
 
-            this.verifyCodeValidation = new FormValidator(this.formElement, {
-                mobile: { rules: ['required', 'mobile'] }
-            });
+            // this.verifyCodeValidation = new FormValidator(this.formElement, {
+            //     mobile: { rules: ['required', 'mobile'] }
+            // });
 
-            this.verifyCodeValidation.messages['mobile'] = '手机号码不正确';
+            // this.verifyCodeValidation.messages['mobile'] = '手机号码不正确';
+
+            this.registerValidation = new FormValidator(
+                { element: mobile, rules: [rules.required(), rules.mobile('手机号码不正确')] },
+                { element: verifyCode, rules: [rules.required('两次输入的密码不正确')] },
+                { element: password, rules: [rules.required()] },
+                { element: confirmPassword, rules: [rules.required()] }
+            )
+
+            this.verifyCodeValidation = new FormValidator(
+                { element: mobile, rules: [rules.required(), rules.mobile('手机号码不正确')] }
+            )
         }
 
-        register() {
+        async  register() {
             this.registerValidation.clearErrors();
             this.verifyCodeValidation.clearErrors();
-            if (!this.registerValidation.validateForm()) {
+
+            let isValid = await this.registerValidation.check();
+            if (!isValid) {
                 return;
             }
 
@@ -65,7 +80,8 @@ export default function (page: chitu.Page) {
         async sendVerifyCode() {
             this.registerValidation.clearErrors();
             this.verifyCodeValidation.clearErrors();
-            if (!this.verifyCodeValidation.validateForm()) {
+            let isValid = await this.verifyCodeValidation.check();
+            if (!isValid) {
                 return;
             }
 

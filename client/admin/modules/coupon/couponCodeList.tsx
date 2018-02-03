@@ -3,6 +3,8 @@ import { buttonOnClick } from 'ui';
 import { ShoppingService } from 'adminServices/shopping';
 import { FormValidator, rules } from 'dilu';
 import * as ui from 'ui';
+import { customField } from 'myWuZhui';
+import { formatDate } from 'adminServices/service';
 
 export default function (page: chitu.Page) {
 
@@ -115,9 +117,21 @@ export default function (page: chitu.Page) {
                 element: this.couponCodesTable,
                 dataSource: this.dataSource,
                 columns: [
-                    new wz.BoundField({ dataField: 'Title', headerText: '标题' }),
+                    new wz.BoundField({ dataField: 'Title', headerText: '名称' }),
                     new wz.BoundField({ dataField: 'Code', headerText: '优惠码' }),
-                    new wz.BoundField({ dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{0:g}' }),
+                    new wz.CustomField({
+                        createItemCell(data: CouponCode) {
+                            let cell = new wuzhui.GridViewCell();
+                            cell.element.innerHTML = `${formatDate(data.ValidBegin)} - ${formatDate(data.ValidEnd)}`;
+                            return cell;
+                        },
+                        headerText: '有效期',
+                        headerStyle: { width: '200px' } as CSSStyleDeclaration,
+                        itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
+                    }),
+                    new wz.BoundField({
+                        dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{0:g}'
+                    }),
                     new wz.CustomField({
                         createItemCell(dataItem: CouponCode) {
                             let cell = new wuzhui.GridViewCell();

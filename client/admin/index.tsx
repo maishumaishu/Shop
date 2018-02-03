@@ -4,12 +4,12 @@ requirejs.config({
         ace: {
             deps: ['jquery', 'bootstrap']
         },
-        bootstrap: {
-            deps: ['jquery']
-        },
-        bootbox: {
-            deps: ['bootstrap']
-        },
+        // bootstrap: {
+        //     deps: ['jquery']
+        // },
+        // bootbox: {
+        //     deps: ['bootstrap']
+        // },
         'maishu-chitu': {
             deps: [
                 'polyfill'
@@ -18,11 +18,15 @@ requirejs.config({
         dilu: {
             exports: 'dilu'
         },
-        site: {
-            // deps: ['jquery.cookie', 'bootbox']
-        },
         application: {
             deps: ['maishu-chitu']
+        },
+        'jquery-ui': {
+            exports: 'window["$"]',
+            deps: [
+                'jquery',
+                'css!content/jquery-ui-1.10.0.custom'
+            ]
         },
         mobileControls: {
             exports: 'controls',
@@ -37,14 +41,14 @@ requirejs.config({
         um: {
             deps: [
                 'jquery',
-                'css!scripts/umeditor/themes/default/css/umeditor.css',
-                'scripts/umeditor/third-party/template.min',
+                'css!../scripts/umeditor/themes/default/css/umeditor.css',
+                '../scripts/umeditor/third-party/template.min',
                 'um_config',
             ]
         },
         um_config: {
             deps: [
-                'scripts/umeditor/third-party/template.min'
+                '../scripts/umeditor/third-party/template.min'
             ]
         },
         um_zh: {
@@ -52,11 +56,14 @@ requirejs.config({
         },
         qrcode: {
             exports: 'QRCode'
+        },
+        wuzhui: {
+            deps: ['jquery']
         }
     },
     paths: {
-        bootstrap: '../scripts/bootstrap',
-        // chitu: 'scripts/chitu',
+        // bootstrap: '../scripts/bootstrap',
+        // chitu: '../scripts/chitu',
         css: '../scripts/css',
         dilu: '../scripts/dilu',
         formValidator: '../scripts/formValidator',
@@ -100,11 +107,12 @@ requirejs.config({
         virtualMobile: 'modules/station/components/virtualMobile',
         'user': '../user',
         'adminComponents': 'components',
-        'share': '../share'
+        'share': '../share',
+        'socket.io': 'http://maishu.alinq.cn:8015/socket.io/socket.io'
     }
 });
-requirejs(['css!content/jquery-ui-1.10.0.custom'])
-var references = ['react', 'react-dom', 'application', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
+// requirejs(['css!content/jquery-ui-1.10.0.custom'])
+var references = ['react', 'react-dom', 'application'];
 requirejs(references, function (React, ReactDOM, app, ui) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
@@ -114,6 +122,8 @@ requirejs(references, function (React, ReactDOM, app, ui) {
     if (!location.hash)
         (app as chitu.Application).redirect('home/index');
 });
+
+
 
 
 

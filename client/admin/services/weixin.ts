@@ -28,7 +28,7 @@ if (Service.token)
     headers['user-token'] = Service.token;
 
 if (location.search) {
-    headers['application-key'] = location.search.substr(1);
+    headers['application-id'] = location.search.substr(1);
 }
 export class WeiXinService extends Service {
     url(path) {
@@ -45,6 +45,10 @@ export class WeiXinService extends Service {
     getMessageTemplateTypes() {
         let url = this.url('WeiXin/GetMessageTemplateTypes');
         return this.get<any[]>(url);
+    }
+    openId(code: string): Promise<string> {
+        let url = this.url('WeiXin/GetOpenId');
+        return this.get<string>(url, { code });
     }
 }
 
