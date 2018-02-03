@@ -83,5 +83,19 @@ export function formatDate(date: Date | string): string {
         return date;
 
     let d = date as Date;
+    let mm = d.getMonth() + 1;
+    let dd = d.getDate();
+    return `${d.getFullYear()}-${mm < 10 ? '0' + mm : mm}-${dd < 10 ? '0' + dd : dd}`;
+}
+
+export function formatDateTime(date: Date | string): string {
+    if (date == null)
+        return null;
+
+    if (typeof date == 'string')
+        return date;
+
+    let d = date as Date;
     return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
 }
+

@@ -1,7 +1,7 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
-import { urlParams } from 'share/common';
-export { guid, imageUrl, parseUrlParams } from 'share/common';
+import { urlParams, parseUrlParams } from 'share/common';
+export { guid, imageUrl, parseUrlParams, formatDate, formatDateTime } from 'share/common';
 export let systemWeiXinAppId = 'wx30ac5294d9f38751';
 
 let username = new chitu.ValueStore<string>();
@@ -12,18 +12,7 @@ username.add((value) => {
 
 
 let remote_service_host = 'service1.alinq.cn';//'userservices.alinq.cn' //'service.alinq.cn';
-function parseUrlParams(query: string) {
-    let match,
-        pl = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
 
-    let urlParams = {};
-    while (match = search.exec(query))
-        urlParams[decode(match[1])] = decode(match[2]);
-
-    return urlParams;
-}
 
 let { protocol } = location;
 export class Service extends chitu.Service {
@@ -110,29 +99,7 @@ export class Service extends chitu.Service {
     }
 }
 
-export function formatDate(date: Date | string): string {
-    if (date == null)
-        return null;
 
-    if (typeof date == 'string')
-        return date;
-
-    let d = date as Date;
-    let mm = d.getMonth() + 1;
-    let dd = d.getDate();
-    return `${d.getFullYear()}-${mm < 10 ? '0' + mm : mm}-${dd < 10 ? '0' + dd : dd}`;
-}
-
-export function formatDateTime(date: Date | string): string {
-    if (date == null)
-        return null;
-
-    if (typeof date == 'string')
-        return date;
-
-    let d = date as Date;
-    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
-}
 
 
 export default Service;

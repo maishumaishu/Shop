@@ -1,5 +1,5 @@
 import app from 'application';
-import { formateDate } from 'share/common';
+import { formatDate } from 'share/common';
 import { ShoppingService } from 'adminServices/shopping';
 // import FormValidator from 'formValidator';
 // import * as wz from 'myWuZhui';
