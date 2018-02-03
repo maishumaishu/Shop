@@ -33,16 +33,6 @@ class Site {
 }
 
 
-export function formatDate(date: Date | string): string {
-    if (date == null)
-        return null;
-
-    if (typeof date == 'string')
-        return date;
-
-    let d = date as Date;
-    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
-}
 
 
 let site = new Site();

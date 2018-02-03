@@ -88,7 +88,7 @@ requirejs.config({
         'maishu-chitu': '../scripts/chitu',
         'chitu.mobile': '../scripts/chitu.mobile',
         'wuzhui': '../scripts/wuzhui',
-        
+
         ace: 'assets/js/uncompressed/ace',
 
         'ue': 'ueditor',
@@ -104,14 +104,15 @@ requirejs.config({
     }
 });
 requirejs(['css!content/jquery-ui-1.10.0.custom'])
-var references = ['react', 'react-dom', 'application', 'site', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
+var references = ['react', 'react-dom', 'application', 'errorHandle', 'wuzhui', 'jquery-ui', 'bootstrap'];
 requirejs(references, function (React, ReactDOM, app, ui) {
     window['React'] = React;
     window['ReactDOM'] = ReactDOM;
     window['h'] = React.createElement;
 
-
     app.default.run();
+    if (!location.hash)
+        (app as chitu.Application).redirect('home/index');
 });
 
 

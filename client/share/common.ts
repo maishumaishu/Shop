@@ -8,30 +8,6 @@ export function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
-// export function imageUrl(path: string, width?: number) {
-//     if (!path) return path;
-//     if (path.startsWith("data:image")) {
-//         return path;
-//     }
-
-//     let HTTP = 'http://'
-//     if (path.startsWith(HTTP)) {
-//         path = path.substr(HTTP.length);
-//         let index = path.indexOf('/');
-//         console.assert(index > 0);
-//         path = path.substr(index);
-//     }
-//     else if (path[0] != '/') {
-//         path = '/' + path;
-//     }
-
-//     let url = 'https://image.alinq.cn' + path;
-//     if (width) {
-//         url = url + '?width=' + width;
-//     }
-//     return url;
-// }
-
 export function imageUrl(path: string, width?: number, height?: number) {
     if (!path) return path;
     if (path.startsWith('data:image'))
@@ -83,4 +59,15 @@ export function parseUrlParams(query: string) {
         urlParams[decode(match[1])] = decode(match[2]);
 
     return urlParams;
+}
+
+export function formatDate(date: Date | string): string {
+    if (date == null)
+        return null;
+
+    if (typeof date == 'string')
+        return date;
+
+    let d = date as Date;
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
 }
