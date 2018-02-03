@@ -1,6 +1,6 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
-import { urlParams, parseUrlParams } from 'share/common';
+import { urlParams, parseUrlParams, serviceHost } from 'share/common';
 export { guid, imageUrl, parseUrlParams, formatDate, formatDateTime } from 'share/common';
 export let systemWeiXinAppId = 'wx30ac5294d9f38751';
 
@@ -11,7 +11,7 @@ username.add((value) => {
 })
 
 
-let remote_service_host = 'service1.alinq.cn';//'userservices.alinq.cn' //'service.alinq.cn';
+let remote_service_host = serviceHost;
 
 
 let { protocol } = location;

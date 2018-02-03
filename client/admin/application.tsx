@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { menuData, MenuNode } from 'menuData';
 import * as ui from 'ui';
 import { Service } from 'services/service';
+import { shopName } from 'share/common';
 
 ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
 
@@ -245,6 +246,7 @@ let app: Application = window['admin-app'] = window['admin-app'] || new Applicat
 let element = document.createElement('div');
 document.body.insertBefore(element, document.body.children[0]);
 ReactDOM.render(<Page />, element);
+document.title = shopName;
 
 export default app;
 

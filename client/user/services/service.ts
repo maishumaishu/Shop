@@ -1,6 +1,6 @@
 import * as chitu from 'maishu-chitu';
 import { guid } from 'mobileComponents/editor';
-import { urlParams } from 'share/common';
+import { urlParams, serviceHost } from 'share/common';
 export { guid, imageUrl, parseUrlParams, urlParams } from 'share/common';
 
 let appToken: string;
@@ -48,8 +48,7 @@ export let config = {
 
 
 let protocol = location.protocol;
-let service_domain = 'service1.alinq.cn';
-
+let service_domain = serviceHost;
 
 export abstract class Service extends chitu.Service {
     static error = new chitu.Callback<Service, Error>();

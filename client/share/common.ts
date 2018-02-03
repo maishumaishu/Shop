@@ -1,3 +1,5 @@
+export const shopName = '好易微商城';
+export const serviceHost = 'service.bailunmei.com';
 export interface AppError extends Error {
     handled: boolean
 }
