@@ -9,11 +9,10 @@ import { StationService as UserStation } from 'userServices/stationService';
 import { MemberService } from 'userServices/memberService';
 import { PropTypes } from 'prop-types';
 import { app as userApp } from 'user/application';
-
-import * as ui from 'ui';
 import { AppError, ErrorCodes } from 'share/common';
 import { UserLoginDialog } from 'adminComponents/userLoginDialog';
-
+import * as ui from 'ui';
+import 'jquery-ui';
 
 // let station = new StationService();
 userApp.error.add((source, err: AppError) => {
@@ -127,8 +126,10 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         //=====================================================================
         // 将 pageData 中的所以控件找出来，放入到 controlDatas
         (pageData.views || []).forEach(view => controlDatas.push(...view.controls || []));
-
         pageData.views = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.views || []));
+
+        pageData.footer = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.footer || []));
+
         for (let i = 0; i < pageData.views.length; i++) {
             setControlValues(this.mobilePage, pageData.views[i].controls);
         }
@@ -373,7 +374,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             }}>
                             {components.map((c, i) => {
                                 return (
-                                    <li key={c.name} data-control-name={c.name}
+                                    <li key={c.name} data-control-name={c.name} data-target={c.target}
                                         style={{
                                             float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
                                             textAlign: 'center', paddingTop: 8, backgroundColor: 'white', zIndex: 100

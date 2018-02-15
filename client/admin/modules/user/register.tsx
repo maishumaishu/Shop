@@ -170,7 +170,7 @@ export default function (page: chitu.Page) {
                         <div className="form-group">
                             <div className="col-sm-offset-2 col-sm-10">
                                 <div className="pull-left">
-                                    <a href="#User/ForgetPassword">忘记密码</a>
+                                    <a href="#user/forgetPassword">忘记密码</a>
                                 </div>
                                 <div className="pull-right">
                                     <a href="#User/Login">登录</a>

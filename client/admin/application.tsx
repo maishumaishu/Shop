@@ -24,16 +24,16 @@ class Page extends React.Component<any, {
         this.state = { currentNode: this.findNodeByUrl(url), username: Service.adminName.value };
 
         app.pageCreated.add((sender, page) => {
-            page.showing.add(() => this.updateMenu());
-            page.hiding.add(() => this.updateMenu());
+            page.showing.add((sender) => this.updateMenu(sender));
+            page.hiding.add((sender) => this.updateMenu(sender));
         })
     }
 
-    updateMenu() {
-        let url = (window.location.hash.substr(1) || '').split('?')[0];
+    updateMenu(page: chitu.Page) {
+        let url = page.name.replace(/\./, '/'); //(window.location.hash.substr(1) || '').split('?')[0];
         let currentNode = this.findNodeByUrl(url);
-        if (currentNode == this.state.currentNode)
-            return;
+        // if (currentNode != null && currentNode == this.state.currentNode)
+        //     return;
 
         this.state.currentNode = currentNode;
         this.state.username = Service.adminName.value;
@@ -135,6 +135,9 @@ class Page extends React.Component<any, {
             nodeClassName = 'hideSecond';
         }
 
+        // let currentPageName = app.currentPage != null ? app.currentPage.name : '';
+        let hideExistsButton = location.hash == '#user/login' || !Service.token;
+
         return (
             <div className={nodeClassName}>
                 <div className="first admin-pc">
@@ -165,7 +168,7 @@ class Page extends React.Component<any, {
                         <div className="container-fluid">
                             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                                 <ul className="nav navbar-nav" style={{ width: '100%' }}>
-                                    {Service.token ?
+                                    {!hideExistsButton ?
                                         <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 12, cursor: 'pointer' }}
                                             onClick={() => location.hash = '#user/login'}>
                                             <i className="icon-off"></i>

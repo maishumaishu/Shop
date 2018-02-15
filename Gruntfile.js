@@ -204,6 +204,39 @@ module.exports = function (grunt) {
                         }
                     }
                 }
+            },
+            admin: {
+                options: {
+                    baseUrl: `${out}/admin`,
+                    include: [
+                        "polyfill",
+                        "css", "react", "react-dom", 'prop-types', 'ui',
+                        "dilu"
+                    ],
+                    out: `www/admin/build.js`,
+                    // optimize: 'none',
+                    paths: {
+                        css: '../scripts/css',
+                        dilu: '../scripts/dilu',
+                        react: '../scripts/react.production',
+                        'react-dom': '../scripts/react-dom.production',
+                        'prop-types': '../scripts/prop-types',
+                        polyfill: '../scripts/polyfill',
+                        ui: '../scripts/ui',
+                        'maishu-chitu': '../scripts/chitu',
+                        'user': './',
+                        'adminServices': './services',
+                        'share': '../share'
+                    },
+                    shim: {
+                        dilu: {
+                            exports: 'dilu'
+                        },
+                        ui: {
+                            exports: 'ui'
+                        }
+                    }
+                }
             }
         },
         uglify: {
@@ -220,7 +253,7 @@ module.exports = function (grunt) {
                     ],
                     dest: `www`
                 }]
-     }
+            }
         },
         watch: {
             livereload: {

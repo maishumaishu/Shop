@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
-import 'jquery-ui';
 import MenuControl from 'mobileComponents/menu/control';
 import { Control, ControlProps } from 'mobileComponents/common';
 
@@ -33,6 +32,8 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     private footerControlsCount: number = 0;
     private viewControlsCount: number = 0;
     private createdControlCount: number = 0;
+
+    private footerElement: HTMLElement;
 
     controls: (Control<any, any> & { controlId: string, controlName: string })[];
 
@@ -179,7 +180,8 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     renderFooter(pageData: PageData): JSX.Element {
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
         return (
-            <footer key="footer" className="page-footer">
+            <footer key="footer" className="page-footer"
+                ref={(e: HTMLElement) => this.footerElement = e}>
                 {this.renderControls(footerControls)}
             </footer>
         )
@@ -240,21 +242,40 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                     let element = ui.helper[0] as HTMLElement;
                     element.removeAttribute('style');
                     let controlName = ui.item.attr('data-control-name');
+                    let target = ui.item.attr('data-target');
                     console.assert(controlName != null);
                     ui.helper.remove();
-                    pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
+                    if (target == 'footer')
+                        pageData.footer.controls.push({ controlId: guid(), controlName, data: {} })
+                    else
+                        pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
+
                     this.setState(this.state);
                 },
                 update: (event, ui) => {
-                    let controls = [];
+                    let view_controls = [];
+                    let footer_controls = [];
+                    //===================================================
+                    // 排序 view controls
                     for (let i = 0; i < element.children.length; i++) {
                         let child = element.children[i] as HTMLElement;
                         let control = pageData.views[viewIndex].controls.filter(o => o.controlId == child.id)[0];
                         console.assert(control != null);
-                        controls[i] = control;
+                        view_controls[i] = control;
                     }
+                    //===================================================
+                    for (let i = 0; i < this.footerElement.children.length; i++) {
+                        let child = this.footerElement.children[i] as HTMLElement;
+                        let control = pageData.footer.controls.filter(o => o.controlId == child.id)[0];
+                        // if (control == null)
+                        //     continue;
 
-                    pageData.views[viewIndex].controls = controls;
+                        footer_controls[i] = control;
+                    }
+                    //===================================================
+
+                    pageData.views[viewIndex].controls = view_controls;
+                    pageData.footer.controls = footer_controls;
                 }
             })
         }

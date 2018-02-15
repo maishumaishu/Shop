@@ -4,9 +4,9 @@ requirejs.config({
         ace: {
             deps: ['jquery', 'bootstrap']
         },
-        // bootstrap: {
-        //     deps: ['jquery']
-        // },
+        bootstrap: {
+            deps: ['jquery']
+        },
         // bootbox: {
         //     deps: ['bootstrap']
         // },
@@ -62,7 +62,7 @@ requirejs.config({
         }
     },
     paths: {
-        // bootstrap: '../scripts/bootstrap',
+        bootstrap: '../scripts/bootstrap',
         // chitu: '../scripts/chitu',
         css: '../scripts/css',
         dilu: '../scripts/dilu',

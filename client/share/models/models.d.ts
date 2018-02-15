@@ -109,7 +109,7 @@ interface Order {
     Status: string,
     // StatusText: string,
     Sum: number,
-    CustomerId:string,
+    CustomerId: string,
 }
 interface OrderDetail {
     // Id: string,
@@ -186,7 +186,7 @@ interface RegisterModel {
 
 
 interface ControlData {
-    controlId: string, controlName: string, data?: any,
+    controlId: string, controlName: string, data?: any
     selected?: boolean | 'disabled'
 }
 

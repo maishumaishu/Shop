@@ -5,6 +5,7 @@ import { StationService } from 'adminServices/station';
 import { imageUrl } from 'adminServices/service';
 import { FormValidator, rules } from 'dilu';
 import QRCode = require('qrcode');
+import 'bootstrap';
 
 export default async function (page: chitu.Page) {
 

@@ -5,15 +5,18 @@ import { default as site } from 'site';
 import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
+import QRCode = require('qrcode');
 
 export default async function (page: chitu.Page) {
-
+    requirejs([`css!${page.routeData.actionPath}`]);
     let userService = page.createService(UserService);
     class LoginPage extends React.Component<{}, {}>{
         validator: FormValidator;
         element: HTMLElement;
         usernameInput: HTMLInputElement;
         passwordInput: HTMLInputElement;
+        private dialogElement: HTMLElement;
+        private qrcodeElement: HTMLElement;
 
         constructor(props) {
             super(props);
@@ -38,9 +41,17 @@ export default async function (page: chitu.Page) {
                     app.redirect(`user/myStores`);
                 });
         }
+        showDialog() {
+            let auth_url = "http://www.163.com";
+            let qrcode = new QRCode(this.qrcodeElement.parentElement, { width: 200, height: 200, text: "" });
+            let q = qrcode as any;
+            q._oDrawing._elImage = this.qrcodeElement.querySelector('img');
+            qrcode.makeCode(auth_url);
+            ui.showDialog(this.dialogElement);
+        }
         render() {
-            return (
-                <div className="form-horizontal container" style={{ maxWidth: 500 }}
+            return [
+                <div key={10} className="form-horizontal container" style={{ maxWidth: 500 }}
                     ref={(e: HTMLElement) => this.element = e || this.element}>
                     <div className="form-group" >
                         <label className="col-sm-2 control-label">用户名</label>
@@ -78,8 +89,37 @@ export default async function (page: chitu.Page) {
                             </div>
                         </div>
                     </div>
+                    <div className="form-group text-center">
+                        <hr />
+                        <div className="col-sm-offset-2 col-sm-10">
+                            <img src="content/images/weixin_icon"
+                                onClick={() => this.showDialog()}
+                                style={{ width: 80 }} />
+                            <h4>使用微信扫描二维码登录</h4>
+                        </div>
+                    </div>
+                </div>,
+                <div key={20} className="modal fade"
+                    ref={(e: HTMLElement) => this.dialogElement = e}>
+                    <div className="modal-dialog" style={{ width: 320 }}>
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" onClick={() => ui.hideDialog(this.dialogElement)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 className="modal-title">微信扫描二维码</h4>
+                            </div>
+                            <div className="modal-body">
+                                <div className="qrcodeElement" ref={(e: HTMLElement) => this.qrcodeElement = e}>
+                                    <img style={{ width: '100%' }} />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            );
+            ];
         }
     }
 
