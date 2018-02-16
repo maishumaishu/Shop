@@ -265,7 +265,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
         let { pageData } = this.state;
-        let selectedControlId = this.selectedControlId;
+        // let selectedControlId = this.selectedControlId;
         let { showComponentPanel } = this.props;
 
         return (
@@ -399,7 +399,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                     ref={(e: HTMLElement) => {
                                         if (e == null) return;
                                         e.onclick = ui.buttonOnClick(
-                                            () => this.removeControl(selectedControlId),
+                                            () => this.removeControl(this.selectedControlId),
                                             {
                                                 confirm: () => {
                                                     return `确定要移除控件'${this.editorNameElement.innerHTML}'吗？`
