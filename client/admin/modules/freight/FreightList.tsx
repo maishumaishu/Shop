@@ -89,7 +89,7 @@ export default function (page: chitu.Page) {
 
     class FreightListPage extends React.Component<
         { solutionId: string, name: string } & React.Props<FreightListPage>, { solutionId: string, name: string }>{
-        private dataSource: wuzhui.WebDataSource<RegionFreight>;
+        private dataSource: wuzhui.DataSource<RegionFreight>;
         private freightListElement: HTMLTableElement;
         private dialog: RegionFreightDialog;
 
@@ -97,7 +97,7 @@ export default function (page: chitu.Page) {
             super(props);
 
             this.state = { solutionId: this.props.solutionId, name: this.props.name };
-            this.dataSource = new wuzhui.WebDataSource<RegionFreight>({
+            this.dataSource = new wuzhui.DataSource<RegionFreight>({
                 select: () => shopping.regionFreights(this.state.solutionId),
                 update: (dataItem: RegionFreight) => shopping.setRegionFreight(dataItem.Id, dataItem.Freight, dataItem.FreeAmount),
                 primaryKeys: ['Id']
@@ -110,11 +110,11 @@ export default function (page: chitu.Page) {
                 columns: [
                     new wz.BoundField({ dataField: 'RegionName', headerText: '地区' }),
                     new wz.BoundField({
-                        dataField: 'Freight', headerText: '运费', dataFormatString: '￥{0:C2}',
+                        dataField: 'Freight', headerText: '运费', dataFormatString: '￥{C2}',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
                     }),
                     new wz.BoundField({
-                        dataField: 'FreeAmount', headerText: '免运费金额', dataFormatString: '￥{0:C2}',
+                        dataField: 'FreeAmount', headerText: '免运费金额', dataFormatString: '￥{C2}',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
                     }),
                     new wz.CustomField({

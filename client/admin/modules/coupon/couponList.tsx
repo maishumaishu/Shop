@@ -39,11 +39,11 @@ export default function (page: chitu.Page) {
                         headerText: '有效期'
                     }),
                     new wz.BoundField({
-                        dataField: 'Discount', headerText: '折扣金额', dataFormatString: '￥{0:C2}',
+                        dataField: 'Discount', headerText: '折扣金额', dataFormatString: '￥{C2}',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                     }),
                     new wz.BoundField({
-                        dataField: 'Amount', headerText: '使用金额', dataFormatString: '￥{0:C2}',
+                        dataField: 'Amount', headerText: '使用金额', dataFormatString: '￥{C2}',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                     }),
                     new wz.CommandField({

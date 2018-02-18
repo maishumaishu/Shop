@@ -79,7 +79,7 @@ export default function (page: chitu.Page) {
                     new wz.BoundField({
                         dataField: 'Balance', headerText: '余额',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
-                        dataFormatString: '￥{0:C2}'
+                        dataFormatString: '￥{C2}'
                     }),
                     new wz.CustomField({
                         headerText: '操作',

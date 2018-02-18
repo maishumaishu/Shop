@@ -29,8 +29,8 @@ export default function (page: chitu.Page) {
                 dataSource,
                 columns: [
                     new wz.BoundField({ dataField: 'Name', headerText: '活动名称' }),
-                    new wz.BoundField({ dataField: 'BeginDate', headerText: '开始日期', dataFormatString: '{0:d}' }),
-                    new wz.BoundField({ dataField: 'EndDate', headerText: '结束日期', dataFormatString: '{0:d}' }),
+                    new wz.BoundField({ dataField: 'BeginDate', headerText: '开始日期', dataFormatString: '{d}' }),
+                    new wz.BoundField({ dataField: 'EndDate', headerText: '结束日期', dataFormatString: '{d}' }),
                     new wz.CommandField({
                         leftButtons(dataItem) {
                             return [

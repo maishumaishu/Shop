@@ -406,14 +406,14 @@ export default function (page: chitu.Page) {
             return cell;
         }
         componentDidMount() {
-            this.dataSource = new wuzhui.WebDataSource({
+            this.dataSource = new wuzhui.DataSource({
                 select: (args) => shopping.orders(args)
             });
             wz.appendGridView(page.element, {
                 dataSource: this.dataSource,
                 columns: [
                     new wz.BoundField({
-                        dataField: 'OrderDate', headerText: '订单日期', dataFormatString: '{0:G}',
+                        dataField: 'OrderDate', headerText: '订单日期', dataFormatString: '{G}',
                         headerStyle: { width: '100px' } as CSSStyleDeclaration,
                         sortExpression: 'OrderDate'
                     }),
@@ -434,7 +434,7 @@ export default function (page: chitu.Page) {
                         createItemCell: (order: Order) => this.createStatusCell(order)
                     }),
                     new wz.BoundField({
-                        dataField: 'Amount', headerText: '金额', dataFormatString: '￥{0:C2}',
+                        dataField: 'Amount', headerText: '金额', dataFormatString: '￥{C2}',
                         itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                     }),
                     new wz.CustomField({

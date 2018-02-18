@@ -130,7 +130,7 @@ export default function (page: chitu.Page) {
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
                     }),
                     new wz.BoundField({
-                        dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{0:g}'
+                        dataField: 'UsedDateTime', headerText: '使用时间', dataFormatString: '{g}'
                     }),
                     new wz.CustomField({
                         createItemCell(dataItem: CouponCode) {

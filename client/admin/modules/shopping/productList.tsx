@@ -239,7 +239,7 @@ class Page extends React.Component<{}, PageState>{
                     itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
                 }),
                 new wuzhui.BoundField({
-                    dataField: 'Price', headerText: '价格', dataFormatString: '￥{0:C2}',
+                    dataField: 'Price', headerText: '价格', dataFormatString: '￥{C2}',
                     headerStyle: { textAlign: 'center', width: '80px' } as CSSStyleDeclaration,
                     itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                 }),

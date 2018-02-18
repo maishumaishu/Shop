@@ -28,6 +28,7 @@ declare namespace wuzhui {
         private primaryKeys;
         inserting: Callback<DataSource<T>, {
             item: T;
+            index: number;
         }>;
         inserted: Callback<DataSource<T>, {
             item: T;
@@ -48,10 +49,7 @@ declare namespace wuzhui {
         selecting: Callback<DataSource<T>, {
             selectArguments: DataSourceSelectArguments;
         }>;
-        selected: Callback<DataSource<T>, {
-            selectArguments: DataSourceSelectArguments;
-            items: T[];
-        }>;
+        selected: Callback<DataSource<T>, DataSourceSelectResult<T>>;
         error: Callback<this, DataSourceError>;
         constructor(args: DataSourceArguments<T>);
         readonly canDelete: boolean;
@@ -62,17 +60,16 @@ declare namespace wuzhui {
         protected executeUpdate(item: T): Promise<any>;
         protected executeSelect(args: DataSourceSelectArguments): Promise<SelectResult<T>>;
         readonly selectArguments: DataSourceSelectArguments;
-        insert(item: T): Promise<any>;
+        insert(item: T, index?: number): Promise<any>;
         delete(item: T): Promise<any>;
         update(item: T): Promise<any>;
         isSameItem(theItem: T, otherItem: T): boolean;
         private checkPrimaryKeys(item);
-        select(): Promise<void | T[] | DataSourceSelectResult<T>>;
+        select(): Promise<void | DataSourceSelectResult<T> | T[]>;
         private processError(exc, method);
     }
     class DataSourceSelectArguments {
         startRowIndex?: number;
-        totalRowCount?: number;
         maximumRows?: number;
         sortExpression?: string;
         filter?: string;
@@ -85,13 +82,19 @@ declare namespace wuzhui {
         update?: ((item: T) => Promise<any>);
         delete?: ((item: T) => Promise<any>);
     };
-    class WebDataSource<T> extends DataSource<T> {
-    }
-    class ArrayDataSource<T> extends DataSource<T> {
-    }
 }
-
 declare namespace wuzhui {
+    class Errors {
+        constructor(parameters: any);
+        static notImplemented(message?: string): Error;
+        static argumentNull(paramName: any): Error;
+        static controllBelonsAnother(): Error;
+        static columnsCanntEmpty(): Error;
+        static dataSourceCanntInsert(): Error;
+        static dataSourceCanntUpdate(): Error;
+        static dataSourceCanntDelete(): Error;
+        static primaryKeyNull(key: string): Error;
+    }
 }
 declare namespace wuzhui {
     enum GridViewRowType {
@@ -153,7 +156,7 @@ declare namespace wuzhui {
         readonly columns: DataControlField[];
         readonly dataSource: DataSource<any>;
         private appendEmptyRow();
-        private appendDataRow(dataItem, index?);
+        appendDataRow(dataItem: any, index?: number): GridViewDataRow;
         private on_sort(sender, args);
         private appendHeaderRow();
         private appendFooterRow();
@@ -240,13 +243,14 @@ declare namespace wuzhui {
         render(): void;
     }
 }
-declare class ElementHelper {
-    static showElement(element: HTMLElement): void;
-    static hideElement(element: HTMLElement): void;
-    static isVisible(element: HTMLElement): boolean;
-    static data(element: HTMLElement, name: string, value?: any): any;
-}
 declare namespace wuzhui {
+    class ElementHelper {
+        static showElement(element: HTMLElement): void;
+        static hideElement(element: HTMLElement): void;
+        static isVisible(element: HTMLElement): boolean;
+        static data(element: HTMLElement, name: string, value?: any): any;
+        static findFirstParentByTagName(element: Element, tagName: string): HTMLElement;
+    }
     function applyStyle(element: HTMLElement, value: CSSStyleDeclaration | string): void;
     class Callback<S, A> {
         private funcs;
@@ -279,7 +283,7 @@ declare namespace wuzhui {
         protected readonly valueElement: HTMLElement;
         readonly dataField: string;
         value: any;
-        private formatValue(...args);
+        private formatValue(format, arg);
         private formatDate(value, format);
         private formatNumber(value, format);
     }
@@ -353,8 +357,10 @@ declare namespace wuzhui {
         private _editorElement;
         private _valueType;
         private _field;
+        private _mode;
         constructor(field: BoundField, dataItem: any);
         readonly field: BoundField;
+        readonly mode: "read" | "edit";
         beginEdit(): void;
         endEdit(): void;
         cancelEdit(): void;
@@ -366,6 +372,7 @@ declare namespace wuzhui {
         dataFormatString?: string;
         controlStyle?: CSSStyleDeclaration | string;
         nullText?: string;
+        readOnly?: boolean;
     }
     class BoundField extends DataControlField {
         private _valueElement;
@@ -385,6 +392,7 @@ declare namespace wuzhui {
          */
         readonly dataFormatString: string;
         readonly controlStyle: string | CSSStyleDeclaration;
+        readonly readOnly: boolean;
     }
 }
 declare namespace wuzhui {
@@ -404,7 +412,6 @@ declare namespace wuzhui {
         newButtonClass?: string;
         updateButtonClass?: string;
         insertButtonClass?: string;
-        handleUpdate?: () => Promise<any>;
     }
     class CommandField extends DataControlField {
         private currentMode;
@@ -423,6 +430,7 @@ declare namespace wuzhui {
         readonly updateButtonClass: string;
         readonly insertButtonClass: string;
         createItemCell(dataItem: any): GridViewCell;
+        private showReadStatusButtons(cell);
         private createEditButton();
         private createDeleteButton();
         private createInsertButton();
@@ -434,8 +442,9 @@ declare namespace wuzhui {
         private findParentCell(element);
         private on_editButtonClick(e);
         private on_cancelButtonClick(e);
-        private on_updateButtonClick(e);
+        private on_insertOrUpdateButtonClick(e);
         private on_deleteButtonClick(e);
+        private on_newButtonClick(e);
     }
 }
 declare namespace wuzhui {

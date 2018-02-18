@@ -4,19 +4,19 @@ var wuzhui;
     class Control {
         constructor(element) {
             if (!element)
-                throw Errors.argumentNull('element');
+                throw wuzhui.Errors.argumentNull('element');
             this._element = element;
-            ElementHelper.data(element, CONTROL_DATA_NAME, this);
+            wuzhui.ElementHelper.data(element, CONTROL_DATA_NAME, this);
         }
         get visible() {
-            return ElementHelper.isVisible(this._element);
+            return wuzhui.ElementHelper.isVisible(this._element);
         }
         set visible(value) {
             if (value) {
-                ElementHelper.showElement(this._element);
+                wuzhui.ElementHelper.showElement(this._element);
             }
             else {
-                ElementHelper.hideElement(this._element);
+                wuzhui.ElementHelper.hideElement(this._element);
             }
         }
         get element() {
@@ -24,7 +24,7 @@ var wuzhui;
         }
         appendChild(child, index) {
             if (child == null)
-                throw Errors.argumentNull('child');
+                throw wuzhui.Errors.argumentNull('child');
             let childElement;
             if (child instanceof Control)
                 childElement = child.element;
@@ -45,7 +45,7 @@ var wuzhui;
             wuzhui.applyStyle(this.element, value);
         }
         static getControlByElement(element) {
-            return ElementHelper.data(element, CONTROL_DATA_NAME);
+            return wuzhui.ElementHelper.data(element, CONTROL_DATA_NAME);
         }
     }
     wuzhui.Control = Control;
@@ -78,35 +78,35 @@ var wuzhui;
         }
         executeInsert(item) {
             if (!item)
-                throw Errors.argumentNull("item");
+                throw wuzhui.Errors.argumentNull("item");
             return this.args.insert(item);
         }
         executeDelete(item) {
             if (!item)
-                throw Errors.argumentNull("item");
+                throw wuzhui.Errors.argumentNull("item");
             return this.args.delete(item);
         }
         executeUpdate(item) {
             if (!item)
-                throw Errors.argumentNull("item");
+                throw wuzhui.Errors.argumentNull("item");
             return this.args.update(item);
         }
         executeSelect(args) {
             if (!args)
-                throw Errors.argumentNull("args");
+                throw wuzhui.Errors.argumentNull("args");
             return this.args.select(args);
         }
         get selectArguments() {
             return this._currentSelectArguments;
         }
-        insert(item) {
+        insert(item, index) {
             if (!this.canInsert)
-                throw Errors.dataSourceCanntInsert();
+                throw wuzhui.Errors.dataSourceCanntInsert();
             this.checkPrimaryKeys(item);
-            wuzhui.fireCallback(this.inserting, this, { item });
+            wuzhui.fireCallback(this.inserting, this, { item, index });
             return this.executeInsert(item).then((data) => {
                 Object.assign(item, data);
-                wuzhui.fireCallback(this.inserted, this, { item });
+                wuzhui.fireCallback(this.inserted, this, { item, index });
                 return data;
             }).catch(exc => {
                 this.processError(exc, 'insert');
@@ -114,7 +114,7 @@ var wuzhui;
         }
         delete(item) {
             if (!this.canDelete)
-                throw Errors.dataSourceCanntDelete();
+                throw wuzhui.Errors.dataSourceCanntDelete();
             this.checkPrimaryKeys(item);
             wuzhui.fireCallback(this.deleting, this, { item });
             return this.executeDelete(item).then((data) => {
@@ -126,7 +126,7 @@ var wuzhui;
         }
         update(item) {
             if (!this.canUpdate)
-                throw Errors.dataSourceCanntUpdate();
+                throw wuzhui.Errors.dataSourceCanntUpdate();
             this.checkPrimaryKeys(item);
             wuzhui.fireCallback(this.updating, this, { item });
             return this.executeUpdate(item).then((data) => {
@@ -139,9 +139,9 @@ var wuzhui;
         }
         isSameItem(theItem, otherItem) {
             if (theItem == null)
-                throw Errors.argumentNull('theItem');
+                throw wuzhui.Errors.argumentNull('theItem');
             if (otherItem == null)
-                throw Errors.argumentNull('otherItem');
+                throw wuzhui.Errors.argumentNull('otherItem');
             if (theItem != otherItem && this.primaryKeys.length == 0)
                 return false;
             if (this.primaryKeys.length > 0) {
@@ -155,7 +155,7 @@ var wuzhui;
         checkPrimaryKeys(item) {
             for (let key in item) {
                 if (item[key] == null && this.primaryKeys.indexOf(key) >= 0)
-                    throw Errors.primaryKeyNull(key);
+                    throw wuzhui.Errors.primaryKeyNull(key);
             }
         }
         select() {
@@ -164,18 +164,19 @@ var wuzhui;
             return this.executeSelect(args).then((data) => {
                 let data_items;
                 let result = data;
+                let totalRowCount;
                 if (Array.isArray(data)) {
                     data_items = data;
-                    args.totalRowCount = data_items.length;
+                    totalRowCount = data_items.length;
                 }
                 else if (result.dataItems !== undefined && result.totalRowCount !== undefined) {
                     data_items = data.dataItems;
-                    args.totalRowCount = data.totalRowCount;
+                    totalRowCount = data.totalRowCount;
                 }
                 else {
                     throw new Error('Type of the query result is expected as Array or DataSourceSelectResult.');
                 }
-                wuzhui.fireCallback(this.selected, this, { selectArguments: args, items: data_items });
+                wuzhui.fireCallback(this.selected, this, { totalRowCount, dataItems: data_items });
                 return data;
             }).catch(exc => {
                 this.processError(exc, 'select');
@@ -196,46 +197,44 @@ var wuzhui;
         }
     }
     wuzhui.DataSourceSelectArguments = DataSourceSelectArguments;
-    class WebDataSource extends DataSource {
-    }
-    wuzhui.WebDataSource = WebDataSource;
-    class ArrayDataSource extends DataSource {
-    }
-    wuzhui.ArrayDataSource = ArrayDataSource;
 })(wuzhui || (wuzhui = {}));
-class Errors {
-    constructor(parameters) {
-    }
-    static notImplemented(message) {
-        message = message || "Not implemented";
-        return new Error(message);
-    }
-    static argumentNull(paramName) {
-        return new Error("Argument '" + paramName + "' can not be null.");
-    }
-    static controllBelonsAnother() {
-        return new Error("The control is belongs another control.");
-    }
-    static columnsCanntEmpty() {
-        return new Error("Columns cannt empty.");
-    }
-    static dataSourceCanntInsert() {
-        return new Error("DataSource can not insert.");
-    }
-    static dataSourceCanntUpdate() {
-        return new Error("DataSource can not update.");
-    }
-    static dataSourceCanntDelete() {
-        return new Error("DataSource can not delete.");
-    }
-    static primaryKeyNull(key) {
-        let msg = `Primary key named '${key}' value is null.`;
-        return new Error(msg);
-    }
-}
 var wuzhui;
 (function (wuzhui) {
-    let GridViewRowType;
+    class Errors {
+        constructor(parameters) {
+        }
+        static notImplemented(message) {
+            message = message || "Not implemented";
+            return new Error(message);
+        }
+        static argumentNull(paramName) {
+            return new Error("Argument '" + paramName + "' can not be null.");
+        }
+        static controllBelonsAnother() {
+            return new Error("The control is belongs another control.");
+        }
+        static columnsCanntEmpty() {
+            return new Error("Columns cannt empty.");
+        }
+        static dataSourceCanntInsert() {
+            return new Error("DataSource can not insert.");
+        }
+        static dataSourceCanntUpdate() {
+            return new Error("DataSource can not update.");
+        }
+        static dataSourceCanntDelete() {
+            return new Error("DataSource can not delete.");
+        }
+        static primaryKeyNull(key) {
+            let msg = `Primary key named '${key}' value is null.`;
+            return new Error(msg);
+        }
+    }
+    wuzhui.Errors = Errors;
+})(wuzhui || (wuzhui = {}));
+var wuzhui;
+(function (wuzhui) {
+    var GridViewRowType;
     (function (GridViewRowType) {
         GridViewRowType[GridViewRowType["Header"] = 0] = "Header";
         GridViewRowType[GridViewRowType["Footer"] = 1] = "Footer";
@@ -321,13 +320,13 @@ var wuzhui;
             this._params = params;
             this._columns = params.columns || [];
             if (this._columns.length == 0)
-                throw Errors.columnsCanntEmpty();
+                throw wuzhui.Errors.columnsCanntEmpty();
             for (var i = 0; i < this._columns.length; i++) {
                 var column = this._columns[i];
                 column.gridView = this;
             }
             this._dataSource = params.dataSource;
-            this._dataSource.selected.add((sender, e) => this.on_selectExecuted(e.items));
+            this._dataSource.selected.add((sender, e) => this.on_selectExecuted(e.dataItems));
             this._dataSource.updated.add((sender, e) => this.on_updateExecuted(e.item));
             this._dataSource.inserted.add((sender, e) => this.on_insertExecuted(e.item, e.index));
             this._dataSource.deleted.add((sender, e) => this.on_deleteExecuted(e.item));
@@ -342,6 +341,7 @@ var wuzhui;
                     this.on_selectExecuted([]);
                     var element = this._emtpyRow.cells[0].element;
                     element.innerHTML = this.loadFailHTML;
+                    // console.log(e.message);
                     element.onclick = () => {
                         this._dataSource.select();
                     };
@@ -407,6 +407,7 @@ var wuzhui;
             wuzhui.fireCallback(this.rowCreated, this, { row });
             if (this._emtpyRow.element.style.display != 'none')
                 this.hideEmptyRow();
+            return row;
         }
         on_sort(sender, args) {
             if (this._currentSortCell != null && this._currentSortCell != sender) {
@@ -512,7 +513,7 @@ var wuzhui;
 })(wuzhui || (wuzhui = {}));
 var wuzhui;
 (function (wuzhui) {
-    let PagerPosition;
+    var PagerPosition;
     (function (PagerPosition) {
         PagerPosition[PagerPosition["Bottom"] = 0] = "Bottom";
         PagerPosition[PagerPosition["Top"] = 1] = "Top";
@@ -522,18 +523,18 @@ var wuzhui;
     class PagingBar {
         init(dataSource) {
             if (dataSource == null)
-                throw Errors.argumentNull('dataSource');
+                throw wuzhui.Errors.argumentNull('dataSource');
             this._pageIndex = 0;
             this._dataSource = dataSource;
             var pagingBar = this;
             pagingBar.totalRowCount = 1000000;
             dataSource.selected.add((source, args) => {
-                pagingBar._pageSize = args.selectArguments.maximumRows;
-                var totalRowCount = args.selectArguments.totalRowCount;
+                pagingBar._pageSize = dataSource.selectArguments.maximumRows;
+                var totalRowCount = args.totalRowCount;
                 if (totalRowCount != null && totalRowCount >= 0) {
                     pagingBar.totalRowCount = totalRowCount;
                 }
-                var startRowIndex = args.selectArguments.startRowIndex;
+                var startRowIndex = dataSource.selectArguments.startRowIndex;
                 if (startRowIndex <= 0)
                     startRowIndex = 0;
                 pagingBar._pageIndex = Math.floor(startRowIndex / pagingBar._pageSize);
@@ -572,17 +573,17 @@ var wuzhui;
         }
         // Virtual Method
         render() {
-            throw Errors.notImplemented('The table-row render method is not implemented.');
+            throw wuzhui.Errors.notImplemented('The table-row render method is not implemented.');
         }
     }
     wuzhui.PagingBar = PagingBar;
     class NumberPagingBar extends PagingBar {
         constructor(params) {
             if (!params.dataSource)
-                throw Errors.argumentNull('dataSource');
+                throw wuzhui.Errors.argumentNull('dataSource');
             if (!params.element)
-                throw Errors.argumentNull('element');
-            let pagerSettings = $.extend({
+                throw wuzhui.Errors.argumentNull('element');
+            let pagerSettings = Object.assign({
                 pageButtonCount: 10,
                 firstPageText: '<<',
                 lastPageText: '>>',
@@ -610,14 +611,9 @@ var wuzhui;
             this.element.appendChild(button);
             let result = {
                 get visible() {
-                    // return $(button).is(':visible');
                     return button.style.display != 'none';
                 },
                 set visible(value) {
-                    // if (value)
-                    //     $(button).show();
-                    // else
-                    //     $(button).hide();
                     if (value) {
                         button.style.removeProperty('display');
                     }
@@ -626,11 +622,9 @@ var wuzhui;
                     }
                 },
                 get pageIndex() {
-                    // return new Number($(button).attr('pageIndex')).valueOf();
                     return new Number(button.getAttribute('pageIndex')).valueOf();
                 },
                 set pageIndex(value) {
-                    // $(button).attr('pageIndex', value);
                     button.setAttribute('pageIndex', value);
                 },
                 get text() {
@@ -664,7 +658,7 @@ var wuzhui;
             return result;
         }
         createTotalLabel() {
-            let totalElement = document.createElement('span');
+            let totalElement = document.createElement('div');
             totalElement.className = 'total';
             let textElement = document.createElement('span');
             textElement.className = 'text';
@@ -687,9 +681,9 @@ var wuzhui;
                 },
                 set visible(value) {
                     if (value == true)
-                        totalElement.style.display = 'block'; //$(totalElement).show();
+                        totalElement.style.display = 'block';
                     else
-                        totalElement.style.display = 'node'; //$(totalElement).hide();
+                        totalElement.style.display = 'node';
                 }
             };
         }
@@ -775,34 +769,48 @@ var wuzhui;
     }
     wuzhui.NumberPagingBar = NumberPagingBar;
 })(wuzhui || (wuzhui = {}));
-class ElementHelper {
-    static showElement(element) {
-        if (!element)
-            throw Errors.argumentNull('element');
-        element.style.removeProperty('display');
-    }
-    static hideElement(element) {
-        if (!element)
-            throw Errors.argumentNull('element');
-        element.style.display = 'none';
-    }
-    static isVisible(element) {
-        let { display } = element.style;
-        return !display || display != 'none';
-    }
-    static data(element, name, value) {
-        element['data'] = element['data'] || {};
-        if (value == null)
-            return element['data'].name;
-        element['data'].name = value;
-    }
-}
 var wuzhui;
 (function (wuzhui) {
+    class ElementHelper {
+        static showElement(element) {
+            if (!element)
+                throw wuzhui.Errors.argumentNull('element');
+            element.style.removeProperty('display');
+        }
+        static hideElement(element) {
+            if (!element)
+                throw wuzhui.Errors.argumentNull('element');
+            element.style.display = 'none';
+        }
+        static isVisible(element) {
+            let { display } = element.style;
+            return !display || display != 'none';
+        }
+        static data(element, name, value) {
+            element['data'] = element['data'] || {};
+            if (value == null)
+                return element['data'].name;
+            element['data'].name = value;
+        }
+        static findFirstParentByTagName(element, tagName) {
+            if (element == null)
+                throw wuzhui.Errors.argumentNull("element");
+            if (!tagName)
+                throw wuzhui.Errors.argumentNull('tagName');
+            let parent = element.parentElement;
+            while (parent != null) {
+                if (parent.tagName.toLowerCase() == tagName.toLowerCase()) {
+                    return parent;
+                }
+                parent = parent.parentElement;
+            }
+            return null;
+        }
+    }
+    wuzhui.ElementHelper = ElementHelper;
     function applyStyle(element, value) {
         let style = value || '';
         if (typeof style == 'string') {
-            // $(element).attr('style', <string>style);
             element.setAttribute('style', style);
         }
         else {
@@ -855,7 +863,7 @@ var wuzhui;
             this._dataField = params.dataField;
             this.render = params.render || ((element, value) => {
                 if (!element)
-                    throw Errors.argumentNull('element');
+                    throw wuzhui.Errors.argumentNull('element');
                 var text;
                 if (value == null)
                     text = this.nullText;
@@ -893,9 +901,9 @@ var wuzhui;
         //         return this.formatValue(this.dataFormatString, value);
         //     return value;
         // }
-        formatValue(...args) {
+        formatValue(format, arg) {
             var result = '';
-            var format = args[0];
+            // var format = args[0];
             for (var i = 0;;) {
                 var open = format.indexOf('{', i);
                 var close = format.indexOf('}', i);
@@ -921,12 +929,13 @@ var wuzhui;
                 if (close < 0)
                     throw new Error('Sys.Res.stringFormatBraceMismatch');
                 var brace = format.substring(i, close);
-                var colonIndex = brace.indexOf(':');
-                var argNumber = parseInt((colonIndex < 0) ? brace : brace.substring(0, colonIndex), 10) + 1;
-                if (isNaN(argNumber))
-                    throw new Error('Sys.Res.stringFormatInvalid');
-                var argFormat = (colonIndex < 0) ? '' : brace.substring(colonIndex + 1);
-                var arg = args[argNumber];
+                // var colonIndex = brace.indexOf(':');
+                // var argNumber = parseInt((colonIndex < 0) ? brace : brace.substring(0, colonIndex), 10) + 1;
+                // if (isNaN(argNumber))
+                //     throw new Error(`string format '${format}' error`);
+                // var argFormat = (colonIndex < 0) ? '' : brace.substring(colonIndex + 1);
+                var argFormat = brace;
+                // var arg = args[argNumber];
                 if (typeof (arg) === "undefined" || arg === null) {
                     arg = '';
                 }
@@ -1107,7 +1116,7 @@ var wuzhui;
         }
         createItemCell(dataItem) {
             if (!dataItem)
-                throw Errors.argumentNull('dataItem');
+                throw wuzhui.Errors.argumentNull('dataItem');
             let cell = new GridViewCell();
             cell.style(this.itemStyle);
             return cell;
@@ -1121,9 +1130,9 @@ var wuzhui;
     class GridViewEditableCell extends wuzhui.GridViewDataCell {
         constructor(field, dataItem) {
             if (field == null)
-                throw Errors.argumentNull('field');
+                throw wuzhui.Errors.argumentNull('field');
             if (dataItem == null)
-                throw Errors.argumentNull('dataItem');
+                throw wuzhui.Errors.argumentNull('dataItem');
             super({
                 dataItem, dataField: field.dataField,
                 nullText: field.nullText, dataFormatString: field.dataFormatString
@@ -1138,27 +1147,41 @@ var wuzhui;
                 this._valueType = 'date';
             else
                 this._valueType = typeof this.value;
-            // $(this._editorElement).hide();
-            ElementHelper.hideElement(this._editorElement);
+            wuzhui.ElementHelper.hideElement(this._editorElement);
+            this._mode = 'read';
         }
         get field() {
             return this._field;
         }
+        get mode() {
+            return this._mode;
+        }
         beginEdit() {
-            ElementHelper.hideElement(this.valueElement);
-            ElementHelper.showElement(this._editorElement);
+            if (this._field.readOnly) {
+                return;
+            }
+            this._mode = 'edit';
+            wuzhui.ElementHelper.hideElement(this.valueElement);
+            wuzhui.ElementHelper.showElement(this._editorElement);
             let value = this._dataItem[this.field.dataField];
             this.controlValue = value;
         }
         endEdit() {
+            if (this._field.readOnly) {
+                return;
+            }
+            this._mode = 'read';
             this.value = this.controlValue;
             this._dataItem[this.field.dataField] = this.value;
-            ElementHelper.hideElement(this._editorElement);
-            ElementHelper.showElement(this.valueElement);
+            wuzhui.ElementHelper.hideElement(this._editorElement);
+            wuzhui.ElementHelper.showElement(this.valueElement);
         }
         cancelEdit() {
-            ElementHelper.hideElement(this._editorElement);
-            ElementHelper.showElement(this.valueElement);
+            if (this._field.readOnly) {
+                return;
+            }
+            wuzhui.ElementHelper.hideElement(this._editorElement);
+            wuzhui.ElementHelper.showElement(this.valueElement);
         }
         //==============================================
         // Virtual Methods
@@ -1168,7 +1191,8 @@ var wuzhui;
             return ctrl;
         }
         set controlValue(value) {
-            this._editorElement.querySelector('input').value = value;
+            this._editorElement.querySelector('input').value =
+                value === undefined ? null : value;
         }
         get controlValue() {
             var text = this._editorElement.querySelector('input').value;
@@ -1218,6 +1242,9 @@ var wuzhui;
         get controlStyle() {
             return this.params().controlStyle;
         }
+        get readOnly() {
+            return this.params().readOnly;
+        }
     }
     wuzhui.BoundField = BoundField;
 })(wuzhui || (wuzhui = {}));
@@ -1225,6 +1252,7 @@ var wuzhui;
 var wuzhui;
 (function (wuzhui) {
     class GridViewCommandCell extends wuzhui.GridViewCell {
+        // cancelAddButton: HTMLElement;
         constructor(field) {
             super();
         }
@@ -1243,6 +1271,10 @@ var wuzhui;
                 this.params().editButtonHTML = '编辑';
             if (!this.params().updateButtonHTML)
                 this.params().updateButtonHTML = '更新';
+            if (!this.params().newButtonHTML)
+                this.params().newButtonHTML = '新增';
+            if (!this.params().insertButtonHTML)
+                this.params().insertButtonHTML = '添加';
         }
         params() {
             return this._params;
@@ -1292,7 +1324,6 @@ var wuzhui;
                 if (this.editButtonClass)
                     editButton.className = this.editButtonClass;
                 cell.editButton = editButton;
-                // $(editButton).click(this.on_editButtonClick);
                 editButton.addEventListener('click', (e) => this.on_editButtonClick(e));
                 cell.appendChild(editButton);
                 let updateButton = this.createUpdateButton();
@@ -1301,7 +1332,7 @@ var wuzhui;
                 if (this.updateButtonClass)
                     updateButton.className = this.updateButtonClass;
                 cell.updateButton = updateButton;
-                updateButton.addEventListener('click', (e) => this.on_updateButtonClick(e));
+                updateButton.addEventListener('click', (e) => this.on_insertOrUpdateButtonClick(e));
                 cell.appendChild(updateButton);
                 let cancelButton = this.createCancelButton();
                 cancelButton.style.display = 'none';
@@ -1318,7 +1349,7 @@ var wuzhui;
                 if (this.deleteButtonClass)
                     deleteButton.className = this.deleteButtonClass;
                 cell.deleteButton = deleteButton;
-                $(deleteButton).click(this.on_deleteButtonClick);
+                deleteButton.onclick = (e) => this.on_deleteButtonClick(e);
                 cell.appendChild(deleteButton);
             }
             if (this.params().showNewButton) {
@@ -1326,10 +1357,40 @@ var wuzhui;
                 newButton.style.marginRight = '4px';
                 if (this.newButtonClass)
                     newButton.className = this.newButtonClass;
+                newButton.onclick = (e) => this.on_newButtonClick(e);
                 cell.newButton = newButton;
                 cell.appendChild(newButton);
+                let insertButton = this.createInsertButton();
+                insertButton.style.display = 'none';
+                insertButton.style.marginRight = '4px';
+                insertButton.addEventListener('click', (e) => this.on_insertOrUpdateButtonClick(e));
+                if (this.insertButtonClass)
+                    insertButton.className = this.updateButtonClass;
+                cell.insertButton = insertButton;
+                cell.appendChild(insertButton);
+                let cancelButton = this.createCancelButton();
+                cancelButton.style.display = 'none';
+                cancelButton.style.marginRight = '4px';
+                cancelButton.addEventListener('click', (e) => this.on_cancelButtonClick(e));
+                if (this.cancelButtonClass)
+                    cancelButton.className = this.cancelButtonClass;
+                cell.cacelButton = cancelButton;
+                cell.appendChild(cancelButton);
             }
             return cell;
+        }
+        showReadStatusButtons(cell) {
+            if (cell.newButton) {
+                this.showButton(cell.newButton);
+                this.hideButton(cell.insertButton);
+            }
+            if (cell.editButton) {
+                this.showButton(cell.editButton);
+                this.hideButton(cell.updateButton);
+            }
+            if (cell.deleteButton)
+                this.showButton(cell.deleteButton);
+            this.hideButton(cell.cacelButton);
         }
         createEditButton() {
             let button = document.createElement('a');
@@ -1408,6 +1469,11 @@ var wuzhui;
             let cellElement = this.findParentCell(e.target);
             console.assert(cellElement != null);
             let rowElement = cellElement.parentElement;
+            var row = wuzhui.Control.getControlByElement(rowElement);
+            if (row["isNew"] == true) {
+                rowElement.remove();
+                return;
+            }
             for (let i = 0; i < rowElement.cells.length; i++) {
                 let cell = wuzhui.Control.getControlByElement(rowElement.cells[i]);
                 if (cell instanceof wuzhui.GridViewEditableCell) {
@@ -1423,52 +1489,66 @@ var wuzhui;
             if (cell.newButton)
                 this.showButton(cell.newButton);
         }
-        on_updateButtonClick(e) {
+        on_insertOrUpdateButtonClick(e) {
             if (e.target['_updating'])
                 e.target['_updating'] = true;
-            let cellElement = $(e.target).parents('td').first()[0];
+            let cellElement = wuzhui.ElementHelper.findFirstParentByTagName(e.target, 'td');
             let rowElement = cellElement.parentElement;
+            let cell = wuzhui.Control.getControlByElement(cellElement);
             let row = wuzhui.Control.getControlByElement(rowElement);
             //==========================================================
             // 复制 dataItem 副本
-            let dataItem = $.extend({}, row.dataItem || {});
+            let dataItem = Object.assign({}, row.dataItem || {});
             //==========================================================
             let dataSource = row.gridView.dataSource;
             let editableCells = new Array();
-            for (var i = 0; i < rowElement.cells.length; i++) {
-                var cell = wuzhui.Control.getControlByElement(rowElement.cells[i]);
-                if (cell instanceof wuzhui.GridViewEditableCell) {
+            for (let i = 0; i < rowElement.cells.length; i++) {
+                let cell = wuzhui.Control.getControlByElement(rowElement.cells[i]);
+                if (cell instanceof wuzhui.GridViewEditableCell && cell.mode == 'edit') {
                     dataItem[cell.field.dataField] = cell.controlValue;
                     editableCells.push(cell);
                 }
             }
-            try {
-                return dataSource.update(dataItem)
-                    .then(() => {
-                    editableCells.forEach((item) => item.endEdit());
-                    let cell = wuzhui.Control.getControlByElement(cellElement);
-                    this.hideButton(cell.cacelButton);
-                    this.hideButton(cell.updateButton);
-                    e.target['_updating'] = false;
-                })
-                    .catch(() => e.target['_updating'] = false);
-            }
-            finally {
-            }
+            let isInsert = e.target == cell.insertButton;
+            let p = isInsert ? dataSource.insert(dataItem, rowElement.rowIndex) : dataSource.update(dataItem);
+            return p.then(() => {
+                if (isInsert) {
+                    rowElement.remove();
+                    return;
+                }
+                editableCells.forEach((item) => item.endEdit());
+                let cell = wuzhui.Control.getControlByElement(cellElement);
+                this.showReadStatusButtons(cell);
+                e.target['_updating'] = false;
+            }).catch(() => e.target['_updating'] = false);
         }
         on_deleteButtonClick(e) {
-            // if (this._deleting)
-            //     return;
-            // this._deleting = true;
-            let rowElement = $(e.target).parents('tr').first()[0];
+            let rowElement = wuzhui.ElementHelper.findFirstParentByTagName(e.target, "tr");
             let row = wuzhui.Control.getControlByElement(rowElement);
             let dataSource = row.gridView.dataSource;
             dataSource.delete(row.dataItem)
                 .then(() => {
-                $(rowElement).remove();
-                // this._deleting = false;
+                rowElement.remove();
             });
-            // .catch(() => this._deleting = false);
+        }
+        on_newButtonClick(e) {
+            let rowElement = wuzhui.ElementHelper.findFirstParentByTagName(e.target, "tr"); //cellElement.parentElement as HTMLTableRowElement;
+            let row = wuzhui.Control.getControlByElement(rowElement);
+            let gridView = row.gridView;
+            let newRow = gridView.appendDataRow({}, rowElement.rowIndex);
+            newRow["isNew"] = true;
+            let commandCells = newRow.cells.filter(o => o instanceof GridViewCommandCell);
+            newRow.cells.filter(o => o instanceof wuzhui.GridViewEditableCell)
+                .forEach((c) => c.beginEdit());
+            commandCells.forEach((cell) => {
+                if (cell.deleteButton)
+                    this.hideButton(cell.deleteButton);
+                if (cell.editButton)
+                    this.hideButton(cell.editButton);
+                this.hideButton(cell.newButton);
+                this.showButton(cell.insertButton);
+                this.showButton(cell.cacelButton);
+            });
         }
     }
     wuzhui.CommandField = CommandField;
