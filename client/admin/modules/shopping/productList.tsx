@@ -126,14 +126,14 @@ class Page extends React.Component<{}, PageState>{
     }
     componentDidMount() {
         shopping.queryProducts
-        let dataSource = this.dataSource = new wuzhui.WebDataSource<Product>({
+        let dataSource = this.dataSource = new wuzhui.DataSource<Product>({
             primaryKeys: ['Id'],
             select: (args) => shopping.products(args),
             delete: (item) => shopping.deleteProduct(item.Id)
         });
         // dataSource.ajaxMethods.delete = 'delete';
         dataSource.selected.add((sender, args) => {
-            let productIds = args.items.map(o => o.Id as string);
+            let productIds = args.dataItems.map(o => o.Id as string);
             shopping.productStocks(productIds).then(data => {
                 data.map(o => ({ Id: o.ProductId, Stock: o.Quantity } as Product))
                     .forEach(o => dataSource.updated.fire(dataSource, { item: o }));
