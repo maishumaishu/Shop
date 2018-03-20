@@ -2,15 +2,18 @@
 import { UserService, Seller } from 'adminServices/user';
 import site from 'site';
 import QRCode = require('qrcode');
+import { WeiXinEvent, WebSockentMessage } from '../../weixin/common';
 
 const label_max_width = 80;
 const input_max_width = 300;
 
-interface WebSockentMessage {
-    to: string,
-    form: string,
-    action: string
-}
+
+// enum MessageAction {
+//     bind = "bind",
+//     qrcodeScan= 'qrcode_scan'
+// }
+
+
 
 export default async function (page: chitu.Page) {
 
@@ -55,7 +58,7 @@ export default async function (page: chitu.Page) {
 
                     switch (msg.action) {
 
-                        case 'bind':
+                        case WeiXinEvent.bind:
                             console.assert(data.openId);
                             userService.weixinBind(data.openId)
                                 .then(o => {
@@ -65,12 +68,12 @@ export default async function (page: chitu.Page) {
 
                                     let m = { form: socket.id, to: msg.form, action: 'bind_success' } as WebSockentMessage;
                                     ui.hideDialog(this.weixinBinding);
-                                    socket.emit('weixin', m);
+                                    socket.emit(WeiXinEvent.name, m);
                                 })
                                 .catch(o => {
 
                                     let m = { form: socket.id, to: msg.form, action: 'bind_fail' } as WebSockentMessage;
-                                    socket.emit('weixin', m);
+                                    socket.emit(WeiXinEvent.name, m);
                                 })
                             break;
                         case 'unbind':
@@ -82,12 +85,12 @@ export default async function (page: chitu.Page) {
 
                                     let m = { form: socket.id, to: msg.form, action: 'unbind_success' } as WebSockentMessage;
                                     ui.hideDialog(this.weixinBinding);
-                                    socket.emit('weixin', m);
+                                    socket.emit(WeiXinEvent.name, m);
                                 })
                                 .catch(o => {
                                     let m = { form: socket.id, to: msg.form, action: 'unbind_fail' } as WebSockentMessage;
                                     ui.hideDialog(this.weixinBinding);
-                                    socket.emit('weixin', m);
+                                    socket.emit(WeiXinEvent.name, m);
                                 });
 
                             break;

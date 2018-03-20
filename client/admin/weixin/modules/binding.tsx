@@ -1,5 +1,5 @@
 import { parseUrlParams } from 'share/common';
-import { socket_url, loadjs } from 'common'
+import { socket_url, loadjs, WeiXinEvent, WebSockentMessage } from 'common'
 import { WeiXinService } from 'services/weixin'
 import app from 'application';
 export default async function (page: chitu.Page) {
@@ -21,7 +21,7 @@ export default async function (page: chitu.Page) {
             loadjs<any>('socket.io').then((io) => {
                 let socket = io(socket_url);
                 socket.on('connect', () => {
-                    socket.emit('weixin', { to: q.from, form: socket.id, action: 'qrcode_scan' });
+                    socket.emit(WeiXinEvent, { to: q.from, form: socket.id, action: WeiXinEvent.qrcodeScan });
                 })
             })
         }
@@ -30,11 +30,11 @@ export default async function (page: chitu.Page) {
                 let io = await loadjs<any>('socket.io');
                 let socket = io(socket_url);
                 socket.on('connect', () => {
-                    socket.emit('weixin', { to: q.from, form: socket.id, action: 'bind', openId });
+                    socket.emit(WeiXinEvent.name, { to: q.from, form: socket.id, action: WeiXinEvent.bind, openId });
                 })
 
-                socket.on('weixin', (data) => {
-                    data = data || {};
+                socket.on(WeiXinEvent.name, (data: WebSockentMessage) => {
+                    data = data || {} as WebSockentMessage;
                     if (data.action == 'bind_success') {
                         this.state.status = 'success';
                         this.setState(this.state);
