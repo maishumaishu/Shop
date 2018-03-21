@@ -112,17 +112,18 @@ requirejs.config({
     }
 });
 // requirejs(['css!content/jquery-ui-1.10.0.custom'])
-var references = ['react', 'react-dom', 'application'];
-requirejs(references, function (React, ReactDOM, app, ui) {
-    window['React'] = React;
-    window['ReactDOM'] = ReactDOM;
-    window['h'] = React.createElement;
+requirejs(['build'], function () {
+    var references = ['react', 'react-dom', 'application'];
+    requirejs(references, function (React, ReactDOM, app, ui) {
+        window['React'] = React;
+        window['ReactDOM'] = ReactDOM;
+        window['h'] = React.createElement;
 
-    app.default.run();
-    if (!location.hash)
-        (app.default as chitu.Application).redirect('user/login');
-});
-
+        app.default.run();
+        if (!location.hash)
+            (app.default as chitu.Application).redirect('user/login');
+    });
+})
 
 
 
