@@ -16,7 +16,7 @@ export default function (page: chitu.Page) {
         private rechargeDialogElement: HTMLElement;
         private validator: FormValidator;
         private mobileElement: HTMLElement;
-        private dataSource = new wuzhui.WebDataSource({ select: (args) => memberService.members(args) });
+        private dataSource = new wuzhui.DataSource({ select: (args) => memberService.members(args) });
         private selectedUserInfo: UserInfo;
 
         showRechargeDialog(userInfo: UserInfo) {

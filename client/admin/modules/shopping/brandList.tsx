@@ -19,7 +19,7 @@ export default function (page: chitu.Page) {
             var tableElement = document.createElement('table');
             tableElement.className = 'table table-striped table-bordered table-hover';
             page.element.appendChild(tableElement);
-            var dataSource = this.dataSource = new wuzhui.WebDataSource<Brand>({
+            var dataSource = this.dataSource = new wuzhui.DataSource<Brand>({
                 primaryKeys: ['Id'],
                 select: (args) => shopping.brands(args),
                 update: (dataItem) => shopping.updateBrand(dataItem),

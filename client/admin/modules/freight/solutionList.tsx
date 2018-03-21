@@ -15,7 +15,7 @@ export default function (page: chitu.Page) {
             super(props);
         }
         componentDidMount() {
-            let dataSource = this.dataSource = new wuzhui.WebDataSource({
+            let dataSource = this.dataSource = new wuzhui.DataSource({
                 select: () => shopping.freightSolutions(),
                 delete: (dataItem) => shopping.deleteFreightSolution(dataItem),
                 update: (dataItem) => shopping.updateFreightSolution(dataItem),

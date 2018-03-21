@@ -19,7 +19,7 @@ export default function (page: chitu.Page) {
             super(props);
             this.state = {};
 
-            this.dataSource = new wuzhui.WebDataSource<Category>({
+            this.dataSource = new wuzhui.DataSource<Category>({
                 primaryKeys: ['Id'],
                 select: () => shopping.categories(),
                 insert: (item) => shopping.addCategory(item),
@@ -27,7 +27,7 @@ export default function (page: chitu.Page) {
                 delete: (item) => shopping.deleteCategory(item.Id)
             });
             this.dataSource.selected.add((sender, args) => {
-                this.state.rows = args.items;
+                this.state.rows = args.dataItems;
                 this.setState(this.state);
             });
         }

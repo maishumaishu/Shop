@@ -13,7 +13,7 @@ export default function (page: chitu.Page) {
         private itemEditor: wz.GridViewItemPopupEditor;
 
         componentDidMount() {
-            let dataSource = new wuzhui.WebDataSource<Coupon>({
+            let dataSource = new wuzhui.DataSource<Coupon>({
                 primaryKeys: ['Id'],
                 select: () => shopping.coupons(),
                 delete: (dataItem) => shopping.deleteCoupon(dataItem)

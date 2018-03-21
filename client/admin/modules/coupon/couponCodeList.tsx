@@ -20,7 +20,7 @@ export default function (page: chitu.Page) {
         private countInput: HTMLInputElement;
         private couponCodesTable: HTMLTableElement;
         private currentStatus: Status = 'all';
-        private dataSource: wuzhui.WebDataSource<CouponCode>;
+        private dataSource: wuzhui.DataSource<CouponCode>;
         private dialogElement: HTMLElement;
         private validator: FormValidator;
 
@@ -106,7 +106,7 @@ export default function (page: chitu.Page) {
                 { element: this.couponsSelect, rules: [required('请选择优惠劵')] }
             );
 
-            this.dataSource = new wuzhui.WebDataSource({
+            this.dataSource = new wuzhui.DataSource({
                 primaryKeys: ["Id"],
                 select: (args) => {
                     return shopping.couponCodes(args);
