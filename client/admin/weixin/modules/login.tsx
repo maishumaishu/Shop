@@ -7,12 +7,12 @@ export default async function (page: chitu.Page) {
 
     let props: OpenIdPageProps = {
         weixin: page.createService(WeiXinService),
-        title: '绑定微信',
-        buttonText: '确定绑定',
+        title: '登录',
+        buttonText: '确定登录',
         content: {
-            normal: `确定要绑定微信号到${shopName}商家后台系统吗`,
-            success: '已成功绑定微信号',
-            fail: '绑定微信号失败，请重新扫描二维码'
+            normal: `确定要登录到${shopName}商家后台系统吗`,
+            success: '已成功登录',
+            fail: '登录号失败，请重新扫描二维码'
         }
     }
 

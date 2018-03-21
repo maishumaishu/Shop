@@ -1,4 +1,4 @@
-﻿import { Service } from 'services/service';
+﻿import { Service, systemWeiXinAppId } from 'services/service';
 import { UserService } from 'adminServices/user';
 import app from 'application';
 import { default as site } from 'site';
@@ -6,6 +6,9 @@ import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import QRCode = require('qrcode');
+import { websocketUrl } from 'share/common'
+import { Messenger } from 'messenger'
+import { showQRCodeDialog } from 'weixin/modules/openid';
 
 export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}`]);
@@ -21,6 +24,10 @@ export default async function (page: chitu.Page) {
         constructor(props) {
             super(props);
             Service.token = '';
+
+            Messenger.addMessageReceived('login', (sender, msg) => {
+
+            })
         }
 
         componentDidMount() {
@@ -42,12 +49,16 @@ export default async function (page: chitu.Page) {
                 });
         }
         showDialog() {
-            let auth_url = "http://www.163.com";
-            let qrcode = new QRCode(this.qrcodeElement.parentElement, { width: 200, height: 200, text: "" });
-            let q = qrcode as any;
-            q._oDrawing._elImage = this.qrcodeElement.querySelector('img');
-            qrcode.makeCode(auth_url);
-            ui.showDialog(this.dialogElement);
+            showQRCodeDialog({
+                title: '登录',
+                tips: '扫描二维码登录',
+                element: this.dialogElement,
+                mobilePageName: 'login',
+                async callback(openId: string) {
+                    await userService.login(openId, "")
+                    app.redirect(`user/myStores`);
+                }
+            })
         }
         render() {
             return [
@@ -92,7 +103,7 @@ export default async function (page: chitu.Page) {
                     <div className="form-group text-center">
                         <hr />
                         <div className="col-sm-offset-2 col-sm-10">
-                            <img src="content/images/weixin_icon"
+                            <img src="content/images/weixin_icon.png"
                                 onClick={() => this.showDialog()}
                                 style={{ width: 80 }} />
                             <h4>使用微信扫描二维码登录</h4>
@@ -126,29 +137,3 @@ export default async function (page: chitu.Page) {
     ReactDOM.render(<LoginPage />, page.element);
 }
 
-// function page_load(page: chitu.Page) {
-//     var $ctrls = $('#sidebar, #breadcrumbs, #navbar-container > [role="navigation"]');
-//     var model = {
-//         username: ko.observable(''),//admin
-//         password: ko.observable(''),
-//         login: function () {
-//             if (!(model as any).isValid()) {
-//                 val.showAllMessages();
-//                 return Promise.resolve();
-//             }
-//             return shopAdmin.login(model.username(), model.password())
-//                 .then(function () {
-//                     //$('#navbar').find('[name="username"]').text(model.username());
-//                     app.redirect(site.config.startUrl);
-//                     $ctrls.show();
-//                 });
-//         }
-//     };
-
-//     model.username.extend({ required: true });
-//     model.password.extend({ required: true });
-//     var val = validation.group(model);
-
-//     ko.applyBindings(model, page.element);
-//     $ctrls.hide();
-// }

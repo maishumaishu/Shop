@@ -2,18 +2,12 @@
 import { UserService, Seller } from 'adminServices/user';
 import site from 'site';
 import QRCode = require('qrcode');
-import { WeiXinEvent, WebSockentMessage } from '../../weixin/common';
+import { WebSockentMessage } from 'weixin/common';
+import { websocketUrl } from 'share/common';
+import { showQRCodeDialog } from 'weixin/modules/openid';
 
 const label_max_width = 80;
 const input_max_width = 300;
-
-
-// enum MessageAction {
-//     bind = "bind",
-//     qrcodeScan= 'qrcode_scan'
-// }
-
-
 
 export default async function (page: chitu.Page) {
 
@@ -32,80 +26,32 @@ export default async function (page: chitu.Page) {
             this.state = { seller: this.props.seller, scaned: false };
         }
         showWeiXinBinding() {
-            ui.showDialog(this.weixinBinding);
-            ui.renderImage(this.qrcodeElement.querySelector('img'), { imageText: '正在生成二维码' });
-
-            this.state.scaned = false;
-            this.setState(this.state);
-
-            requirejs(['socket.io'], (io) => {
-                var socket = io('http://maishu.alinq.cn:8015');
-                let { protocol, hostname, pathname, port } = location;
-                socket.on('connect', () => {
-                    console.log(socket.id); // 'G5p5...'
-                    let appid = systemWeiXinAppId;
-                    let page = seller.OpenId ? 'unbinding' : 'binding';
-                    let redirect_uri = encodeURIComponent(`${protocol}//${hostname}${pathname}weixin/?from=${socket.id}#${page}`);
-                    let auth_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base#wechat_redirect`
-                    let qrcode = new QRCode(this.qrcodeElement.parentElement, { width: 200, height: 200, text: "" });
-                    let q = qrcode as any;
-                    q._oDrawing._elImage = this.qrcodeElement.querySelector('img');
-                    console.log(auth_url);
-                    qrcode.makeCode(auth_url);
-                })
-                socket.on('weixin', (msg: WebSockentMessage) => {
-                    let data: any = msg;
-
-                    switch (msg.action) {
-
-                        case WeiXinEvent.bind:
-                            console.assert(data.openId);
-                            userService.weixinBind(data.openId)
-                                .then(o => {
-
-                                    this.state.seller.OpenId = data.openId;
-                                    this.setState(this.state);
-
-                                    let m = { form: socket.id, to: msg.form, action: 'bind_success' } as WebSockentMessage;
-                                    ui.hideDialog(this.weixinBinding);
-                                    socket.emit(WeiXinEvent.name, m);
-                                })
-                                .catch(o => {
-
-                                    let m = { form: socket.id, to: msg.form, action: 'bind_fail' } as WebSockentMessage;
-                                    socket.emit(WeiXinEvent.name, m);
-                                })
-                            break;
-                        case 'unbind':
-                            console.assert(data.openId);
-                            userService.weixinUnbind(data.openId)
-                                .then(o => {
-                                    this.state.seller.OpenId = null;
-                                    this.setState(this.state);
-
-                                    let m = { form: socket.id, to: msg.form, action: 'unbind_success' } as WebSockentMessage;
-                                    ui.hideDialog(this.weixinBinding);
-                                    socket.emit(WeiXinEvent.name, m);
-                                })
-                                .catch(o => {
-                                    let m = { form: socket.id, to: msg.form, action: 'unbind_fail' } as WebSockentMessage;
-                                    ui.hideDialog(this.weixinBinding);
-                                    socket.emit(WeiXinEvent.name, m);
-                                });
-
-                            break;
-                        case 'qrcode_scan':
-                            this.state.scaned = true;
-                            this.setState(this.state);
-                            break;
+            let it = this;
+            let seller = this.state.seller;
+            seller.OpenId ?
+                showQRCodeDialog({
+                    title: '解绑微信',
+                    tips: '扫描二维码解绑微信号',
+                    element: this.weixinBinding,
+                    mobilePageName: 'unbinding',
+                    async callback(openId: string) {
+                        await userService.weixinUnbind(openId);
+                        seller.OpenId = null;
+                        it.setState(it.state);
                     }
-
-
-
-
-
-                });
-            })
+                }) :
+                showQRCodeDialog({
+                    title: '微信绑定',
+                    tips: '扫描二维码绑定微信号',
+                    element: this.weixinBinding,
+                    mobilePageName: 'binding',
+                    async callback(openId: string) {
+                        console.assert(openId != null);
+                        await userService.weixinBind(openId);
+                        seller.OpenId = openId;
+                        it.setState(it.state);
+                    }
+                })
         }
         render() {
             let { seller, scaned } = this.state;
@@ -155,35 +101,8 @@ export default async function (page: chitu.Page) {
                         </div>
                     </div>
                 </div>,
-                <div key={30} className="modal" ref={(e: HTMLElement) => this.weixinBinding = e}>
-                    <div className="modal-dialog" style={{ width: 400 }}>
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" onClick={() => ui.hideDialog(this.weixinBinding)}>
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <h4 className="modal-title">{seller.OpenId ? '解绑微信' : '微信绑定'}</h4>
-                            </div>
-                            <div className="modal-body form-horizontal">
-                                <div className="qrcodeElement" ref={(e: HTMLElement) => this.qrcodeElement = e}>
-                                    <img />
-                                </div>
+                <div key={30} ref={(e: HTMLElement) => this.weixinBinding = e}>
 
-                            </div>
-                            <div className="modal-footer" style={{ textAlign: 'center' }}>
-                                {scaned ?
-                                    <h4>
-                                        <i className="icon-ok text-success" style={{ fontSize: 'larger' }} />
-                                        <span style={{ paddingLeft: 8 }}>已扫描二维码</span>
-                                    </h4> :
-                                    <h4>
-                                        {seller.OpenId ? '扫描二维码解绑微信号' : '扫描二维码绑定微信号'}
-                                    </h4>
-                                }
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
             ]
         }
