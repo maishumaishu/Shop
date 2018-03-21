@@ -17,17 +17,14 @@ class Site {
     }
     startUrl: 'Home/Index';
     get userClientUrl() {
-        // let arr = location.pathname.split('/');
-        // console.assert(arr.length > 1);
-        // arr[arr.length - 1] = 'user';
         let { protocol, host, pathname } = location;
         pathname = pathname.replace('admin', 'user');
         let url = `${protocol}//${host}${pathname}?appKey=${Service.appToken}#home_index`;
-        // let url = `http://192.168.1.9/shop/user/#home/index?appToken=${Service.appToken}`;
         return url;
     }
-
 }
+
+
 
 
 
