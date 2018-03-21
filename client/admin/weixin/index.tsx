@@ -17,7 +17,8 @@ requirejs.config({
         react: '../../scripts/react',
 
         services: '../services',
-
+        qrcode: '../../scripts/qrcode',
+        weixin: './',
         'socket.io': 'http://maishu.alinq.cn:8015/socket.io/socket.io',
     }
 });

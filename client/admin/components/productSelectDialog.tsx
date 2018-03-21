@@ -29,7 +29,7 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
         this.dataSource.selectArguments.filter = '!OffShelve';
 
         this.dataSource.selected.add((sender, args) => {
-            this.state.products = args.items;
+            this.state.products = args.dataItems;
             this.setState(this.state);
         });
     }

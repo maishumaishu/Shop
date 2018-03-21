@@ -23,10 +23,7 @@ class Page extends React.Component<any, {
         let url = (window.location.hash.substr(1) || '').split('?')[0];
         this.state = { currentNode: this.findNodeByUrl(url), username: Service.adminName.value };
 
-        app.pageCreated.add((sender, page) => {
-            page.showing.add((sender) => this.updateMenu(sender));
-            page.hiding.add((sender) => this.updateMenu(sender));
-        })
+
     }
 
     updateMenu(page: chitu.Page) {
@@ -244,12 +241,17 @@ class Application extends chitu.Application {
     }
 }
 
-let app: Application = window['admin-app'] = window['admin-app'] || new Application();
 
 let element = document.createElement('div');
 document.body.insertBefore(element, document.body.children[0]);
-ReactDOM.render(<Page />, element);
+let p: Page = ReactDOM.render(<Page />, element);
 document.title = shopName;
+let app: Application = window['admin-app'] = window['admin-app'] || new Application();
+
+app.pageCreated.add((sender, page) => {
+    page.showing.add((sender) => p.updateMenu(sender));
+    page.hiding.add((sender) => p.updateMenu(sender));
+})
 
 export default app;
 
