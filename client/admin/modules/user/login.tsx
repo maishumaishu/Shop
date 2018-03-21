@@ -7,7 +7,6 @@ import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import QRCode = require('qrcode');
 import { websocketUrl } from 'share/common'
-import { Messenger } from 'messenger'
 import { showQRCodeDialog } from 'weixin/modules/openid';
 
 export default async function (page: chitu.Page) {
@@ -24,10 +23,6 @@ export default async function (page: chitu.Page) {
         constructor(props) {
             super(props);
             Service.token = '';
-
-            Messenger.addMessageReceived('login', (sender, msg) => {
-
-            })
         }
 
         componentDidMount() {
