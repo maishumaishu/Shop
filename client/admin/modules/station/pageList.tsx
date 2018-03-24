@@ -16,12 +16,12 @@ let station = new StationService();
 
 class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     private pagesElement: HTMLTableElement;
-    private dataSource: wuzhui.WebDataSource<PageData>;
+    private dataSource: wuzhui.DataSource<PageData>;
     private templateDialogElement: HTMLElement;
     constructor(props) {
         super(props);
         this.state = { templates: null };
-        this.dataSource = new wuzhui.WebDataSource<PageData>({
+        this.dataSource = new wuzhui.DataSource<PageData>({
             primaryKeys: ['_id'],
             select: (args) => station.pageDatas(),
             delete: (item) => station.deletePageData(item._id)

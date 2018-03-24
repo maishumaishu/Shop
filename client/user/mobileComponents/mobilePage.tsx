@@ -200,12 +200,20 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     }
 
     renderRuntimeViews(pageData: PageData) {
-
         let views = pageData.views || [];
-        let paddingBottom = this.calculateFooterHeight(pageData);
+        // let paddingBottom = this.calculateFooterHeight(pageData);
         return views.map((o, i) => (
-            <section key={`view${i}`} className="page-view" style={{ paddingBottom }}
-                ref={(e: HTMLElement) => e ? this.setPageElementClassName(e, pageData) : null}>
+            <section key={`view${i}`} className="page-view"
+                ref={(e: HTMLElement) => {
+                    if (!e) return;
+                    this.setPageElementClassName(e, pageData);
+                    setTimeout(() => {
+                        if (this.footerElement) {
+                            let height = this.footerElement.offsetHeight;
+                            e.style.paddingBottom = `${height}px`;
+                        }
+                    }, 500);
+                }}>
                 {this.renderControls(o.controls)}
             </section>
         ));
@@ -280,15 +288,21 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             })
         }
 
-        let paddingBottom = this.calculateFooterHeight(pageData);
+        // let paddingBottom = this.calculateFooterHeight(pageData);
         return (pageData.views || []).map((o, i) => (
             <section key={i}
                 ref={(e: HTMLElement) => {
                     if (!e) return;
                     sortableElement(e, i);
                     this.setPageElementClassName(e, pageData);
+                    setTimeout(() => {
+                        if (this.footerElement) {
+                            let height = this.footerElement.offsetHeight;
+                            e.style.paddingBottom = `${height}px`;
+                        }
+                    }, 500);
                 }}
-                style={{ paddingBottom }}>
+            >
                 {this.renderControls(o.controls)}
             </section>
         ));
@@ -312,9 +326,12 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
         var result = [
             this.renderHeader(pageData),
+            this.renderFooter(pageData),
             ...this.renderViews(pageData),
-            this.renderFooter(pageData)
         ];
+
+        // let footer_height = this.footerElement.offsetHeight;
+        // debugger;
 
         if (this.props.designTime && this.props.designTime.controlSelected) {
             // 加上延时，否则编辑器有可能显示不出来
@@ -323,7 +340,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                     let c = this.selecteControl;
                     this.props.designTime.controlSelected(c.control, c.controlType);
                 }
-            }, 1000);
+            }, 500);
         }
 
         return result;

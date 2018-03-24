@@ -45,7 +45,7 @@ class Page extends React.Component<{}, PageState>{
                     Id: restriction.productId,
                     BuyLimitedNumber: restriction.quantity
                 } as Product
-                this.dataSource.updated.fire(this.dataSource, { item });
+                this.dataSource.updated.fire(this.dataSource, item);
                 ui.hideDialog(this.restrictionDialog);
             });
     }
@@ -68,7 +68,7 @@ class Page extends React.Component<{}, PageState>{
                     Id: productStock.productId,
                     Stock: productStock.stock
                 } as Product;
-                this.dataSource.updated.fire(this.dataSource, { item });
+                this.dataSource.updated.fire(this.dataSource, item);
                 return data;
             })
     }
@@ -76,13 +76,13 @@ class Page extends React.Component<{}, PageState>{
     private offShelve(item: Product) {
         return shopping.offShelve(item.Id).then(() => {
             item.OffShelve = true;
-            this.dataSource.updated.fire(this.dataSource, { item });
+            this.dataSource.updated.fire(this.dataSource, item);
         });
     }
     onShelve(item: Product) {
         return shopping.onShelve(item.Id).then(() => {
             item.OffShelve = (false);
-            this.dataSource.updated.fire(this.dataSource, { item });
+            this.dataSource.updated.fire(this.dataSource, item);
         })
     }
     showChildren(parentId: string) {
@@ -101,7 +101,7 @@ class Page extends React.Component<{}, PageState>{
             }
         }
         return shopping.productChildren(parentId).then((result) => {
-            result.dataItems.forEach((o) => this.dataSource.inserted.fire(this.dataSource, { item: o, index: rowIndex }))
+            result.dataItems.forEach((o) => this.dataSource.inserted.fire(this.dataSource, o, rowIndex))
             return result;
         });
     }
@@ -119,7 +119,7 @@ class Page extends React.Component<{}, PageState>{
                 children.push(dataItem);
             }
         }
-        children.forEach(o => this.dataSource.deleted.fire(this.dataSource, { item: o }));
+        children.forEach(o => this.dataSource.deleted.fire(this.dataSource, o));
     }
     removeProduct(dataItem: Product) {
         return this.dataSource.delete(dataItem);
@@ -136,11 +136,11 @@ class Page extends React.Component<{}, PageState>{
             let productIds = args.dataItems.map(o => o.Id as string);
             shopping.productStocks(productIds).then(data => {
                 data.map(o => ({ Id: o.ProductId, Stock: o.Quantity } as Product))
-                    .forEach(o => dataSource.updated.fire(dataSource, { item: o }));
+                    .forEach(o => dataSource.updated.fire(dataSource, o));
             });
             shopping.getBuyLimitedNumbers(productIds).then(data => {
                 data.map(o => ({ Id: o.ProductId, BuyLimitedNumber: o.LimitedNumber } as Product))
-                    .forEach(o => dataSource.updated.fire(dataSource, { item: o }));
+                    .forEach(o => dataSource.updated.fire(dataSource, o));
 
             })
         });
@@ -154,9 +154,9 @@ class Page extends React.Component<{}, PageState>{
                 new wuzhui.CustomField({
                     createItemCell(dataItem) {
                         let cell = new wuzhui.GridViewDataCell({
-                            dataItem, dataField: 'SortNumber',
-                            render(element, value) {
-                                ReactDOM.render(<a href="javascript:" style={{ width: 100 }} title="点击修改序号">{value}</a>, element);
+                            dataField: 'SortNumber',
+                            render(value) {
+                                ReactDOM.render(<a href="javascript:" style={{ width: 100 }} title="点击修改序号">{value}</a>, cell.element);
                             }
                         });
                         return cell;
@@ -176,8 +176,8 @@ class Page extends React.Component<{}, PageState>{
                 new wuzhui.CustomField({
                     createItemCell(dataItem: Product) {
                         let cell = new wuzhui.GridViewDataCell({
-                            dataItem, dataField: 'OffShelve',
-                            render(element, offShelve: boolean) {
+                            dataField: 'OffShelve',
+                            render(offShelve: boolean) {
                                 let className = offShelve ? 'btn btn-default btn-minier' : "btn btn-primary btn-minier";
                                 let text = offShelve ? '已下架' : '已上架';
                                 ReactDOM.render(
@@ -187,7 +187,7 @@ class Page extends React.Component<{}, PageState>{
                                             title={offShelve ? tips.clickOnShelve : tips.clickOffShelve}
                                         >{text}</button>
                                     </div>,
-                                    element);
+                                    cell.element);
                             }
                         });
 
@@ -203,12 +203,12 @@ class Page extends React.Component<{}, PageState>{
                     itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
                     createItemCell(dataItem) {
                         let cell = new wuzhui.GridViewDataCell({
-                            dataItem, dataField: 'Stock',
-                            render(element, value) {
+                            dataField: 'Stock',
+                            render(value) {
                                 ReactDOM.render(
                                     <a href="javascript:">
                                         {value == null ? '无限' : value}
-                                    </a>, element);
+                                    </a>, cell.element);
                             }
                         });
 
@@ -221,12 +221,12 @@ class Page extends React.Component<{}, PageState>{
                 new wuzhui.CustomField({
                     createItemCell(dataItem) {
                         let cell = new wuzhui.GridViewDataCell({
-                            dataItem, dataField: 'BuyLimitedNumber',
-                            render(element, value) {
+                            dataField: 'BuyLimitedNumber',
+                            render(value) {
                                 ReactDOM.render(
                                     <a href="javascript:">
                                         {value == null ? '不限' : value}
-                                    </a>, element);
+                                    </a>, cell.element);
                             }
                         });
                         cell.element.onclick = function () {
@@ -239,11 +239,11 @@ class Page extends React.Component<{}, PageState>{
                     itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
                 }),
                 new wuzhui.BoundField({
-                    dataField: 'Price', headerText: '价格', dataFormatString: '￥{C2}',
+                    dataField: 'Price' as keyof Product, headerText: '价格', dataFormatString: '￥{C2}',
                     headerStyle: { textAlign: 'center', width: '80px' } as CSSStyleDeclaration,
                     itemStyle: { textAlign: 'right' } as CSSStyleDeclaration
                 }),
-                new OperationField(self)
+                new OperationField<Product>(self)
             ],
             pageSize: 10
         });
@@ -430,15 +430,14 @@ class Page extends React.Component<{}, PageState>{
     }
 }
 
-class NameField extends wuzhui.CustomField {
+class NameField<T> extends wuzhui.CustomField<T> {
     constructor(page: Page) {
         super({
             createItemCell(dataItem: Product) {
                 let status: 'collapsed' | 'collapsing' | 'expanding' | 'expanded' = 'collapsed';
-                let cell = new wuzhui.GridViewDataCell({
-                    dataItem,
+                let cell = new wuzhui.GridViewDataCell<Product>({
                     dataField: 'Name',
-                    render(element, value) {
+                    render(value) {
                         ReactDOM.render(
                             <div>
                                 <span>
@@ -450,7 +449,7 @@ class NameField extends wuzhui.CustomField {
                                     )}
                                 </span>
 
-                            </div>, element);
+                            </div>, cell.element);
                     }
                 })
                 return cell;
@@ -462,7 +461,7 @@ class NameField extends wuzhui.CustomField {
     }
 }
 
-class OperationField extends wuzhui.CustomField {
+class OperationField<T> extends wuzhui.CustomField<T> {
 
     constructor(page: Page) {
         super({

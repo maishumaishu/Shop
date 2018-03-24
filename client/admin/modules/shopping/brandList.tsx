@@ -19,7 +19,7 @@ export default function (page: chitu.Page) {
             var tableElement = document.createElement('table');
             tableElement.className = 'table table-striped table-bordered table-hover';
             page.element.appendChild(tableElement);
-            var dataSource = this.dataSource = new wuzhui.WebDataSource<Brand>({
+            var dataSource = this.dataSource = new wuzhui.DataSource<Brand>({
                 primaryKeys: ['Id'],
                 select: (args) => shopping.brands(args),
                 update: (dataItem) => shopping.updateBrand(dataItem),
@@ -29,16 +29,16 @@ export default function (page: chitu.Page) {
 
             var gridView = createGridView({
                 element: tableElement, dataSource, columns: [
-                    new wuzhui.BoundField({
+                    new wuzhui.BoundField<Brand>({
                         dataField: 'Name', sortExpression: 'Name', headerText: '名称',
                         itemStyle: { width: '200px' } as CSSStyleDeclaration,
                         headerStyle: { textAlign: 'center' } as CSSStyleDeclaration
                     }),
-                    new wuzhui.BoundField({
+                    new wuzhui.BoundField<Brand>({
                         dataField: 'Image', headerText: '图片',
                         headerStyle: { textAlign: 'center' } as CSSStyleDeclaration
                     }),
-                    new CommandField({
+                    new CommandField<Brand>({
                         headerText: '操作',
                         headerStyle: { textAlign: 'center', width: '100px' } as CSSStyleDeclaration,
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,

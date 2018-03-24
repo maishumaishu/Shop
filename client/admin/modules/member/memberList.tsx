@@ -16,7 +16,7 @@ export default function (page: chitu.Page) {
         private rechargeDialogElement: HTMLElement;
         private validator: FormValidator;
         private mobileElement: HTMLElement;
-        private dataSource = new wuzhui.WebDataSource({ select: (args) => memberService.members(args) });
+        private dataSource = new wuzhui.DataSource({ select: (args) => memberService.members(args) });
         private selectedUserInfo: UserInfo;
 
         showRechargeDialog(userInfo: UserInfo) {
@@ -48,7 +48,7 @@ export default function (page: chitu.Page) {
                     let r = await memberService.recharge(userId, amount);
                     console.assert(this.selectedUserInfo != null);
                     this.selectedUserInfo.Balance = r.Balance;
-                    this.dataSource.updated.fire(this.dataSource, { item: this.selectedUserInfo });
+                    this.dataSource.updated.fire(this.dataSource, this.selectedUserInfo);
 
                     ui.hideDialog(this.rechargeDialogElement);
                     ui.alert('冲值成功');

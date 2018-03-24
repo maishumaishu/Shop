@@ -19,7 +19,7 @@ export default function (page: chitu.Page) {
             super(props);
             this.state = {};
 
-            this.dataSource = new wuzhui.WebDataSource<Category>({
+            this.dataSource = new wuzhui.DataSource<Category>({
                 primaryKeys: ['Id'],
                 select: () => shopping.categories(),
                 insert: (item) => shopping.addCategory(item),
@@ -27,23 +27,24 @@ export default function (page: chitu.Page) {
                 delete: (item) => shopping.deleteCategory(item.Id)
             });
             this.dataSource.selected.add((sender, args) => {
-                this.state.rows = args.items;
+                this.state.rows = args.dataItems;
                 this.setState(this.state);
             });
         }
         createGridView(tableElement: HTMLTableElement) {
-            var gridView = new wuzhui.GridView({
+            var gridView = new wuzhui.GridView<any>({
                 element: tableElement,
                 dataSource: this.dataSource,
                 columns: [
                     new wuzhui.CustomField({
                         createItemCell(dataItem) {
                             let cell = new wuzhui.GridViewDataCell({
-                                dataItem, dataField: 'SortNumber',
-                                render(element, value: number) {
-                                    element.innerHTML = `${value + 1}`;
+                                dataField: 'SortNumber',
+                                render(value: number) {
+                                    cell.element.innerHTML = `${value + 1}`;
                                 }
                             });
+
                             return cell;
                         },
                         headerText: '序号',
@@ -54,12 +55,12 @@ export default function (page: chitu.Page) {
                     new wuzhui.CustomField({
                         createItemCell(dataItem) {
                             let cell = new wuzhui.GridViewDataCell({
-                                dataItem, dataField: 'Hidden',
-                                render(element, value) {
+                                dataField: 'Hidden',
+                                render(value) {
                                     if (value == true)
-                                        element.innerHTML = '是';
+                                        cell.element.innerHTML = '是';
                                     else
-                                        element.innerHTML = '否';
+                                        cell.element.innerHTML = '否';
                                 }
                             });
                             return cell;

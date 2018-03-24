@@ -29,7 +29,7 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
         this.dataSource.selectArguments.filter = '!OffShelve';
 
         this.dataSource.selected.add((sender, args) => {
-            this.state.products = args.items;
+            this.state.products = args.dataItems;
             this.setState(this.state);
         });
     }
@@ -63,62 +63,66 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
 
     componentDidMount() {
         let pagingBar = new wuzhui.NumberPagingBar({
-            dataSource: this.dataSource, element: this.pagingBarElement,
-            pagerSettings: {} as wuzhui.PagerSettings,
+            dataSource: this.dataSource,
+            element: this.pagingBarElement,
+            pagerSettings: {
+                activeButtonClassName: 'active',
+                buttonWrapper: 'li'
+            },
 
-            createButton: () => {
-                let button = document.createElement('a');
-                button.href = 'javascript:';
+            // createButton: () => {
+            //     let button = document.createElement('a');
+            //     button.href = 'javascript:';
 
-                let wrapper = document.createElement('li');
-                wrapper.appendChild(button);
-                this.pagingBarElement.appendChild(wrapper);
+            //     let wrapper = document.createElement('li');
+            //     wrapper.appendChild(button);
+            //     this.pagingBarElement.appendChild(wrapper);
 
-                let result = {
-                    get visible(): boolean {
-                        return button.style.display == 'inline';
-                    },
-                    set visible(value: boolean) {
-                        if (value) {
-                            button.style.display = 'inline';
-                            return;
-                        }
+            //     let result = {
+            //         get visible(): boolean {
+            //             return button.style.display == 'inline';
+            //         },
+            //         set visible(value: boolean) {
+            //             if (value) {
+            //                 button.style.display = 'inline';
+            //                 return;
+            //             }
 
-                        button.style.display = 'none';
-                    },
-                    get pageIndex(): number {
-                        var str = button.getAttribute('pageIndex');
-                        return Number.parseInt(str);
-                    },
-                    set pageIndex(value: number) {
-                        button.setAttribute('pageIndex', `${value}`);
-                    },
-                    get text(): string {
-                        return button.innerHTML;
-                    },
-                    set text(value) {
-                        button.innerHTML = value;
-                    },
-                    get active(): boolean {
-                        return button.href != null;
-                    },
-                    set active(value: boolean) {
-                        if (value) {
-                            button.parentElement.className = 'active'
-                            return;
-                        }
+            //             button.style.display = 'none';
+            //         },
+            //         get pageIndex(): number {
+            //             var str = button.getAttribute('pageIndex');
+            //             return Number.parseInt(str);
+            //         },
+            //         set pageIndex(value: number) {
+            //             button.setAttribute('pageIndex', `${value}`);
+            //         },
+            //         get text(): string {
+            //             return button.innerHTML;
+            //         },
+            //         set text(value) {
+            //             button.innerHTML = value;
+            //         },
+            //         get active(): boolean {
+            //             return button.href != null;
+            //         },
+            //         set active(value: boolean) {
+            //             if (value) {
+            //                 button.parentElement.className = 'active'
+            //                 return;
+            //             }
 
-                        button.parentElement.className = '';
+            //             button.parentElement.className = '';
 
-                    }
-                } as wuzhui.NumberPagingButton;
-                button.onclick = () => {
-                    if (result.onclick) {
-                        result.onclick(result, pagingBar);
-                    }
-                };
-                return result;
-            }
+            //         }
+            //     } as wuzhui.NumberPagingButton;
+            //     button.onclick = () => {
+            //         if (result.onclick) {
+            //             result.onclick(result, pagingBar);
+            //         }
+            //     };
+            //     return result;
+            // }
         });
         this.dataSource.select();
     }

@@ -135,12 +135,12 @@ export class GridViewItemPopupEditor extends React.Component<GridViewItemPopupEd
     }
 }
 
-export class CommandField extends wuzhui.CustomField {
+export class CommandField<T> extends wuzhui.CustomField<T> {
     constructor(params: CommandFieldParams) {
 
         let createItemCell = (dataItem) => {
             var cell: wuzhui.GridViewCell = new wuzhui.GridViewCell();
-            let self = this as CommandField;
+            let self = this as CommandField<T>;
 
             let buttons = new Array<HTMLElement>();
             let leftButtons = params.leftButtons != null ? params.leftButtons(dataItem) : null;
@@ -186,7 +186,7 @@ export class CommandField extends wuzhui.CustomField {
             deleteButton.onclick = ui.buttonOnClick(() => {
                 let row = wuzhui.Control.getControlByElement(cell.element.parentElement) as wuzhui.GridViewDataRow;
                 let table = self.findParnet(cell.element, 'TABLE');
-                let gridView = wuzhui.Control.getControlByElement(table) as wuzhui.GridView;
+                let gridView = wuzhui.Control.getControlByElement(table) as wuzhui.GridView<any>;
                 return gridView.dataSource.delete(row.dataItem);
             });
 
@@ -224,7 +224,7 @@ export class CommandField extends wuzhui.CustomField {
     }
 }
 
-export class BoundField extends wuzhui.BoundField {
+export class BoundField<T> extends wuzhui.BoundField<T> {
     constructor(params: wuzhui.BoundFieldParams) {
         params.headerStyle = Object.assign({ textAlign: 'center' } as CSSStyleDeclaration, params.headerStyle || {});
         if (params.nullText == null)
@@ -234,7 +234,7 @@ export class BoundField extends wuzhui.BoundField {
     }
 }
 
-export class CustomField extends wuzhui.CustomField {
+export class CustomField<T> extends wuzhui.CustomField<T> {
     constructor(params: wuzhui.CustomFieldParams) {
         params.headerStyle = Object.assign({ textAlign: 'center' } as CSSStyleDeclaration, params.headerStyle || {});
         super(params);
@@ -242,7 +242,7 @@ export class CustomField extends wuzhui.CustomField {
 }
 
 export function appendGridView(target: HTMLElement,
-    args: { dataSource: wuzhui.DataSource<any>, columns: wuzhui.DataControlField[], pageSize?: number }) {
+    args: { dataSource: wuzhui.DataSource<any>, columns: wuzhui.DataControlField<any>[], pageSize?: number }) {
 
     let tableElement = document.createElement('table');
     target.appendChild(tableElement);
@@ -252,12 +252,12 @@ export function appendGridView(target: HTMLElement,
     });
 
 }
-export function createGridView(params: wuzhui.GridViewArguments) {
+export function createGridView<T>(params: wuzhui.GridViewArguments<T>) {
     params = Object.assign({
         pageSize: 10,
         dataSource: null,
         columns: null,
-    } as wuzhui.GridViewArguments, params);
+    }, params);
 
     params.pagerSettings = Object.assign({
         activeButtonClassName: 'active'
@@ -270,14 +270,14 @@ export function createGridView(params: wuzhui.GridViewArguments) {
     return gridView;
 }
 
-export function boundField(params: wuzhui.BoundFieldParams) {
-    return new BoundField(params)
+export function boundField<T>(params: wuzhui.BoundFieldParams) {
+    return new BoundField<T>(params)
 }
 
-export function commandField(params: CommandFieldParams) {
-    return new CommandField(params);
+export function commandField<T>(params: CommandFieldParams) {
+    return new CommandField<T>(params);
 }
 
-export function customField(params: wuzhui.CustomFieldParams) {
-    return new CustomField(params);
+export function customField<T>(params: wuzhui.CustomFieldParams) {
+    return new CustomField<T>(params);
 }

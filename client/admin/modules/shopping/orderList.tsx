@@ -361,9 +361,8 @@ export default function (page: chitu.Page) {
         createCommandCell(dataItem: Order) {
             let self = this;
             let cell = new wuzhui.GridViewDataCell({
-                dataItem,
                 dataField: 'Status',
-                render(element, value) {
+                render(value) {
                     ReactDOM.render(
                         [
                             <button key="toSend" className="btn btn-success btn-minier"
@@ -380,7 +379,7 @@ export default function (page: chitu.Page) {
                                 <span>详细</span>
                             </button>
                         ]
-                        , element)
+                        , cell.element)
                 }
             });
             return cell;
@@ -388,9 +387,8 @@ export default function (page: chitu.Page) {
         createStatusCell(dataItem: Order) {
             let self = this;
             let cell = new wuzhui.GridViewDataCell({
-                dataItem,
                 dataField: 'Status',
-                render(element, value) {
+                render(value) {
                     ReactDOM.render(
                         value == 'WaitingForPayment' ?
                             <button className="btn btn-purple btn-minier"
@@ -400,7 +398,7 @@ export default function (page: chitu.Page) {
                                     self.receivablesDialog.show();
                                 }}>{ShoppingService.orderStatusText(value)}</button> :
                             <span>{ShoppingService.orderStatusText(value)}</span>,
-                        element);
+                        cell.element);
                 }
             });
             return cell;
@@ -449,7 +447,7 @@ export default function (page: chitu.Page) {
         }
         on_paid(order: Order) {
             order.Status = 'Paid';
-            this.dataSource.updated.fire(this.dataSource, { item: order })
+            this.dataSource.updated.fire(this.dataSource, order)
         }
         render() {
             let status = this.state.current_status;

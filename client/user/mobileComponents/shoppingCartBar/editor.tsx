@@ -6,5 +6,7 @@ export interface EditorState extends Partial<ControlProps> {
 }
 
 export default class ShoppingCartBarEditor extends Editor<EditorProps, EditorState>{
-
+    render() {
+        return [];
+    }
 }

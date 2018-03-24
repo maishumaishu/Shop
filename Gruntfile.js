@@ -293,7 +293,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.registerTask('admin', ['less:admin', 'less:mobileComponents', 'copy:admin']);
 
     grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
     grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
@@ -303,8 +302,3 @@ module.exports = function (grunt) {
     grunt.registerTask('dev', ['build-es6', 'copy:es6_www', 'connect', 'watch']);
 }
 
-/**
- * 说明：
- * lib/src/ui lib/src/mobileControls lib/src
- * １.编译顺序 user/service user/pageComponents user admin
- */

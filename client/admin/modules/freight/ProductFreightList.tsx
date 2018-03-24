@@ -21,7 +21,7 @@ export default function (page: chitu.Page) {
             </li>
         </ul>, tabbable);
 
-    let dataSource = new wuzhui.WebDataSource({
+    let dataSource = new wuzhui.DataSource({
         select: (args) => shopping.productFreights(args),
         insert: (dataItem: ProductFreight) => shopping.addProductFreight(dataItem.ObjectId, dataItem.SolutionId),
         primaryKeys: ['Id']
