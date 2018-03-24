@@ -1,6 +1,9 @@
+import * as React from 'react';
+
 import { menuData, MenuNode } from 'menuData';
 import { Service } from 'services/service';
 
+let h = React.createElement;
 interface State {
     currentNode: MenuNode,
     username: string

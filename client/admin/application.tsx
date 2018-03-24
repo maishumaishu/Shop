@@ -6,13 +6,8 @@ import { Service } from 'services/service';
 import { shopName } from 'share/common';
 import { MasterPage } from 'masterPage';
 
-function main(): Application {
-    ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
-    let app: Application = window['admin-app'] = window['admin-app'] || new Application();
-    return app;
-}
 
-export default main();
+let h = React.createElement;
 
 class Application extends chitu.Application {
 
@@ -24,6 +19,7 @@ class Application extends chitu.Application {
             this.redirect('user/login');
         }
 
+        ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
         this.createMasterPage();
         this.error.add((app, err) => this.errorHandle(err));
     }
@@ -87,3 +83,6 @@ class Application extends chitu.Application {
 
 
 
+let app: Application = window['admin-app'] = window['admin-app'] || new Application();
+
+export default app;

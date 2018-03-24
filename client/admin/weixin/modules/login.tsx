@@ -7,7 +7,7 @@ export default async function (page: chitu.Page) {
 
     let props: OpenIdPageProps = {
         weixin: page.createService(WeiXinService),
-        title: '登录',
+        title: '商家登录',
         buttonText: '确定登录',
         content: {
             normal: `确定要登录到${shopName}商家后台系统吗`,
