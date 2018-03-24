@@ -35,7 +35,7 @@ export class UserService extends Service {
         let url = `${protocol}//${Service.config.serviceHost}/${path}`;
         return url;
     }
-    login(username, password) {
+    login(username: string, password: string) {
         let url = `${Service.config.memberUrl}Seller/Login`;
         return this.ajaxByForm<{ token: string }>(url, { username, password }, 'post')
             .then(d => {

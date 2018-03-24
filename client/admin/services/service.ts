@@ -29,10 +29,6 @@ export class Service extends chitu.Service {
 
     constructor() {
         super();
-
-        // this.error.add((sender, error) => {
-        //     Service.error.fire(sender, error);
-        // })
     }
 
     ajax<T>(url: string, options: RequestInit): Promise<T> {
@@ -71,9 +67,6 @@ export class Service extends chitu.Service {
         return urlParams.appKey;
     }
 
-    // static get storeId() {
-    //     return Service.userId;
-    // }
     static get token() {
         return localStorage['adminToken'];
     };
@@ -84,20 +77,11 @@ export class Service extends chitu.Service {
         }
         localStorage.setItem('adminToken', value);
     }
-    // static get userId() {
-    //     return localStorage['userId'];
-    // };
-    // static set userId(value: string) {
-    //     if (value === undefined) {
-    //         localStorage.removeItem('userId');
-    //         return;
-    //     }
-    //     localStorage.setItem('userId', value);
-    // }
     static get adminName() {
         return username;
     }
 }
+
 
 
 

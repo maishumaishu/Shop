@@ -76,6 +76,7 @@ module.exports = function (grunt) {
                     cwd: 'client',
                     src: [
                         'admin/*.html', 'admin/**/*.html', 'admin/**/*.css', 'admin/content/font/*',
+                        'admin/**/*.png',
                         'user/*.html', 'user/**/*.png', 'user/content/font/*', 'user/content/*.css',
                     ],
                     dest: 'www'
@@ -293,12 +294,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.registerTask('common', ['less', 'copy:client']);
 
     grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
     grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
     grunt.registerTask('run', ['connect', 'watch']);
 
-    grunt.registerTask('release', ['build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
-    grunt.registerTask('dev', ['build-es6', 'copy:es6_www', 'connect', 'watch']);
+    grunt.registerTask('release', ['common', 'build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
+    grunt.registerTask('dev', ['common', 'build-es6', 'copy:es6_www', 'connect', 'watch']);
 }
 

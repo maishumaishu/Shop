@@ -13,6 +13,30 @@ export function loadjs<T>(url) {
     })
 }
 
+
+type MessageAction = "bind" | "bind_success" | "bind_fail" |
+    "unbind" | "unbind_success" | "unbind_fail" | "qrcode_scan"
+
+export interface WebSockentMessage {
+    to: string,
+    from: string,
+    action: string,
+    data?: any,
+}
+
+
+// export class WeiXinEvent {
+//      name = 'weixin'
+//     static WeiXinBinding = 'weixin_binding'
+//     static WeiXinUnbind = 'weixin_unbind'
+// }
+
+// export const WeiXinEvent = {
+//     name: 'weixin',
+//     bind: 'bind',
+//     qrcodeScan: 'qrcode_scan'
+// }
+
 export function getOpenId(code: string) {
 
 }
