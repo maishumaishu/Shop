@@ -8,20 +8,8 @@ export interface ComponentDefine {
 
 
 let componets: Array<ComponentDefine> = [
-    // {
-    //     name: 'carousel',
-    //     displayName: '轮播',
-    //     icon: "",
-    //     introduce: ''
-    // },
-    // {
-    //     name: "towColumnProduct",
-    //     displayName: "两列商品",
-    //     icon: "",
-    //     introduce: ""
-    // },
     {
-        name: "singleColumnProduct",
+        name: "productList",
         displayName: "商品列表",
         icon: "icon-list",
         introduce: ""
