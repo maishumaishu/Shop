@@ -6,7 +6,6 @@ import { ProductImage } from 'user/components/productImage';
 import { app } from 'site';
 
 // let { ImageBox } = controls;
-// requirejs([`css!${componentsDir}/singleColumnProduct/control`]);
 export class Data {
     private _product: Product;
 
@@ -24,7 +23,7 @@ let shoppingCart = new ShoppingCartService();
 
 // type ProductExt = Product & { Count: number };
 
-export interface Props extends ControlProps<SingleColumnProductControl> {
+export interface Props extends ControlProps<ProductListControl> {
 
 }
 
@@ -70,15 +69,16 @@ export interface State {
     displayTitle?: boolean,
 
     // shoppingCartItems: ShoppingCartItem[],
+    imageSize?: 'small' | 'medium' | 'large',
 
     productCounts?: { [key: string]: number }
 }
 
-export default class SingleColumnProductControl extends Control<Props, State> {
+export default class ProductListControl extends Control<Props, State> {
     get persistentMembers(): (keyof State)[] {
         return [
             'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',
-            'listType', 'displayType', 'displayTitle'
+            'listType', 'displayType', 'displayTitle', 'imageSize'
         ]
     }
     constructor(args) {
@@ -153,11 +153,26 @@ export default class SingleColumnProductControl extends Control<Props, State> {
     async renderSingleColumn(h): Promise<JSX.Element> {
 
         var products = await this.products();
-        let showProductTitle = this.state.displayTitle;
-        var productCounts = this.state.productCounts;
+        let { displayTitle, productCounts, imageSize } = this.state;
+        // var productCounts = this.state.productCounts;
 
-        let leftClassName = showProductTitle ? 'col-xs-4' : 'col-xs-3';
-        let rightClassName = showProductTitle ? 'col-xs-8' : 'col-xs-9';
+        let leftClassName: string, rightClassName: string;// = displayTitle ? 'col-xs-4' : 'col-xs-3';
+        // let rightClassName = displayTitle ? 'col-xs-8' : 'col-xs-9';
+        switch (imageSize) {
+            case 'small':
+            default:
+                leftClassName = 'col-xs-3';
+                rightClassName = 'col-xs-9';
+                break;
+            case 'medium':
+                leftClassName = 'col-xs-4';
+                rightClassName = 'col-xs-8';
+                break;
+            case 'large':
+                leftClassName = 'col-xs-5';
+                rightClassName = 'col-xs-7';
+                break;
+        }
 
         return (
             <div className="singleColumnProductControl">
@@ -175,7 +190,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
                             <div className="name interception" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                                 {o.Name}
                             </div>
-                            {showProductTitle ?
+                            {displayTitle ?
                                 <div className="title interception">
                                     {o.Title}
                                 </div> : null}
@@ -200,7 +215,7 @@ export default class SingleColumnProductControl extends Control<Props, State> {
         var productCounts = this.state.productCounts;
         return (
             <div className="singleColumnProductControl">
-                {products.filter(o => o != null).map((o,i) =>
+                {products.filter(o => o != null).map((o, i) =>
                     <div key={o.Id} className="product double col-xs-6">
                         <div onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
                             <ProductImage key={i} product={o} />

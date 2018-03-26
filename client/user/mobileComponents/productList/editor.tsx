@@ -1,5 +1,5 @@
 import { Editor, EditorProps } from 'mobileComponents/editor';
-import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/singleColumnProduct/control';
+import { State as ControlState, Props as ControlProps, default as Control } from 'mobileComponents/productList/control';
 import { ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'services/service';
@@ -11,14 +11,14 @@ export interface EditorState extends ControlState {
 const shopping = new ShoppingService();
 const station = new StationService();
 
-export default class SingleColumnProductEditor extends Editor<EditorProps, EditorState> {
+export default class ProductListEditor extends Editor<EditorProps, EditorState> {
 
     private productsDialog: ProductSelectDialog;
     private productAdd: HTMLElement;
 
     constructor(props) {
         super(props);
-        this.state = { productSourceType: 'category', listType: 'doubleColumn' };
+        this.state = { productSourceType: 'category', listType: 'doubleColumn', imageSize: 'small' };
 
         this.loadEditorCSS();
     }
@@ -193,14 +193,34 @@ export default class SingleColumnProductEditor extends Editor<EditorProps, Edito
                     </span>
                 </div>
                 {listType == 'singleColumn' ?
-                    <div className="form-group">
-                        <label className="pull-left">显示商品标题</label>
-                        <div style={{ display: "block" }}>
-                            <input name="displayType" type="checkbox" value="true" style={{ marginTop: 8 }}
-                                ref={(e: HTMLInputElement) => this.setCheckElement(e, 'displayTitle')} />
+                    [
+                        <div key={10} className="form-group">
+                            <label className="pull-left">显示商品标题</label>
+                            <div style={{ display: "block" }}>
+                                <input name="displayType" type="checkbox" value="true" style={{ marginTop: 8 }}
+                                    ref={(e: HTMLInputElement) => this.setCheckElement(e, 'displayTitle')} />
 
+                            </div>
+                        </div>,
+                        <div key={20} className="form-group">
+                            <label className="pull-left">图片大小</label>
+                            <span>
+                                <input name="imageSize" type="radio" value="small"
+                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
+                                小
+                            </span>
+                            <span>
+                                <input name="imageSize" type="radio" value="medium"
+                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
+                                中
+                            </span>
+                            <span>
+                                <input name="imageSize" type="radio" value="large"
+                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
+                                大
+                            </span>
                         </div>
-                    </div> : null}
+                    ] : null}
 
                 <div style={{ display: productSourceType == 'category' ? 'block' : 'none' }}>
                     <div className="form-group">

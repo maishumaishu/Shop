@@ -285,7 +285,7 @@ export default class CategoriesEditor extends Editor<EditorProps, EditorState>{
                                     ref={(e: HTMLButtonElement) => {
                                         if (!e) return;
                                         e.onclick = ui.buttonOnClick(() => this.save(), {
-                                            toast: '保持成功!'
+                                            toast: '保存成功!'
                                         });
                                     }}>保存</button>
                             </div>
