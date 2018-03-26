@@ -23,7 +23,7 @@ namespace ui {
 
         args = args || {};
         let execute = async (event) => {
-            let button = (event.target as HTMLButtonElement);
+            let button = (event.currentTarget as HTMLButtonElement);
             button.setAttribute('disabled', '');
             try {
                 await callback(event);
