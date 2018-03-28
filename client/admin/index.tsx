@@ -42,15 +42,15 @@ requirejs.config({
             deps: [
                 'jquery',
                 'css!../scripts/umeditor/themes/default/css/umeditor.css',
-                '../scripts/umeditor/third-party/template.min',
+                // '../scripts/umeditor/third-party/template.min',
                 'um_config',
             ]
         },
-        um_config: {
-            deps: [
-                '../scripts/umeditor/third-party/template.min'
-            ]
-        },
+        // um_config: {
+        //     deps: [
+        //         '../scripts/umeditor/third-party/template.min'
+        //     ]
+        // },
         um_zh: {
             deps: ['um']
         },
@@ -98,7 +98,7 @@ requirejs.config({
 
         ace: 'assets/js/uncompressed/ace',
 
-        'ue': 'ueditor',
+        'ue': '../scripts/ueditor',
         userServices: '../user/services',
         adminServices: './services',
         componentDesigner: 'modules/station/components/componentDesigner',

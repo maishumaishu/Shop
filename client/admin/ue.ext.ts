@@ -1,12 +1,14 @@
 ﻿
 
-(<any>window).UEDITOR_HOME_URL = 'scripts/ueditor/'
+(<any>window).UEDITOR_HOME_URL = '../scripts/ueditor/'
 var references = ['ue/ueditor.config', 'ue/ueditor.all', 'ue/third-party/zeroclipboard/ZeroClipboard'];
 
-export function createEditor(editorId: string, field: KnockoutObservable<string>) {
-    let ueditorLoadDeferred = $.Deferred();
+export function createEditor(editorId: string, field: HTMLInputElement) {
 
     requirejs(references, function () {
+
+        window['UEDITOR_CONFIG'].serverUrl = `${location.protocol}//web.alinq.cn/controller.ashx`;
+
         (<any>window).ZeroClipboard = arguments[2];
         let UE = window['UE'];
         UE.delEditor(editorId);
@@ -17,20 +19,21 @@ export function createEditor(editorId: string, field: KnockoutObservable<string>
 
         ue.ready(() => {
             ue.setHeight(300);
-            ue.setContent(field() || '');
+            ue.setContent(field.value || '');
 
             let disable_subscribe = false;
-            field.subscribe(function (value) {
-                if (disable_subscribe)
-                    return;
+            // field.subscribe(function (value) {
+            //     if (disable_subscribe)
+            //         return;
 
-                ue.setContent(value);
-            });
+            //     ue.setContent(value);
+            // });
 
             ue.addListener('contentChange', function (editor) {
                 let content = this.getContent();
                 disable_subscribe = true;
-                field(content);
+                // field(content);
+                field.value = content;
                 disable_subscribe = false;
             });
         });
@@ -40,7 +43,6 @@ export function createEditor(editorId: string, field: KnockoutObservable<string>
 }
 
 export function createUEEditor(editorId: string, field: HTMLInputElement) {
-    let ueditorLoadDeferred = $.Deferred();
 
     requirejs(['um', 'um_zh'], function () {
 

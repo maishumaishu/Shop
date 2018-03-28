@@ -1,5 +1,5 @@
 interface Account {
-    UserId: string;
+    Id: string;
     Balance: number;
 }
 

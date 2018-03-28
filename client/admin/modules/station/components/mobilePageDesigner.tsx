@@ -14,7 +14,6 @@ import { UserLoginDialog } from 'adminComponents/userLoginDialog';
 import * as ui from 'ui';
 import 'jquery-ui';
 
-UserLoginDialog.show();
 userApp.error.add((source, err: AppError) => {
     if (err.name == ErrorCodes.UserNotLogin) {
         UserLoginDialog.show();

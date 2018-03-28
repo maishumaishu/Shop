@@ -11,5 +11,6 @@ temp
 server/images/umeditor.net/upload
 server/images/*.js
 server/images/*.js.map
+server/images/ueditor/net/upload/image
 out
 /package-lock.json

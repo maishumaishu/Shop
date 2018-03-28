@@ -21,6 +21,8 @@ export default function (page: chitu.Page) {
                 update: (dataItem) => shopping.updateFreightSolution(dataItem),
                 primaryKeys: ['Id']
             });
+
+            let it = this;
             let gridView = wz.createGridView({
                 element: this.gridViewElement,
                 columns: [
@@ -37,7 +39,7 @@ export default function (page: chitu.Page) {
                             ReactDOM.render(
                                 <div>
                                     <button className="btn btn-info btn-minier" style={{ marginRight: 4 }}
-                                        onClick={() => this.showDialog(dataSource, dataItem)}>
+                                        onClick={() => it.showDialog(dataItem)}>
                                         <i className="icon-pencil"></i>
                                     </button>
                                     <button className="btn btn-minier btn-danger" style={{ marginRight: 4 }}
@@ -102,7 +104,7 @@ export default function (page: chitu.Page) {
                 </div>
                 , this.dialogElement);
 
-            $(this.dialogElement).modal();
+            ui.showDialog(this.dialogElement)
         }
         render() {
             return (

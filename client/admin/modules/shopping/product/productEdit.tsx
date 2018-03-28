@@ -48,7 +48,7 @@ export default function (page: chitu.Page) {
             })
         }
         componentDidMount() {
-            UE.createUEEditor(editorId, this.introduceInput);
+            UE.createEditor(editorId, this.introduceInput);
             // this.validator = new FormValidator(this.element, {
             //     name: { rules: ['required'] },
             //     price: { rules: ['required'] },

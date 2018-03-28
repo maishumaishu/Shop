@@ -91,9 +91,12 @@ export class UserService extends Service {
     }
     async members(args: wuzhui.DataSourceSelectArguments) {
 
-        let url = `${Service.config.memberUrl}member/list`;
+        let url = `${Service.config.memberUrl}Member/List`;
         let users = await this.get<wuzhui.DataSourceSelectResult<UserInfo>>(url, args);
-
+        let userIds = users.dataItems.map(o => o.Id)
+        let url1 = `${Service.config.accountUrl}Account/GetAccountBalances`;
+        let accounts = await this.get<Account[]>(url1, { userIds });
+        accounts.forEach(o => users.dataItems.filter(a => a.Id == o.Id)[0].Balance = o.Balance);
 
         return users;
     }
