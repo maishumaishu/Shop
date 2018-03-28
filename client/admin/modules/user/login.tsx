@@ -1,5 +1,6 @@
 ﻿import { Service, systemWeiXinAppId } from 'services/service';
 import { UserService } from 'adminServices/user';
+import { WeiXinService } from 'adminServices/weixin';
 import app from 'application';
 import { default as site } from 'site';
 import { FormValidator, rules } from 'dilu';
@@ -12,6 +13,8 @@ import { showQRCodeDialog } from 'weixin/modules/openid';
 export default async function (page: chitu.Page) {
     requirejs([`css!${page.routeData.actionPath}`]);
     let userService = page.createService(UserService);
+    let weixinService = page.createService(WeiXinService);
+
     class LoginPage extends React.Component<{}, {}>{
         validator: FormValidator;
         element: HTMLElement;
@@ -50,9 +53,12 @@ export default async function (page: chitu.Page) {
                 element: this.dialogElement,
                 mobilePageName: 'login',
                 async callback(openId: string) {
-                    await userService.login(openId, "")
+                    let result = await weixinService.login(openId)
+                    //TODO: result == null
                     app.redirect(`user/myStores`);
                 }
+            }).catch((exc) => {
+                app.error.fire(app, exc);
             })
         }
         render() {

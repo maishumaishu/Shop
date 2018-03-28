@@ -1,9 +1,16 @@
 import { MemberService } from 'userServices/memberService';
+import { WeiXinService } from 'adminServices/weixin';
 import { Service } from 'userServices/Service';
-import { default as adminApp } from 'application'
+import { default as adminApp } from 'application';
+import { showQRCodeDialog } from 'weixin/modules/openid';
+import { FormValidator, rules } from 'dilu';
+
 export class UserLoginDialog extends React.Component<any, any>{
     private _element: HTMLElement;
     private static _instance: UserLoginDialog;
+    private usernameElement: HTMLInputElement;
+    private passwordElement: HTMLInputElement;
+    private loginDialogElement: HTMLElement;
 
     private static get instance(): UserLoginDialog {
         if (!UserLoginDialog._instance) {
@@ -25,16 +32,38 @@ export class UserLoginDialog extends React.Component<any, any>{
     static hide() {
         this.instance._hide();
     }
-    login() {
+    showDialog(): any {
+        let weixin = adminApp.currentPage.createService(WeiXinService);
+        showQRCodeDialog({
+            title: '',
+            tips: '',
+            element: null,
+            mobilePageName: 'login',
+            callback(code: string) {
+                return weixin.login(code);
+            }
+        })
+    }
+    async login() {
         console.assert(adminApp.currentPage != null);
         let memberService = adminApp.currentPage.createService(MemberService);
-        memberService.login("18502146746", "1").then(o => {
+        memberService.login
+        let username = this.usernameElement.value;
+        let password = this.passwordElement.value;
+        let validator = new FormValidator(
+            { element: this.usernameElement, rules: [rules.required()] },
+            { element: this.passwordElement, rules: [rules.required()] }
+        )
+        if (await !validator.check()) {
+            return;
+        }
+        memberService.login(username, password).then(o => {
             location.reload();
         });
     }
     render() {
-        return (
-            <div className="modal fade" ref={(e: HTMLElement) => this._element = e}>
+        return [
+            <div key={10} className="modal fade" ref={(e: HTMLElement) => this._element = e}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -50,7 +79,8 @@ export class UserLoginDialog extends React.Component<any, any>{
                                     *用户名
                                 </label>
                                 <div className="col-sm-10">
-                                    <input className="form-control" />
+                                    <input className="form-control"
+                                        ref={(e: HTMLInputElement) => this.usernameElement = e || this.usernameElement} />
                                 </div>
                             </div>
                             <div className="form-group row">
@@ -58,7 +88,8 @@ export class UserLoginDialog extends React.Component<any, any>{
                                     *密码
                                 </label>
                                 <div className="col-sm-10">
-                                    <input className="form-control" />
+                                    <input className="form-control" type="password"
+                                        ref={(e: HTMLInputElement) => this.passwordElement = e || this.passwordElement} />
                                 </div>
                             </div>
                             <div className="form-group row">
@@ -76,10 +107,20 @@ export class UserLoginDialog extends React.Component<any, any>{
                                 </button>
                                 </div>
                             </div>
+                            <div className="form-group row">
+                                <div className="col-sm-12 text-center">
+                                    <img src="content/images/weixin_icon.png"
+                                        onClick={() => this.showDialog()}
+                                        style={{ width: 80 }} />
+                                    <h4>使用微信扫描二维码登录</h4>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>,
+            <div key={20} className="modal fade" ref={(e: HTMLElement) => this.loginDialogElement = e || this.loginDialogElement}>
             </div>
-        );
+        ];
     }
 }

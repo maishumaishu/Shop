@@ -14,7 +14,7 @@ import { UserLoginDialog } from 'adminComponents/userLoginDialog';
 import * as ui from 'ui';
 import 'jquery-ui';
 
-// let station = new StationService();
+UserLoginDialog.show();
 userApp.error.add((source, err: AppError) => {
     if (err.name == ErrorCodes.UserNotLogin) {
         UserLoginDialog.show();
@@ -22,6 +22,7 @@ userApp.error.add((source, err: AppError) => {
     }
     ui.alert({ title: 'USER ERROR', message: err.message });
 })
+
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData,
     showComponentPanel?: boolean,
@@ -34,8 +35,6 @@ export interface Props extends React.Props<MobilePageDesigner> {
 export interface State {
     editors: React.ReactElement<any>[],
     pageData: PageData,
-    // selectedComponentDisplayName?: string,
-    // selectedControlId?: string
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
@@ -65,7 +64,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         console.assert(pageData.footer.controls != null, 'footer controls is null.');
 
         this.state = { editors: [], pageData };
-        this.userStation = this.props.userStation; //this.props.elementPage.createService(UserStation);
+        this.userStation = this.props.userStation;
         let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
         if (!existsStyleControl) {
             this.userStation.pages.style().then(stylePageData => {
@@ -208,8 +207,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             let editorReactElement = React.createElement(editorType, { control, elementPage: control.elementPage } as EditorProps);
             ReactDOM.render(editorReactElement, editorElement);
         })
-
-
     }
 
     removeControl(controlId: string) {
@@ -417,8 +414,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                         <div ref={(e: HTMLElement) => this.editorsElement = e || this.editorsElement}>
                         </div>
                     }
-
-
                 </div>
                 <div className="clearfix">
                 </div>

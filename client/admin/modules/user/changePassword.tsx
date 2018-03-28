@@ -1,5 +1,6 @@
 ﻿import { Service, systemWeiXinAppId } from 'services/service';
 import { UserService, Seller } from 'adminServices/user';
+import { WeiXinService } from 'adminServices/weixin';
 import site from 'site';
 import QRCode = require('qrcode');
 import { WebSockentMessage } from 'weixin/common';
@@ -13,8 +14,10 @@ export default async function (page: chitu.Page) {
 
     requirejs([`css!${page.routeData.actionPath}.css`]);
 
-    var userService = page.createService(UserService);
+    let userService = page.createService(UserService);
     let seller = await userService.me()
+    let weixin = page.createService(WeiXinService);
+
     class AccountSettingPage extends React.Component<
         { seller: Seller }, { scaned: boolean, seller: Seller }>{
 
@@ -34,8 +37,8 @@ export default async function (page: chitu.Page) {
                     tips: '扫描二维码解绑微信号',
                     element: this.weixinBinding,
                     mobilePageName: 'unbinding',
-                    async callback(openId: string) {
-                        await userService.weixinUnbind(openId);
+                    async callback(code: string) {
+                        let result = await userService.weixinUnbind(code);
                         seller.OpenId = null;
                         it.setState(it.state);
                     }
@@ -45,10 +48,10 @@ export default async function (page: chitu.Page) {
                     tips: '扫描二维码绑定微信号',
                     element: this.weixinBinding,
                     mobilePageName: 'binding',
-                    async callback(openId: string) {
-                        console.assert(openId != null);
-                        await userService.weixinBind(openId);
-                        seller.OpenId = openId;
+                    async callback(code: string) {
+                        console.assert(code != null);
+                        let result = await weixin.bind(code);
+                        seller.OpenId = result.OpenId;
                         it.setState(it.state);
                     }
                 })

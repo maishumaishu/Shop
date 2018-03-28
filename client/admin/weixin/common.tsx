@@ -1,4 +1,4 @@
-export let socket_url = 'http://maishu.alinq.cn:8015';
+// export let socket_url = 'http://maishu.alinq.cn:8015';
 
 export function loadjs<T>(url) {
     return new Promise<T>((resolve, reject) => {

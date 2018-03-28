@@ -1,5 +1,5 @@
 import { parseUrlParams } from 'share/common';
-import { socket_url, loadjs } from 'common'
+import { loadjs } from 'common'
 import { WeiXinService } from 'services/weixin'
 import { Props as OpenIdPageProps, OpenIdPage } from 'weixin/modules/openid'
 import app from 'application';

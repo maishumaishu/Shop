@@ -91,39 +91,21 @@ export class UserService extends Service {
     }
     async members(args: wuzhui.DataSourceSelectArguments) {
 
-        let url = `${location.protocol}//${Service.config.serviceHost}/user/list`;
-        let users = await this.get<User[]>(url, args);
+        let url = `${Service.config.memberUrl}member/list`;
+        let users = await this.get<wuzhui.DataSourceSelectResult<UserInfo>>(url, args);
 
-        let ids = users.map(o => o._id);
-        let memberBalances = await this.get<{ Id: string, Balance: number }[]>(
-            Service.config.accountUrl + 'Account/GetAccountBalances',
-            { userIds: ids.join(',') }
-        );
 
-        let members = new Array<UserInfo>();//.dataItems;
-        for (let i = 0; i < users.length; i++) {
-            console.assert(users.length == memberBalances.length);
-
-            let u = {} as UserInfo;
-            let r = memberBalances[i];
-            if (r) {
-                u.Balance = r.Balance;
-                u.Id = r.Id;
-            }
-
-            u.Id = u.Id || users[i]._id;
-            u.Mobile = users[i].mobile;
-            u.Balance = u.Balance || 0;
-            members.push(u);
-        }
-
-        return members;
-        // let url = this.url('AdminMember/Member/GetUserInfos');
-        // return this.get<wuzhui.DataSourceSelectResult<UserInfo>>(url, args);
+        return users;
     }
     me(): Promise<Seller> {
         let url = `${Service.config.memberUrl}Seller/Me`;
-        return this.get<Seller>(url);
+
+        let url1 = `${Service.config.weixinUrl}Member/GetSeller`;
+        return Promise.all([this.get<Seller>(url), this.get<{ OpenId }>(url1)]).then(args => {
+            args[1] = args[1] || {} as any;
+            args[0].OpenId = args[1].OpenId;
+            return args[0];
+        })
     }
     weixinBind(openId: string) {
         let url = `${Service.config.memberUrl}Seller/Bind`;

@@ -1,6 +1,6 @@
 export const shopName = '好易微商城';
-export const serviceHost = 'service4.alinq.cn'; //'service.bailunmei.com';
-export const websocketUrl = "http://maishu.alinq.cn:8015";
+export const serviceHost = 'userservices.alinq.cn'; //'service4.alinq.cn'; //'service.bailunmei.com';
+export const websocketUrl = "http://maishu.alinq.cn:48015";
 export interface AppError extends Error {
     handled: boolean
 }

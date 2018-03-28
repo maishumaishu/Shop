@@ -1,5 +1,5 @@
 import { parseUrlParams, shopName } from 'share/common';
-import { socket_url, loadjs, WebSockentMessage } from 'common'
+import { loadjs, WebSockentMessage } from 'common'
 import { WeiXinService } from 'services/weixin'
 import { Props as OpenIdPageProps, OpenIdPage } from 'modules/openid'
 import app from 'application';

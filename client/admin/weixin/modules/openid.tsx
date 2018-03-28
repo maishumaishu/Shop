@@ -1,7 +1,6 @@
-import { parseUrlParams } from 'share/common';
-import { socket_url, loadjs, WebSockentMessage } from 'weixin/common'
+import { parseUrlParams, websocketUrl } from 'share/common';
+import { loadjs, WebSockentMessage } from 'weixin/common'
 import { WeiXinService } from 'services/weixin'
-import { websocketUrl } from 'share/common';
 import { Service, systemWeiXinAppId } from 'services/service';
 import app from 'application';
 import QRCode = require('qrcode');
@@ -35,14 +34,13 @@ export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fa
 
     async init() {
         let io = await loadjs<any>('socket.io');
-        let socket = io(socket_url);
-        this.socket = socket;
-        socket.on('connect', () => {
-            let msg: WebSockentMessage = { to: q.from, from: socket.id, action: `${action}_scan` }
-            socket.emit("weixin", msg);
+        this.socket = io(websocketUrl);
+        this.socket.on('connect', () => {
+            let msg: WebSockentMessage = { to: q.from, from: this.socket.id, action: `${action}_scan` }
+            this.socket.emit("weixin", msg);
         })
 
-        socket.on("weixin", (data: WebSockentMessage) => {
+        this.socket.on("weixin", (data: WebSockentMessage) => {
             data = data || {} as WebSockentMessage;
             if (data.action == `${action}_success`) {
                 this.state.status = 'success';
@@ -55,24 +53,8 @@ export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fa
         })
     }
 
-    async openId(): Promise<string> {
-        if (openid) {
-            return openid;
-        }
-
-        let weixin = this.props.weixin;
-        if (!q.code) {
-            throw new Error("Cannt get openid")
-        }
-
-        openid = await weixin.openId(q.code);
-        console.log(openid);
-        return openid;
-    }
-    async bind() {
-        let openId = await this.openId();
-        debugger;
-        let msg: WebSockentMessage = { to: q.from, from: this.socket.id, data: { openId }, action: `${action}_execute` };
+    async execute() {
+        let msg: WebSockentMessage = { to: q.from, from: this.socket.id, data: { code: q.code }, action: `${action}_execute` };
         this.socket.emit("weixin", msg);
     }
     cancel() {
@@ -88,7 +70,7 @@ export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fa
                     <button className="btn btn-primary btn-block"
                         ref={(e: HTMLButtonElement) => {
                             if (!e) return;
-                            ui.buttonOnClick(e, () => this.bind())
+                            ui.buttonOnClick(e, () => this.execute())
                         }}>{this.props.buttonText}</button>
                 </div>
             </div> : null;
@@ -112,14 +94,14 @@ export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fa
 var qrcodeDialog: QRCodeDialog
 
 /**
- * 显示二维码，让手机扫描，用于 PC 端
+ * 显示二维码对话框，让手机扫描，用于 PC 端
  * @param element 对话框元素 
  * @param mobilePageName 要打开的手机端页面名称
  * @param callback 获取到 openid 后的回调函数
  */
 export function showQRCodeDialog(options: {
     title: string, tips: string, element: HTMLElement,
-    mobilePageName: 'binding' | 'unbinding' | 'login', callback: (openid: string) => Promise<any>
+    mobilePageName: 'binding' | 'unbinding' | 'login', callback: (code: string) => Promise<any>
 }): Promise<any> {
 
     if (qrcodeDialog == null) {
@@ -150,19 +132,90 @@ export function showQRCodeDialog(options: {
                     let data: any = msg.data;
                     switch (msg.action) {
                         case `${action}_execute`:
-                            debugger;
-                            options.callback(data.openId)
+                            options.callback(data.code)
                                 .then(() => {
                                     // 发送消息，告诉手机端执行成功
                                     console.assert(msg.from != socket.id)
                                     qrcodeDialog.hide();
                                     socket.emit("weixin", { to: msg.from, form: socket.id, action: `${action}_success` });
-                                    
+
                                 })
                                 .catch(() => {
                                     // 发送消息，告诉手机端执行失败
                                     console.assert(msg.from != socket.id);
                                     qrcodeDialog.hide();
+                                    socket.emit("weixin", { to: msg.from, form: socket.id, action: `${action}_fail` });
+                                });
+                            break;
+                        case `${action}_scan`:
+                            qrcodeDialog.state.scaned = true;
+                            qrcodeDialog.setState(qrcodeDialog.state);
+                            break;
+                    }
+                })
+                socket.on('error', (err) => {
+                    reject(err)
+                })
+            },
+            (err) => reject(err)
+        )
+    })
+}
+
+/**
+ * 显示二维码，让手机扫描，用于 PC 端
+ */
+export function renderQRCode(options: {
+    title: string, tips: string, element: HTMLElement,
+    mobilePageName: 'binding' | 'unbinding' | 'login', callback: (openid: string) => Promise<any>
+}): Promise<any> {
+
+    let qrcodeElement = document.createElement('div');
+    qrcodeElement.innerHTML = "<img/>";
+    options.element.appendChild(qrcodeElement);
+
+
+    function setUrl(url: string) {
+        console.assert(qrcodeElement != null);
+        let qrcode = new QRCode(qrcodeElement.parentElement, { width: 200, height: 200, text: "" });
+        let q = qrcode as any;
+        q._oDrawing._elImage = qrcodeElement.querySelector('img');
+        console.log(url);
+        qrcode.makeCode(url);
+    }
+
+    return new Promise((resolve, reject) => {
+
+        requirejs(['socket.io'],
+            (io) => {
+                var socket = io(websocketUrl);
+                let { protocol, hostname, pathname, port } = location;
+                socket.on('connect', () => {
+                    console.log(socket.id);
+                    let appid = systemWeiXinAppId;
+                    let redirect_uri = encodeURIComponent(`${protocol}//${hostname}${pathname}weixin/?from=${socket.id}#${options.mobilePageName}`);
+                    let auth_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base#wechat_redirect`
+                    // qrcodeDialog.show(auth_url);
+                    setUrl(auth_url)
+                    resolve()
+                })
+                socket.on('weixin', (msg: WebSockentMessage) => {
+                    let data: any = msg.data;
+                    switch (msg.action) {
+                        case `${action}_execute`:
+                            debugger;
+                            options.callback(data.code)
+                                .then(() => {
+                                    // 发送消息，告诉手机端执行成功
+                                    console.assert(msg.from != socket.id)
+                                    qrcodeDialog.hide();
+                                    socket.emit("weixin", { to: msg.from, form: socket.id, action: `${action}_success` });
+
+                                })
+                                .catch(() => {
+                                    // 发送消息，告诉手机端执行失败
+                                    console.assert(msg.from != socket.id);
+                                    // qrcodeDialog.hide();
                                     socket.emit("weixin", { to: msg.from, form: socket.id, action: `${action}_fail` });
                                 });
                             break;
@@ -251,7 +304,7 @@ class QRCodeDialog extends React.Component<QRCodeDialogProps, QRCodeDialogState>
         ui.showDialog(this.dialogContainer);
     }
 
-    hide(){
+    hide() {
         ui.hideDialog(this.dialogContainer);
     }
 

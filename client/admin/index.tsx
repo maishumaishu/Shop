@@ -69,7 +69,7 @@ requirejs.config({
         formValidator: '../scripts/formValidator',
         hammer: '../scripts/hammer',
         jquery: '../scripts/jquery-2.1.3',
-        react: '../scripts/react',
+        react: 'https://cdn.bootcss.com/react/16.0.0/umd/react.development',//'../scripts/react',
         mobileControls: '../scripts/mobileControls',
         move: '../scripts/move',
         text: '../scripts/text',
@@ -87,10 +87,10 @@ requirejs.config({
         'bezier-easing': '../scripts/bezier-easing',
         'jquery.fileupload': '../scripts/jQuery.FileUpload/jquery.fileupload',
         'jquery.validate': '../scripts/jquery.validate',
-        'jquery-ui': '../scripts/jquery-ui',
+        'jquery-ui': 'https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min',//'../scripts/jquery-ui',
         'jquery.ui.widget': '../scripts/jquery.ui.widget',
         'qrcode': '../scripts/qrcode',
-        'react-dom': '../scripts/react-dom',
+        'react-dom': 'https://cdn.bootcss.com/react-dom/16.0.0/umd/react-dom.development',//'../scripts/react-dom',
         'prop-types': '../scripts/prop-types',
         'maishu-chitu': '../scripts/chitu',
         'chitu.mobile': '../scripts/chitu.mobile',
@@ -108,7 +108,7 @@ requirejs.config({
         'user': '../user',
         'adminComponents': 'components',
         'share': '../share',
-        'socket.io': 'http://maishu.alinq.cn:8015/socket.io/socket.io'
+        'socket.io': 'http://maishu.alinq.cn:48015/socket.io/socket.io'
     }
 });
 // requirejs(['css!content/jquery-ui-1.10.0.custom'])
