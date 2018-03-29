@@ -14,7 +14,8 @@ export default class MyEditor extends Editor<EditorProps, EditorState> {
         let { mode } = this.state;
         return (
             <div className="editor">
-                <div style={{ height: 30 }}>
+                暂无可用设置
+                {/* <div style={{ height: 30 }}>
                     <input name="mode" type='radio' checked={mode == 'normal'}
                         onChange={(e) => {
                             if ((e.target as HTMLInputElement).checked) {
@@ -34,7 +35,7 @@ export default class MyEditor extends Editor<EditorProps, EditorState> {
                             }
                         }} />
                     <span name="mode" style={{ paddingLeft: 10 }}>简洁模式</span>
-                </div>
+                </div> */}
             </div>
         );
     }

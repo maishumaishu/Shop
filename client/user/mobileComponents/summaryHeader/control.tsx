@@ -39,24 +39,24 @@ export default class SummaryHeaderControl extends common.Control<Props, State>{
     _render() {
         let { mode } = this.state;
         let props = this.props;
-        switch (mode) {
-            case 'simple':
-                return <SimpleHeader {...props}
-                    ref={(e) => {
-                        if (!e) return;
-                        e.state = this.state;
-                        e.setState(e.state);
-                    }} />;
-            default:
-            case 'normal':
-                return <NormalHeader {...props}
-                    ref={(e) => {
-                        if (!e) return;
-                        e.state = this.state;
-                        e.setState(e.state);
+        // switch (mode) {
+        //     case 'simple':
+        //         return <SimpleHeader {...props}
+        //             ref={(e) => {
+        //                 if (!e) return;
+        //                 e.state = this.state;
+        //                 e.setState(e.state);
+        //             }} />;
+        //     default:
+        //     case 'normal':
+        return <NormalHeader {...props}
+            ref={(e) => {
+                if (!e) return;
+                e.state = this.state;
+                e.setState(e.state);
 
-                    }} />;
-        }
+            }} />;
+        // }
     }
 }
 
