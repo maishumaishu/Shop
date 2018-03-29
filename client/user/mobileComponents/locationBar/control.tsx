@@ -4,7 +4,7 @@ import { app } from 'application';
 export interface State {
 }
 
-export interface Props extends ControlProps<LocationBar> {
+export interface Props extends ControlProps<LocationBarControl> {
     // showBalance?: boolean,// = false;
     // showLevel?: boolean,// = false;
     // showScore?: boolean,// = false;
@@ -12,13 +12,16 @@ export interface Props extends ControlProps<LocationBar> {
 }
 
 
-export default class LocationBar extends Control<Props, State>{
+export default class LocationBarControl extends Control<Props, State>{
     get persistentMembers() {
         return [] as any;
     }
     _render(h) {
+        /**
+         * 要在控件设置和控件大小相关的样式，例如 padding，margin，height
+         */
         return (
-            <div className="locationBar">
+            <div className="locationBar" style={{ padding: 14 }}>
                 <i className="icon-user pull-right"
                     onClick={() => app.redirect('user_index')}></i>
                 <div className="position interception">
