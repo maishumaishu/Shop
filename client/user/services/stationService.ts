@@ -177,6 +177,9 @@ export class StationService extends Service {
     // PageData
 
     private async fillPageData(pageData: PageData): Promise<PageData> {
+        if (pageData == null)
+            return null;
+            
         if (pageData.views == null && pageData['controls'] != null) {
             pageData.views = [{ controls: pageData['controls'] }];
         }
@@ -185,7 +188,7 @@ export class StationService extends Service {
         pageData.footer.controls = pageData.footer.controls || [];
         pageData.header = pageData.header || { controls: [] };
         pageData.header.controls = pageData.header.controls || [];
-        
+
         return pageData;
     }
 
@@ -201,7 +204,7 @@ export class StationService extends Service {
     }
     //============================================================
 
-    pageDataByName(name: string) {
+    pageDataByName(name: string): Promise<PageData> {
         let url = this.url('Page/GetPageDataByName');
         // let query = { name };
         return this.getByJson<PageData>(url, { name }).then(o => {
