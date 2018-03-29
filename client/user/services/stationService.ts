@@ -183,7 +183,9 @@ export class StationService extends Service {
 
         pageData.footer = pageData.footer || { controls: [] };
         pageData.footer.controls = pageData.footer.controls || [];
-
+        pageData.header = pageData.header || { controls: [] };
+        pageData.header.controls = pageData.header.controls || [];
+        
         return pageData;
     }
 
@@ -203,7 +205,7 @@ export class StationService extends Service {
         let url = this.url('Page/GetPageDataByName');
         // let query = { name };
         return this.getByJson<PageData>(url, { name }).then(o => {
-            return o;
+            return this.fillPageData(o);
         });
     }
 

@@ -125,8 +125,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         // 将 pageData 中的所以控件找出来，放入到 controlDatas
         (pageData.views || []).forEach(view => controlDatas.push(...view.controls || []));
         pageData.views = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.views || []));
-
         pageData.footer = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.footer || []));
+        pageData.header = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.header || {}));
 
         for (let i = 0; i < pageData.views.length; i++) {
             setControlValues(this.mobilePage, pageData.views[i].controls);

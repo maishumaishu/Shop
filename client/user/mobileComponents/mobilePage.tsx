@@ -34,6 +34,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
     private createdControlCount: number = 0;
 
     private footerElement: HTMLElement;
+    private headerElement: HTMLElement;
 
     controls: (Control<any, any> & { controlId: string, controlName: string })[];
 
@@ -151,7 +152,8 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                             for (let i = 0; i < controls.length; i++) {
                                 controls[i].selected = controls[i].controlId == o.controlId;
                             }
-                            this.props.designTime.controlSelected(c.control, c.controlType)
+                            this.props.designTime.controlSelected(c.control, c.controlType);
+                            event.preventDefault();
                         }
                     }
 
@@ -171,7 +173,8 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let headerControls = (pageData.header || { controls: [] }).controls || [];
         this.headerControlsCount = headerControls.length;
         return (
-            <header key="header" className="page-header">
+            <header key="header" className="page-header"
+                ref={(e: HTMLElement) => this.headerElement = e || this.headerElement}>
                 {this.renderControls(headerControls)}
             </header>
         )
@@ -181,7 +184,7 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
         return (
             <footer key="footer" className="page-footer"
-                ref={(e: HTMLElement) => this.footerElement = e}>
+                ref={(e: HTMLElement) => this.footerElement = e || this.footerElement}>
                 {this.renderControls(footerControls)}
             </footer>
         )
@@ -232,14 +235,14 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
         }
     }
 
-    calculateFooterHeight(pageData: PageData): number | null {
+    // calculateFooterHeight(pageData: PageData): number | null {
 
-        let footerControlHeight = 50;
-        let footerControls = (pageData.footer || { controls: [] }).controls || [];
-        let visibleControls = footerControls.filter(o => o.controlName != 'style');
-        let height = footerControlHeight * visibleControls.length;
-        return height;
-    }
+    //     let footerControlHeight = 50;
+    //     let footerControls = (pageData.footer || { controls: [] }).controls || [];
+    //     let visibleControls = footerControls.filter(o => o.controlName != 'style');
+    //     let height = footerControlHeight * visibleControls.length;
+    //     return height;
+    // }
 
     renderDesigntimeViews(pageData: PageData) {
         let sortableElement = (element: HTMLElement, viewIndex: number) => {
@@ -254,7 +257,9 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                     console.assert(controlName != null);
                     ui.helper.remove();
                     if (target == 'footer')
-                        pageData.footer.controls.push({ controlId: guid(), controlName, data: {} })
+                        pageData.footer.controls.push({ controlId: guid(), controlName, data: {} });
+                    else if (target == 'header')
+                        pageData.header.controls.push({ controlId: guid(), controlName, data: {} });
                     else
                         pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
 
@@ -300,6 +305,12 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                             let height = this.footerElement.offsetHeight;
                             e.style.paddingBottom = `${height}px`;
                         }
+
+                        if (this.headerElement) {
+                            let height = this.headerElement.offsetHeight;
+                            e.style.paddingTop = `${height}px`;
+                        }
+
                     }, 500);
                 }}
             >
