@@ -1,6 +1,6 @@
 export interface ComponentDefine {
     name: string, displayName: string, icon: string, introduce: string,
-    target?: 'view' | 'footer'
+    target?: 'view' | 'footer' | 'header'
 }
 // type T = { [propName:string]: Array<ComponentDefine> };
 // let a: T;
@@ -26,6 +26,13 @@ let componets: Array<ComponentDefine> = [
         icon: "icon-shopping-cart",
         introduce: "在底部显示购物车图标，以及结算按钮",
         target: 'footer'
+    },
+    {
+        name: "locationBar",
+        displayName: '定位顶栏',
+        icon: "icon-map-marker",
+        introduce: "在顶部显示购物车图标，显示用户位置",
+        target: 'header'
     }
 ];
 
