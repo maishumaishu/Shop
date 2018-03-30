@@ -215,6 +215,12 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                             let height = this.footerElement.offsetHeight;
                             e.style.paddingBottom = `${height}px`;
                         }
+
+                        if (this.headerElement) {
+                            let height = this.headerElement.offsetHeight;
+                            e.style.paddingTop = `${height}px`;
+                        }
+
                     }, 500);
                 }}>
                 {this.renderControls(o.controls)}
