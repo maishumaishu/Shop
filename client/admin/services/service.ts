@@ -1,6 +1,7 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
 import { urlParams, parseUrlParams, serviceHost } from 'share/common';
+import BaseService from 'share/service';
 export { guid, imageUrl, parseUrlParams, formatDate, formatDateTime } from 'share/common';
 export let systemWeiXinAppId = 'wx30ac5294d9f38751';
 
@@ -15,7 +16,7 @@ let remote_service_host = serviceHost;
 
 
 let { protocol } = location;
-export class Service extends chitu.Service {
+export class Service extends BaseService {
     static error = chitu.Callbacks<Service, ServiceError>()
     static config = {
         serviceHost: remote_service_host,
@@ -45,58 +46,8 @@ export class Service extends chitu.Service {
         }
 
 
-        return super.ajax(url, options).then(data => {
-            if (data != null && data['DataItems'] != null && data['TotalRowCount'] != null) {
-                let d: any = {};
-                let keys = Object.keys(data);
-                for (let i = 0; i < keys.length; i++) {
-                    let key = keys[i];
-                    let k = (key as string)[0].toLowerCase() + (key as string).substr(1);
-                    d[k] = data[key];
-                }
-
-                return d;
-            }
-
-            return data;
-        });
+        return super.ajax(url, options);
     }
-
-    getByJson<T>(url: string, data?: any) {
-        data = data || {};
-        url = `${url}?${JSON.stringify(data)}`;
-        let headers = { "content-type": 'application/json' };
-        return this.ajax<T>(url, { headers, method: 'get' })
-    }
-
-    putByJson<T>(url: string, data?: any) {
-        let headers = { "content-type": 'application/json' };
-        return this.ajax<T>(url, { headers, data, method: 'put' });
-    }
-
-    postByJson<T>(url: string, data?: any) {
-        let headers = { "content-type": 'application/json' };
-        return this.ajax<T>(url, { headers, data, method: 'post' });
-    }
-
-    deleteByJson<T>(url: string, data: any) {
-        let headers = { "content-type": 'application/json' };
-        return this.ajax<T>(url, { headers, data, method: 'delete' });
-    }
-
-
-    get<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { data, method: 'get' })
-    }
-
-    put<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { method: 'put' });
-    }
-
-    post<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { method: 'post' });
-    }
-
 
     static get appToken() {
         return urlParams.appKey;
