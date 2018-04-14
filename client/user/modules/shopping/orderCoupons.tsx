@@ -4,7 +4,7 @@ import * as ui from 'ui';
 
 export default function (page: chitu.Page) {
 
-    let orderId = page.routeData.values.orderId;
+    let orderId = page.data.orderId;
     if (!orderId) throw new Error('orderId cannt be empty.');
 
     let shopping = page.createService(ShoppingService);

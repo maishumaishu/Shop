@@ -137,7 +137,7 @@ export default function (page: chitu.Page) {
     }
 
     let shop = page.createService(ShoppingService);
-    shop.order(page.routeData.values.id).then(order => {
+    shop.order(page.data.id).then(order => {
         ReactDOM.render(<OrderDetailPage order={order} />, page.element);
     })
 }

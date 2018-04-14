@@ -8,19 +8,38 @@ import { guid, StationService } from 'adminServices/station';
 import { StationService as UserStation } from 'userServices/stationService';
 import { MemberService } from 'userServices/memberService';
 import { PropTypes } from 'prop-types';
-import { app as userApp } from 'user/application';
+import { Application as UserApplication } from 'user/application';
+import userSiteMap from 'user/siteMap';
 import { AppError, ErrorCodes } from 'share/common';
 import { UserLoginDialog } from 'adminComponents/userLoginDialog';
 import * as ui from 'ui';
 import 'jquery-ui';
 
-userApp.error.add((source, err: AppError) => {
-    if (err.name == ErrorCodes.UserNotLogin) {
-        UserLoginDialog.show();
-        return;
+
+//app as userApp, 
+// userApp.error.add((source, err: AppError) => {
+//     if (err.name == ErrorCodes.UserNotLogin) {
+//         UserLoginDialog.show();
+//         return;
+//     }
+//     ui.alert({ title: 'USER ERROR', message: err.message });
+// })
+
+class MyUserApplication extends UserApplication {
+    private screenElement: HTMLElement;
+    constructor(screenElement: HTMLElement) {
+        super();
+        this.screenElement = screenElement;
     }
-    ui.alert({ title: 'USER ERROR', message: err.message });
-})
+    createPageElement(pageName: string) {
+        let element = super.createPageElement(pageName);
+        this.screenElement.appendChild(element);
+        return element;
+        // return this.screenElement;
+    }
+}
+
+
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData,
@@ -37,6 +56,7 @@ export interface State {
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
+    userApp: MyUserApplication;
     private virtualMobile: VirtualMobile;
     private editorsElement: HTMLElement;
     private currentEditor: HTMLElement;
@@ -49,7 +69,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private editorName: string;
     private userStation: UserStation;
 
-    saved: chitu.Callback<MobilePageDesigner, { pageData: PageData }>;
+    saved: chitu.Callback1<MobilePageDesigner, { pageData: PageData }>;
 
     constructor(props: Props) {
         super(props);
@@ -80,7 +100,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             this.loadMenu();
         }
 
-        this.saved = chitu.Callbacks();
+        this.saved = chitu.Callbacks<MobilePageDesigner, { pageData: PageData }>();
+
     }
 
     async loadMenu() {
@@ -243,18 +264,35 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
         console.assert(screenElement != null);
 
-        let emptyPage = userApp.createEmptyPage(screenElement);
-        ReactDOM.render(<MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
-            elementPage={emptyPage}
-            designTime={{
-                controlSelected: (a, b) => this.selecteControl(a, b)
-            }} />, screenElement);
 
-        $(this.allContainer).find('li').draggable({
-            connectToSortable: $(this.element).find("section"),
-            helper: "clone",
-            revert: "invalid"
-        });
+        userSiteMap.nodes.emtpy.action = (page: chitu.Page) => {
+            ReactDOM.render(<MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
+                elementPage={page}
+                designTime={{
+                    controlSelected: (a, b) => this.selecteControl(a, b)
+                }} />, page.element);
+
+            $(this.allContainer).find('li').draggable({
+                connectToSortable: $(page.element).find("section"),
+                helper: "clone",
+                revert: "invalid"
+            });
+        }
+
+        if (this.userApp == null) {
+            this.userApp = new MyUserApplication(screenElement);
+        }
+
+        //==============================================
+        // 关闭所以页面
+        while (this.userApp.currentPage != null) {
+            this.userApp.currentPage.close();
+        }
+        //==============================================
+
+        this.userApp.showPage(userSiteMap.nodes.emtpy);
+
+
     }
 
     render() {

@@ -9,7 +9,7 @@ export default function (page: chitu.Page) {
         title: string
     }
 
-    let callback: (invoice: string) => void = page.routeData.values.callback;
+    let callback: (invoice: string) => void = page.data.callback;
     class InvoicePage extends React.Component<InvoicePageProps, InvoicePageState>{
         constructor(props) {
             super(props);

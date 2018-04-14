@@ -5,9 +5,10 @@ import { StationService } from 'adminServices/station';
 import { RouteValue } from 'modules/station/page';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
+import siteMap from 'siteMap';
 
 export default function (page: chitu.Page) {
-    requirejs([`css!${page.routeData.actionPath}.css`]);
+    requirejs([`css!${page.name}.css`]);
     page.element.className = 'admin-pc';
     ReactDOM.render(<Page />, page.element);
 }
@@ -32,12 +33,12 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
         })
     }
     private showPage(pageId?: string) {
-        var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
-        var url = 'station/page';
-        if (pageId)
-            url = url + '?pageId=' + pageId;
+        // var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
+        // var url = 'station/page';
+        // if (pageId)
+        //     url = url + '?pageId=' + pageId;
 
-        app.redirect(url, routeValue)
+        app.redirect(siteMap.nodes["station/page"], { pageId });
     }
     private pageSave(pageData: PageData) {
     }
@@ -47,8 +48,8 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     }
     private selecteTemplate(template: TemplatePageData) {
         var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
-        let url = 'station/page?templateId=' + template._id;
-        app.redirect(url, routeValue)
+        // let url = 'station/page?templateId=' + template._id;
+        app.redirect(siteMap.nodes["station/page"], { templateId: template._id });
     }
     componentDidMount() {
         let self = this;
@@ -158,7 +159,7 @@ class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzh
         if (pageId)
             url = url + '?pageId=' + pageId;
 
-        app.redirect(url, routeValue)
+        app.redirect(siteMap.nodes["station/page"], routeValue)
     }
     private pageSave(pageData: PageData) {
     }

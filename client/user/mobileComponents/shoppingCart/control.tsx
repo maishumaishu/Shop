@@ -5,6 +5,7 @@ import { ShoppingService } from 'userServices/shoppingService';
 import { StationService } from 'userServices/stationService';
 import { userData } from 'userServices/userData';
 import { app, defaultNavBar } from 'user/site';
+import siteMap from 'siteMap';
 
 type ControlStatus = 'normal' | 'edit'
 let status = new chitu.ValueStore<ControlStatus>('normal');
@@ -212,11 +213,11 @@ export default class ShoppingCartControl extends Control<
 
 
         ShoppingCartService.items.add(this.on_shoppingCartChanged, this);
-        this.elementPage.active.add(() => {
+        this.elementPage.shown.add(() => {
             this.on_shoppingCartChanged(ShoppingCartService.items.value, this);
             ShoppingCartService.items.add(this.on_shoppingCartChanged, this);
         })
-        this.elementPage.deactive.add(() => {
+        this.elementPage.hidden.add(() => {
             ShoppingCartService.items.remove(this.on_shoppingCartChanged);
         })
         this.on_shoppingCartChanged(ShoppingCartService.items.value, this);
@@ -368,7 +369,7 @@ export default class ShoppingCartControl extends Control<
 
         let result = this.shop.createOrder(productIds, quantities)
             .then((order) => {
-                app.redirect(`shopping_orderProducts?id=${order.Id}`)
+                app.redirect(siteMap.nodes.shopping_orderProducts, { id: order.Id });//shopping_orderProducts
             })
 
         return result;

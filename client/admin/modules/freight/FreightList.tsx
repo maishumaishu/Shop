@@ -166,7 +166,7 @@ export default function (page: chitu.Page) {
 
     let freightListPage: FreightListPage;
     ReactDOM.render(<FreightListPage ref={(e) => freightListPage = e || freightListPage}
-        solutionId={page.routeData.values.id} name={page.routeData.values.name} />, page.element);
+        solutionId={page.data.id} name={page.data.name} />, page.element);
 
     page.showing.add((sender, args) => {
         freightListPage.state.name = args.name;

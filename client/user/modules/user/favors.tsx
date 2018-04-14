@@ -2,7 +2,7 @@ import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { app } from 'site';
 import { DataList } from 'user/components/dataList';
-
+import siteMap from 'user/siteMap';
 
 export default function (page: chitu.Page) {
     let shop = page.createService(ShoppingService);
@@ -28,7 +28,7 @@ export default function (page: chitu.Page) {
         }
 
         showProduct(productId: string) {
-            app.redirect(`#home_product?id=${productId}`);
+            app.redirect(siteMap.nodes.home_product, { id: productId });
         }
         loadFavorProducts(pageIndex: number) {
             if (pageIndex > 0) {

@@ -1,14 +1,17 @@
-import { defaultNavBar } from 'site';
+import { defaultNavBar } from 'user/site';
 import { MemberService } from 'userServices/memberService';
-import { app } from 'site';
+import { app } from 'user/site';
 import { FormValidator, rules } from 'dilu';
+import { Page } from 'user/application';
 
-export default function (page: chitu.Page) {
+export default function (page: Page) {
     let member = page.createService(MemberService);
     let usernameInput: HTMLInputElement;
     let passwordInput: HTMLInputElement;
     let formElement: HTMLFormElement;
-
+    
+    page.loadCSS();
+    
     class UserLoginPage extends React.Component<any, any> {
         private validator: FormValidator;
         async login() {
@@ -67,7 +70,7 @@ export default function (page: chitu.Page) {
         }
     }
 
-    let returnString = page.routeData.values.reutrn || 'user_index';
+    let returnString = page.data.reutrn || 'user_index';
 
     ReactDOM.render(<UserLoginPage />, page.element);
 }

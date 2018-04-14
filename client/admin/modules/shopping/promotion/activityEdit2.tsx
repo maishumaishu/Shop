@@ -13,7 +13,7 @@ export default function (page: chitu.Page) {
     let shopping = page.createService(ShoppingService);
     let activity = page.createService(ActivityService);
 
-    requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+    requirejs([`text!${page.name}.html`], (html) => {
         page.element.innerHTML = html;
 
         let dlg_product = page.element.querySelector('[name="dlg_product"]') as HTMLElement;
@@ -27,7 +27,7 @@ export default function (page: chitu.Page) {
         page.element.appendChild(productSelectorElement);
         ReactDOM.render(<ProductSelectDialog ref={(e) => productSelectorDialog = e || productSelectorDialog} shopping={shopping} />, productSelectorElement);
 
-        page_load(page, page.routeData.values);
+        page_load(page, page.data);
     });
 
     function page_load(page: chitu.Page, args) {

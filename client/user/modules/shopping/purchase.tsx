@@ -2,6 +2,7 @@ import { defaultNavBar, app, formatDate } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { AccountService } from 'userServices/accountService';
 import * as ui from 'ui';
+import siteMap from 'siteMap';
 
 
 export default function (page: chitu.Page) {
@@ -83,7 +84,7 @@ export default function (page: chitu.Page) {
                                         if (!o) return;
                                         o.onclick = ui.buttonOnClick(() => {
                                             return this.balancePurchase(order).then(() => {
-                                                app.redirect('shopping_orderList');
+                                                app.redirect(siteMap.nodes.shopping_orderList);//'shopping_orderList'
                                             });
                                         })
                                     }}>立即支付</button>
@@ -94,7 +95,7 @@ export default function (page: chitu.Page) {
         }
     }
 
-    shopping.order(page.routeData.values.id).then(order => {
+    shopping.order(page.data.id).then(order => {
         ReactDOM.render(<PurchasePage order={order} />, page.element);
     })
 }

@@ -92,7 +92,7 @@ export default async function (page: Page) {
     }
 
     let shop = page.createService(ShoppingService);
-    let categoryId = page.routeData.values.categoryId;
+    let categoryId = page.data.categoryId;
 
 
     let productListView: ProductListView;

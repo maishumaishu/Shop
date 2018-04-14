@@ -1,6 +1,7 @@
 import { componentsDir, Control, editor, ControlState, ControlProps } from 'mobileComponents/common';
 import { app } from 'user/site';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
+import siteMap from 'siteMap';
 
 export interface MenuNode {
     name: string,
@@ -53,7 +54,7 @@ export default class MenuControl extends Control<Props, State>{
     }
 
     private isShoppingCart(routeString: string) {
-        var routeData = app.parseRouteString(routeString);
+        var routeData = app.parseUrl(routeString);
         if (routeData.pageName == 'shopping.shoppingCart') {
             return true;
         }
@@ -81,14 +82,14 @@ export default class MenuControl extends Control<Props, State>{
             <ul className="menu">
                 {menuNodes.map((o, i) => {
                     let itemWidth = 100 / menuNodes.length;
-                    let routeString = o.url.startsWith('#') ? o.url.substr(1) : o.url;
+                    // let routeString = o.url.startsWith('#') ? o.url.substr(1) : o.url;
 
-                    var routeData = app.parseRouteString(routeString);
+                    var routeData = app.parseUrl(o.url);
                     let isShoppingCart = routeData.pageName == 'shopping.shoppingCart'
                     let isActive = this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
                     return (
                         <li key={i} style={{ width: `${itemWidth}%` }}>
-                            <div onClick={() => app.redirect(routeString)} className={isActive ? 'text-primary' : null}>
+                            <div onClick={() => app.redirect(siteMap.nodes[routeData.pageName])} className={isActive ? 'text-primary' : null}>
                                 <i className={o.icon ? o.icon : EMPTY_ICON}></i>
                                 {o.name}
                             </div>

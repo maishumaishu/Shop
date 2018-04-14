@@ -2,6 +2,7 @@ import { defaultNavBar, app } from 'site';
 import { MobileBindingPageArguments } from 'modules/user/accountSecurity/mobileBinding';
 import { MemberService } from 'userServices/memberService';
 import { FormValidator, rules } from 'dilu';
+import siteMap from 'siteMap';
 
 export default function (page: chitu.Page) {
     class IndexPage extends React.Component<{ userInfo: UserInfo }, { userInfo: UserInfo }>{
@@ -16,7 +17,7 @@ export default function (page: chitu.Page) {
                     this.setState(this.state);
                 }
             }
-            app.redirect('user_accountSecurity_mobileBinding', args);
+            app.redirect(siteMap.nodes.user_accountSecurity_mobileBinding, args);
         }
         render() {
             let userInfo = this.state.userInfo;

@@ -1,10 +1,17 @@
 import * as chitu from 'maishu-chitu';
 import * as ui from 'ui';
 
+
 export class Application extends chitu.Application {
 
+    static siteMap = {
+        nodes: {
+
+        }
+    }
+
     constructor() {
-        super()
+        super(Application.siteMap)
 
         this.error.add((app, err) => this.on_error(app, err));
     }

@@ -3,6 +3,7 @@ import { ShoppingService } from 'services/shoppingService';
 import { FormValidator, rules } from 'dilu';
 import { RegionsPageRouteValues } from 'modules/user/regions';
 import * as ui from 'ui';
+import siteMap from 'user/siteMap';
 
 export interface ReceiptEditPageArguments {
     id?: string,
@@ -14,7 +15,7 @@ export default async function (page: chitu.Page) {
     let shop = page.createService(ShoppingService);
 
 
-    let routeValues = page.routeData.values as ReceiptEditPageArguments;
+    let routeValues = page.data as ReceiptEditPageArguments;
     let receiptInfo: ReceiptInfo = await getReceiptInfo(routeValues, shop);
 
     let receiptEditPage: ReceiptEditPage;
@@ -23,7 +24,7 @@ export default async function (page: chitu.Page) {
 
     page.showing.add(async () => {
         receiptEditPage.validator.clearErrors();
-        let receiptInfo: ReceiptInfo = await getReceiptInfo(page.routeData.values, shop);
+        let receiptInfo: ReceiptInfo = await getReceiptInfo(page.data as ReceiptEditPageArguments, shop);
         receiptEditPage.state.receiptInfo = receiptInfo;
         receiptEditPage.setState(receiptEditPage.state);
     })
@@ -127,7 +128,7 @@ class ReceiptEditPage extends React.Component<
                 this.setState(this.state);
             }
         };
-        app.redirect('user_regions', routeValues);
+        app.redirect(siteMap.nodes.user_regions, routeValues);
     }
     render() {
         let receiptInfo = this.state.receiptInfo;//请选择地区

@@ -9,7 +9,7 @@ export interface RegionsPageRouteValues {
 }
 export default async function (page: chitu.Page) {
     let shop = page.createService(ShoppingService);
-    let routeValues = (page.routeData.values || {}) as RegionsPageRouteValues;
+    let routeValues = (page.data || {}) as RegionsPageRouteValues;
     let { city, province, county } = routeValues;
 
     let provinces = await shop.provinces();
@@ -23,7 +23,7 @@ export default async function (page: chitu.Page) {
         });
 
     page.showing.add((sender) => {
-        let values = sender.routeData.values as RegionsPageRouteValues;
+        let values = sender.data as RegionsPageRouteValues;
         regionsPage.state.currentCity = values.city;
         regionsPage.state.currentCounty = values.county;
         regionsPage.state.currentProvince = values.province;

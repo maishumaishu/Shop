@@ -1252,8 +1252,8 @@ export class PromotionRangeComponent extends React.Component<
 
 
 export default async function (page: chitu.Page) {
-    requirejs([`css!${page.routeData.actionPath}`]);
-    let activityId = page.routeData.values.id;
+    requirejs([`css!${page.name}`]);
+    let activityId = page.data.id;
     let activity = page.createService(ActivityService);
     let { promotions } = await Promise.all([activity.promotions(activityId)])
         .then(arr => ({

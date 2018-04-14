@@ -120,8 +120,7 @@ requirejs(['build'], function () {
         window['h'] = React.createElement;
 
         app.default.run();
-        if (!location.hash)
-            (app.default as chitu.Application).redirect('user/login');
+
     });
 })
 

@@ -1,5 +1,6 @@
 import { Service } from 'services/service';
 import app from 'application';
+import siteMap from 'siteMap';
 
 
 let container = document.createElement('div');
@@ -41,7 +42,7 @@ Service.error.add((sender, err) => {
             //     app.redirect('user_login', { return: currentPage.routeData.routeString });
             // }
             //========================================================
-            app.redirect('user_login', { return: currentPage.routeData.routeString });
+            app.redirect(siteMap.nodes["user/login"], { return: currentPage.name });
             break;
         case '725':
             ui.alert({ title: '错误', message: 'application-key 配置错误' });

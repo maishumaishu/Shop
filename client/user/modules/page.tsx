@@ -3,7 +3,7 @@ import { MobilePage } from 'mobileComponents/mobilePage';
 
 export default async function (page: chitu.Page) {
 
-    let { pageId } = page.routeData.values;
+    let { pageId } = page.data;
     let station = page.createService(StationService);
 
     let result = await Promise.all([station.pageData(pageId), station.pages.style(), station.pages.menu()]);

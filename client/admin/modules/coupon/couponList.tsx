@@ -3,6 +3,7 @@ import { ShoppingService } from 'adminServices/shopping';
 import site from 'site';
 import app from 'application';
 import * as wz from 'myWuZhui';
+import siteMap from 'siteMap';
 
 export default function (page: chitu.Page) {
 
@@ -50,7 +51,7 @@ export default function (page: chitu.Page) {
                         // itemEditor: this.itemEditor,
                         leftButtons: (dataItem: Coupon) => [
                             <button className="btn btn-minier btn-info"
-                                onClick={() => app.redirect(`coupon/couponEdit?id=${dataItem.Id}`)}>
+                                onClick={() => app.redirect(siteMap.nodes["coupon/couponEdit"], { id: dataItem.Id })}>
                                 <i className="icon-pencil"></i>
                             </button>
                         ],
@@ -69,7 +70,7 @@ export default function (page: chitu.Page) {
                                 <a>全部</a>
                             </li>
                             <li data-bind="visible:currentIndex()==0" className="pull-right">
-                                <button onClick={() => app.redirect('coupon/couponEdit')} className="btn btn-sm btn-primary" title="点击添加优惠券">
+                                <button onClick={() => app.redirect(siteMap.nodes.couponEdit)} className="btn btn-sm btn-primary" title="点击添加优惠券">
                                     <i className="icon-plus" />
                                     <span>添加</span>
                                 </button>
@@ -90,9 +91,9 @@ export default function (page: chitu.Page) {
 // let JData = window['JData'];
 
 // export default function (page: chitu.Page) {
-//     requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+//     requirejs([`text!${page.name}.html`], (html) => {
 //         page.element.innerHTML = html;
-//         page_load(page, page.routeData.values);
+//         page_load(page, page.data);
 //     })
 // }
 

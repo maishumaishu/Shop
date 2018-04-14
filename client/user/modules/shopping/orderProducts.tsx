@@ -4,6 +4,7 @@ import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { AccountService } from 'userServices/accountService';
 import { userData } from 'userServices/userData';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
+import siteMap from 'siteMap';
 
 export default async function (page: chitu.Page) {
 
@@ -45,12 +46,12 @@ export default async function (page: chitu.Page) {
             return shop.confirmOrder(orderId, remark, invoice).then(() => {
                 let productIds = order.OrderDetails.map(o => o.ProductId);
                 shoppingCart.removeItems(productIds);
-                app.redirect(`shopping_purchase?id=${order.Id}`);
+                app.redirect(siteMap.nodes.shopping_purchase, { id: orderId })// `shopping_purchase?id=${order.Id}`);
             });
         }
         private showReceiptList() {
             let routeValue: ReceiptListRouteValues = { callback: this.setAddress, orderId: this.state.order.Id };
-            app.redirect('user_receiptList', routeValue);
+            app.redirect(siteMap.nodes.user_receiptList, routeValue);//'user_receiptList'
         }
         render() {
             let order = this.state.order;
@@ -141,7 +142,7 @@ export default async function (page: chitu.Page) {
                         : null}
 
                     <div className="container"
-                        onClick={() => app.showPage('shopping_invoice', {
+                        onClick={() => app.showPage(siteMap.nodes.shopping_invoice, {
                             callback: (invoice: string) => {
                                 this.state.order.Invoice = invoice;
                                 this.setState(this.state);
@@ -194,7 +195,7 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let id = page.routeData.values.id;
+    let id = page.data.id;
     let order = await shop.order(id);
     ReactDOM.render(<OrderPage order={order} balance={userData.balance.value} />, page.element)
 }

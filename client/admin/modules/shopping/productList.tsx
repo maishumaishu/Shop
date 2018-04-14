@@ -6,6 +6,7 @@ import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import tips from 'tips';
 import 'wuzhui';
+import siteMap from 'siteMap';
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
 type ProductStock = { unlimit: boolean, stock: number, productId: string, productName: string };
@@ -295,7 +296,7 @@ class Page extends React.Component<{}, PageState>{
 
                         </li>
                         <li data-bind="visible:tabs.current() == 'all'" className="pull-right">
-                            <button onClick={() => app.redirect('shopping/product/productEdit')} className="btn btn-primary btn-sm pull-right">
+                            <button onClick={() => app.redirect(siteMap.nodes.productEdit)} className="btn btn-primary btn-sm pull-right">
                                 <i className="icon-plus" />
                                 <span>添加</span>
                             </button>
@@ -475,11 +476,11 @@ class OperationField<T> extends wuzhui.CustomField<T> {
                         <i className="icon-copy" />
                     </button>
                     <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
-                        onClick={() => { app.redirect(`shopping/product/productEdit?id=${dataItem.Id}`) }}>
+                        onClick={() => { app.redirect(siteMap.nodes["shopping/product/productEdit"], { id: dataItem.Id }) }}>
                         <i className="icon-pencil"></i>
                     </button>
                     <button className="btn btn-minier btn-warning" title={tips.clickAddRegularProduct}
-                        onClick={() => app.redirect(`shopping/product/productEdit?parentId=${dataItem.Id}`)}>
+                        onClick={() => app.redirect(siteMap.nodes["shopping/product/productEdit"], { id: dataItem.Id })}>
                         <i className="icon-plus"></i>
                     </button>
                     <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}

@@ -12,7 +12,7 @@ const input_max_width = 300;
 
 export default async function (page: chitu.Page) {
 
-    requirejs([`css!${page.routeData.actionPath}.css`]);
+    requirejs([`css!${page.name}.css`]);
 
     let userService = page.createService(UserService);
     let seller = await userService.me()

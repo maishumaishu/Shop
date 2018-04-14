@@ -8,9 +8,9 @@ import { VirtualMobile } from 'virtualMobile';
 let station = new StationService();
 
 export default async function (page: chitu.Page) {
-    requirejs([`css!${page.routeData.actionPath}.css`]);
+    requirejs([`css!${page.name}.css`]);
 
-    let { pageId, templateId } = page.routeData.values;
+    let { pageId, templateId } = page.data;
     var pages = await Promise.all([station.pageData(pageId), station.pages.style(), station.pages.menu()])
     pages[0].footer = pages[0].footer || { controls: [] };
     pages[1].footer = pages[1].footer || { controls: [] };

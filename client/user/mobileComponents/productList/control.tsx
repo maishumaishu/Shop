@@ -4,6 +4,7 @@ import { ShoppingCartService } from 'userServices/shoppingCartService';
 import { ShoppingService } from 'userServices/shoppingService';
 import { ProductImage } from 'user/components/productImage';
 import { app } from 'site';
+import siteMap from 'siteMap';
 
 // let { ImageBox } = controls;
 export class Data {
@@ -178,7 +179,7 @@ export default class ProductListControl extends Control<Props, State> {
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
                     <div key={o.Id} className="product single">
-                        <div className={leftClassName} onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
+                        <div className={leftClassName} onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                             <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
                                 ref={(e: HTMLImageElement) => {
                                     if (!e) return;
@@ -187,7 +188,7 @@ export default class ProductListControl extends Control<Props, State> {
                                 }} />
                         </div>
                         <div className={`content ${rightClassName}`}>
-                            <div className="name interception" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
+                            <div className="name interception" onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                                 {o.Name}
                             </div>
                             {displayTitle ?
@@ -217,10 +218,10 @@ export default class ProductListControl extends Control<Props, State> {
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map((o, i) =>
                     <div key={o.Id} className="product double col-xs-6">
-                        <div onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
+                        <div onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                             <ProductImage key={i} product={o} />
 
-                            <div className="name" onClick={() => app.redirect(`home_product?id=${o.Id}`)}>
+                            <div className="name" onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                                 {o.Name}
                             </div>
                             <div className="price-bar" onClick={(e) => e.stopPropagation()}>

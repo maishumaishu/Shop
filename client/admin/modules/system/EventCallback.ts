@@ -53,8 +53,8 @@
 // }
 
 // export default function (page: chitu.Page) {
-//     requirejs([`text!${page.routeData.actionPath}.html`], (html) => {
+//     requirejs([`text!${page.name}.html`], (html) => {
 //         page.element.innerHTML = html;
-//         page_load(page, page.routeData.values);
+//         page_load(page, page.data);
 //     })
 // }

@@ -15,7 +15,7 @@ const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
 
-    requirejs([`css!${page.routeData.actionPath}`]);
+    requirejs([`css!${page.name}`]);
     var editorId = guid();
 
     type PageState = {
@@ -69,7 +69,7 @@ export default function (page: chitu.Page) {
             this.state.product.Introduce = this.introduceInput.value;
             this.state.product.Fields = this.fieldPropertiies.state.properties;
             this.state.product.Arguments = this.argumentsProperties.state.properties;
-            return shopping.saveProduct(this.state.product, page.routeData.values.parentId).then(data => {
+            return shopping.saveProduct(this.state.product, page.data.parentId).then(data => {
                 this.state.product.Id = data.Id;
                 // this.setState(this.state);
             })
@@ -306,7 +306,7 @@ export default function (page: chitu.Page) {
 
     var element = document.createElement('div');
     page.element.appendChild(element);
-    var productId = page.routeData.values.id || page.routeData.values.parentId;
+    var productId = page.data.id || page.data.parentId;
     let p: Promise<Product>;
     if (productId) {
         p = shopping.product(productId);
@@ -318,7 +318,7 @@ export default function (page: chitu.Page) {
     }
 
     p.then((product) => {
-        if (page.routeData.values.parentId)
+        if (page.data.parentId)
             product.Id = undefined;
 
         ReactDOM.render(<ProductEditPage product={product} />, element);

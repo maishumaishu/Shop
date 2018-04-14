@@ -6,16 +6,16 @@ import { Page } from 'application';
 
 export default async function (page: Page) {
     var shopping = page.createService(ShoppingService);
-    let product = await shopping.product(page.routeData.values.id);
+    let product = await shopping.product(page.data.id);
 
     let mobilePage: MobilePage;
 
-    let pageData = await createPageData(shopping, page.routeData.values.id);
+    let pageData = await createPageData(shopping, page.data.id);
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} ref={e => mobilePage = e || mobilePage} />, page.element);
 
     page.showing.add(async (sender: Page, args) => {
         sender.showLoading();
-        let pageData = await createPageData(shopping, page.routeData.values.id);
+        let pageData = await createPageData(shopping, page.data.id);
         mobilePage.state.pageData = pageData;
         mobilePage.setState(mobilePage.state);
         page.hideLoading();

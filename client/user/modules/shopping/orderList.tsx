@@ -9,7 +9,7 @@ export default function (page: chitu.Page) {
     let orderListView: OrderListView;
     let shop = page.createService(ShoppingService);
 
-    let type = page.routeData.values.type;
+    let type = page.data.type;
     let defaultActiveIndex = 0;
     if (type == 'WaitingForPayment')
         defaultActiveIndex = 1;

@@ -15,7 +15,7 @@ export default async function (page: chitu.Page) {
         componentInstances: ControlDescrtion[]
     }
 
-    let onSave = ((page.routeData.values || {}) as RouteValue).onSave;
+    let onSave = ((page.data || {}) as RouteValue).onSave;
 
     class Page extends React.Component<{ pageData: PageData }, State>{
         private designer: MobilePageDesigner;
@@ -63,7 +63,7 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let { pageId, templateId } = page.routeData.values;
+    let { pageId, templateId } = page.data;
     let pageData: PageData;
     if (pageId) {
         pageData = await station.pageData(pageId);

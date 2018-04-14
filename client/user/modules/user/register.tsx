@@ -1,8 +1,9 @@
-import { defaultNavBar, app, config } from 'site';
+import { defaultNavBar, app } from 'site';
 import { FormValidator, rules } from 'dilu';
 // import * as services from 'userServices';
 import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
+import siteMap from 'user/siteMap';
 
 export default function (page: chitu.Page) {
     let member = page.createService(MemberService);  //new services.MemberService();
@@ -98,7 +99,7 @@ export default function (page: chitu.Page) {
                 smsId: this.smsId,
                 verifyCode
             }).then(() => {
-                app.redirect(config.defaultUrl);
+                app.redirect(siteMap.default);
             });
         }
         render() {

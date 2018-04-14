@@ -31,9 +31,9 @@ export class Service extends chitu.Service {
         super();
     }
 
-    ajax<T>(url: string, options: RequestInit): Promise<T> {
-        options = options || {} as RequestInit;
-        options.headers = options.headers || {} as Headers;
+    ajax<T>(url: string, options: chitu.AjaxOptions): Promise<T> {
+        options = options || {} as chitu.AjaxOptions;
+        options.headers = options.headers || {};
         if (Service.token)
             options.headers['token'] = Service.token;
 
@@ -45,7 +45,7 @@ export class Service extends chitu.Service {
         }
 
 
-        return super.ajax<T>(url, options).then(data => {
+        return super.ajax(url, options).then(data => {
             if (data != null && data['DataItems'] != null && data['TotalRowCount'] != null) {
                 let d: any = {};
                 let keys = Object.keys(data);
@@ -60,6 +60,41 @@ export class Service extends chitu.Service {
 
             return data;
         });
+    }
+
+    getByJson<T>(url: string, data?: any) {
+        data = data || {};
+        url = `${url}?${JSON.stringify(data)}`;
+        let headers = { "content-type": 'application/json' };
+        return this.ajax<T>(url, { headers, method: 'get' })
+    }
+
+    putByJson<T>(url: string, data?: any) {
+        let headers = { "content-type": 'application/json' };
+        return this.ajax<T>(url, { headers, data, method: 'put' });
+    }
+
+    postByJson<T>(url: string, data?: any) {
+        let headers = { "content-type": 'application/json' };
+        return this.ajax<T>(url, { headers, data, method: 'post' });
+    }
+
+    deleteByJson<T>(url: string, data: any) {
+        let headers = { "content-type": 'application/json' };
+        return this.ajax<T>(url, { headers, data, method: 'delete' });
+    }
+
+
+    get<T>(url: string, data?: any) {
+        return this.ajax<T>(url, { data, method: 'get' })
+    }
+
+    put<T>(url: string, data?: any) {
+        return this.ajax<T>(url, { method: 'put' });
+    }
+
+    post<T>(url: string, data?: any) {
+        return this.ajax<T>(url, { method: 'post' });
     }
 
 

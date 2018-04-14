@@ -7,10 +7,12 @@ export interface ReceiptListRouteValues {
     orderId: string
 }
 
+import siteMap from 'user/siteMap';
+
 export default function (page: chitu.Page) {
 
     let shop = page.createService(ShoppingService);
-    let routeValue = (page.routeData.values || {}) as ReceiptListRouteValues;
+    let routeValue = (page.data || {}) as ReceiptListRouteValues;
     class ReceiptListPage extends React.Component<{ items: ReceiptInfo[] }, { items?: ReceiptInfo[] }>{
         constructor(props) {
             super(props);
@@ -37,7 +39,7 @@ export default function (page: chitu.Page) {
                     app.back();
                 }
             } as ReceiptEditPageArguments;
-            app.redirect('user_receiptEdit', routeValues);
+            app.redirect(siteMap.nodes.user_receiptEdit ,routeValues);//'user_receiptEdit',
             
         }
         private editReceipt(receipt: ReceiptInfo) {
@@ -57,7 +59,7 @@ export default function (page: chitu.Page) {
                     app.back();
                 }
             } as ReceiptEditPageArguments;
-            app.redirect('user_receiptEdit', routeValues);
+            app.redirect(siteMap.nodes.user_receiptEdit, routeValues);
         }
         async setDefaultReceipt(receipt: ReceiptInfo) {
             await shop.setDefaultReceiptInfo(receipt.Id);

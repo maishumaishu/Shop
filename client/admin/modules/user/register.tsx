@@ -2,11 +2,12 @@ import { FormValidator, rules } from 'dilu';
 import { UserService } from 'adminServices/user';
 import * as ui from 'ui';
 import app from 'application';
+import siteMap from 'user/siteMap';
 
 export default function (page: chitu.Page) {
 
     let userService = page.createService(UserService);
-    requirejs([`css!${page.routeData.actionPath}.css`]);
+    requirejs([`css!${page.name}.css`]);
     class RegisterPage extends React.Component<{}, { buttonText: string, buttonEnable: boolean }>{
         private formElement: HTMLFormElement;
         private registerValidation: FormValidator;
@@ -73,7 +74,7 @@ export default function (page: chitu.Page) {
 
             let verifyCode = this.verifyCodeInput.value;
             return userService.register({ smsId: this.smsId, user, verifyCode }).then(data => {
-                app.redirect('user/myStores');
+                app.redirect(siteMap.nodes["user/myStores"]);
                 return data;
             });
         }

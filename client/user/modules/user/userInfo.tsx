@@ -6,6 +6,7 @@ import { isWeixin, createWeixinClient, WeiXinService } from 'userServices/weixin
 import { RegionsPageRouteValues } from 'modules/user/regions';
 
 import * as ui from 'ui';
+import siteMap from 'user/siteMap';
 
 export default async function (page: chitu.Page) {
     let member = page.createService(MemberService);
@@ -168,7 +169,7 @@ export default async function (page: chitu.Page) {
                     this.setState(this.state);
                 }
             };
-            app.showPage('user_regions', routeValues);
+            app.showPage(siteMap.nodes.user_regions, routeValues);
         }
         componentDidMount() {
             this.genderSelector.valueChanged = (item) => {

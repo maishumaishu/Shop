@@ -1,5 +1,6 @@
 import { componentsDir, Control, ControlProps } from 'mobileComponents/common';
 import { app } from 'application';
+import siteMap from '../../siteMap';
 
 export interface State {
 }
@@ -23,7 +24,7 @@ export default class LocationBarControl extends Control<Props, State>{
         return (
             <div className="locationBar" style={{ padding: 14 }}>
                 <i className="icon-user pull-right"
-                    onClick={() => app.redirect('user_index')}></i>
+                    onClick={() => app.redirect(siteMap.nodes.user_index)}></i>
                 <div className="position interception">
                     <i className="icon-map-marker"></i>
                     <span>暂时获取不到位置信息</span>

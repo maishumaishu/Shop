@@ -5,7 +5,7 @@ export default async function (page: chitu.Page, showMenu?: boolean) {
     let station = page.createService(StationService);
     let pageData = await station.pages.shoppingCart();
     if (showMenu != null) {
-        page.routeData.values.showBackButton = false;
+        page.data.showBackButton = false;
         pageData.showMenu = showMenu;
     }
 

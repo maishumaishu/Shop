@@ -64,7 +64,7 @@ export class StationService extends Service {
     pageDataByName(name: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
         let query = { name };
-        return this.getByJson<PageData>(url, { query }).then(o => {
+        return super.getByJson<PageData>(url, { query }).then(o => {
             return o;
         });
     }

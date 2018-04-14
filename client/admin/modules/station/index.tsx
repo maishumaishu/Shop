@@ -9,7 +9,7 @@ import 'bootstrap';
 
 export default async function (page: chitu.Page) {
 
-    requirejs([`css!${page.routeData.actionPath}.css`]);
+    requirejs([`css!${page.name}.css`]);
 
     let station = page.createService(StationService);
 

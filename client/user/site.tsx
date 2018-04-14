@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { isWeixin } from 'userServices/weiXinService';
 import { app } from "user/application";
-export { app, config } from 'user/application';
+export { app } from 'user/application';
 // export app;
 
 export function formatDate(date: Date | string) {

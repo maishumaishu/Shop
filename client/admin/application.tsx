@@ -5,7 +5,8 @@ import { menuData, MenuNode } from 'menuData';
 import { Service } from 'services/service';
 import { shopName } from 'share/common';
 import { MasterPage } from 'masterPage';
-
+import siteMap from 'siteMap';
+import site from './site';
 
 let h = React.createElement;
 
@@ -13,15 +14,22 @@ class Application extends chitu.Application {
 
     private masterPage: MasterPage;
     constructor() {
-        super();
+        super(siteMap);
 
         if (Service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
-            this.redirect('user/login');
+            this.redirect(siteMap.nodes["user/login"]);
         }
 
         ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
         this.createMasterPage();
         this.error.add((app, err) => this.errorHandle(err));
+    }
+
+    run() {
+        if (!location.hash)
+            this.redirect(siteMap.nodes["user/login"]);
+
+        super.run();
     }
 
     createMasterPage() {
@@ -43,13 +51,12 @@ class Application extends chitu.Application {
         })
     }
 
-    protected createPageElement(routeData: chitu.RouteData): HTMLElement {
+    protected createPageElement(pageName: string): HTMLElement {
         let element = document.createElement('div');
         console.assert(this.masterPage.viewContainer != null, 'view container cannt be null.');
-        let className = routeData.pageName.split('.').join('-');
+        let className = pageName.split('.').join('-');
         element.className = className;
         this.masterPage.viewContainer.appendChild(element);
-
         return element;
     }
 
@@ -69,7 +76,7 @@ class Application extends chitu.Application {
                 if (isLoginPage) {
                     return;
                 }
-                this.redirect('user_login', { return: currentPage.routeData.routeString });
+                this.redirect(siteMap.nodes["user/login"], { return: app.createUrl(currentPage.name, currentPage.data) });
                 break;
             case '725':
                 ui.alert({ title: '错误', message: 'application-key 配置错误' });

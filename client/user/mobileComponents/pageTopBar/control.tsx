@@ -1,5 +1,6 @@
 import { Control, ControlProps } from 'mobileComponents/common';
 import { app } from 'application';
+import siteMap from '../../siteMap';
 
 export interface Props extends ControlProps<PageTopBarControl> {
 
@@ -17,7 +18,7 @@ export default class PageTopBarControl extends Control<Props, State>{
         return (
             <div className="summaryHeaderControl simpleHeader">
                 <i className="icon-user pull-right"
-                    onClick={() => app.redirect('user_index')}></i>
+                    onClick={() => app.redirect(siteMap.nodes.user_index)}></i>
                 <div className="position interception">
                     <i className="icon-map-marker"></i>
                     <span>暂时获取不到位置信息</span>

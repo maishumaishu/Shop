@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { menuData, MenuNode } from 'menuData';
 import { Service } from 'services/service';
+import siteMap from './siteMap';
 
 let h = React.createElement;
 interface State {
@@ -67,7 +68,7 @@ export class MasterPage extends React.Component<Props, State> {
         }
 
         if (url) {
-            this.props.app.redirect(url);
+            this.props.app.redirect(siteMap.nodes[url]);
         }
 
         this.state.currentNode = node;

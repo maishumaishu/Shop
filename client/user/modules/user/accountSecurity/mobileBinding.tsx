@@ -11,7 +11,7 @@ export interface MobileBindingPageArguments {
 
 export default function (page: chitu.Page) {
 
-    let args: MobileBindingPageArguments = page.routeData.values;
+    let args: MobileBindingPageArguments = page.data as MobileBindingPageArguments;
     let member = page.createService(MemberService);
 
     class MobileBindingPage extends React.Component<{ userInfo: UserInfo }, {}>{

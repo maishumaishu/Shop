@@ -50,7 +50,7 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
                 <div className="camera"></div>
                 <div className="sensor"></div>
                 <div className="speaker"></div>
-                <div className="screen mobile-page"
+                <div className="screen"
                     ref={(e: HTMLElement) => {
                         if (!e) return;
                         this._screenElement = e;

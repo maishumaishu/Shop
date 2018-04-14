@@ -9,9 +9,10 @@ import * as ui from 'ui';
 import QRCode = require('qrcode');
 import { websocketUrl } from 'share/common'
 import { showQRCodeDialog } from 'weixin/modules/openid';
+import siteMap from '../../../user/siteMap';
 
 export default async function (page: chitu.Page) {
-    requirejs([`css!${page.routeData.actionPath}`]);
+    requirejs([`css!${page.name}`]);
     let userService = page.createService(UserService);
     let weixinService = page.createService(WeiXinService);
 
@@ -43,7 +44,7 @@ export default async function (page: chitu.Page) {
             }
             return userService.login(this.usernameInput.value, this.passwordInput.value)
                 .then(function () {
-                    app.redirect(`user/myStores`);
+                    app.redirect(siteMap.nodes["user/myStores"]);
                 });
         }
         showDialog() {
@@ -55,10 +56,10 @@ export default async function (page: chitu.Page) {
                 async callback(openId: string) {
                     let result = await weixinService.login(openId)
                     //TODO: result == null
-                    app.redirect(`user/myStores`);
+                    app.redirect(siteMap.nodes["user/myStores"]);
                 }
             }).catch((exc) => {
-                app.error.fire(app, exc);
+                app.error.fire(app, exc, page);
             })
         }
         render() {
