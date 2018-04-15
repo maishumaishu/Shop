@@ -51,10 +51,14 @@ class Application extends chitu.Application {
         })
     }
 
+    loadCSS(pageName: string) {
+        requirejs([`css!modules/${pageName}`]);
+    }
+
     protected createPageElement(pageName: string): HTMLElement {
         let element = document.createElement('div');
         console.assert(this.masterPage.viewContainer != null, 'view container cannt be null.');
-        let className = pageName.split('.').join('-');
+        let className = pageName.split('/').join('-');
         element.className = className;
         this.masterPage.viewContainer.appendChild(element);
         return element;

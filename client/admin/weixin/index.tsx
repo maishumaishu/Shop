@@ -9,7 +9,7 @@ requirejs.config({
     },
     paths: {
         'maishu-chitu': '../../scripts/chitu',
-        'share/common': '../../share/common',
+        'share': '../../share',
         'react-dom': '../../scripts/react-dom',
 
         ui: '../../scripts/ui',
@@ -20,20 +20,20 @@ requirejs.config({
         userServices: '../../user/services',
         qrcode: '../../scripts/qrcode',
         weixin: './',
-        'socket.io': 'http://maishu.alinq.cn:48015/socket.io/socket.io',
+        'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io',
     }
 });
 
 if (location.hash) {
     var path = location.hash.substr(1);
-    var references = ['react', 'react-dom', 'application'];
-    requirejs(references, function (React, ReactDOM, app) {
+    var references = ['react', 'react-dom'];
+    requirejs(references, function (React, ReactDOM) {
         window['React'] = React;
         window['ReactDOM'] = ReactDOM;
         window['h'] = React.createElement;
 
-        (app.default as chitu.Application).run();
-        // let container = document.getElementById('container');
-        // objs.default(container);
+        requirejs(['application'], function (app) {
+            (app.default as chitu.Application).run();
+        })
     });
 }

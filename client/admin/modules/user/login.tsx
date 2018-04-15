@@ -9,7 +9,7 @@ import * as ui from 'ui';
 import QRCode = require('qrcode');
 import { websocketUrl } from 'share/common'
 import { showQRCodeDialog } from 'weixin/modules/openid';
-import siteMap from '../../../user/siteMap';
+import siteMap from 'siteMap';
 
 export default async function (page: chitu.Page) {
     requirejs([`css!${page.name}`]);

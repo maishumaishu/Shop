@@ -2,8 +2,10 @@ import { UserService, Application } from 'adminServices/user';
 import { FormValidator, rules } from 'dilu';
 // import { Page, app } from 'Application';
 import * as ui from 'ui';
+import app from 'application';
 export default async function (page: chitu.Page) {
-    requirejs([`css!${page.name}.css`]);
+    // requirejs([`css!${page.name}.css`]);
+    app.loadCSS(page.name);
     let userService = page.createService(UserService);
     let apps = await userService.applications();
     class MyStoresPage extends React.Component<{}, { stores: Array<Application> }>{

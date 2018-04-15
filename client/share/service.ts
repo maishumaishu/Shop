@@ -87,7 +87,17 @@ export default class Service extends chitu.Service {
 
 
     get<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { data, method: 'get' })
+        data = data || {};
+        let params = "";
+        for (let key in data) {
+            params = `${params}&${key}=${data[key]}`;
+        }
+
+        if (params) {
+            url = `${url}?${params}`;
+        }
+
+        return this.ajax<T>(url, { method: 'get' })
     }
 
     put<T>(url: string, data?: any) {

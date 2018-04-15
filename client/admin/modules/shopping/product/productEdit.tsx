@@ -15,9 +15,9 @@ const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
 
-    requirejs([`css!${page.name}`]);
+    
     var editorId = guid();
-
+    app.loadCSS(page.name);
     type PageState = {
         categories: Array<{ Id: string, Name: string }>,
         brands: Array<Brand>, product: Product

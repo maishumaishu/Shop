@@ -10,8 +10,23 @@ let siteMap = {
         "coupon/couponCodeList": {
             action: `${dir}/coupon/couponCodeList`
         },
+        "freight/solutionList": {
+            action: `${dir}/freight/solutionList`
+        },
+        "member/memberList": {
+            action: `${dir}/member/memberList`,
+        },
+        "user/changePassword": {
+            action: `${dir}/user/changePassword`
+        },
         "user/login": {
-            action: 'modules/user/login'
+            action: `${dir}/user/login`
+        },
+        "shopping/brandList": {
+            action: `${dir}/shopping/brandList`
+        },
+        "shopping/paymentSetting": {
+            action: `${dir}/shopping/paymentSetting`
         },
         "shopping/productList": {
             action: `${dir}/shopping/productList`
@@ -21,6 +36,12 @@ let siteMap = {
         },
         "shopping/promotion/activities": {
             action: `${dir}/shopping/promotion/activities`
+        },
+        "shopping/promotion/activityEdit": {
+            action: `${dir}/shopping/promotion/activityEdit`
+        },
+        "shopping/product/productEdit": {
+            action: `${dir}/shopping/product/productEdit`
         },
         "station/index": {
             title: '店铺设置',
@@ -52,8 +73,9 @@ let siteMap = {
             title: '我的店铺',
             action: `${dir}/user/myStores`
         },
-        "shopping/promotion/activityEdit": { action: "modules/shopping/promotion/activityEdit" },
-        "shopping/product/productEdit": { action: "modules/shopping/product/productEdit" },
+        "weixin/setting": {
+            action: `${dir}/weixin/setting`
+        },
         productEdit: { action: "modules/shopping/product/productEdit" },
         couponEdit: { action: 'coupon/couponEdit' }
     }
