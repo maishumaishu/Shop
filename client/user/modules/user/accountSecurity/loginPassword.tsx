@@ -3,8 +3,10 @@ import { FormValidator, rules } from 'dilu';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
 import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
+import { Page } from 'user/application';
 
-export default function (page: chitu.Page) {
+export default function (page: Page) {
+    page.loadCSS();
     class LoginPasswordPage extends React.Component<{ userInfo: UserInfo }, { step: number }>{
         private validator: FormValidator;
         private form: HTMLElement;
@@ -48,10 +50,10 @@ export default function (page: chitu.Page) {
             let userInfo = this.props.userInfo;
             let { step } = this.state;
             return [
-                <header>
+                <header key="header">
                     {defaultNavBar(page, { title: '登录密码' })}
                 </header>,
-                <section>
+                <section key="section">
                     <WizardComponent userInfo={this.props.userInfo} ref={(e) => this.wizard = e || this.wizard}>
                         <div className="form-group" ref={(e: HTMLElement) => this.form = e ? e.parentElement : this.form}>
                             <div className="col-xs-12">

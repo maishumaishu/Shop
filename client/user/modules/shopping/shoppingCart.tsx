@@ -1,7 +1,8 @@
 import { StationService } from 'userServices/stationService';
 import { MobilePage } from 'mobileComponents/mobilePage';
-export default async function (page: chitu.Page, showMenu?: boolean) {
+import { Page } from 'user/application';
 
+export default async function (page: Page, showMenu?: boolean) {
     let station = page.createService(StationService);
     let pageData = await station.pages.shoppingCart();
     if (showMenu != null) {

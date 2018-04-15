@@ -3,15 +3,16 @@ import { MemberService } from 'userServices/memberService';
 import { app } from 'user/site';
 import { FormValidator, rules } from 'dilu';
 import { Page } from 'user/application';
+import siteMap from 'user/siteMap';
 
 export default function (page: Page) {
     let member = page.createService(MemberService);
     let usernameInput: HTMLInputElement;
     let passwordInput: HTMLInputElement;
     let formElement: HTMLFormElement;
-    
+
     page.loadCSS();
-    
+
     class UserLoginPage extends React.Component<any, any> {
         private validator: FormValidator;
         async login() {
@@ -20,7 +21,7 @@ export default function (page: Page) {
                 return;
 
             await member.login(usernameInput.value, passwordInput.value);
-            app.redirect(returnString);
+            app.redirect(siteMap.nodes[returnPage]);
         }
         componentDidMount() {
             // if (!validator) {
@@ -70,7 +71,7 @@ export default function (page: Page) {
         }
     }
 
-    let returnString = page.data.reutrn || 'user_index';
+    let returnPage: string = page.data.reutrn || 'user_index';
 
     ReactDOM.render(<UserLoginPage />, page.element);
 }

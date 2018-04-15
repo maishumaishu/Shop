@@ -7,7 +7,7 @@ import { ProductImage } from 'user/components/productImage';
 import { Page } from 'user/application';
 
 export default async function (page: Page) {
-
+    page.loadCSS();
     class ProductListHeader extends React.Component<{ title: string }, {}>{
         render() {
             return (

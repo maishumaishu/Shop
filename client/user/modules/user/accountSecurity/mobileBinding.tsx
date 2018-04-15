@@ -4,13 +4,14 @@ import * as ui from 'ui';
 import { FormValidator, rules } from 'dilu';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
 import VerifyCodeButton from 'components/verifyCodeButton';
+import { Page } from 'user/application';
 
 export interface MobileBindingPageArguments {
     mobileChanged: (mobile: string) => void
 }
 
-export default function (page: chitu.Page) {
-
+export default function (page: Page) {
+    page.loadCSS();
     let args: MobileBindingPageArguments = page.data as MobileBindingPageArguments;
     let member = page.createService(MemberService);
 

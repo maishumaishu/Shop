@@ -5,6 +5,7 @@ import { MobilePage } from 'mobileComponents/mobilePage';
 import { default as ProductControl } from 'mobileComponents/product/control';
 
 import * as React from 'react';
+import { Page } from 'user/application';
 
 let dir = 'user/modules'
 let siteMap = {
@@ -19,11 +20,16 @@ let siteMap = {
         shopping_orderList: { action: `${dir}/shopping/orderList` },
         shopping_orderProducts: { action: `${dir}/shopping/orderProducts` },
         shopping_shoppingCart: { action: shopping_shoppingCart_action },
+        user_coupon: { action: `${dir}/user/coupon` },
         user_index: { action: user_index_action },
+        user_favors: { action: `${dir}/user/favors` },
         user_login: { action: `${dir}/user/login` },
         user_regions: { action: `${dir}/user/regions` },
         user_receiptEdit: { action: `${dir}/user/receiptEdit` },
         user_receiptList: { action: `${dir}/user/receiptList` },
+        user_accountSecurity_index: { action: `${dir}/user/accountSecurity/index` },
+        user_accountSecurity_loginPassword: { action: `${dir}/user/accountSecurity/loginPassword` },
+        user_accountSecurity_paymentPassword: { action: `${dir}/user/accountSecurity/paymentPassword` },
         user_accountSecurity_mobileBinding: { action: `${dir}/user/accountSecurity/mobileBinding` }
     },
     default: null as chitu.SiteMapNode
@@ -39,7 +45,8 @@ else {
 siteMap.default = siteMap.nodes.home_index
 
 
-async function shopping_shoppingCart_action(page: chitu.Page, showMenu?: boolean) {
+async function shopping_shoppingCart_action(page: Page, showMenu?: boolean) {
+    page.loadCSS();    
     let station = page.createService(StationService);
     let pageData = await station.pages.shoppingCart();
     if (showMenu != null) {

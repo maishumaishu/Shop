@@ -98,7 +98,7 @@ requirejs.config({
 
         ace: 'assets/js/uncompressed/ace',
 
-        'ue': '../scripts/ueditor',
+        'ue': 'http://web.alinq.cn/ueditor',
         userServices: '../user/services',
         adminServices: './services',
         componentDesigner: 'modules/station/components/componentDesigner',
