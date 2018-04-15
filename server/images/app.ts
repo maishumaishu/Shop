@@ -21,7 +21,7 @@ const errors = {
 
 }
 
-type Action = (req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db, context?: any) => Promise<ActionResult>;
+type Action = (req: http.IncomingMessage, res: http.ServerResponse, context?: any) => Promise<ActionResult>;
 type ActionResult = { data: any, contentType?: string, statusCode?: number }
 const contentTypes = {
     application_json: 'application/json',
@@ -40,7 +40,7 @@ const defaultImageType = 'webp';
 const server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
 
 
-    let db: mongodb.Db;
+    // let db: mongodb.Db;
 
     try {
 
@@ -59,7 +59,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             path = path.substr(0, path.length - 1);
         }
 
-        db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
+        // db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
 
         let action: Action;
         let context: any;
@@ -88,7 +88,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             throw errors.pathNotSupport(path);
         }
 
-        let result = await action(req, res, db, context);
+        let result = await action(req, res, context);
         if (!result)
             throw errors.actionResultIsNull();
 
@@ -111,20 +111,20 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         res.setHeader('Content-Type', contentTypes.application_json);
         res.statusCode = 600;
 
-        let { name,stack } = err;
-        var text = JSON.stringify({name,stack});
+        let { name, stack } = err;
+        var text = JSON.stringify({ name, stack });
         res.write(text);
         res.end();
     }
     finally {
-        if (db != null) {
-            db.close();
-        }
+        // if (db != null) {
+        //     db.close();
+        // }
     }
 });
 
 
-async function imageFile(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db) 
+async function imageFile(req: http.IncomingMessage, res: http.ServerResponse)
     : Promise<ActionResult> {
 
     let urlInfo = url.parse(req.url);
@@ -150,11 +150,13 @@ async function imageFile(req: http.IncomingMessage, res: http.ServerResponse, db
     })
 }
 
-async function imageByName(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db):Promise<ActionResult> {
+async function imageByName(req: http.IncomingMessage, res: http.ServerResponse): Promise<ActionResult> {
+    let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
     let urlInfo = url.parse(req.url);
     let collection = db.collection(imageCollectionName);
     var name = urlInfo.pathname.substr(1);
     let item = await collection.findOne({ name });
+    db.close();
     if (!item) {
         let err = errors.objectNotExists(imageCollectionName, name);
         return { data: err.message, statusCode: 404 };
@@ -168,9 +170,12 @@ async function imageByName(req: http.IncomingMessage, res: http.ServerResponse, 
     return { data: buffer, contentType: imageContextTypes.jpeg };
 }
 
-async function imageById(req: http.IncomingMessage, res: http.ServerResponse, db: mongodb.Db, _id: mongodb.ObjectId):Promise<ActionResult> {
+async function imageById(req: http.IncomingMessage, res: http.ServerResponse, _id: mongodb.ObjectId): Promise<ActionResult> {
+    let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
     let collection = db.collection(imageCollectionName);
     let item = await collection.findOne({ _id });
+    db.close();
+
     if (item == null) {
         let err = errors.objectNotExists(imageCollectionName, _id);
         return { data: err.message, statusCode: 404 }
@@ -214,7 +219,9 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
     let collection = db.collection(imageCollectionName);
 
     let result = await collection.insertOne({ data: image, appId: appKey });
-    return { data:JSON.stringify({_id:result.insertedId}), contentType: contentTypes.application_json };
+    db.close();
+    
+    return { data: JSON.stringify({ _id: result.insertedId }), contentType: contentTypes.application_json };
 }
 
 
@@ -231,9 +238,9 @@ function getPostObject(request: http.IncomingMessage): Promise<any> {
             text = text + data.toString();
         });
 
-        request.on('end',()=>{
+        request.on('end', () => {
             let obj;
-            try{
+            try {
                 if (contentType.indexOf('application/json') >= 0) {
                     obj = JSON.parse(text)
                 }
@@ -242,7 +249,7 @@ function getPostObject(request: http.IncomingMessage): Promise<any> {
                 }
                 reslove(obj);
             }
-            catch(err) {
+            catch (err) {
                 reject(err);
             }
         })
