@@ -27,6 +27,7 @@ let siteMap = {
         user_regions: { action: `${dir}/user/regions` },
         user_receiptEdit: { action: `${dir}/user/receiptEdit` },
         user_receiptList: { action: `${dir}/user/receiptList` },
+        user_userInfo: { action: `${dir}/user/userInfo` },
         user_accountSecurity_index: { action: `${dir}/user/accountSecurity/index` },
         user_accountSecurity_loginPassword: { action: `${dir}/user/accountSecurity/loginPassword` },
         user_accountSecurity_paymentPassword: { action: `${dir}/user/accountSecurity/paymentPassword` },
@@ -46,7 +47,7 @@ siteMap.default = siteMap.nodes.home_index
 
 
 async function shopping_shoppingCart_action(page: Page, showMenu?: boolean) {
-    page.loadCSS();    
+    page.loadCSS();
     let station = page.createService(StationService);
     let pageData = await station.pages.shoppingCart();
     if (showMenu != null) {
