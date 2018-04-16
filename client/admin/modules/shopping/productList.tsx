@@ -296,7 +296,7 @@ class Page extends React.Component<{}, PageState>{
 
                         </li>
                         <li data-bind="visible:tabs.current() == 'all'" className="pull-right">
-                            <button onClick={() => app.redirect(siteMap.nodes["shopping/product/productEdit"])} className="btn btn-primary btn-sm pull-right">
+                            <button onClick={() => app.redirect(siteMap.nodes.shopping_product_productEdit)} className="btn btn-primary btn-sm pull-right">
                                 <i className="icon-plus" />
                                 <span>添加</span>
                             </button>
@@ -476,11 +476,11 @@ class OperationField<T> extends wuzhui.CustomField<T> {
                         <i className="icon-copy" />
                     </button>
                     <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
-                        onClick={() => { app.redirect(siteMap.nodes["shopping/product/productEdit"], { id: dataItem.Id }) }}>
+                        onClick={() => { app.redirect(siteMap.nodes.shopping_product_productEdit, { id: dataItem.Id }) }}>
                         <i className="icon-pencil"></i>
                     </button>
                     <button className="btn btn-minier btn-warning" title={tips.clickAddRegularProduct}
-                        onClick={() => app.redirect(siteMap.nodes["shopping/product/productEdit"], { id: dataItem.Id })}>
+                        onClick={() => app.redirect(siteMap.nodes.shopping_product_productEdit, { id: dataItem.Id })}>
                         <i className="icon-plus"></i>
                     </button>
                     <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}

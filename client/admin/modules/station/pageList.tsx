@@ -38,7 +38,7 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
         // if (pageId)
         //     url = url + '?pageId=' + pageId;
 
-        app.redirect(siteMap.nodes["station/page"], { pageId });
+        app.redirect(siteMap.nodes.station_page, { pageId });
     }
     private pageSave(pageData: PageData) {
     }

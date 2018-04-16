@@ -7,7 +7,7 @@ export function createEditor(editorId: string, field: HTMLInputElement) {
 
     requirejs(references, function () {
 
-        window['UEDITOR_CONFIG'].serverUrl = `${location.protocol}//web.alinq.cn/ueditor/net/controller.ashx`;
+        window['UEDITOR_CONFIG'].serverUrl = `${location.protocol}//web.bailunmei.com/ueditor/net/controller.ashx`;
 
         (<any>window).ZeroClipboard = arguments[2];
         let UE = window['UE'];

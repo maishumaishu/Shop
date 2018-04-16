@@ -1,6 +1,7 @@
 export const shopName = '好易微商城';
 export const serviceHost = 'userservices.alinq.cn'; //'service4.alinq.cn'; //'service.bailunmei.com';"192.168.1.24";//
 export const websocketUrl = "shopws.bailunmei.com";//"http://maishu.alinq.cn:48015";//
+export const imageServer = "image.bailunmei.com";
 export interface AppError extends Error {
     handled: boolean
 }
@@ -39,7 +40,7 @@ export function imageUrl(path: string, width?: number, height?: number) {
 
     let urlParams = new Array<{ name: string, value: string }>();
     let protocol = location.protocol;
-    let url = `${protocol}//image.alinq.cn` + path;
+    let url = `${protocol}//${imageServer}` + path;
     if (width) {
         // url = url + '?width=' + width;
         urlParams.push({ name: 'width', value: width.toString() });

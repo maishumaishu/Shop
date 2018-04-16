@@ -46,10 +46,10 @@ class DialogModel {
         this.close();
     });
     show() {
-        $(this.element).modal({ backdrop: false, show: true });
+        ui.showDialog(this.element);
     }
     close() {
-        $(this.element).modal('hide');
+        ui.hideDialog(this.element);
     }
 }
 
@@ -125,7 +125,7 @@ export class PropertiesComponent extends React.Component<
         this.state = { properties: this.props.properties || [] };
     }
     showPropertiesDialog() {
-        $(this.dialogElement).modal();
+        ui.showDialog(this.dialogElement);
     }
     componentDidMount() {
         let inputValue = this.state.properties.map(o => o.key).join(',');
@@ -142,7 +142,7 @@ export class PropertiesComponent extends React.Component<
         this.state.properties = properties;
         this.setState(this.state);
 
-        $(this.dialogElement).modal('hide');
+        ui.hideDialog(this.dialogElement);
     }
     render() {
         let inputValue = this.state.properties.map(o => o.key).join(', ');
