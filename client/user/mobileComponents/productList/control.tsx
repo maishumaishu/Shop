@@ -5,6 +5,7 @@ import { ShoppingService } from 'userServices/shoppingService';
 import { ProductImage } from 'user/components/productImage';
 import { app } from 'site';
 import siteMap from 'siteMap';
+import product from '../../modules/home/product';
 
 // let { ImageBox } = controls;
 export class Data {
@@ -126,20 +127,29 @@ export default class ProductListControl extends Control<Props, State> {
     }
 
     _render(h) {
-        var products = new Array<Product>();
         return (
             <div
                 ref={async (e: HTMLElement) => {
                     if (!e) return;
+                    var products = await this.products();
                     let listType = this.state.listType;
                     let element: React.ReactElement<any>;
+
+                    if (products.length == 0) {
+                        ReactDOM.render(
+                            <div className="text-center" style={{ height: 200 }}>
+                                暂无要显示在图片
+                            </div>, e);
+                        return;
+                    }
+
                     switch (listType) {
                         case 'doubleColumn':
                         default:
-                            element = await this.renderDoubleColumn(h);
+                            element = await this.renderDoubleColumn(h, products);
                             break;
                         case 'singleColumn':
-                            element = await this.renderSingleColumn(h);
+                            element = await this.renderSingleColumn(h, products);
                             break;
                     }
                     ReactDOM.render(element, e);
@@ -151,9 +161,9 @@ export default class ProductListControl extends Control<Props, State> {
 
 
 
-    async renderSingleColumn(h): Promise<JSX.Element> {
+    async renderSingleColumn(h, products): Promise<JSX.Element> {
 
-        var products = await this.products();
+        // var products = await this.products();
         let { displayTitle, productCounts, imageSize } = this.state;
         // var productCounts = this.state.productCounts;
 
@@ -211,8 +221,7 @@ export default class ProductListControl extends Control<Props, State> {
         );
     }
 
-    async renderDoubleColumn(h): Promise<JSX.Element> {
-        var products = await this.products();
+    async renderDoubleColumn(h, products: Product[]): Promise<JSX.Element> {
         var productCounts = this.state.productCounts;
         return (
             <div className="singleColumnProductControl">
