@@ -1,5 +1,5 @@
 ﻿import app from 'application';
-import { default as shopping } from 'adminServices/shopping';
+import { default as shopping, ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'services/station';
 import { Service, imageUrl, guid } from 'services/service';
 
@@ -15,7 +15,7 @@ const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
 
-    
+
     var editorId = guid();
     app.loadCSS(page.name);
     type PageState = {
@@ -23,6 +23,7 @@ export default function (page: chitu.Page) {
         brands: Array<Brand>, product: Product
     };
     class ProductEditPage extends React.Component<{ product: Product }, PageState>{
+        private categoryDialog: CategoryDialog;
         private validator: FormValidator;
         private element: HTMLFormElement;
         private introduceInput: HTMLInputElement;
@@ -113,8 +114,8 @@ export default function (page: chitu.Page) {
             let product = this.state.product;
             let imagePaths = this.state.product.ImagePaths || [];
             let imagePath = this.state.product.ImagePath;
-            return (
-                <div className="Shopping-ProductEdit"
+            return [
+                <div key="main" className="Shopping-ProductEdit"
                     ref={(e: HTMLFormElement) => this.element = e || this.element}>
                     <div className="tabbable">
                         <ul className="nav nav-tabs">
@@ -147,19 +148,25 @@ export default function (page: chitu.Page) {
                         <div className="col-lg-4 col-md-4">
                             <label className="col-lg-3">类别*</label>
                             <div className="col-lg-9">
-                                <select name="ProductCategoryId" className="form-control"
-                                    ref={(e: HTMLSelectElement) => {
-                                        if (!e) return;
-                                        e.value = product.ProductCategoryId || '';
-                                        e.onchange = () => {
-                                            product.ProductCategoryId = e.value;
-                                        }
-                                    }}>
-                                    <option value="">请选择类别</option>
-                                    {this.state.categories.map(o =>
-                                        <option key={o.Id} value={o.Id}>{o.Name}</option>
-                                    )}
-                                </select>
+                                <div className="input-group">
+                                    <select name="ProductCategoryId" className="form-control"
+                                        ref={(e: HTMLSelectElement) => {
+                                            if (!e) return;
+                                            e.value = product.ProductCategoryId || '';
+                                            e.onchange = () => {
+                                                product.ProductCategoryId = e.value;
+                                            }
+                                        }}>
+                                        <option value="">请选择类别</option>
+                                        {this.state.categories.map(o =>
+                                            <option key={o.Id} value={o.Id}>{o.Name}</option>
+                                        )}
+                                    </select>
+                                    <span className="input-group-addon"
+                                        onClick={() => this.categoryDialog.show()}>
+                                        <i className="icon-plus" />
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4">
@@ -190,7 +197,7 @@ export default function (page: chitu.Page) {
                                         }} />
                                     <span className="input-group-addon">
                                         元
-                                    </span>
+                                </span>
                                 </div>
                                 <span className="price validationMessage" style={{ display: 'none' }}></span>
                             </div>
@@ -299,8 +306,13 @@ export default function (page: chitu.Page) {
                                 }} />
                         </div>
                     </div>
-                </div>
-            );
+
+
+                </div>,
+                <CategoryDialog key="categoryDialog"
+                    container={this}
+                    ref={(e) => this.categoryDialog = e || this.categoryDialog} />
+            ];
         }
     }
 
@@ -323,6 +335,74 @@ export default function (page: chitu.Page) {
 
         ReactDOM.render(<ProductEditPage product={product} />, element);
     })
+
+    class CategoryDialog extends React.Component<{ container: ProductEditPage } & React.Props<CategoryDialog>, any>{
+
+        private element: HTMLElement;
+        private nameElement: HTMLInputElement;
+
+        constructor(props) {
+            super(props);
+        }
+
+        show() {
+            ui.showDialog(this.element);
+        }
+
+        async confirm() {
+
+            let shop = page.createService(ShoppingService);
+
+            let category = { Name: this.nameElement.value } as Category;
+            let result = await shop.addCategory(category);
+            Object.assign(category, result);
+
+            let c = this.props.container;
+            c.state.categories.push(category);
+            c.state.product.ProductCategoryId = category.Id;
+            c.setState(c.state);
+
+            return result;
+        }
+
+        render() {
+            return (
+                <div className="modal fade" ref={(e: HTMLElement) => this.element = e || this.element}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" onClick={() => ui.hideDialog(this.element)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 className="modal-title">添加品类</h4>
+                            </div>
+                            <div className="modal-body form-horizontal">
+                                <div className="form-group">
+                                    <label className="col-sm-2 control-label">名称</label>
+                                    <div className="col-sm-10">
+                                        <input name="name" type="text" className="form-control" placeholder="请输入品类名称"
+                                            ref={(e: HTMLInputElement) => this.nameElement = e || this.nameElement} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-default" data-dismiss="modal">取消</button>
+                                <button type="button" className="btn btn-primary"
+                                    ref={async (e: HTMLButtonElement) => {
+                                        if (!e) return;
+                                        ui.buttonOnClick(e, async () => {
+                                            await this.confirm();
+                                            ui.hideDialog(this.element);
+                                        })
+
+                                    }}>确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    }
 
 }
 
@@ -364,4 +444,8 @@ class ImageThumber extends React.Component<React.Props<ImageThumber> & { imagePa
             </div>
         );
     }
+
+
 }
+
+

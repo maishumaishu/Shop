@@ -35,10 +35,10 @@ export default function (page: chitu.Page) {
                     new wz.CommandField({
                         leftButtons(dataItem) {
                             return [
-                                <button className="btn btn-minier btn-info" onClick={() => app.redirect(siteMap.nodes["shopping/promotion/activityEdit"], { id: dataItem.Id })}>
+                                <button className="btn btn-minier btn-info" onClick={() => app.redirect(siteMap.nodes.shopping_promotion_activityEdit, { id: dataItem.Id })} >
                                     <i className="icon-cog" />
                                     <span>设置</span>
-                                </button>
+                                </button >
                             ];
                         },
                         itemStyle: { width: '130px' } as CSSStyleDeclaration,

@@ -30,15 +30,6 @@ export class MasterPage extends React.Component<Props, State> {
             currentNode: this.findNodeByUrl(url), username: Service.adminName.value,
             hideExistsButton: !Service.token.value
         };
-        Service.token.add((value) => {
-            let node = siteMap.nodes.user_login as chitu.SiteMapNode;
-            console.assert(node.name != null);
-            console.assert(app.currentPage != null);
-
-            this.state.hideExistsButton = app.currentPage.name == node.name || !Service.token.value;
-            this.setState(this.state);
-        });
-
     }
 
     updateMenu(page: chitu.Page) {

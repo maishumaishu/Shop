@@ -56,6 +56,13 @@ class Application extends chitu.Application {
                 if (element == null) {
                     sender.element.className = (sender.element.className || '') + ' admin-pc';
                 }
+
+                let node = siteMap.nodes.user_login as chitu.SiteMapNode;
+                console.assert(node.name != null);
+                console.assert(app.currentPage != null);
+
+                this.masterPage.state.hideExistsButton = app.currentPage.name == node.name || !Service.token.value;
+                this.masterPage.setState(this.masterPage.state);
             });
         })
     }

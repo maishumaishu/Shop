@@ -1,8 +1,4 @@
-interface Category {
-    Id: string, Name: string, ParentId?: string,
-    SortNumber?: number, Remark?: string, Hidden?: boolean,
-    ImagePath?: string
-}
+
 
 type PromotionType = 'Given' | 'Reduce' | 'Discount';
 type PromotionMethod = 'Count' | 'Amount';
@@ -132,6 +128,12 @@ interface Category {
     SortNumber?: number, Remark?: string, Hidden?: boolean,
     ImagePath?: string
 }
+
+// interface Category {
+//     Id: string, Name: string, ParentId?: string,
+//     SortNumber?: number, Remark?: string, Hidden?: boolean,
+//     ImagePath?: string
+// }
 
 interface Product {
     Id: string;

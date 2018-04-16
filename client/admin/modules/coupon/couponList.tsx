@@ -51,7 +51,7 @@ export default function (page: chitu.Page) {
                         // itemEditor: this.itemEditor,
                         leftButtons: (dataItem: Coupon) => [
                             <button className="btn btn-minier btn-info"
-                                onClick={() => app.redirect(siteMap.nodes["coupon/couponEdit"], { id: dataItem.Id })}>
+                                onClick={() => app.redirect(siteMap.nodes.coupon_couponEdit, { id: dataItem.Id })}>
                                 <i className="icon-pencil"></i>
                             </button>
                         ],

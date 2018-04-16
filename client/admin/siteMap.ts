@@ -4,8 +4,8 @@ let siteMap = {
         home_index: { action: `${dir}/home/index` },
         coupon_couponList: { action: `${dir}/coupon/couponList` },
         coupon_couponCodeList: { action: `${dir}/coupon/couponCodeList` },
-        coupon_couponEdit: { action: 'coupon/couponEdit' },
-        coupon_couponSetting: { action: `coupon/couponSetting` },
+        coupon_couponEdit: { action: `${dir}/coupon/couponEdit` },
+        coupon_couponSetting: { action: `${dir}/coupon/couponSetting` },
         freight_solutionList: { action: `${dir}/freight/solutionList` },
         freight_freightList: { action: `${dir}/freight/freightList` },
         freight_inCitySend: { action: `${dir}/freight/inCitySend` },
@@ -22,6 +22,7 @@ let siteMap = {
         shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit` },
         station_index: { action: `${dir}/station/index` },
         station_pages_home: { action: `${dir}/station/pages/home` },
+        station_page: { action: `${dir}/station/pages/page` },
         station_pageList: { action: `${dir}/station/pages/pageList` },
         station_shoppingCart: { action: `${dir}/station/shoppingCart` },
         station_storeMember: { action: `${dir}/station/storeMember` },
@@ -94,7 +95,7 @@ export let menuData: MenuNode[] = [
                 title: "促销活动",
                 icon: "icon-bullhorn",
                 children: [
-                    Object.assign(siteMap.nodes.shopping_promotion_activityEdit, { title: "" }),
+                    Object.assign(siteMap.nodes.shopping_promotion_activities, { title: "" }),
                 ]
             }),
             {
@@ -165,9 +166,9 @@ for (let i = 0; i < menuData.length; i++) {
 }
 while (stack.length > 0) {
     let node = stack.pop();
-    let children = node.children || [];
+    node.children = node.children || [];
     console.log(node.name);
-    children.forEach((c) => {
+    node.children.forEach((c) => {
         c.parent = node;
         stack.push(c);
     })

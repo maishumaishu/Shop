@@ -1,10 +1,9 @@
 import app from 'application';
 import { formatDate } from 'share/common';
 import { ShoppingService } from 'adminServices/shopping';
-// import FormValidator from 'formValidator';
-// import * as wz from 'myWuZhui';
 import { buttonOnClick } from 'ui';
 import { PromotionRangeComponent } from 'modules/shopping/promotion/activityEdit'
+import 'jquery-ui';
 
 export default async function (page: chitu.Page) {
 
