@@ -5,7 +5,7 @@ export default class Service extends chitu.Service {
         super();
     }
 
-    ajax<T>(url: string, options?: chitu.AjaxOptions) {
+    ajax<T>(url: string, options?: chitu.AjaxOptions): Promise<T> {
         return super.ajax<T>(url, options).then((data) => {
             if (data != null && data['DataItems'] != null && data['TotalRowCount'] != null) {
                 let d: any = {};
@@ -101,10 +101,10 @@ export default class Service extends chitu.Service {
     }
 
     put<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { method: 'put' });
+        return this.ajax<T>(url, { data, method: 'put' });
     }
 
     post<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { method: 'post' });
+        return this.ajax<T>(url, { data, method: 'post', });
     }
 }

@@ -59,14 +59,14 @@ export class WeiXinService extends Service {
      * @param code 用于获取 OpenId 的 code
      * 
      */
-    login(code: string): Promise<LoginResult> {
+    login(code: string): Promise<LoginResult | { SellerId: string }> {
         let url = this.url('Member/Login');
-        return this.get<LoginResult>(url, { code }).then(result => {
-            if (result == null) {
-                //TODO: result 表示 openid 没有绑定
-                return result;
+        return this.get<LoginResult | { SellerId: string }>(url, { code }).then(result => {
+            //token 为空表示 openid 没有绑定
+            debugger;
+            if ((result as LoginResult).token != null) {
+                Service.token.value = (result as LoginResult).token;
             }
-            Service.token = result.token;
             return result;
         });
 

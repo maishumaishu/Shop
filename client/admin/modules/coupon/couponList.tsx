@@ -70,7 +70,7 @@ export default function (page: chitu.Page) {
                                 <a>全部</a>
                             </li>
                             <li data-bind="visible:currentIndex()==0" className="pull-right">
-                                <button onClick={() => app.redirect(siteMap.nodes.couponEdit)} className="btn btn-sm btn-primary" title="点击添加优惠券">
+                                <button onClick={() => app.redirect(siteMap.nodes.coupon_couponEdit)} className="btn btn-sm btn-primary" title="点击添加优惠券">
                                     <i className="icon-plus" />
                                     <span>添加</span>
                                 </button>

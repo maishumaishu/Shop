@@ -6,10 +6,11 @@ import { imageUrl } from 'adminServices/service';
 import { FormValidator, rules } from 'dilu';
 import QRCode = require('qrcode');
 import 'bootstrap';
+import app from 'application';
 
 export default async function (page: chitu.Page) {
 
-    requirejs([`css!${page.name}.css`]);
+    app.loadCSS(page.name);
 
     let station = page.createService(StationService);
 

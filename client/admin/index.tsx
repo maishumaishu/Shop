@@ -98,7 +98,7 @@ requirejs.config({
 
         ace: 'assets/js/uncompressed/ace',
 
-        'ue': 'http://web.alinq.cn/ueditor',
+        'ue': 'http://web.bailunmei.com/ueditor',
         userServices: '../user/services',
         adminServices: './services',
         componentDesigner: 'modules/station/components/componentDesigner',
@@ -108,7 +108,7 @@ requirejs.config({
         'user': '../user',
         'adminComponents': 'components',
         'share': '../share',
-        'socket.io': 'http://maishu.alinq.cn:48015/socket.io/socket.io'
+        'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
     }
 });
 // requirejs(['css!content/jquery-ui-1.10.0.custom'])

@@ -36,7 +36,7 @@ export class Service extends BaseService {
         options = options || {} as chitu.AjaxOptions;
         options.headers = options.headers || {};
         if (Service.token)
-            options.headers['token'] = Service.token;
+            options.headers['token'] = Service.token.value;
 
         if (location.search) {
             let query = parseUrlParams(location.search.substr(1));
@@ -53,21 +53,25 @@ export class Service extends BaseService {
         return urlParams.appKey;
     }
 
-    static get token() {
-        return localStorage['adminToken'];
-    };
-    static set token(value: string) {
-        if (value === undefined) {
-            localStorage.removeItem('adminToken');
-            return;
-        }
-        localStorage.setItem('adminToken', value);
-    }
+    // static get token() {
+    //     return localStorage['adminToken'];
+    // };
+    // static set token(value: string) {
+    //     if (value === undefined) {
+    //         localStorage.removeItem('adminToken');
+    //         return;
+    //     }
+    //     localStorage.setItem('adminToken', value);
+    // }
+    static token = new chitu.ValueStore(localStorage['adminToken']);
     static get adminName() {
         return username;
     }
 }
 
+Service.token.add((value) => {
+    localStorage.setItem("adminToken", value);
+});
 
 
 

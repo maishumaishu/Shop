@@ -1,7 +1,6 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as ui from 'ui';
-import { menuData, MenuNode } from 'menuData';
 import { Service } from 'services/service';
 import { shopName } from 'share/common';
 import { MasterPage } from 'masterPage';
@@ -16,18 +15,16 @@ class Application extends chitu.Application {
     constructor() {
         super(siteMap);
 
-        if (Service.token == null && location.hash != '#user/register' && location.hash != '#user/login') {
-            this.redirect(siteMap.nodes["user/login"]);
-        }
-
         ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
         this.createMasterPage();
         this.error.add((app, err) => this.errorHandle(err));
+
+
     }
 
     run() {
         if (!location.hash)
-            this.redirect(siteMap.nodes["user/login"]);
+            this.redirect(siteMap.nodes.user_login);
 
         super.run();
     }
@@ -39,6 +36,18 @@ class Application extends chitu.Application {
         document.title = shopName;
 
         this.pageCreated.add((sender, page) => {
+
+            let register = siteMap.nodes.user_register as chitu.SiteMapNode;
+            let login = siteMap.nodes.user_login as chitu.SiteMapNode;
+
+            console.assert(register.name != null);
+            console.assert(login.name != null);
+
+            if (!Service.token.value && page.name != register.name && page.name != login.name) {
+                this.redirect(siteMap.nodes.user_login);
+                return;
+            }
+
             page.showing.add((sender) => this.masterPage.updateMenu(sender));
             page.hiding.add((sender) => this.masterPage.updateMenu(sender));
 
@@ -52,13 +61,17 @@ class Application extends chitu.Application {
     }
 
     loadCSS(pageName: string) {
-        requirejs([`css!modules/${pageName}`]);
+        // let path = pageName.split('_').join('/');
+        let pageNode = siteMap.nodes[pageName];
+        console.assert(pageNode != null);
+        console.assert(typeof pageNode.action == 'string');
+        requirejs([`css!${pageNode.action}`]);
     }
 
     protected createPageElement(pageName: string): HTMLElement {
         let element = document.createElement('div');
         console.assert(this.masterPage.viewContainer != null, 'view container cannt be null.');
-        let className = pageName.split('/').join('-');
+        let className = pageName.split('_').join('-');
         element.className = className;
         this.masterPage.viewContainer.appendChild(element);
         return element;

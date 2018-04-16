@@ -23,7 +23,7 @@ Service.error.add((sender, err) => {
         case '724':     //724 为 token 失效
         case '601':     //601 为用户未登录异常
             if (err.name == '724') {
-                Service.token = '';
+                Service.token.value = '';
             }
             var currentPage = app.currentPage;
             let isLoginPage = currentPage.name == 'user.login';

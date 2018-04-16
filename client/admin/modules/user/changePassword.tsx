@@ -6,13 +6,14 @@ import QRCode = require('qrcode');
 import { WebSockentMessage } from 'weixin/common';
 import { websocketUrl } from 'share/common';
 import { showQRCodeDialog } from 'weixin/modules/openid';
+import app from 'application';
 
 const label_max_width = 80;
 const input_max_width = 300;
 
 export default async function (page: chitu.Page) {
 
-    requirejs([`css!${page.name}.css`]);
+    app.loadCSS(page.name);
 
     let userService = page.createService(UserService);
     let seller = await userService.me()
@@ -31,14 +32,20 @@ export default async function (page: chitu.Page) {
         showWeiXinBinding() {
             let it = this;
             let seller = this.state.seller;
-            seller.OpenId ?
+
+            let isUnbind = seller.OpenId != null;
+            if (isUnbind && (seller.Mobile == null && seller.UserName == null && seller.Email == null)) {
+                ui.alert({ title: '不允许解绑', message: '手机，用户名，邮箱必须有一个不为空才能解绑' })
+                return;
+            }
+            isUnbind ?
                 showQRCodeDialog({
                     title: '解绑微信',
                     tips: '扫描二维码解绑微信号',
                     element: this.weixinBinding,
                     mobilePageName: 'unbinding',
                     async callback(code: string) {
-                        let result = await userService.weixinUnbind(code);
+                        let result = await weixin.unbind(code);
                         seller.OpenId = null;
                         it.setState(it.state);
                     }

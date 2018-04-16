@@ -67,14 +67,14 @@ export default function (page: chitu.Page) {
                 return;
             }
 
-            let user = {
-                mobile: this.mobileInput.value,
-                password: this.passwordInput.value
-            };
+            // let user = {
+            let username = this.mobileInput.value;
+            let password = this.passwordInput.value;
+            // };
 
             let verifyCode = this.verifyCodeInput.value;
-            return userService.register({ smsId: this.smsId, user, verifyCode }).then(data => {
-                app.redirect(siteMap.nodes["user/myStores"]);
+            return userService.register({ smsId: this.smsId, username, password, verifyCode }).then(data => {
+                app.redirect(siteMap.nodes.user_index);
                 return data;
             });
         }

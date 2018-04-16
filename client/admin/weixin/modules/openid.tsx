@@ -23,7 +23,7 @@ const action = 'openid'
 /**
  * 用于获取 OpenId ，并把 OpenId 发送会指定的页面
  */
-export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fail' | 'normal' }> {
+export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fail' | 'normal', text?: string }> {
     private socket;
     constructor(props) {
         super(props);
@@ -40,14 +40,15 @@ export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fa
             this.socket.emit("weixin", msg);
         })
 
-        this.socket.on("weixin", (data: WebSockentMessage) => {
-            data = data || {} as WebSockentMessage;
-            if (data.action == `${action}_success`) {
+        this.socket.on("weixin", (msg: WebSockentMessage) => {
+            msg = msg || {} as WebSockentMessage;
+            if (msg.action == `${action}_success`) {
                 this.state.status = 'success';
                 this.setState(this.state);
             }
-            else if (data.action == `${action}_fail`) {
+            else if (msg.action == `${action}_fail`) {
                 this.state.status = 'fail';
+                this.state.text = msg.data;
                 this.setState(this.state);
             }
         })
@@ -62,7 +63,7 @@ export class OpenIdPage extends React.Component<Props, { status: 'success' | 'fa
     }
     render() {
         let { status } = this.state;
-        let text = this.props.content[status];
+        let text = this.state.text || this.props.content[status];
 
         let buttonBar = status == 'normal' ?
             <div key={20} className="container" style={{ bottom: 0, position: 'absolute', width: '100%' }}>
@@ -112,6 +113,7 @@ export function showQRCodeDialog(options: {
             element
         )
     }
+    qrcodeDialog.show();
 
     return new Promise((resolve, reject) => {
 
@@ -124,7 +126,7 @@ export function showQRCodeDialog(options: {
                     let appid = systemWeiXinAppId;
                     let redirect_uri = encodeURIComponent(`${protocol}//${hostname}${pathname}weixin/?from=${socket.id}#${options.mobilePageName}`);
                     let auth_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base#wechat_redirect`
-                    qrcodeDialog.show(auth_url);
+                    qrcodeDialog.setUrl(auth_url);
 
                     resolve()
                 })
@@ -137,14 +139,19 @@ export function showQRCodeDialog(options: {
                                     // 发送消息，告诉手机端执行成功
                                     console.assert(msg.from != socket.id)
                                     qrcodeDialog.hide();
-                                    socket.emit("weixin", { to: msg.from, form: socket.id, action: `${action}_success` });
-
+                                    let success_msg: WebSockentMessage = {
+                                        to: msg.from, from: socket.id, action: `${action}_success`
+                                    };
+                                    socket.emit("weixin", success_msg);
                                 })
-                                .catch(() => {
+                                .catch((err: Error) => {
                                     // 发送消息，告诉手机端执行失败
                                     console.assert(msg.from != socket.id);
                                     qrcodeDialog.hide();
-                                    socket.emit("weixin", { to: msg.from, form: socket.id, action: `${action}_fail` });
+                                    let fail_msg: WebSockentMessage = {
+                                        to: msg.from, from: socket.id, action: `${action}_fail`, data: err.message
+                                    };
+                                    socket.emit("weixin", fail_msg);
                                 });
                             break;
                         case `${action}_scan`:
@@ -299,8 +306,8 @@ class QRCodeDialog extends React.Component<QRCodeDialogProps, QRCodeDialogState>
         )
     }
 
-    show(url) {
-        this.setUrl(url)
+    show() {
+        ui.renderImage(this.img, { imageText: '正在生成二维码' });
         ui.showDialog(this.dialogContainer);
     }
 

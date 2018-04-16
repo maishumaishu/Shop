@@ -3,6 +3,7 @@ import { FormValidator, rules } from 'dilu';
 // import { Page, app } from 'Application';
 import * as ui from 'ui';
 import app from 'application';
+import siteMap from '../../siteMap';
 export default async function (page: chitu.Page) {
     // requirejs([`css!${page.name}.css`]);
     app.loadCSS(page.name);
@@ -144,7 +145,13 @@ export default async function (page: chitu.Page) {
                                             onClick={() => this.showDialog(o)}>编辑</button>
                                     </div>
                                     <div className="col-xs-6">
-                                        <a href={`?appKey=${o.Id}#home/index`} className="btn btn-success btn-block">详细</a>
+                                        <button className="btn btn-success btn-block"
+                                            onClick={() => {
+                                                let pageName = (siteMap.nodes.home_index as chitu.SiteMapNode).name;
+                                                console.assert(pageName != null);
+                                                location.href = `?appKey=${o.Id}#${pageName}`;
+                                            }}
+                                        >详细</button>
                                     </div>
                                 </div>
                             </li>

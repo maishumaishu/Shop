@@ -12,7 +12,7 @@ import { showQRCodeDialog } from 'weixin/modules/openid';
 import siteMap from 'siteMap';
 
 export default async function (page: chitu.Page) {
-    requirejs([`css!${page.name}`]);
+    app.loadCSS(page.name);
     let userService = page.createService(UserService);
     let weixinService = page.createService(WeiXinService);
 
@@ -26,7 +26,7 @@ export default async function (page: chitu.Page) {
 
         constructor(props) {
             super(props);
-            Service.token = '';
+            Service.token.value = '';
         }
 
         componentDidMount() {
@@ -42,25 +42,35 @@ export default async function (page: chitu.Page) {
             if (!isValid) {
                 return Promise.resolve();
             }
-            return userService.login(this.usernameInput.value, this.passwordInput.value)
-                .then(function () {
-                    app.redirect(siteMap.nodes["user/myStores"]);
-                });
+            await userService.login(this.usernameInput.value, this.passwordInput.value);
+            this.redirectDefaultPage();
         }
         showDialog() {
+            let self = this;
             showQRCodeDialog({
                 title: '登录',
                 tips: '扫描二维码登录',
                 element: this.dialogElement,
                 mobilePageName: 'login',
                 async callback(openId: string) {
-                    let result = await weixinService.login(openId)
-                    //TODO: result == null
-                    app.redirect(siteMap.nodes["user/myStores"]);
+                    let result = await weixinService.login(openId) as { SellerId: string };
+                    if (result.SellerId != null) {
+                        ui.confirm({
+                            message: '微信用户尚未绑定,是否注册新用户?', async confirm() {
+                                await userService.registerById(result.SellerId);
+                                self.redirectDefaultPage();
+                            }
+                        })
+                        throw new Error("微信用户尚未绑定");
+                    }
+                    self.redirectDefaultPage();
                 }
             }).catch((exc) => {
                 app.error.fire(app, exc, page);
             })
+        }
+        redirectDefaultPage() {
+            app.redirect(siteMap.nodes.user_myStores);
         }
         render() {
             return [

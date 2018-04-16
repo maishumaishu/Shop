@@ -1,5 +1,6 @@
 import { default as Service } from 'services/service';
 import { userInfo } from 'userServices/memberService';
+import { LoginResult } from 'adminServices/weixin';
 
 function guid() {
     function s4() {
@@ -12,7 +13,9 @@ function guid() {
 }
 
 export interface RegisterModel {
-    user: { mobile: string, password: string },
+    // user: { mobile: string, password: string },
+    username: string,
+    password: string,
     smsId: string,
     verifyCode: string
 }
@@ -27,6 +30,7 @@ export interface Seller {
     UserName: string,
     OpenId: string,
     Mobile: string,
+    Email: string,
 }
 
 let { protocol } = location;
@@ -39,18 +43,21 @@ export class UserService extends Service {
         let url = `${Service.config.memberUrl}Seller/Login`;
         return this.ajax<{ token: string }>(url, { data: { username, password }, method: 'post' })
             .then(d => {
-                Service.token = d.token;
+                Service.token.value = d.token;
             });
     }
     async register(model: RegisterModel) {
-        (model.user as any).group = 'owner';
-        let url = `${Service.config.serviceHost}/admin/register`;
-        return this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
-            .then((result) => {
-                // Service.appToken = result.appToken;
-                Service.token = result.token;
-                // Service.userId = result.userId;
-            });
+        let url = `${Service.config.memberUrl}/Seller/Register`;
+        let result = await this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
+        Service.token.value = result.token;
+        return result;
+    }
+    async registerById(sellerId: string) {
+        console.assert(sellerId != null);
+        let url = `${Service.config.memberUrl}/Seller/RegisterById`;
+        let result = await this.postByJson<LoginResult>(url, { sellerId });
+        Service.token.value = result.token;
+        return result;
     }
     private createApplication() {
         let url = `${protocol}//${Service.config.serviceHost}/application/add`;
@@ -65,13 +72,12 @@ export class UserService extends Service {
         return this.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
     }
     applications(): Promise<Array<Application>> {
-        // let url = this.url(`application/list`);
-        let url = `${Service.config.memberUrl}Seller/GetApplications`;//this.url('admin/applications')
+        let url = `${Service.config.memberUrl}Seller/GetApplications`;
         return this.get<Application[]>(url);
     }
     addApplication(app: Application) {
-        let url = this.url('admin/addApplication');
-        return this.postByJson(url, { app }).then(data => {
+        let url = `${Service.config.memberUrl}Seller/AddApplication`;
+        return this.postByJson(url, { name: app.Name }).then(data => {
             Object.assign(app, data);
             return data;
         });
@@ -110,14 +116,14 @@ export class UserService extends Service {
             return args[0];
         })
     }
-    weixinBind(openId: string) {
-        let url = `${Service.config.memberUrl}Seller/Bind`;
-        return this.put(url, { openId });
-    }
-    weixinUnbind(openId: string) {
-        let url = `${Service.config.memberUrl}Seller/Unbind`;
-        return this.put(url, { openId });
-    }
+    // weixinBind(openId: string) {
+    //     let url = `${Service.config.memberUrl}Seller/Bind`;
+    //     return this.put(url, { openId });
+    // }
+    // weixinUnbind(openId: string) {
+    //     let url = `${Service.config.memberUrl}Seller/Unbind`;
+    //     return this.put(url, { openId });
+    // }
 }
 
 // export default new UserService();

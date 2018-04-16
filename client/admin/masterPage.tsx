@@ -1,13 +1,15 @@
 import * as React from 'react';
 
-import { menuData, MenuNode } from 'menuData';
+// import { menuData, MenuNode } from 'menuData';
 import { Service } from 'services/service';
-import siteMap from './siteMap';
+import { default as siteMap, menuData, MenuNode } from './siteMap';
+import app from 'application';
 
 let h = React.createElement;
 interface State {
     currentNode: MenuNode,
-    username: string
+    username: string,
+    hideExistsButton
 }
 
 interface Props {
@@ -24,13 +26,23 @@ export class MasterPage extends React.Component<Props, State> {
         })
 
         let url = (window.location.hash.substr(1) || '').split('?')[0];
-        this.state = { currentNode: this.findNodeByUrl(url), username: Service.adminName.value };
+        this.state = {
+            currentNode: this.findNodeByUrl(url), username: Service.adminName.value,
+            hideExistsButton: !Service.token.value
+        };
+        Service.token.add((value) => {
+            let node = siteMap.nodes.user_login as chitu.SiteMapNode;
+            console.assert(node.name != null);
+            console.assert(app.currentPage != null);
 
+            this.state.hideExistsButton = app.currentPage.name == node.name || !Service.token.value;
+            this.setState(this.state);
+        });
 
     }
 
     updateMenu(page: chitu.Page) {
-        let url = page.name.replace(/\./, '/'); 
+        let url = page.name.replace(/\./, '/');
         let currentNode = this.findNodeByUrl(url);
 
         this.state.currentNode = currentNode;
@@ -45,10 +57,10 @@ export class MasterPage extends React.Component<Props, State> {
         }
         while (stack.length > 0) {
             let node = stack.pop();
-            if (node.Url == url) {
+            if (node.name == url) {
                 return node;
             }
-            let children = node.Children || [];
+            let children = node.children || [];
             for (let j = 0; j < children.length; j++) {
                 stack.push(children[j]);
             }
@@ -56,15 +68,15 @@ export class MasterPage extends React.Component<Props, State> {
         return null;
     }
     showPageByNode(node: MenuNode) {
-        let url = node.Url;
-        if (url == null && node.Children.length > 0) {
-            node = node.Children[0];
-            url = node.Url;
+        let url = node.name;
+        if (url == null && node.children.length > 0) {
+            node = node.children[0];
+            url = node.name;
         }
 
-        if (url == null && node.Children.length > 0) {
-            node = node.Children[0];
-            url = node.Url;
+        if (url == null && node.children.length > 0) {
+            node = node.children[0];
+            url = node.name;
         }
 
         if (url) {
@@ -88,27 +100,27 @@ export class MasterPage extends React.Component<Props, State> {
         //     );
         // }
 
-        let firstLevelNodes = menuData.filter(o => o.Visible == null || o.Visible == true);
+        let firstLevelNodes = menuData.filter(o => o.visible == null || o.visible == true);
         let secondLevelNodes: Array<MenuNode> = [];
         let thirdLevelNodes: Array<MenuNode> = [];
         if (currentNode != null) {
-            if (currentNode.Parent == null) {
+            if (currentNode.parent == null) {
                 firstLevelNode = currentNode;
                 secondLevelNode = currentNode;
             }
-            else if (currentNode.Parent.Parent == null) {
-                firstLevelNode = currentNode.Parent;
+            else if (currentNode.parent.parent == null) {
+                firstLevelNode = currentNode.parent;
                 secondLevelNode = currentNode;
             }
-            else if (currentNode.Parent.Parent.Parent == null) {
+            else if (currentNode.parent.parent.parent == null) {
                 thirdLevelNode = currentNode;
-                secondLevelNode = thirdLevelNode.Parent;
-                firstLevelNode = secondLevelNode.Parent;
+                secondLevelNode = thirdLevelNode.parent;
+                firstLevelNode = secondLevelNode.parent;
             }
-            else if (currentNode.Parent.Parent.Parent.Parent == null) {
-                thirdLevelNode = currentNode.Parent;
-                secondLevelNode = thirdLevelNode.Parent;
-                firstLevelNode = secondLevelNode.Parent;
+            else if (currentNode.parent.parent.parent.parent == null) {
+                thirdLevelNode = currentNode.parent;
+                secondLevelNode = thirdLevelNode.parent;
+                firstLevelNode = secondLevelNode.parent;
             }
             else {
                 throw new Error('not implement')
@@ -116,8 +128,8 @@ export class MasterPage extends React.Component<Props, State> {
         }
 
         if (firstLevelNode != null) {
-            secondLevelNodes = firstLevelNode.Children || [].filter(o => o.Visible == null || o.Visible == true);
-            thirdLevelNodes = (secondLevelNode.Children || []).filter(o => o.Visible == null || o.Visible == true);
+            secondLevelNodes = firstLevelNode.children || [].filter(o => o.Visible == null || o.Visible == true);
+            thirdLevelNodes = (secondLevelNode.children || []).filter(o => o.visible == null || o.visible == true);
         }
 
         if (thirdLevelNodes.length == 0) {
@@ -126,7 +138,7 @@ export class MasterPage extends React.Component<Props, State> {
         }
 
         let nodeClassName = '';
-        if (firstLevelNode != null && firstLevelNode.Title == 'Others') {
+        if (firstLevelNode != null && firstLevelNode.title == 'Others') {
             nodeClassName = 'hideFirst';
         }
         else if (secondLevelNodes.length == 0) {
@@ -134,7 +146,8 @@ export class MasterPage extends React.Component<Props, State> {
         }
 
         // let currentPageName = app.currentPage != null ? app.currentPage.name : '';
-        let hideExistsButton = location.hash == '#user/login' || !Service.token;
+        // let hideExistsButton = location.hash == '#user/login' || !Service.token;
+        let { hideExistsButton } = this.state;
 
         return (
             <div className={nodeClassName}>
@@ -142,10 +155,10 @@ export class MasterPage extends React.Component<Props, State> {
                     <ul className="list-group" style={{ margin: 0 }}>
                         {firstLevelNodes.map((o, i) =>
                             <li key={i} className={o == firstLevelNode ? "list-group-item active" : "list-group-item"}
-                                style={{ cursor: 'pointer', display: o.Visible == false ? "none" : null }}
+                                style={{ cursor: 'pointer', display: o.visible == false ? "none" : null }}
                                 onClick={() => this.showPageByNode(o)}>
-                                <i className={o.Icon} style={{ fontSize: 16 }}></i>
-                                <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.Title}</span>
+                                <i className={o.icon} style={{ fontSize: 16 }}></i>
+                                <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.title}</span>
                             </li>
                         )}
                     </ul>
@@ -154,9 +167,9 @@ export class MasterPage extends React.Component<Props, State> {
                     <ul className="list-group" style={{ margin: 0 }}>
                         {secondLevelNodes.map((o, i) =>
                             <li key={i} className={o == secondLevelNode ? "list-group-item active" : "list-group-item"}
-                                style={{ cursor: 'pointer', display: o.Visible == false ? "none" : null }}
+                                style={{ cursor: 'pointer', display: o.visible == false ? "none" : null }}
                                 onClick={() => this.showPageByNode(o)}>
-                                <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.Title}</span>
+                                <span style={{ paddingLeft: 8, fontSize: 14 }}>{o.title}</span>
                             </li>
                         )}
                     </ul>
@@ -168,7 +181,7 @@ export class MasterPage extends React.Component<Props, State> {
                                 <ul className="nav navbar-nav" style={{ width: '100%' }}>
                                     {!hideExistsButton ?
                                         <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 12, cursor: 'pointer' }}
-                                            onClick={() => location.hash = '#user/login'}>
+                                            onClick={() => app.redirect(siteMap.nodes.user_login)}>
                                             <i className="icon-off"></i>
                                             <span style={{ paddingLeft: 4 }}>退出</span>
                                         </li> : null

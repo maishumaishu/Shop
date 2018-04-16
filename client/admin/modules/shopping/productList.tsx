@@ -296,7 +296,7 @@ class Page extends React.Component<{}, PageState>{
 
                         </li>
                         <li data-bind="visible:tabs.current() == 'all'" className="pull-right">
-                            <button onClick={() => app.redirect(siteMap.nodes.productEdit)} className="btn btn-primary btn-sm pull-right">
+                            <button onClick={() => app.redirect(siteMap.nodes["shopping/product/productEdit"])} className="btn btn-primary btn-sm pull-right">
                                 <i className="icon-plus" />
                                 <span>添加</span>
                             </button>
