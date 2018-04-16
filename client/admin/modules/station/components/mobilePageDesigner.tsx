@@ -11,19 +11,9 @@ import { PropTypes } from 'prop-types';
 import { Application as UserApplication } from 'user/application';
 import userSiteMap from 'user/siteMap';
 import { AppError, ErrorCodes } from 'share/common';
-import { UserLoginDialog } from 'adminComponents/userLoginDialog';
 import * as ui from 'ui';
 import 'jquery-ui';
 
-
-//app as userApp, 
-// userApp.error.add((source, err: AppError) => {
-//     if (err.name == ErrorCodes.UserNotLogin) {
-//         UserLoginDialog.show();
-//         return;
-//     }
-//     ui.alert({ title: 'USER ERROR', message: err.message });
-// })
 
 class MyUserApplication extends UserApplication {
     private screenElement: HTMLElement;
@@ -35,11 +25,8 @@ class MyUserApplication extends UserApplication {
         let element = super.createPageElement(pageName);
         this.screenElement.appendChild(element);
         return element;
-        // return this.screenElement;
     }
 }
-
-
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData,
@@ -56,7 +43,7 @@ export interface State {
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
-    userApp: MyUserApplication;
+    private userApp: MyUserApplication;
     private virtualMobile: VirtualMobile;
     private editorsElement: HTMLElement;
     private currentEditor: HTMLElement;
@@ -281,16 +268,19 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         if (this.userApp == null) {
             this.userApp = new MyUserApplication(screenElement);
+            this.userApp.showPage(userSiteMap.nodes.emtpy);
+        }
+        else {
+            this.userApp.currentPage.reload();
         }
 
         //==============================================
         // 关闭所以页面
-        while (this.userApp.currentPage != null) {
-            this.userApp.currentPage.close();
-        }
+        // while (this.userApp.currentPage != null) {
+        //     this.userApp.currentPage.close();
+        // }
         //==============================================
 
-        this.userApp.showPage(userSiteMap.nodes.emtpy);
 
 
     }
