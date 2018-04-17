@@ -286,6 +286,6 @@ export class ShoppingService extends Service {
 //     }
 // };
 
-var shopping = new ShoppingService();
-export default shopping;
+// var shopping = new ShoppingService();
+// export default shopping;
 

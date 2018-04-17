@@ -1,4 +1,4 @@
-import { default as shopping } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import station from 'adminServices/station';
 import app from 'application';
 import { default as site } from 'site';
@@ -16,7 +16,8 @@ type PageState = {
     productStock?: ProductStock, tab: Tab,
     searchText?: string
 }
-class Page extends React.Component<{}, PageState>{
+
+class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
     private productTable: HTMLTableElement;
     private restrictionDialog: HTMLFormElement;
     private stockDialog: HTMLFormElement;
@@ -40,6 +41,7 @@ class Page extends React.Component<{}, PageState>{
     }
 
     private setBuyLimited(restriction: Restriction) {
+        let { shopping } = this.props;
         return shopping.buyLimited(restriction.productId, restriction.quantity)
             .then((result) => {
                 let item = {
@@ -63,6 +65,7 @@ class Page extends React.Component<{}, PageState>{
     }
 
     private setStock(productStock: ProductStock) {
+        let { shopping } = this.props;
         return shopping.setStock(productStock.productId, productStock.stock)
             .then((data) => {
                 let item = {
@@ -75,12 +78,14 @@ class Page extends React.Component<{}, PageState>{
     }
 
     private offShelve(item: Product) {
+        let { shopping } = this.props;
         return shopping.offShelve(item.Id).then(() => {
             item.OffShelve = true;
             this.dataSource.updated.fire(this.dataSource, item);
         });
     }
     onShelve(item: Product) {
+        let { shopping } = this.props;
         return shopping.onShelve(item.Id).then(() => {
             item.OffShelve = (false);
             this.dataSource.updated.fire(this.dataSource, item);
@@ -101,6 +106,8 @@ class Page extends React.Component<{}, PageState>{
                 break;
             }
         }
+
+        let { shopping } = this.props;
         return shopping.productChildren(parentId).then((result) => {
             result.dataItems.forEach((o) => this.dataSource.inserted.fire(this.dataSource, o, rowIndex))
             return result;
@@ -126,7 +133,8 @@ class Page extends React.Component<{}, PageState>{
         return this.dataSource.delete(dataItem);
     }
     componentDidMount() {
-        shopping.queryProducts
+
+        let { shopping } = this.props;
         let dataSource = this.dataSource = new wuzhui.DataSource<Product>({
             primaryKeys: ['Id'],
             select: (args) => shopping.products(args),
@@ -480,7 +488,7 @@ class OperationField<T> extends wuzhui.CustomField<T> {
                         onClick={() => { app.redirect(siteMap.nodes.shopping_product_productEdit, { id: dataItem.Id }) }}>
                         <i className="icon-pencil"></i>
                     </button>
-                    <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
+                    <button className="btn btn-minier btn-danger"
                         ref={(e: HTMLButtonElement) => {
                             if (!e) return;
                             e.onclick = ui.buttonOnClick(() => {
@@ -504,9 +512,10 @@ class OperationField<T> extends wuzhui.CustomField<T> {
 
 
 export default function (page: chitu.Page) {
+    let shopping = page.createService(ShoppingService);
     let element = document.createElement('div');
     page.element.appendChild(element);
-    ReactDOM.render(<Page />, element);
+    ReactDOM.render(<Page shopping={shopping}/>, element);
 }
 
 // onClick={ui.buttonOnClick((e) => {

@@ -170,5 +170,3 @@ export class ActivityService extends Service {
     }
 }
 
-let active = new ActivityService();
-export default active;

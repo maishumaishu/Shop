@@ -1,5 +1,5 @@
 ﻿import app from 'application';
-import { default as shopping, ShoppingService } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'services/station';
 import { Service, imageUrl, guid } from 'services/service';
 
@@ -14,6 +14,8 @@ const station = new StationService();
 const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
 
     var editorId = guid();
     app.loadCSS(page.name);
@@ -71,7 +73,7 @@ export default function (page: chitu.Page) {
             this.state.product.Arguments = this.argumentsProperties.state.properties;
             return shopping.saveProduct(this.state.product, page.data.parentId).then(data => {
                 this.state.product.Id = data.Id;
-                // this.setState(this.state);
+                return data;
             })
         }
         updloadImage(imageFile: File) {
@@ -126,9 +128,9 @@ export default function (page: chitu.Page) {
                             </li>
                             <li className="pull-right">
                                 <button href="javascript:" className="btn btn-sm btn-primary"
-                                    ref={(e: HTMLAnchorElement) => {
+                                    ref={(e: HTMLButtonElement) => {
                                         if (!e) return;
-                                        e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存商品成功' });
+                                        ui.buttonOnClick(e, () => this.save(), { toast: '保存商品成功' });
 
                                     }}>
                                     <i className="icon-save" />

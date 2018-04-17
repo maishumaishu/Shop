@@ -1,11 +1,12 @@
 
-import { default as shopping } from 'adminServices/shopping';
+import { ShoppingService } from 'adminServices/shopping';
 import * as site from 'site';
 import * as wz from 'myWuZhui';
 
 export default function (page: chitu.Page) {
 
-    page.element.className = 'admin-pc';
+    let shopping = page.createService(ShoppingService);
+
     class Page extends React.Component<any, any>{
         private gridViewElement: HTMLTableElement;
         private dialogElement: HTMLElement;

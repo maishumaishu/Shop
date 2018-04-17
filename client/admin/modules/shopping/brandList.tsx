@@ -1,11 +1,14 @@
 import { default as site } from 'site';
 import { CommandField, createGridView, GridViewItemPopupEditor } from 'myWuZhui';
 import { FormValidator, rules } from 'dilu';
-import { default as shopping } from 'adminServices/shopping'
-import { default as activity } from 'adminServices/activity'
+import { ShoppingService } from 'adminServices/shopping'
+import { ActivityService } from 'adminServices/activity'
 import 'wuzhui';
 
 export default function (page: chitu.Page) {
+
+    let shopping = page.createService(ShoppingService);
+    let activity = page.createService(ActivityService);
 
     class BrandListPage extends React.Component<{}, {}>{
         private dataSource: wuzhui.DataSource<any>;
