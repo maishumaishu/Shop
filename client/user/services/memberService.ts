@@ -63,9 +63,9 @@ export class MemberService extends Service {
         });
     }
 
-    login(username: string, password: string): Promise<{ token: string, userId: string }> {
+    login(username: string, password: string): Promise<LoginResult> {
         let url = `UserMember/User/Login`;
-        return this.postByJson<{ token: string, userId: string }>(url, { username, password }).then((result) => {
+        return this.postByJson<LoginResult>(url, { username, password }).then((result) => {
             tokens.userToken.value = result.token;
             return result;
         });

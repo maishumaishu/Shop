@@ -212,3 +212,7 @@ interface HomeProduct {
     Id: string, Name: string, ImagePath: string,
     ProductId: string, Price: number, PromotionLabel: string
 }
+
+interface LoginResult {
+    token: string
+}

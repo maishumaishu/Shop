@@ -196,6 +196,27 @@ class ActivityEditPage extends React.Component<Props, State>{
         this.setState(this.state);
         return Promise.resolve();
     }
+    createPromotion() {
+        var $dlg = this.page.element.querySelector('[name="dlg_promotion"]') as HTMLElement;
+        let sv_activity = this.page.createService(ActivityService);
+        let activityId = this.page.data.id;
+        // let { promotion } = this.state;
+        showDialog($dlg, '添加优惠', () => {
+            // return sv_activity.addPromotion(activityId, promotion.type(), this.promotion.method())
+            //     .then((data) => {
+            //         var p = new Promotion();
+            //         p.id = data.Id;
+            //         p.content = new PromotionContent(data.Id, page);
+            //         p.content.method(this.promotion.method());
+            //         p.content.type(this.promotion.type());
+            //         p.range = new PromotionRange(data.Id, this);
+
+            //         this.promotions.push(p);
+            //     });
+        })
+
+        return Promise.resolve();
+    }
     render() {
         let activity = this.page.createService(ActivityService);
         let topbar = (
@@ -219,7 +240,11 @@ class ActivityEditPage extends React.Component<Props, State>{
                     </button>
                 </li>
                 <li key="add" className="pull-right">
-                    <button data-bind="click:createPromotion" href="javascript:" className="btn btn-sm btn-primary">
+                    <button href="javascript:" className="btn btn-sm btn-primary"
+                        ref={(e: HTMLButtonElement) => {
+                            // ui.buttonOnClick(e,()=>this.cre)
+                            ui.buttonOnClick(e, () => this.createPromotion())
+                        }}>
                         <i className="icon-plus"></i>
                         <span>添加</span>
                     </button>
@@ -346,6 +371,25 @@ class ActivityEditPage extends React.Component<Props, State>{
         return result;
     }
 }
+
+function showDialog(dlg: HTMLElement, title, ok_callback: (element: HTMLElement) => void | Promise<any>) {
+    if (title)
+        dlg.querySelector('.modal-title').innerHTML = title;
+    (dlg.querySelector('[name="btnOK"]') as HTMLElement).onclick = function () {
+        var result = ok_callback(dlg);
+        if (result instanceof Promise) {
+            result.then(function () {
+                ui.hideDialog(dlg);
+            });
+        }
+        else {
+            ui.hideDialog(dlg);
+        }
+    };
+
+    ui.showDialog(dlg);
+}
+
 
 class ProductInputDialog extends React.Component<React.Props<ProductInputDialog> & { page: chitu.Page },
     { product?: Product, isInclude: boolean }> {
@@ -1120,7 +1164,7 @@ export class PromotionRangeComponent extends React.Component<
 
     constructor(props) {
         super(props);
-        this.state = { rules: this.props.rules };
+        this.state = { rules: this.props.rules || [] };
     }
 
     private newCategoryRule(): any {
@@ -1252,7 +1296,7 @@ export class PromotionRangeComponent extends React.Component<
 
 
 export default async function (page: chitu.Page) {
-    requirejs([`css!${page.name}`]);
+    app.loadCSS(page.name);
     let activityId = page.data.id;
     let activity = page.createService(ActivityService);
     let { promotions } = await Promise.all([activity.promotions(activityId)])

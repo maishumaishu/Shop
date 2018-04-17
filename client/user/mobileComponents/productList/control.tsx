@@ -193,7 +193,7 @@ export default class ProductListControl extends Control<Props, State> {
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
-                    <div key={o.Id} className="product single">
+                    <div key={o.Id} className="product single row container">
                         <div className={leftClassName} onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                             <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
                                 ref={(e: HTMLImageElement) => {
@@ -234,7 +234,7 @@ export default class ProductListControl extends Control<Props, State> {
                         <div onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                             <ProductImage key={i} product={o} />
 
-                            <div className={productNameLines == 'singleLine' ? 'name' : 'name double-line'}
+                            <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
                                 onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                                 {o.Name}
                             </div>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { isWeixin } from 'userServices/weiXinService';
+import { isWeixin } from 'userServices/weixinService';
 import { app } from "user/application";
 export { app } from 'user/application';
 // export app;

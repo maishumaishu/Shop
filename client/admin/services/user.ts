@@ -1,6 +1,6 @@
 import { default as Service } from 'services/service';
 import { userInfo } from 'userServices/memberService';
-import { LoginResult } from 'adminServices/weixin';
+// import { LoginResult } from 'adminServices/weixin';
 
 function guid() {
     function s4() {
@@ -41,7 +41,7 @@ export class UserService extends Service {
     }
     login(username: string, password: string) {
         let url = `${Service.config.memberUrl}Seller/Login`;
-        return this.ajax<{ token: string }>(url, { data: { username, password }, method: 'post' })
+        return this.ajax<LoginResult>(url, { data: { username, password }, method: 'post' })
             .then(d => {
                 Service.token.value = d.token;
             });
@@ -88,8 +88,8 @@ export class UserService extends Service {
     }
     deleteApplication(app: Application) {
         console.assert(app != null)
-        let url = this.url('admin/deleteApplication');
-        return this.deleteByJson(url, { appId: app.Id });
+        let url = `${Service.config.memberUrl}Seller/DeleteApplication`;
+        return this.deleteByJson(url, { applicationId: app.Id });
     }
     recharge(userId: string, amount: number): Promise<{ Balance: number }> {
         let url = Service.config.accountUrl + 'Account/Recharge';

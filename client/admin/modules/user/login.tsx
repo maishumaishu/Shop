@@ -51,7 +51,7 @@ export default async function (page: chitu.Page) {
                 title: '登录',
                 tips: '扫描二维码登录',
                 element: this.dialogElement,
-                mobilePageName: 'login',
+                mobilePageName: 'adminLogin',
                 async callback(openId: string) {
                     let result = await weixinService.login(openId) as { SellerId: string };
                     if (result.SellerId != null) {
@@ -74,7 +74,7 @@ export default async function (page: chitu.Page) {
         }
         render() {
             return [
-                <h1 className="text-center" style={{ paddingBottom: 50 }}>{shopName}商家后台</h1>,
+                <h1 key={8} className="text-center" style={{ paddingBottom: 50 }}>{shopName}商家后台</h1>,
                 <div key={10} className="form-horizontal container" style={{ maxWidth: 500 }}
                     ref={(e: HTMLElement) => this.element = e || this.element}>
                     <div className="form-group" >

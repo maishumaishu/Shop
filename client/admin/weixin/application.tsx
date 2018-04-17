@@ -5,13 +5,21 @@ import { loadjs } from 'common'
 import { WeiXinService } from 'services/weixin'
 import { Props as OpenIdPageProps, OpenIdPage } from 'weixin/modules/openid'
 
+export type SiteMapNodes = {
+    binding: chitu.SiteMapNode,
+    unbinding: chitu.SiteMapNode,
+    adminLogin: chitu.SiteMapNode,
+    userLogin: chitu.SiteMapNode,
+}
+
 export class Application extends chitu.Application {
 
-    static siteMap = {
+    static siteMap: { nodes: SiteMapNodes } = {
         nodes: {
             binding: { action: binding_action },
             unbinding: { action: unbinding_action },
-            login: { action: login_action }
+            adminLogin: { action: adminLogin_action },
+            userLogin: { action: userLogin_action }
         }
     }
 
@@ -41,13 +49,28 @@ function binding_action(page: chitu.Page) {
     ReactDOM.render(<OpenIdPage {...props} />, page.element);
 }
 
-function login_action(page: chitu.Page) {
+function adminLogin_action(page: chitu.Page) {
     let props: OpenIdPageProps = {
         weixin: page.createService(WeiXinService),
         title: '商家登录',
         buttonText: '确定登录',
         content: {
             normal: `确定要登录到${shopName}商家后台系统吗`,
+            success: '已成功登录',
+            fail: '登录号失败，请重新扫描二维码'
+        }
+    }
+
+    ReactDOM.render(<OpenIdPage {...props} />, page.element);
+}
+
+function userLogin_action(page: chitu.Page) {
+    let props: OpenIdPageProps = {
+        weixin: page.createService(WeiXinService),
+        title: '客户端登录',
+        buttonText: '确定登录',
+        content: {
+            normal: `确定要登录到${shopName}客户端吗`,
             success: '已成功登录',
             fail: '登录号失败，请重新扫描二维码'
         }

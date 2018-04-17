@@ -113,11 +113,21 @@ export default function (page: chitu.Page) {
             return [
                 <div key={10} name="tabs" className="tabbable">
                     <ul className="nav nav-tabs">
-                        <li className="pull-right">
+                        {/* <li className="pull-right">
                             <button onClick={() => { }} className="btn btn-primary btn-sm">
                                 <i className="icon-money" />
                                 <span>充值</span>
                             </button>
+                        </li> */}
+                        <li className="pull-right">
+                            <button data-bind="click: search" className="btn btn-primary btn-sm">
+                                <i className="icon-search" />
+                                <span>搜索</span>
+                            </button>
+                        </li>
+                        <li className="pull-right">
+                            <input type="text" data-bind="value: searchText" className="form-control" style={{ width: 300 }}
+                                placeholder="请输入会员手机" />
                         </li>
                     </ul>
                 </div>,

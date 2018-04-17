@@ -32,7 +32,7 @@ if (location.search) {
     headers['application-id'] = location.search.substr(1);
 }
 
-export type LoginResult = { token: string, userId: string };
+// export type LoginResult = { token: string, userId: string };
 export class WeiXinService extends Service {
     url(path) {
         return `${Service.config.weixinUrl}${path}`;
@@ -61,7 +61,7 @@ export class WeiXinService extends Service {
      */
     login(code: string): Promise<LoginResult | { SellerId: string }> {
         let url = this.url('Member/Login');
-        return this.get<LoginResult | { SellerId: string }>(url, { code }).then(result => {
+        return this.postByJson<LoginResult | { SellerId: string }>(url, { code }).then(result => {
             //token 为空表示 openid 没有绑定
             debugger;
             if ((result as LoginResult).token != null) {
@@ -69,12 +69,6 @@ export class WeiXinService extends Service {
             }
             return result;
         });
-
-        // let url = `UserMember/User/Login`;
-        // return this.postByJson<{ token: string, userId: string }>(url, { username, password }).then((result) => {
-        //     tokens.userToken.value = result.token;
-        //     return result;
-        // });
     }
     bind(code: string) {
         let url = this.url('Member/Bind');

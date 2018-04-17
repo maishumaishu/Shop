@@ -177,18 +177,21 @@ export default async function (page: chitu.Page) {
     }
 
     let couponEditPage: CouponEditPage;
-    let coupon = await shopping.coupon(page.data.id);
+    let coupon: Coupon;
+    if (page.data.id)
+        coupon = await shopping.coupon(page.data.id);
+
     ReactDOM.render(<CouponEditPage coupon={coupon} ref={(e) => couponEditPage = e} />, page.element);
 
-    function updatePageState(sender, args) {
-        // if (page.data.id) {
-        shopping.coupon(args.id).then(coupon => {
-            couponEditPage.state.coupon = coupon;
-            couponEditPage.setState(couponEditPage.state);
-        });
-        // }
-    }
+    // function updatePageState(sender, args) {
+    //     // if (page.data.id) {
+    //     shopping.coupon(args.id).then(coupon => {
+    //         couponEditPage.state.coupon = coupon;
+    //         couponEditPage.setState(couponEditPage.state);
+    //     });
+    //     // }
+    // }
 
     // updatePageState();
-    page.showing.add((sender, args) => updatePageState(sender, args));
+    // page.showing.add((sender, args) => updatePageState(sender, args));
 }

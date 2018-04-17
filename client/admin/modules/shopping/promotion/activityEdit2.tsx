@@ -7,13 +7,12 @@ import app from 'application';
 
 
 let productSelectorDialog: ProductSelectDialog
-// let productSelected: (product: Product) => void;
 export default function (page: chitu.Page) {
 
     let shopping = page.createService(ShoppingService);
     let activity = page.createService(ActivityService);
 
-    requirejs([`text!${page.name}.html`], (html) => {
+    requirejs([`text!modules/shopping/promotion/activityEdit.html`], (html) => {
         page.element.innerHTML = html;
 
         let dlg_product = page.element.querySelector('[name="dlg_product"]') as HTMLElement;
@@ -195,7 +194,7 @@ class PromotionContent {
 
     }
 
-    newRule(method: string, givenType: string, description: string): PromotionContentRule {
+    newRule = (method: string, givenType: string, description: string): PromotionContentRule => {
         var rule = new PromotionContentRule(this, givenType);
         rule.givenType = givenType;
         rule.method = method;
@@ -203,7 +202,7 @@ class PromotionContent {
         return rule;
     }
 
-    removeRule(item) {
+    removeRule = (item) => {
         this.sv_activity.deleteContentRule(item.id).then(function () {
             item.promotion.rules.remove(item);
         });

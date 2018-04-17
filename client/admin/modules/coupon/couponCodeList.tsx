@@ -80,7 +80,7 @@ export default function (page: chitu.Page) {
         }
         showGenerateDialog() {
             this.validator.clearErrors();
-            $(this.dialogElement).modal();
+            ui.showDialog(this.dialogElement);
         }
         async  generateCouponCode(): Promise<any> {
             let isValid = await this.validator.check();
@@ -90,7 +90,7 @@ export default function (page: chitu.Page) {
             let couponId = (this.dialogElement['coupon'] as HTMLSelectElement).value;
             let count = Number.parseInt((this.dialogElement['count'] as HTMLInputElement).value);
             return shopping.generateCouponCode(couponId, count).then(() => {
-                $(this.dialogElement).modal('hide');
+                ui.hideDialog(this.dialogElement);
                 return this.dataSource.select();
             });
         }

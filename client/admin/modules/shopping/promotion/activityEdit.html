@@ -11,7 +11,9 @@
                 <span class="caret"></span>
             </button>
             <ul data-bind="foreach:promotions" class="dropdown-menu">
-                <li><a data-bind="click:$parent.removePromotion, text:'第' + (ko.unwrap($index) + 1) + '条' " href="#"></a></li>
+                <li>
+                    <a data-bind="click:$parent.removePromotion, text:'第' + (ko.unwrap($index) + 1) + '条' " href="#"></a>
+                </li>
             </ul>
         </div>
     </li>
@@ -98,7 +100,10 @@
                 <tbody>
                     <tr data-bind="visible:ko.unwrap(rules).length == 0">
                         <td colspan="4" style="border:0px;text-align:center">
-                            <div style="padding:50px 0px 50px 0px;">暂无数据</div>
+                            <div style="padding:50px 0px 50px 0px;">
+                                <b>暂无优惠商品</b>
+                                <div>可以勾选"全场优惠"或者点击"添加商品"按钮添加要优惠的商品</div>
+                            </div>
                         </td>
                     </tr>
                     <!-- ko foreach:rules -->
@@ -153,7 +158,10 @@
                 <tbody>
                     <tr data-bind="visible:ko.unwrap(rules).length==0">
                         <td colspan="4" style="border:0px;text-align:center">
-                            <div style="padding:50px 0px 50px 0px;">暂无数据</div>
+                            <div style="padding:50px 0px 50px 0px;">
+                                <b>暂无优惠内容</b>
+                                <div>可以点击"添加优惠内容"按钮,添加优惠内容</div>
+                            </div>
                         </td>
                     </tr>
                     <!-- ko foreach:rules -->

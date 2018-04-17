@@ -4,7 +4,7 @@ let siteMap = {
         home_index: { action: `${dir}/home/index`, cache: true },
         coupon_couponList: { action: `${dir}/coupon/couponList`, cache: true },
         coupon_couponCodeList: { action: `${dir}/coupon/couponCodeList`, cache: true },
-        coupon_couponEdit: { action: `${dir}/coupon/couponEdit`, cache: true },
+        coupon_couponEdit: { action: `${dir}/coupon/couponEdit`, cache: false },
         coupon_couponSetting: { action: `${dir}/coupon/couponSetting`, cache: true },
         freight_solutionList: { action: `${dir}/freight/solutionList`, cache: true },
         freight_freightList: { action: `${dir}/freight/freightList`, cache: true },
@@ -12,14 +12,14 @@ let siteMap = {
         member_memberList: { action: `${dir}/member/memberList`, cache: true },
         user_changePassword: { action: `${dir}/user/changePassword`, cache: true },
         user_login: { action: `${dir}/user/login`, cache: true } as chitu.SiteMapNode,
-        user_register: { action: `${dir}/user/register`, cache: true } as chitu.SiteMapNode, 
+        user_register: { action: `${dir}/user/register`, cache: true } as chitu.SiteMapNode,
         shopping_brandList: { action: `${dir}/shopping/brandList`, cache: true },
         shopping_categoryList: { action: `${dir}/shopping/productCategoryList`, cache: true },
         shopping_paymentSetting: { action: `${dir}/shopping/paymentSetting`, cache: true },
         shopping_productList: { action: `${dir}/shopping/productList`, cache: true },
         shopping_orderList: { action: `${dir}/shopping/orderList`, cache: true },
         shopping_promotion_activities: { action: `${dir}/shopping/promotion/activities`, cache: true },
-        shopping_promotion_activityEdit: { action: `${dir}/shopping/promotion/activityEdit`, cache: true },
+        shopping_promotion_activityEdit: { action: `${dir}/shopping/promotion/activityEdit2`, cache: false },
         shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit`, cache: false },
         station_index: { action: `${dir}/station/index`, cache: true },
         station_pages_home: { action: `${dir}/station/pages/home`, cache: true },
@@ -114,7 +114,7 @@ export let menuData: MenuNode[] = [
                 ],
 
             },
-            { action: "coupon/couponCodeList", title: "优惠码" }
+            Object.assign(siteMap.nodes.coupon_couponCodeList, { title: "优惠码" })
         ],
     },
     {

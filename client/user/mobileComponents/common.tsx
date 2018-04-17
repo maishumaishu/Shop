@@ -98,14 +98,6 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         })
     }
 
-    // static createStandElement(type, props: ComponentProp<any>, ...children) {
-    //     let args = [type, props];
-    //     for (let i = 2; i < arguments.length; i++) {
-    //         args[i] = arguments[i];
-    //     }
-    //     return React.createElement.apply(React, args);
-    // }
-
     private get isDesignMode() {
         let screenElement = this.findScreenElement(this.element);
         return screenElement != null;

@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 
 import { Service, urlParams } from 'userServices/service';
 import { StationService } from 'userServices/stationService';
-import { WeiXinService } from 'userServices/weiXinService';
+import { WeiXinService } from 'userServices/weixinService';
 import { userData } from 'userServices/userData';
 
 import { Application as BaseApplication, Page as BasePage } from 'maishu-chitu';
