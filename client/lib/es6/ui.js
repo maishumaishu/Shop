@@ -26,7 +26,7 @@ var ui;
         }
         args = args || {};
         let execute = (event) => __awaiter(this, void 0, void 0, function* () {
-            let button = event.target;
+            let button = event.currentTarget;
             button.setAttribute('disabled', '');
             try {
                 yield callback(event);

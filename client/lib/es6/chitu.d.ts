@@ -20,15 +20,15 @@ declare namespace chitu {
         protected pageDisplayType: PageDisplayConstructor;
         private _runned;
         private cachePages;
-        private allNodes;
         private page_stack;
+        siteMap: chitu.SiteMap<SiteMapNode>;
         error: Callback2<this, Error, Page>;
         constructor(siteMap: SiteMap<SiteMapNode>);
         parseUrl(url: string): {
             pageName: string;
             values: PageData;
         };
-        protected createUrl(pageName: string, values?: {
+        createUrl(pageName: string, values?: {
             [key: string]: string;
         }): string;
         private on_pageCreated(page);
@@ -48,9 +48,6 @@ declare namespace chitu {
         redirect(node: SiteMapNode, args?: any): Page;
         back(): void;
         loadjs(path: any): Promise<any>;
-        readonly pageNodes: {
-            [key: string]: SiteMapNode;
-        };
     }
 }
 declare class Errors {
@@ -192,8 +189,7 @@ declare namespace chitu {
     }
     type AjaxOptions = {
         data?: Object;
-        headers?: { [key: string]: string | string[] };
-        contentType?: string;
+        headers?: Headers | { [key: string]: string | string[] };
         method?: string;
     };
     class Service {
