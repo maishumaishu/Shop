@@ -68,7 +68,6 @@ export default function (page: chitu.Page) {
                         headerText: '隐藏', headerStyle: { textAlign: 'center' } as CSSStyleDeclaration,
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
                     }),
-                    // new wuzhui.BoundField({ dataField: 'ImagePath', headerText: '图片', headerStyle: { textAlign: 'center' } as CSSStyleDeclaration }),
                     customField({
                         headerText: '图片',
                         itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
@@ -157,7 +156,10 @@ export default function (page: chitu.Page) {
                         <ul className="nav nav-tabs">
                             <li className="pull-right">
                                 <button className="btn btn-sm btn-primary"
-                                    onClick={() => this.add()}>添加</button>
+                                    onClick={() => this.add()}>
+                                    <i className="icon-plus" />
+                                    <span>添加</span>
+                                </button>
                             </li>
                         </ul>
                     </div>
@@ -262,6 +264,9 @@ class CommandCell extends React.Component<{ category: Category, dataSource: wuzh
                         }, { confirm: `确定要删除品类'${this.props.category.Name}'吗` })
                     }} >
                     <i className="icon-trash" />
+                </button>
+                <button className="btn btn-minier btn-info">
+                    <i className="icon-pencil" />
                 </button>
             </div>
         );
