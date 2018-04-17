@@ -8,25 +8,12 @@ import { guid, StationService } from 'adminServices/station';
 import { StationService as UserStation } from 'userServices/stationService';
 import { MemberService } from 'userServices/memberService';
 import { PropTypes } from 'prop-types';
-import { Application as UserApplication } from 'user/application';
-import userSiteMap from 'user/siteMap';
+
 import { AppError, ErrorCodes } from 'share/common';
+import { DesignTimeUserApplication } from 'modules/station/components/designTimeUserApplication';
+
 import * as ui from 'ui';
 import 'jquery-ui';
-
-
-class MyUserApplication extends UserApplication {
-    private screenElement: HTMLElement;
-    constructor(screenElement: HTMLElement) {
-        super();
-        this.screenElement = screenElement;
-    }
-    createPageElement(pageName: string) {
-        let element = super.createPageElement(pageName);
-        this.screenElement.appendChild(element);
-        return element;
-    }
-}
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData?: PageData,
@@ -43,7 +30,7 @@ export interface State {
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
-    private userApp: MyUserApplication;
+    private userApp: DesignTimeUserApplication;
     private virtualMobile: VirtualMobile;
     private editorsElement: HTMLElement;
     private currentEditor: HTMLElement;
@@ -251,24 +238,23 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
         console.assert(screenElement != null);
 
-
-        userSiteMap.nodes.emtpy.action = (page: chitu.Page) => {
-            ReactDOM.render(<MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
-                elementPage={page}
-                designTime={{
-                    controlSelected: (a, b) => this.selecteControl(a, b)
-                }} />, page.element);
-
-            $(this.allContainer).find('li').draggable({
-                connectToSortable: $(page.element).find("section"),
-                helper: "clone",
-                revert: "invalid"
-            });
-        }
-
         if (this.userApp == null) {
-            this.userApp = new MyUserApplication(screenElement);
-            this.userApp.showPage(userSiteMap.nodes.emtpy);
+            this.userApp = new DesignTimeUserApplication(screenElement);
+            this.userApp.designPageNode.action = (page: chitu.Page) => {
+                ReactDOM.render(<MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
+                    elementPage={page}
+                    designTime={{
+                        controlSelected: (a, b) => this.selecteControl(a, b)
+                    }} />, page.element);
+    
+                $(this.allContainer).find('li').draggable({
+                    connectToSortable: $(page.element).find("section"),
+                    helper: "clone",
+                    revert: "invalid"
+                });
+            }
+    
+            this.userApp.showDesignPage();
         }
         else {
             this.userApp.currentPage.reload();

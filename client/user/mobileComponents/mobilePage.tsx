@@ -161,7 +161,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                         this.selecteControl = c;
                     }
 
-                    // this.controlCreated(c.control, c.controlType);
                 }} />
         );
     }
@@ -204,7 +203,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
 
     renderRuntimeViews(pageData: PageData) {
         let views = pageData.views || [];
-        // let paddingBottom = this.calculateFooterHeight(pageData);
         return views.map((o, i) => (
             <section key={`view${i}`} className="page-view"
                 ref={(e: HTMLElement) => {
@@ -240,15 +238,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             pageElement.className = className;
         }
     }
-
-    // calculateFooterHeight(pageData: PageData): number | null {
-
-    //     let footerControlHeight = 50;
-    //     let footerControls = (pageData.footer || { controls: [] }).controls || [];
-    //     let visibleControls = footerControls.filter(o => o.controlName != 'style');
-    //     let height = footerControlHeight * visibleControls.length;
-    //     return height;
-    // }
 
     renderDesigntimeViews(pageData: PageData) {
         let sortableElement = (element: HTMLElement, viewIndex: number) => {
@@ -286,9 +275,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
                     for (let i = 0; i < this.footerElement.children.length; i++) {
                         let child = this.footerElement.children[i] as HTMLElement;
                         let control = pageData.footer.controls.filter(o => o.controlId == child.id)[0];
-                        // if (control == null)
-                        //     continue;
-
                         footer_controls[i] = control;
                     }
                     //===================================================
@@ -299,7 +285,6 @@ export class MobilePage extends React.Component<Props, { pageData: PageData }>{
             })
         }
 
-        // let paddingBottom = this.calculateFooterHeight(pageData);
         return (pageData.views || []).map((o, i) => (
             <section key={i}
                 ref={(e: HTMLElement) => {
