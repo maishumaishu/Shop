@@ -18,7 +18,10 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
 
     constructor(props) {
         super(props);
-        this.state = { productSourceType: 'category', listType: 'doubleColumn', imageSize: 'small' };
+        this.state = {
+            productSourceType: 'category', listType: 'doubleColumn', imageSize: 'small',
+            productNameLines: 'singleLine'
+        };
 
         this.loadEditorCSS();
     }
@@ -220,7 +223,21 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                                 大
                             </span>
                         </div>
-                    ] : null}
+                    ] : [
+                        <div key={10} className="form-group">
+                            <label className="pull-left">商品名称</label>
+                            <span>
+                                <input name="productNameLines" type="radio" value="singleLine"
+                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productNameLines')} />
+                                单行文字
+                            </span>
+                            <span>
+                                <input name="productNameLines" type="radio" value="doubleLine"
+                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productNameLines')} />
+                                双行文字
+                            </span>
+                        </div>
+                    ]}
 
                 <div style={{ display: productSourceType == 'category' ? 'block' : 'none' }}>
                     <div className="form-group">

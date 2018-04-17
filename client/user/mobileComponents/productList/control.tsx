@@ -73,14 +73,19 @@ export interface State {
     // shoppingCartItems: ShoppingCartItem[],
     imageSize?: 'small' | 'medium' | 'large',
 
-    productCounts?: { [key: string]: number }
+    productCounts?: { [key: string]: number },
+
+    /**
+     * 商品名称行数
+     */
+    productNameLines?: 'singleLine' | 'doubleColumn'
 }
 
 export default class ProductListControl extends Control<Props, State> {
     get persistentMembers(): (keyof State)[] {
         return [
             'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',
-            'listType', 'displayType', 'displayTitle', 'imageSize'
+            'listType', 'displayType', 'displayTitle', 'imageSize', 'productNameLines'
         ]
     }
     constructor(args) {
@@ -194,7 +199,6 @@ export default class ProductListControl extends Control<Props, State> {
                                 ref={(e: HTMLImageElement) => {
                                     if (!e) return;
                                     ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
-                                    // 
                                 }} />
                         </div>
                         <div className={`content ${rightClassName}`}>
@@ -222,7 +226,7 @@ export default class ProductListControl extends Control<Props, State> {
     }
 
     async renderDoubleColumn(h, products: Product[]): Promise<JSX.Element> {
-        var productCounts = this.state.productCounts;
+        var { productCounts, productNameLines } = this.state;
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map((o, i) =>
@@ -230,7 +234,8 @@ export default class ProductListControl extends Control<Props, State> {
                         <div onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                             <ProductImage key={i} product={o} />
 
-                            <div className="name" onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
+                            <div className={productNameLines == 'singleLine' ? 'name' : 'name double-line'}
+                                onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                                 {o.Name}
                             </div>
                             <div className="price-bar" onClick={(e) => e.stopPropagation()}>
