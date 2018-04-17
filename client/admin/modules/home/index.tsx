@@ -1,7 +1,9 @@
-﻿
+﻿import { shopName } from 'share/common'
+
 class IndexPage extends React.Component<any, any> {
     render() {
         return [
+            <h1 key="title" className="text-center" style={{ paddingBottom: 50, paddingTop: 10 }}>欢迎使用{shopName}</h1>,
             <div key="row1" className="row">
                 <div className="col-md-4">
                     <ul className="list-group">

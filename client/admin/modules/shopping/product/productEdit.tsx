@@ -15,7 +15,6 @@ const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
 
-
     var editorId = guid();
     app.loadCSS(page.name);
     type PageState = {

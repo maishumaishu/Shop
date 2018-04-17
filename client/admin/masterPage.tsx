@@ -9,7 +9,8 @@ let h = React.createElement;
 interface State {
     currentNode: MenuNode,
     username: string,
-    hideExistsButton
+    hideExistsButton: boolean,
+    hideStoreButton: boolean
 }
 
 interface Props {
@@ -25,30 +26,47 @@ export class MasterPage extends React.Component<Props, State> {
             this.setState(this.state);
         })
 
-        let url = (window.location.hash.substr(1) || '').split('?')[0];
         this.state = {
-            currentNode: this.findNodeByUrl(url), username: Service.adminName.value,
-            hideExistsButton: !Service.token.value
+            currentNode: null, username: Service.adminName.value,
+            hideExistsButton: true, hideStoreButton: true
         };
+
+        this.props.app.pageCreated.add((sender, page) => {
+            page.shown.add(() => {
+                this.state.currentNode = this.findNodeByName(page.name);
+                this.setState(this.state);
+                console.log(`page '${page.name}' shown`)
+
+                let names = [
+                    siteMap.nodes.user_login.name,
+                    siteMap.nodes.user_register.name,
+                ]
+
+                this.state.hideStoreButton = [...names, siteMap.nodes.user_myStores.name].indexOf(page.name) >= 0;
+                this.state.hideExistsButton = [...names].indexOf(page.name) >= 0;
+                this.setState(this.state);
+            })
+
+        })
     }
 
     updateMenu(page: chitu.Page) {
         let url = page.name.replace(/\./, '/');
-        let currentNode = this.findNodeByUrl(url);
+        let currentNode = this.findNodeByName(url);
 
         this.state.currentNode = currentNode;
         this.state.username = Service.adminName.value;
         this.setState(this.state);
     }
 
-    findNodeByUrl(url: string): MenuNode {
+    findNodeByName(name: string): MenuNode {
         let stack = new Array<MenuNode>();
         for (let i = 0; i < menuData.length; i++) {
             stack.push(menuData[i]);
         }
         while (stack.length > 0) {
             let node = stack.pop();
-            if (node.name == url) {
+            if (node.name == name) {
                 return node;
             }
             let children = node.children || [];
@@ -138,7 +156,7 @@ export class MasterPage extends React.Component<Props, State> {
 
         // let currentPageName = app.currentPage != null ? app.currentPage.name : '';
         // let hideExistsButton = location.hash == '#user/login' || !Service.token;
-        let { hideExistsButton } = this.state;
+        let { hideExistsButton, hideStoreButton } = this.state;
 
         return (
             <div className={nodeClassName}>
@@ -175,6 +193,13 @@ export class MasterPage extends React.Component<Props, State> {
                                             onClick={() => app.redirect(siteMap.nodes.user_login)}>
                                             <i className="icon-off"></i>
                                             <span style={{ paddingLeft: 4 }}>退出</span>
+                                        </li> : null
+                                    }
+                                    {!hideStoreButton ?
+                                        <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 12, cursor: 'pointer' }}
+                                            onClick={() => app.redirect(siteMap.nodes.user_myStores)}>
+                                            <i className="icon-building"></i>
+                                            <span style={{ paddingLeft: 4, paddingRight: 10 }}>店铺管理</span>
                                         </li> : null
                                     }
                                 </ul>

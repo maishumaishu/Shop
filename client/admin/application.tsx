@@ -96,11 +96,11 @@ class Application extends chitu.Application {
             case '724':     //724 为 token 失效
             case '601':     //601 为用户未登录异常
                 var currentPage = this.currentPage;
-                let isLoginPage = currentPage.name == 'user.login';
+                let isLoginPage = currentPage.name == (siteMap.nodes.user_login as chitu.SiteMapNode).name;
                 if (isLoginPage) {
                     return;
                 }
-                this.redirect(siteMap.nodes["user/login"], { return: app.createUrl(currentPage.name, currentPage.data) });
+                this.redirect(siteMap.nodes.user_login, { return: app.createUrl(currentPage.name, currentPage.data) });
                 break;
             case '725':
                 ui.alert({ title: '错误', message: 'application-key 配置错误' });

@@ -171,7 +171,7 @@ class Page extends React.Component<{}, PageState>{
                     headerStyle: { textAlign: 'center' } as CSSStyleDeclaration
                 }),
                 new wuzhui.BoundField({
-                    dataField: 'CategoryName', headerText: '类别',
+                    dataField: 'ProductCategoryName', headerText: '类别',
                     headerStyle: { textAlign: 'center' } as CSSStyleDeclaration,
                 }),
                 new wuzhui.CustomField({
@@ -469,19 +469,16 @@ class OperationField<T> extends wuzhui.CustomField<T> {
             createItemCell(dataItem: Product) {
                 let cell = new wuzhui.GridViewCell();
                 ReactDOM.render(<div>
-                    <button className="btn btn-minier btn-success" style={{ marginRight: 4 }}>
+                    <button className="btn btn-minier btn-success" style={{ marginRight: 4 }} title={tips.clickCopyProductURL}>
                         商品链接
                     </button>
-                    <button className="btn btn-minier btn-purple" style={{ marginRight: 4 }}>
+                    <button className="btn btn-minier btn-purple" style={{ marginRight: 4 }} title={tips.clickAddRegularProduct}
+                        onClick={() => app.redirect(siteMap.nodes.shopping_product_productEdit, { parentId: dataItem.Id })}>
                         <i className="icon-copy" />
                     </button>
-                    <button className="btn btn-minier btn-info" style={{ marginRight: 4 }}
+                    <button className="btn btn-minier btn-info" style={{ marginRight: 4 }} title={tips.clickEditProduct}
                         onClick={() => { app.redirect(siteMap.nodes.shopping_product_productEdit, { id: dataItem.Id }) }}>
                         <i className="icon-pencil"></i>
-                    </button>
-                    <button className="btn btn-minier btn-warning" title={tips.clickAddRegularProduct}
-                        onClick={() => app.redirect(siteMap.nodes.shopping_product_productEdit, { id: dataItem.Id })}>
-                        <i className="icon-plus"></i>
                     </button>
                     <button className="btn btn-minier btn-danger" style={{ marginLeft: 4 }}
                         ref={(e: HTMLButtonElement) => {

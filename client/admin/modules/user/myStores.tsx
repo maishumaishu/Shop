@@ -151,7 +151,7 @@ export default async function (page: chitu.Page) {
                                                 console.assert(pageName != null);
                                                 location.href = `?appKey=${o.Id}#${pageName}`;
                                             }}
-                                        >详细</button>
+                                        >进入</button>
                                     </div>
                                 </div>
                             </li>

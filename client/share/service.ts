@@ -90,7 +90,7 @@ export default class Service extends chitu.Service {
         data = data || {};
         let params = "";
         for (let key in data) {
-            params = `${params}&${key}=${data[key]}`;
+            params = params ? `${params}&${key}=${data[key]}` : `${key}=${data[key]}`;
         }
 
         if (params) {

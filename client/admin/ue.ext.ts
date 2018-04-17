@@ -1,7 +1,7 @@
 ﻿
 
 (<any>window).UEDITOR_HOME_URL = '/scripts/ueditor/'
-var references = ['ue/ueditor.config', 'ue/ueditor.all', 'ue/third-party/zeroclipboard/ZeroClipboard'];
+var references = ['ue/ueditor.config', 'ue/ueditor.all.min', 'ue/third-party/zeroclipboard/ZeroClipboard'];
 
 export function createEditor(editorId: string, field: HTMLInputElement) {
 

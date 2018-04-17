@@ -1,36 +1,37 @@
 let dir = 'modules';
 let siteMap = {
     nodes: {
-        home_index: { action: `${dir}/home/index` },
-        coupon_couponList: { action: `${dir}/coupon/couponList` },
-        coupon_couponCodeList: { action: `${dir}/coupon/couponCodeList` },
-        coupon_couponEdit: { action: `${dir}/coupon/couponEdit` },
-        coupon_couponSetting: { action: `${dir}/coupon/couponSetting` },
-        freight_solutionList: { action: `${dir}/freight/solutionList` },
-        freight_freightList: { action: `${dir}/freight/freightList` },
-        freight_inCitySend: { action: `${dir}/freight/inCitySend` },
-        member_memberList: { action: `${dir}/member/memberList`, },
-        user_changePassword: { action: `${dir}/user/changePassword` },
-        user_login: { action: `${dir}/user/login` },
-        user_register: { action: `${dir}/user/register` },
-        shopping_brandList: { action: `${dir}/shopping/brandList` },
-        shopping_paymentSetting: { action: `${dir}/shopping/paymentSetting` },
-        shopping_productList: { action: `${dir}/shopping/productList` },
-        shopping_orderList: { action: `${dir}/shopping/orderList`, },
-        shopping_promotion_activities: { action: `${dir}/shopping/promotion/activities` },
-        shopping_promotion_activityEdit: { action: `${dir}/shopping/promotion/activityEdit` },
-        shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit` },
-        station_index: { action: `${dir}/station/index` },
-        station_pages_home: { action: `${dir}/station/pages/home` },
-        station_page: { action: `${dir}/station/pages/page` },
-        station_pageList: { action: `${dir}/station/pages/pageList` },
-        station_shoppingCart: { action: `${dir}/station/shoppingCart` },
-        station_storeMember: { action: `${dir}/station/storeMember` },
-        station_storeCategories: { action: `${dir}/station/storeCategories` },
-        station_storeMenu: { action: `${dir}/station/storeMenu` },
-        station_storeStyle: { action: `${dir}/station/storeStyle` },
-        user_myStores: { action: `${dir}/user/myStores` },
-        weixin_setting: { action: `${dir}/weixin/setting` },
+        home_index: { action: `${dir}/home/index`, cache: true },
+        coupon_couponList: { action: `${dir}/coupon/couponList`, cache: true },
+        coupon_couponCodeList: { action: `${dir}/coupon/couponCodeList`, cache: true },
+        coupon_couponEdit: { action: `${dir}/coupon/couponEdit`, cache: true },
+        coupon_couponSetting: { action: `${dir}/coupon/couponSetting`, cache: true },
+        freight_solutionList: { action: `${dir}/freight/solutionList`, cache: true },
+        freight_freightList: { action: `${dir}/freight/freightList`, cache: true },
+        freight_inCitySend: { action: `${dir}/freight/inCitySend`, cache: true },
+        member_memberList: { action: `${dir}/member/memberList`, cache: true },
+        user_changePassword: { action: `${dir}/user/changePassword`, cache: true },
+        user_login: { action: `${dir}/user/login`, cache: true } as chitu.SiteMapNode,
+        user_register: { action: `${dir}/user/register`, cache: true } as chitu.SiteMapNode, 
+        shopping_brandList: { action: `${dir}/shopping/brandList`, cache: true },
+        shopping_categoryList: { action: `${dir}/shopping/categoryList`, cache: true },
+        shopping_paymentSetting: { action: `${dir}/shopping/paymentSetting`, cache: true },
+        shopping_productList: { action: `${dir}/shopping/productList`, cache: true },
+        shopping_orderList: { action: `${dir}/shopping/orderList`, cache: true },
+        shopping_promotion_activities: { action: `${dir}/shopping/promotion/activities`, cache: true },
+        shopping_promotion_activityEdit: { action: `${dir}/shopping/promotion/activityEdit`, cache: true },
+        shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit`, cache: true },
+        station_index: { action: `${dir}/station/index`, cache: true },
+        station_pages_home: { action: `${dir}/station/pages/home`, cache: true },
+        station_page: { action: `${dir}/station/pages/page`, cache: true },
+        station_pageList: { action: `${dir}/station/pages/pageList`, cache: true },
+        station_shoppingCart: { action: `${dir}/station/shoppingCart`, cache: true },
+        station_storeMember: { action: `${dir}/station/storeMember`, cache: true },
+        station_storeCategories: { action: `${dir}/station/storeCategories`, cache: true },
+        station_storeMenu: { action: `${dir}/station/storeMenu`, cache: true },
+        station_storeStyle: { action: `${dir}/station/storeStyle`, cache: true },
+        user_myStores: { action: `${dir}/user/myStores`, cache: true } as chitu.SiteMapNode,
+        weixin_setting: { action: `${dir}/weixin/setting`, cache: true },
     }
 }
 
@@ -41,7 +42,7 @@ export type MenuNode = chitu.SiteMapNode & {
 };
 
 export let menuData: MenuNode[] = [
-    Object.assign(siteMap.nodes.home_index, { title: '首页', icon: 'icon-dashboard', visible: true }),
+    Object.assign(siteMap.nodes.home_index, { title: '概况', icon: 'icon-dashboard', visible: true }),
     {
         title: "微店",
         icon: "icon-home",
@@ -74,8 +75,8 @@ export let menuData: MenuNode[] = [
                     Object.assign(siteMap.nodes.shopping_product_productEdit, { title: '', visible: false })
                 ]
             }),
+            Object.assign(siteMap.nodes.shopping_categoryList, { title: '商品分类' }),
             Object.assign(siteMap.nodes.shopping_brandList, { title: "商品品牌" })
-
         ]
     },
     {

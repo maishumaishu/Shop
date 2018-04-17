@@ -7,7 +7,7 @@ import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import QRCode = require('qrcode');
-import { websocketUrl } from 'share/common'
+import { websocketUrl, shopName } from 'share/common'
 import { showQRCodeDialog } from 'weixin/modules/openid';
 import siteMap from 'siteMap';
 
@@ -74,6 +74,7 @@ export default async function (page: chitu.Page) {
         }
         render() {
             return [
+                <h1 className="text-center" style={{ paddingBottom: 50 }}>{shopName}商家后台</h1>,
                 <div key={10} className="form-horizontal container" style={{ maxWidth: 500 }}
                     ref={(e: HTMLElement) => this.element = e || this.element}>
                     <div className="form-group" >
