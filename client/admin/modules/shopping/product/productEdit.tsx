@@ -66,7 +66,7 @@ export default function (page: chitu.Page) {
         async save(): Promise<any> {
             let isValid = await this.validator.check();
             if (!isValid) {
-                return Promise.reject({});
+                throw new Error("validate fail.");
             }
             this.state.product.Introduce = this.introduceInput.value;
             this.state.product.Fields = this.fieldPropertiies.state.properties;
@@ -127,7 +127,7 @@ export default function (page: chitu.Page) {
                                 </button>
                             </li>
                             <li className="pull-right">
-                                <button href="javascript:" className="btn btn-sm btn-primary"
+                                <button className="btn btn-sm btn-primary"
                                     ref={(e: HTMLButtonElement) => {
                                         if (!e) return;
                                         ui.buttonOnClick(e, () => this.save(), { toast: '保存商品成功' });
