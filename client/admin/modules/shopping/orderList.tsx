@@ -27,9 +27,9 @@ export default function (page: chitu.Page) {
         }
         componentDidMount() {
             let { required } = rules;
-            this.validator = new FormValidator(
-                { element: this.expressBillNoInput, rules: [required("请输入快递单号")] },
-                { element: this.expressCompanyInput, rules: [required("请输入快递公民名称")] }
+            this.validator = new FormValidator(page.element,
+                { name: "expressBillNo", rules: [required("请输入快递单号")] },
+                { name: "expressCompany", rules: [required("请输入快递公民名称")] }
             )
         }
         render() {

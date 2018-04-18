@@ -58,9 +58,9 @@ export default function (page: chitu.Page) {
             // });
             let nameElement = this.element.querySelector('[name="name"]') as HTMLInputElement;
             let priceElement = this.element.querySelector('[name="price"]') as HTMLInputElement;
-            this.validator = new FormValidator(
-                { element: nameElement, rules: [rules.required()] },
-                { element: priceElement, rules: [rules.required()] }
+            this.validator = new FormValidator(this.element,
+                { name: "name", rules: [rules.required()] },
+                { name: "price", rules: [rules.required()] }
             )
         }
         async save(): Promise<any> {

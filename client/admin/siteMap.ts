@@ -1,4 +1,14 @@
+import { SiteMapNode } from "chitu";
+
 let dir = 'modules';
+
+let user_forgetPassword = { action: `${dir}/user/forgetPassword`, cache: false } as MenuNode;
+let user_login = { action: `${dir}/user/login`, cache: false } as MenuNode;
+let user_register = { action: `${dir}/user/register`, cache: false } as MenuNode;
+
+let anonymous = [
+    user_register, user_forgetPassword, user_login
+]
 let siteMap = {
     nodes: {
         home_index: { action: `${dir}/home/index`, cache: true },
@@ -11,8 +21,9 @@ let siteMap = {
         freight_inCitySend: { action: `${dir}/freight/inCitySend`, cache: true },
         member_memberList: { action: `${dir}/member/memberList`, cache: true },
         user_changePassword: { action: `${dir}/user/changePassword`, cache: true },
-        user_login: { action: `${dir}/user/login`, cache: true } as chitu.SiteMapNode,
-        user_register: { action: `${dir}/user/register`, cache: true } as chitu.SiteMapNode,
+        user_login,
+        user_register,
+        user_forgetPassword,
         shopping_brandList: { action: `${dir}/shopping/brandList`, cache: true },
         shopping_categoryList: { action: `${dir}/shopping/productCategoryList`, cache: true },
         shopping_paymentSetting: { action: `${dir}/shopping/paymentSetting`, cache: true },
@@ -30,10 +41,13 @@ let siteMap = {
         station_storeCategories: { action: `${dir}/station/storeCategories`, cache: true },
         station_storeMenu: { action: `${dir}/station/storeMenu`, cache: true },
         station_storeStyle: { action: `${dir}/station/storeStyle`, cache: true },
-        user_myStores: { action: `${dir}/user/myStores`, cache: true } as chitu.SiteMapNode,
-        weixin_setting: { action: `${dir}/weixin/setting`, cache: true },
-    }
+        user_myStores: { action: `${dir}/user/myStores`, cache: false } as chitu.SiteMapNode,
+        weixin_setting: { action: `${dir}/weixin/setting`, cache: false },
+    },
+    anonymous
 }
+
+
 
 export type MenuNode = chitu.SiteMapNode & {
     title?: string, icon?: string, visible?: boolean,
@@ -154,8 +168,9 @@ export let menuData: MenuNode[] = [
         action: null,
         children: [
             Object.assign(siteMap.nodes.user_login, { title: '登录' }),
-            Object.assign(siteMap.nodes.user_register, { action: 'user/register', title: '注册' }),
-            Object.assign(siteMap.nodes.user_myStores, { title: '我的店铺' })
+            Object.assign(siteMap.nodes.user_register, { title: '注册' }),
+            Object.assign(siteMap.nodes.user_myStores, { title: '我的店铺' }),
+            Object.assign(siteMap.nodes.user_forgetPassword, { title: '忘记密码' })
         ],
         visible: false
     },

@@ -23,6 +23,7 @@ let siteMap = {
         user_coupon: { action: `${dir}/user/coupon` },
         user_index: { action: user_index_action },
         user_favors: { action: `${dir}/user/favors` },
+        user_forgetPassword: { action: `${dir}/user/forgetPassword` },
         user_login: { action: `${dir}/user/login` } as chitu.SiteMapNode,
         user_regions: { action: `${dir}/user/regions` },
         user_receiptEdit: { action: `${dir}/user/receiptEdit` },

@@ -32,9 +32,9 @@ export default function (page: Page) {
             //     }
             // })
             let { required } = rules;
-            this.validator = new FormValidator(
-                { element: this.passwordInput, rules: [required()] },
-                { element: this.confirmPasswordInput, rules: [required()] }
+            this.validator = new FormValidator(this.form,
+                { name: "password", rules: [required()] },
+                { name: "confirmPassword", rules: [required()] }
             )
         }
         async changePassword(): Promise<any> {

@@ -83,9 +83,9 @@ export default function (page: chitu.Page) {
                             // })
                             let beginDateElement = e.element.querySelector('[name="BeginDate"]') as HTMLInputElement;
                             let endDateElement = e.element.querySelector('[name="EndDate"]') as HTMLInputElement;
-                            e.validator = new FormValidator(
-                                { element: beginDateElement, rules: [rules.required()] },
-                                { element: endDateElement, rules: [rules.required()] },
+                            e.validator = new FormValidator(e.element,
+                                { name: "BeginDate", rules: [rules.required()] },
+                                { name: "EndDate", rules: [rules.required()] },
                             )
                         }}
                         saveDataItem={(dataItem) => {

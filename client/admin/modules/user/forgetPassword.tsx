@@ -31,21 +31,7 @@ export default function (page: chitu.Page) {
             let verifyCode = this.formElement.querySelector('[name="verifyCode"]') as HTMLInputElement;
             let password = this.formElement.querySelector('[name="password"]') as HTMLInputElement;
             let confirmPassword = this.formElement.querySelector('[name="confirmPassword"]') as HTMLInputElement;
-            // this.registerValidation = new FormValidator(this.formElement, {
-            //     mobile: { rules: ['required', 'mobile'] },
-            //     verifyCode: { rules: ['required'] },
-            //     password: { rules: ['required'] },
-            //     confirmPassword: { rules: ['required', { name: 'matches', params: ['password'] }] }
-            // });
-
-            // this.registerValidation.messages['mobile'] = '手机号码不正确';
-            // this.registerValidation.messages['matches'] = '两次输入的密码不正确';
-
-            // this.verifyCodeValidation = new FormValidator(this.formElement, {
-            //     mobile: { rules: ['required', 'mobile'] }
-            // });
-
-            // this.verifyCodeValidation.messages['mobile'] = '手机号码不正确';
+ 
 
             this.registerValidation = new FormValidator(this.formElement,
                 { name: "mobile", rules: [rules.required("手机不能为空"), rules.mobile('手机号码不正确')] },
@@ -55,11 +41,11 @@ export default function (page: chitu.Page) {
             )
 
             this.verifyCodeValidation = new FormValidator(this.formElement,
-                { name: "mobile", rules: [rules.required("手机不能为空"), rules.mobile('手机号码不正确')] }
+                { name: "mobile", rules: [rules.required(), rules.mobile('手机号码不正确')] }
             )
         }
 
-        async  register() {
+        async resetPassword() {
             this.registerValidation.clearErrors();
             this.verifyCodeValidation.clearErrors();
 
@@ -72,7 +58,7 @@ export default function (page: chitu.Page) {
             let password = this.passwordInput.value;
 
             let verifyCode = this.verifyCodeInput.value;
-            return userService.register({ smsId: this.smsId, username, password, verifyCode }).then(data => {
+            return userService.resetPassword({ smsId: this.smsId, username, password, verifyCode }).then(data => {
                 app.redirect(siteMap.nodes.user_myStores);
                 return data;
             });
@@ -82,17 +68,18 @@ export default function (page: chitu.Page) {
             this.verifyCodeValidation.clearErrors();
             let isValid = await this.verifyCodeValidation.check();
             if (!isValid) {
-                throw new Error("validate fail");
+                return;
             }
 
             let isMobileRegister = await userService.isMobileRegister(this.mobileInput.value);
-            if (isMobileRegister) {
-                this.mobileError.innerText = '手机号码已被注册';
+            if (!isMobileRegister) {
+                this.mobileError.innerText = '手机号码未注册';
                 this.mobileError.style.display = 'block';
                 return;
             }
-            let result = await userService.sendVerifyCode(this.mobileInput.value);
-            this.smsId = result.SmsId;
+            userService.sendVerifyCode(this.mobileInput.value).then((result) => {
+                this.smsId = result.SmsId;
+            });
 
             let setButtonText = (seconds: number) => {
                 if (seconds <= 0) {
@@ -120,7 +107,7 @@ export default function (page: chitu.Page) {
             return (
                 <div className="container">
                     <div ref={(o: HTMLFormElement) => this.formElement = o} className="User-Register form-horizontal col-md-6 col-md-offset-3">
-                        <h2>立即注册</h2>
+                        <h2>{siteMap.nodes.user_forgetPassword.title}</h2>
                         <hr />
                         <div className="form-group">
                             <label className="col-sm-2 control-label">手机号码</label>
@@ -164,10 +151,10 @@ export default function (page: chitu.Page) {
                                 <button className="btn btn-primary btn-block"
                                     ref={(e: HTMLButtonElement) => {
                                         if (!e) return;
-                                        e.onclick = ui.buttonOnClick(() => this.register())
+                                        e.onclick = ui.buttonOnClick(() => this.resetPassword())
                                     }}>
                                     <i className="icon-key"></i>
-                                    立即注册
+                                    重置密码
                             </button>
                             </div>
                         </div>
@@ -175,14 +162,14 @@ export default function (page: chitu.Page) {
                             <div className="col-sm-offset-2 col-sm-10">
                                 <div className="pull-left">
                                     <button className="btn-link"
-                                        onClick={() => app.redirect(siteMap.nodes.user_forgetPassword)}>
-                                        忘记密码
+                                        onClick={() => app.redirect(siteMap.nodes.user_register)}>
+                                        {siteMap.nodes.user_register.title}
                                     </button>
                                 </div>
                                 <div className="pull-right">
                                     <button className="btn-link"
                                         onClick={() => app.redirect(siteMap.nodes.user_login)}>
-                                        登录
+                                        {siteMap.nodes.user_login.title}
                                     </button>
                                 </div>
                             </div>

@@ -38,8 +38,8 @@ export default async function (page: chitu.Page) {
 
         componentDidMount() {
             let { required } = rules;
-            this.validator = new FormValidator(
-                { element: this.nameInput, rules: [required()] }
+            this.validator = new FormValidator(page.element,
+                { name: "name", rules: [required()] }
             )
 
             // let qrcode = new QRCode(this.qrcodeElement, site.userClientUrl);

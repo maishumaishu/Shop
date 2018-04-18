@@ -16,14 +16,14 @@ export default function (page: chitu.Page) {
         componentDidMount() {
 
             let { required } = rules;
-            let SendAmount = this.formElement.querySelector('[Name="SendAmount"]') as HTMLInputElement;
-            let Freight = this.formElement.querySelector('[Name="Freight"]') as HTMLInputElement;
-            let SendRadius = this.formElement.querySelector('[Name="SendRadius"]') as HTMLInputElement;
-            
-            this.validator = new FormValidator(
-                { element: SendAmount, rules: [required()] },
-                { element: Freight, rules: [required()] },
-                { element: SendRadius, rules: [required()] }
+            // let SendAmount = this.formElement.querySelector('[Name="SendAmount"]') as HTMLInputElement;
+            // let Freight = this.formElement.querySelector('[Name="Freight"]') as HTMLInputElement;
+            // let SendRadius = this.formElement.querySelector('[Name="SendRadius"]') as HTMLInputElement;
+
+            this.validator = new FormValidator(this.formElement,
+                { name: "SendAmount", rules: [required()] },
+                { name: "Freight", rules: [required()] },
+                { name: "SendRadius", rules: [required()] }
             )
         }
         async save(): Promise<any> {

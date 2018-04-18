@@ -101,9 +101,9 @@ export default function (page: chitu.Page) {
             // });
             let { required } = rules;
             // let e = this.dialogElement;
-            this.validator = new FormValidator(
-                { element: this.countInput, rules: [required('请输入数量')] },
-                { element: this.couponsSelect, rules: [required('请选择优惠劵')] }
+            this.validator = new FormValidator(this.dialogElement,
+                { name: "count", rules: [required('请输入数量')] },
+                { name: "coupon", rules: [required('请选择优惠劵')] }
             );
 
             this.dataSource = new wuzhui.DataSource({

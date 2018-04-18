@@ -38,12 +38,12 @@ export default function (page: chitu.Page) {
             // });
             let { required, matches } = rules;
             let e = this.formElement;
-            this.validator = new FormValidator(
-                { element: e["mobile"], rules: [required('请输入手机号码')] },
-                { element: e["verifyCode"], rules: [required('请输入验证码')] },
-                { element: e["password"], rules: [required('请输入密码')] },
+            this.validator = new FormValidator(this.formElement,
+                { name: "mobile", rules: [required('请输入手机号码')] },
+                { name: "verifyCode", rules: [required('请输入验证码')] },
+                { name: "password", rules: [required('请输入密码')] },
                 {
-                    element: e["confirmPassword"], rules: [
+                    name: "confirmPassword", rules: [
                         required('请再次输入密码'),
                         matches(e["password"], "两次输入的密码不匹配")
                     ]

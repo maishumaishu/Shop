@@ -430,8 +430,8 @@ class ProductInputDialog extends React.Component<React.Props<ProductInputDialog>
     }
     componentDidMount() {
         let { required } = dilu.rules;
-        this.validator = new dilu.FormValidator({
-            element: this.nameInput,
+        this.validator = new dilu.FormValidator(this.element, {
+            name: "Name",
             rules: [required("请选择商品")],
             errorElement: this.nameError
         })
@@ -575,8 +575,8 @@ class BrandInputDialog extends React.Component<
     }
     componentDidMount() {
         let { required } = dilu.rules;
-        this.validator = new dilu.FormValidator(
-            { element: this.brandSelect, rules: [required("请选择品牌")] }
+        this.validator = new dilu.FormValidator(this.element,
+            { name: "Brand", rules: [required("请选择品牌")] }
         );
     }
     render() {
@@ -602,7 +602,7 @@ class BrandInputDialog extends React.Component<
                                         *品牌
                                 </label>
                                     <div className="col-sm-10">
-                                        <select className="form-control" value={selectedBrandId}
+                                        <select name="Brand" className="form-control" value={selectedBrandId}
                                             ref={(e: HTMLSelectElement) => this.brandSelect = e || this.brandSelect}
                                             onChange={(e) => {
                                                 let brandId = (e.target as HTMLSelectElement).value;
@@ -698,8 +698,8 @@ class CategoryInputDialog extends React.Component<
     }
     componentDidMount() {
         let { required } = dilu.rules;
-        this.validator = new dilu.FormValidator(
-            { element: this.categorySelect, rules: [required("请选择类别")] }
+        this.validator = new dilu.FormValidator(this.element,
+            { name: "Category", rules: [required("请选择类别")] }
         )
     }
     render() {
@@ -726,7 +726,7 @@ class CategoryInputDialog extends React.Component<
                                         *类别
                                     </label>
                                     <div className="col-sm-10">
-                                        <select className="form-control" value={selectedBrandId}
+                                        <select name="Category" className="form-control" value={selectedBrandId}
                                             ref={(e: HTMLSelectElement) => this.categorySelect = e || this.categorySelect}
                                             onChange={(e) => {
                                                 let categoryId = (e.target as HTMLSelectElement).value;
@@ -836,18 +836,18 @@ abstract class ContentRuleDialog<P, S> extends React.Component<P & React.Props<a
         let { required, numeric } = dilu.rules;
 
         dilu.FormValidator.errorClassName = "validationMessage";
-        this.validator = new dilu.FormValidator(
+        this.validator = new dilu.FormValidator(this.element,
             {
-                element: this.countSelect, rules: [required()],
+                name: "BuyCount", rules: [required()],
                 condition: () => this.state.promotion.Method == "Count"
             },
             {
-                element: this.amountInput, rules: [required(), numeric()],
+                name: "BuyAmount", rules: [required(), numeric()],
                 condition: () => this.state.promotion.Method == "Amount",
                 errorElement: this.amountInputError
             }
         )
-        this.validator.addFields(...this.validatorFields);
+        // this.validator.addFields(...this.validatorFields);
     }
 
     render() {
@@ -870,7 +870,7 @@ abstract class ContentRuleDialog<P, S> extends React.Component<P & React.Props<a
                             <div className="form-group" style={{ display: method == "Count" ? null : 'none' }} >
                                 <label className="control-label col-sm-2">*购买数量</label>
                                 <div className="col-sm-10">
-                                    <select data-bind="value: buyCount"
+                                    <select name="BuyCount" data-bind="value: buyCount"
                                         className="form-control" ref={(e: HTMLSelectElement) => this.countSelect = e || this.countSelect}>
                                         <option value="">购买数量</option>
                                         <option value="1">任意1件</option>
@@ -888,7 +888,7 @@ abstract class ContentRuleDialog<P, S> extends React.Component<P & React.Props<a
                                 <label className="control-label col-sm-2">*消费金额</label>
                                 <div className="col-sm-10">
                                     <div className="input-group">
-                                        <input data-bind="value:buyAmount" className="form-control" placeholder="请输入消费金额"
+                                        <input name="BuyAmount" data-bind="value:buyAmount" className="form-control" placeholder="请输入消费金额"
                                             ref={(e: HTMLInputElement) => this.amountInput = e || this.amountInput} />
                                         <div className="input-group-addon">元</div>
                                     </div>
@@ -977,7 +977,7 @@ class BuyGivenDialog extends ContentRuleDialog<{ page: chitu.Page },
         let r = dilu.rules;
         return [
             {
-                element: this.productIdInput,
+                name: "ProductId",
                 errorElement: this.productNameError,
                 rules: [
                     r.custom(() => {
@@ -1065,7 +1065,7 @@ class BuyReduceDialog extends ContentRuleDialog<{}, {}> {
     protected get validatorFields(): dilu.ValidateField[] {
         let { required } = dilu.rules;
         return [
-            { element: this.reduceInput, rules: [required()], errorElement: this.reduceInputError }
+            { name: "ReduceAmount", rules: [required()], errorElement: this.reduceInputError }
         ];
     }
 
@@ -1081,7 +1081,7 @@ class BuyReduceDialog extends ContentRuleDialog<{}, {}> {
                 <label className="control-label col-sm-2">*减免金额</label>
                 <div className="col-sm-10">
                     <div className="input-group">
-                        <input data-bind="value:reduceAmount" className="form-control" placeholder="请输入减免金额"
+                        <input name="ReduceAmount" data-bind="value:reduceAmount" className="form-control" placeholder="请输入减免金额"
                             ref={(e: HTMLInputElement) => this.reduceInput = e || this.reduceInput} />
                         <div className="input-group-addon">元</div>
                     </div>

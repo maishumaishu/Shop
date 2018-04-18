@@ -13,7 +13,6 @@ function guid() {
 }
 
 export interface RegisterModel {
-    // user: { mobile: string, password: string },
     username: string,
     password: string,
     smsId: string,
@@ -47,15 +46,21 @@ export class UserService extends Service {
             });
     }
     async register(model: RegisterModel) {
-        let url = `${Service.config.memberUrl}/Seller/Register`;
+        let url = `${Service.config.memberUrl}Seller/Register`;
         let result = await this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
         Service.token.value = result.token;
         return result;
     }
     async registerById(sellerId: string) {
         console.assert(sellerId != null);
-        let url = `${Service.config.memberUrl}/Seller/RegisterById`;
+        let url = `${Service.config.memberUrl}Seller/RegisterById`;
         let result = await this.postByJson<LoginResult>(url, { sellerId });
+        Service.token.value = result.token;
+        return result;
+    }
+    async resetPassword(model: RegisterModel){
+        let url = `${Service.config.memberUrl}Seller/resetPassword`;
+        let result = await this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
         Service.token.value = result.token;
         return result;
     }
@@ -64,12 +69,13 @@ export class UserService extends Service {
         return this.postByJson<{ token: string }>(url, { name: guid() });
     }
     isMobileRegister(mobile: string) {
-        let url = `${protocol}//${Service.config.serviceHost}/admin/isMobileRegister`;
-        return this.get<boolean>(url, { mobile });
+        let url = `${Service.config.memberUrl}Seller/IsRegister`;
+        debugger;
+        return this.get<boolean>(url, { username: mobile });
     }
     sendVerifyCode(mobile: string) {
-        let url = `${protocol}//${Service.config.serviceHost}/sms/sendVerifyCode`;
-        return this.putByJson<{ smsId: string }>(url, { mobile, type: 'register' });
+        let url = `${Service.config.memberUrl}Seller/SendVerifyCode`;
+        return this.postByJson<{ SmsId: string }>(url, { mobile, type: 'Register' });
     }
     applications(): Promise<Array<Application>> {
         let url = `${Service.config.memberUrl}Seller/GetApplications`;
@@ -83,7 +89,7 @@ export class UserService extends Service {
         });
     }
     updateApplication(app: Application) {
-        let url = this.url('application/update');
+        let url = this.url('Seller/UpdateApplication');
         return this.putByJson(url, { app });
     }
     deleteApplication(app: Application) {

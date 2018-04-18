@@ -24,13 +24,11 @@ export default function (page: Page) {
             app.redirect(siteMap.nodes[returnPage]);
         }
         componentDidMount() {
-            // if (!validator) {
             let { required } = rules;
-            this.validator = new FormValidator(
-                { element: usernameInput, rules: [required("请输入手机号码")] },
-                { element: passwordInput, rules: [required("请输入密码")] }
+            this.validator = new FormValidator(formElement,
+                { name: "username", rules: [required("请输入手机号码")] },
+                { name: "password", rules: [required("请输入密码")] }
             )
-            // }
         }
         render() {
             return [

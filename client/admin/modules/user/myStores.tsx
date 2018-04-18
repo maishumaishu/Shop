@@ -22,8 +22,8 @@ export default async function (page: chitu.Page) {
             //     name: { rules: ['required'], display: '店铺名称' }
             // })
             let nameElement = this.dialogElement.querySelector('[name="name"]') as HTMLInputElement;
-            this.validator = new FormValidator(
-                // { element: nameElement, rules: [rules.required()] }
+            this.validator = new FormValidator(this.dialogElement,
+                { name: "name", rules: [rules.required('店铺名称')] }
             )
         }
         async  save(app: Application): Promise<any> {

@@ -70,8 +70,8 @@ export default function (page: chitu.Page) {
                         ref={(e) => {
                             if (!e) return;
                             this.itemEditor = e;
-                            e.validator = new FormValidator(
-                                { element: e.element as HTMLInputElement, rules: [rules.required()] }
+                            e.validator = new FormValidator(e.element,
+                                { name: "Name", rules: [rules.required()] }
                             )
                         }}
                         saveDataItem={(dataItem) => {

@@ -18,8 +18,6 @@ class Application extends chitu.Application {
         ui.dialogConfig.dialogContainer = document.querySelector('.dialog-container') as HTMLElement;
         this.createMasterPage();
         this.error.add((app, err) => this.errorHandle(err));
-
-
     }
 
     run() {
@@ -43,7 +41,8 @@ class Application extends chitu.Application {
             console.assert(register.name != null);
             console.assert(login.name != null);
 
-            if (!Service.token.value && page.name != register.name && page.name != login.name) {
+            let anonymousPages = siteMap.anonymous.map(o => o.name);
+            if (!Service.token.value && anonymousPages.indexOf(page.name) < 0) {
                 this.redirect(siteMap.nodes.user_login);
                 return;
             }

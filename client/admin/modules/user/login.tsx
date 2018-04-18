@@ -32,9 +32,9 @@ export default async function (page: chitu.Page) {
         componentDidMount() {
             let usernameElement = this.element.querySelector('[name="username"]') as HTMLInputElement;
             let passwordElement = this.element.querySelector('[name="password"]') as HTMLInputElement;
-            this.validator = new FormValidator(
-                { element: usernameElement, rules: [rules.required()] },
-                { element: passwordElement, rules: [rules.required()] }
+            this.validator = new FormValidator(this.element,
+                { name: "username", rules: [rules.required()] },
+                { name: "password", rules: [rules.required()] }
             )
         }
         async login() {
@@ -106,10 +106,16 @@ export default async function (page: chitu.Page) {
                     <div className="form-group">
                         <div className="col-sm-offset-2 col-sm-10" >
                             <div className="pull-left" >
-                                <a href="#user/forgetPassword" > 忘记密码 </a>
+                                <button className="btn-link"
+                                    onClick={() => app.redirect(siteMap.nodes.user_forgetPassword)}>
+                                    忘记密码
+                                </button>
                             </div>
                             <div className="pull-right" >
-                                <a href="#user/register" > 注册 </a>
+                                <button className="btn-link"
+                                    onClick={() => app.redirect(siteMap.nodes.user_register)} >
+                                    注册
+                                </button>
                             </div>
                         </div>
                     </div>

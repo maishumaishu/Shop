@@ -105,8 +105,8 @@ export default function (page: chitu.Page) {
             });
 
             let { required, greaterThan } = rules;
-            this.validator = new FormValidator(
-                { element: this.amountInput, rules: [greaterThan(0, "金额必须大于 0")] }
+            this.validator = new FormValidator(page.element,
+                { name: "amount", rules: [greaterThan(() => 0, "金额必须大于 0")] }
             )
         }
         render() {

@@ -72,12 +72,12 @@ class ReceiptEditPage extends React.Component<
         // });
         let { required } = rules;
         let e = (name: string) => this.formElement.querySelector(`[name='${name}']`) as HTMLInputElement;
-        this.validator = new FormValidator(
-            { element: e("Name"), rules: [required("请输入地址名称")] },
-            { element: e("Consignee"), rules: [required('请输入收货人姓名')] },
-            { element: e("Mobile"), rules: [required('请输入手机号码')] },
-            { element: e("Address"), rules: [required('请输入详细地址')] },
-            { element: e("RegionId"), rules: [required('请选择地区')] },
+        this.validator = new FormValidator(this.formElement,
+            { name: "Name", rules: [required("请输入地址名称")] },
+            { name: "Consignee", rules: [required('请输入收货人姓名')] },
+            { name: "Mobile", rules: [required('请输入手机号码')] },
+            { name: "Address", rules: [required('请输入详细地址')] },
+            { name: "RegionId", rules: [required('请选择地区')] },
         )
 
     }

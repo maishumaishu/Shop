@@ -37,11 +37,7 @@ export class MasterPage extends React.Component<Props, State> {
                 this.setState(this.state);
                 console.log(`page '${page.name}' shown`)
 
-                let names = [
-                    siteMap.nodes.user_login.name,
-                    siteMap.nodes.user_register.name,
-                ]
-
+                let names = siteMap.anonymous.map(o => o.name);
                 this.state.hideStoreButton = [...names, siteMap.nodes.user_myStores.name].indexOf(page.name) >= 0;
                 this.state.hideExistsButton = [...names].indexOf(page.name) >= 0;
                 this.setState(this.state);

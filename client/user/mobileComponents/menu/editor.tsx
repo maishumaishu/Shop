@@ -102,9 +102,9 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
     }
     componentDidMount() {
         let { required } = rules;
-        this.validator = new FormValidator(
-            { element: this.nameInput, rules: [required()] },
-            { element: this.urlInput, rules: [required()], condition: () => this.isCustomUrl() }
+        this.validator = new FormValidator(this.itemDialogELement,
+            { name: "name", rules: [required()] },
+            { name: "url", rules: [required()], condition: () => this.isCustomUrl() }
         );
     }
     render() {

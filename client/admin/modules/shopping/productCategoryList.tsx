@@ -93,9 +93,9 @@ export default function (page: chitu.Page) {
         }
         createValidator(formElement: HTMLFormElement) {
             let { required } = rules;
-            this.validator = new FormValidator(
-                { element: formElement["SortNumber"], rules: [required()] },
-                { element: formElement["Name"], rules: [required()] }
+            this.validator = new FormValidator(page.element,
+                { name: "SortNumber", rules: [required()] },
+                { name: "Name", rules: [required()] }
             )
         }
         async save() {

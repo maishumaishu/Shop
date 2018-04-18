@@ -25,15 +25,15 @@ export default function (page: chitu.Page) {
         }
         componentDidMount() {
             let { required } = rules;
-            this.validator = new FormValidator(
+            this.validator = new FormValidator(page.element,
                 {
-                    element: this.partnerKeyInput, rules: [required()],
+                    name: "partnerKey", rules: [required()],
                     condition: () => {
                         return !this.partnerKeyInput.disabled;
                     }
                 },
                 {
-                    element: this.transferTipsInput, rules: [required()],
+                    name: "transferTips", rules: [required()],
                     condition: () => {
                         return !(this.transferTipsInput as any).disabled;
                     }
@@ -61,7 +61,7 @@ export default function (page: chitu.Page) {
                             微支付应用 ID
                         </label>
                         <div className="col-md-8" style={{ maxWidth: input_max_width }}>
-                            <input type="text" className="form-control" disabled={!enableWeixinPayment}
+                            <input name="partnerKey" type="text" className="form-control" disabled={!enableWeixinPayment}
                                 ref={(e: HTMLInputElement) => this.partnerKeyInput = e || this.partnerKeyInput}
                                 placeholder="请输入微信支付商户密钥" />
                         </div>
@@ -95,7 +95,7 @@ export default function (page: chitu.Page) {
                             转账提示
                         </label>
                         <div className="col-md-8" style={{ maxWidth: input_max_width }}>
-                            <textarea className="form-control" multiple={true} style={{ height: 80 }}
+                            <textarea name="transferTips" className="form-control" multiple={true} style={{ height: 80 }}
                                 ref={(e: HTMLAreaElement) => this.transferTipsInput = e || this.transferTipsInput}
                                 disabled={!enableTransfer} placeholder="请输入提示用户进行转账的留言" />
                         </div>

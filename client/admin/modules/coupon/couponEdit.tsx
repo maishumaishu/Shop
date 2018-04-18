@@ -47,12 +47,12 @@ export default async function (page: chitu.Page) {
         }
         componentDidMount() {
             let { required } = dilu.rules;
-            this.validator = new dilu.FormValidator(
-                { element: this.titleInput, rules: [required("请输入标题")] },
-                { element: this.discountInput, rules: [required("请输入抵扣金额")] },
-                { element: this.amountInput, rules: [required("请输入消费金额")] },
-                { element: this.validBeginInput, rules: [required("请输入开始日期")] },
-                { element: this.validEndInput, rules: [required("请输入结束日期")] }
+            this.validator = new dilu.FormValidator(this.formElement,
+                { name: "title", rules: [required("请输入标题")] },
+                { name: "discount", rules: [required("请输入抵扣金额")] },
+                { name: "amount", rules: [required("请输入消费金额")] },
+                { name: "validBegin", rules: [required("请输入开始日期")] },
+                { name: "validEnd", rules: [required("请输入结束日期")] }
             );
 
             ($('[name="validBegin"],[name="validEnd"]') as any).datepicker({

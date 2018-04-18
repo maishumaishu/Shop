@@ -40,24 +40,23 @@ export default function (page: chitu.Page) {
             // });
             let element = (name) => this.formElement.querySelector(`[name='${name}']`) as HTMLInputElement;
             let { required, matches } = rules;
-            this.validator = new FormValidator(
-                { element: element("mobile"), rules: [required('请输入手机号码')] },
-                { element: element("verifyCode"), rules: [required('请输入验证码')] },
-                { element: element("password"), rules: [required('请输入密码')] },
+            this.validator = new FormValidator(this.formElement,
+                { name: "mobile", rules: [required('请输入手机号码')] },
+                { name: "verifyCode", rules: [required('请输入验证码')] },
+                { name: "password", rules: [required('请输入密码')] },
                 {
-                    element: element("confirmPassword"), rules: [
+                    name: "confirmPassword", rules: [
                         required('请再次输入密码'),
                         matches(element("password"), "两次输入的密码不匹配")
                     ]
-
                 },
             )
         }
         async  sendVerifyCode() {
             let element = (name) => this.formElement.querySelector(`[name='${name}']`) as HTMLInputElement;
             let { required, matches } = rules;
-            let validator = new FormValidator(
-                { element: element("mobile"), rules: [required('请输入手机号码')] },
+            let validator = new FormValidator(this.formElement,
+                { name: "mobile", rules: [required('请输入手机号码')] },
             )
             let isValid = await validator.check();
             if (isValid == false) {

@@ -46,8 +46,8 @@ class WizardComponent extends React.Component<{ userInfo: UserInfo } & React.Pro
 
     nextStepControl: JSX.Element;
     componentDidMount() {
-        this.validator = new FormValidator(
-            { element: this.verifyCodeInput, rules: [rules.required()] }
+        this.validator = new FormValidator(this.stepOneForm,
+            { name: "verifyCode", rules: [rules.required()] }
         );
         // this.validator.registerCallback('verifyCodeCheck', (value) => {
 
