@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Service, urlParams } from 'userServices/service';
+import { Service, urlParams, tokens } from 'userServices/service';
 import { StationService } from 'userServices/stationService';
 import { WeiXinService } from 'userServices/weixinService';
 import { userData } from 'userServices/userData';
@@ -74,14 +74,17 @@ export class Application extends BaseApplication {
         return page;
     }
 
+    createUrl(pageName: string, args: any) {
+        let url = super.createUrl(pageName, args);
+        let { protocol, port, host } = location;
+        let baseUrl = `${protocol}//${host}/user/?appKey=${tokens.appId}`;
+        url = baseUrl + url;
+        return url;
+    }
+
     private styleloaded: boolean;
     protected createPage(pageName: string, value?: any) {
         let page = super.createPage(pageName, value) as BasePage;
-
-        // let path = pageName.split('_').join('/')
-        // let cssPath = `css!modules/${path}`;
-        // requirejs([cssPath]);
-
         //===================================================
         // 生成样式
         if (!this.styleloaded) {

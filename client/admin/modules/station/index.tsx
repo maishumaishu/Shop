@@ -39,7 +39,7 @@ export default async function (page: chitu.Page) {
         componentDidMount() {
             let { required } = rules;
             this.validator = new FormValidator(page.element,
-                { name: "name", rules: [required()] }
+                { name: "name", rules: [required("店铺名称不能为空")] }
             )
 
             // let qrcode = new QRCode(this.qrcodeElement, site.userClientUrl);
@@ -91,7 +91,7 @@ export default async function (page: chitu.Page) {
                             <div className="col-lg-12">
                                 <label className="col-md-4" style={{ width: 120 }}>店铺名称*</label>
                                 <div className="col-md-8" style={{ maxWidth: 300 }}>
-                                    <input className="form-control" name="店铺名称" value={store.Name}
+                                    <input name="name" className="form-control" value={store.Name}
                                         onChange={(e) => {
                                             store.Name = (e.target as HTMLInputElement).value;
                                             this.setState(this.state);

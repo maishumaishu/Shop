@@ -89,6 +89,7 @@ var ui;
             });
         }, 500);
     }
+    ui.showToastMessage = showToastMessage;
 })(ui || (ui = {}));
 var ui;
 (function (ui) {

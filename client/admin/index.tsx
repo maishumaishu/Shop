@@ -65,6 +65,7 @@ requirejs.config({
         bootstrap: '../scripts/bootstrap',
         // chitu: '../scripts/chitu',
         css: '../scripts/css',
+        clipboard: '../scripts/clipboard.min',
         dilu: '../scripts/dilu',
         formValidator: '../scripts/formValidator',
         hammer: '../scripts/hammer',

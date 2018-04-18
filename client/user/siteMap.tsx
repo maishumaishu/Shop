@@ -13,7 +13,7 @@ let siteMap = {
         emtpy: { action: (page: chitu.Page) => null },
         home_index: { action: home_index_action },
         home_class: { action: home_class_action },
-        home_product: { action: home_product_action },
+        home_product: { action: home_product_action } as chitu.SiteMapNode,
         home_productList: { action: `${dir}/home/productList` },
         shopping_invoice: { action: `${dir}/shopping/invoice` },
         shopping_purchase: { action: `${dir}/shopping/purchase` },

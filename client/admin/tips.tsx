@@ -3,7 +3,7 @@ let tips = {
     clickOffShelve: '点击按钮下架商品',
     clickAddRegularProduct: '点击添加其它规格商品',
     clickEditProduct: '点击添加其它规格商品',
-    clickCopyProductURL: '点击添加其它规格商品',
+    clickCopyProductURL: '点击复制商品链接',
     clickRemoveComponent: '点击移除该控件',
     noProductRegular: '暂无商品规格',
     noProductProperty: '暂无商品属性',

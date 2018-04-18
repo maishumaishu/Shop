@@ -6,6 +6,7 @@ declare namespace ui {
     };
     function buttonOnClick(callback: Callback, args?: Arguments): (event: Event) => void;
     function buttonOnClick(element: HTMLButtonElement, callback: Callback, args?: Arguments): any;
+    function showToastMessage(msg: string | HTMLElement): void;
 }
 declare namespace ui {
     let dialogConfig: {

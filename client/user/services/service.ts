@@ -9,8 +9,8 @@ let appToken: string;
 // let USER_TOKEN = `${tokens.appToken}_userToken`;
 export let tokens = (function () {
 
-    let appToken = urlParams.appKey;
-    let USER_TOKEN = `${appToken}_userToken`;
+    let appId = urlParams.appKey;
+    let USER_TOKEN = `${appId}_userToken`;
     let userToken = new chitu.ValueStore(localStorage.getItem(USER_TOKEN));
 
     userToken.add((value) => {
@@ -22,7 +22,7 @@ export let tokens = (function () {
     })
 
     return {
-        appToken,
+        appId,
         userToken
     }
 
@@ -87,13 +87,13 @@ export abstract class Service extends BaseService {
         options.headers = options.headers || {};
 
         let self = this;
-        if (!tokens.appToken) {
+        if (!tokens.appId) {
             let err = new Error("app token error");
             Service.error.fire(self, err);
             return;
         }
 
-        options.headers['application-id'] = tokens.appToken;
+        options.headers['application-id'] = tokens.appId;
         if (tokens.userToken.value)
             options.headers['token'] = tokens.userToken.value;
 

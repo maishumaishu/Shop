@@ -230,7 +230,7 @@ namespace ui {
         // 点击非窗口区域，关窗口。并禁用上级元素的 touch 操作。
         // let panel = this.panel; //this.refs['panel'] as HTMLElement;
         // let modalDialog = this.modalDialog; //this.refs['modalDialog'] as HTMLElement;
-        panel.addEventListener('touchstart', (event) => {
+        panel.addEventListener('touchstart', (event:TouchEvent) => {
             let dialogRect = modalDialog.getBoundingClientRect();
             for (let i = 0; i < event.touches.length; i++) {
                 let { clientX } = event.touches[i];

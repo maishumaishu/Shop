@@ -58,7 +58,7 @@ namespace ui {
         return result;
     }
 
-    function showToastMessage(msg: string | HTMLElement) {
+    export function showToastMessage(msg: string | HTMLElement) {
         if (!msg)
             throw new Error('Argument msg is null.');
 

@@ -29,7 +29,7 @@ export default class MenuControl extends Control<Props, State>{
     constructor(props) {
         super(props);
 
-        let productsCount = ShoppingCartService.productsCount.value; //.calculateProdusCount(ShoppingCartService.items.value);
+        let productsCount = ShoppingCartService.productsCount.value;
         this.state = { menuNodes: [], showIcon: false, productsCount };
 
         this.subscribe(ShoppingCartService.productsCount, (value) => {
@@ -43,14 +43,14 @@ export default class MenuControl extends Control<Props, State>{
     _render(h) {
         let menuNodes = this.state.menuNodes || [];
         let showIcon = this.state.showIcon || false;
-        return (
+        return [
             <div className="menuControl" ref={(e: HTMLElement) => this.element = e || this.element}>
                 {menuNodes.length <= 0 ?
                     <ul className="menu noicon"></ul> :
                     showIcon ? this.renderMenuWithIcon(h, menuNodes) : this.renderMenuWithoutIcon(h, menuNodes)
                 }
             </div>
-        );
+        ];
     }
 
     private isShoppingCart(routeString: string) {
@@ -78,7 +78,7 @@ export default class MenuControl extends Control<Props, State>{
 
     private renderMenuWithIcon(h, menuNodes: MenuNode[]) {
         let productsCount = this.state.productsCount || 0;
-        return (
+        return [
             <ul className="menu">
                 {menuNodes.map((o, i) => {
                     let itemWidth = 100 / menuNodes.length;
@@ -98,6 +98,6 @@ export default class MenuControl extends Control<Props, State>{
                     );
                 })}
             </ul>
-        );
+        ];
     }
 }

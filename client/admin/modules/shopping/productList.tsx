@@ -7,6 +7,9 @@ import * as ui from 'ui';
 import tips from 'tips';
 import 'wuzhui';
 import siteMap from 'siteMap';
+import { app as userApp } from 'user/application';
+import userSiteMap from 'user/siteMap';
+import ClipboardJS = require('clipboard');
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
 type ProductStock = { unlimit: boolean, stock: number, productId: string, productName: string };
@@ -17,7 +20,8 @@ type PageState = {
     searchText?: string
 }
 
-class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
+class ProductList extends React.Component<{ shopping: ShoppingService }, PageState>{
+
     private productTable: HTMLTableElement;
     private restrictionDialog: HTMLFormElement;
     private stockDialog: HTMLFormElement;
@@ -26,6 +30,15 @@ class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
     constructor(props) {
         super(props);
         this.state = { dataItem: {}, tab: 'all' };
+    }
+
+    async copyProductUrl(product: Product): Promise<any> {
+        // throw new Error("Method not implemented.");
+        var clipboard = new ClipboardJS('.btn', {
+            text: function () {
+                return 'to be or not to be';
+            }
+        });
     }
 
     private showRestrictionDialog(dataItem: Product) {
@@ -441,7 +454,7 @@ class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
 }
 
 class NameField<T> extends wuzhui.CustomField<T> {
-    constructor(page: Page) {
+    constructor(page: ProductList) {
         super({
             createItemCell(dataItem: Product) {
                 let status: 'collapsed' | 'collapsing' | 'expanding' | 'expanded' = 'collapsed';
@@ -473,12 +486,31 @@ class NameField<T> extends wuzhui.CustomField<T> {
 
 class OperationField<T> extends wuzhui.CustomField<T> {
 
-    constructor(page: Page) {
+    constructor(page: ProductList) {
         super({
             createItemCell(dataItem: Product) {
                 let cell = new wuzhui.GridViewCell();
                 ReactDOM.render([
-                    <button key={10} className="btn btn-minier btn-success" title={tips.clickCopyProductURL}>
+                    <button key={10} className="btn btn-minier btn-success" title={tips.clickCopyProductURL}
+                        ref={(e: HTMLButtonElement) => {
+                            if (!e) return;
+                            var clipboard = new ClipboardJS(e, {
+                                text: function () {
+                                    let pageName = userSiteMap.nodes.home_product.name;
+                                    console.assert(pageName != null);
+                                    var url = userApp.createUrl(pageName, { id: dataItem.Id });
+                                    return url;
+                                }
+                            });
+
+                            clipboard.on('success', function (e) {
+                                ui.showToastMessage('商品链接已经成功复制');
+                            });
+
+                            clipboard.on('error', function (e) {
+                                ui.alert('商品链接已经成功失败');
+                            });
+                        }}>
                         商品链接
                     </button>,
                     <button key={20} className="btn btn-minier btn-purple" title={tips.clickAddRegularProduct}
@@ -515,7 +547,7 @@ export default function (page: chitu.Page) {
     let shopping = page.createService(ShoppingService);
     let element = document.createElement('div');
     page.element.appendChild(element);
-    ReactDOM.render(<Page shopping={shopping} />, element);
+    ReactDOM.render(<ProductList shopping={shopping} />, element);
 }
 
 // onClick={ui.buttonOnClick((e) => {

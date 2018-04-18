@@ -24,6 +24,9 @@ export default function (page: chitu.Page) {
         brands: Array<Brand>, product: Product
     };
     class ProductEditPage extends React.Component<{ product: Product }, PageState>{
+        introduceError: HTMLElement;
+        priceError: HTMLElement;
+        categoryError: HTMLElement;
         private categoryDialog: CategoryDialog;
         private validator: FormValidator;
         private element: HTMLFormElement;
@@ -51,16 +54,13 @@ export default function (page: chitu.Page) {
         }
         componentDidMount() {
             UE.createEditor(editorId, this.introduceInput);
-            // this.validator = new FormValidator(this.element, {
-            //     name: { rules: ['required'] },
-            //     price: { rules: ['required'] },
-            //     introduce: { rules: ['required'] }
-            // });
             let nameElement = this.element.querySelector('[name="name"]') as HTMLInputElement;
             let priceElement = this.element.querySelector('[name="price"]') as HTMLInputElement;
             this.validator = new FormValidator(this.element,
-                { name: "name", rules: [rules.required()] },
-                { name: "price", rules: [rules.required()] }
+                { name: "categoryId", rules: [rules.required("类别不能为空")], errorElement: this.categoryError },
+                { name: "name", rules: [rules.required("名称不能为空")] },
+                { name: "price", rules: [rules.required("价格不能为空")], errorElement: this.priceError },
+                { name: 'introduce', rules: [rules.required("商品详请不能为空")], errorElement: this.introduceError }
             )
         }
         async save(): Promise<any> {
@@ -150,7 +150,7 @@ export default function (page: chitu.Page) {
                             <label className="col-lg-3">类别*</label>
                             <div className="col-lg-9">
                                 <div className="input-group">
-                                    <select name="ProductCategoryId" className="form-control"
+                                    <select name="categoryId" className="form-control"
                                         ref={(e: HTMLSelectElement) => {
                                             if (!e) return;
                                             e.value = product.ProductCategoryId || '';
@@ -168,6 +168,8 @@ export default function (page: chitu.Page) {
                                         <i className="icon-plus" />
                                     </span>
                                 </div>
+                                <span className={dilu.FormValidator.errorClassName} style={{ display: 'none' }}
+                                    ref={(e: HTMLElement) => this.categoryError = e || this.categoryError}></span>
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4">
@@ -200,7 +202,8 @@ export default function (page: chitu.Page) {
                                         元
                                 </span>
                                 </div>
-                                <span className="price validationMessage" style={{ display: 'none' }}></span>
+                                <span className={dilu.FormValidator.errorClassName} style={{ display: 'none' }}
+                                    ref={(e: HTMLElement) => this.priceError = e || this.priceError}></span>
                             </div>
                         </div>
                     </div>
@@ -293,6 +296,8 @@ export default function (page: chitu.Page) {
                     </div>
                     <div className="row form-group">
                         <div className="col-sm-12">
+                            <span className={dilu.FormValidator.errorClassName} style={{ display: 'none' }}
+                                ref={(e: HTMLElement) => this.introduceError = e || this.introduceError}></span>
                             <script id={editorId} type="text/html" dangerouslySetInnerHTML={{ __html: product.Introduce || '' }}>
                             </script>
                             <span className="introduce validationMessage" style={{ display: 'none' }}></span>
