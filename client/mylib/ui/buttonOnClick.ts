@@ -15,7 +15,7 @@ namespace ui {
         else if (typeof (arg2) == 'function') {
             element = arg1;
             callback = arg2;
-            args = args;
+            args = arg3;
         }
         else {
             throw new Error("Arguments error");
