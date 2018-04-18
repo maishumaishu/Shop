@@ -20,9 +20,14 @@ export class ShoppingService extends Service {
         return data;
         // });
     }
-    products(args: wuzhui.DataSourceSelectArguments) {
+    async products(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
-        return this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args);
+        let result = await this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args);
+        result.dataItems.forEach(o => {
+            o.Stock = null;
+            o.BuyLimitedNumber = null;
+        })
+        return result;
     }
     productsByIds(productIds: string[]) {
         var url = this.url('Product/GetProductsByIds');
@@ -35,7 +40,7 @@ export class ShoppingService extends Service {
         var url = this.url('Product/DeleteProduct');
         return this.deleteByJson(url, { id });
     }
-    queryProducts(pageIndex: number, searchText?: string): Promise<{ TotalRowCount: number, DataItems: Array<Product> }> {
+    queryProducts(pageIndex: number, searchText?: string): Promise<wuzhui.DataSourceSelectResult<Product>> {
 
         var url = this.url('Product/GetProducts');
 
@@ -45,10 +50,14 @@ export class ShoppingService extends Service {
         if (searchText)
             args['searchText'] = encodeURI(searchText);
 
-        return this.getByJson<any>(url, args).then(function (result) {
-            for (var i = 0; i < result.DataItems.length; i++) {
+        return this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args).then((result) => {
+            for (var i = 0; i < result.dataItems.length; i++) {
+                result.dataItems[i].Stock = null;
+                result.dataItems[i].BuyLimitedNumber = null;
                 // result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);
             }
+
+
 
             return result;
         });

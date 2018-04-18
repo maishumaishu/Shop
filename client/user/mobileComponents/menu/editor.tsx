@@ -195,7 +195,7 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                             </div>
                             <div className="modal-body form-horizontal">
                                 <div className="form-group">
-                                    <label className="col-sm-2 control-label">名称</label>
+                                    <label className="col-sm-2 control-label">名称*</label>
                                     <div className="col-sm-10">
                                         <input name="name" type="text" className="form-control" placeholder="请输入菜单项名称"
                                             ref={(e: HTMLInputElement) => {
@@ -256,6 +256,7 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                                                                     onClick={() => {
                                                                         currentItem.icon = o;
                                                                         this.toggleIconsPanel();
+                                                                        this.setState(this.state);
                                                                     }} />
                                                             )}
                                                         </div>
@@ -265,7 +266,7 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
                                         </div> : null
                                 }
                                 <div className="form-group">
-                                    <label className="col-sm-2 control-label">链接</label>
+                                    <label className="col-sm-2 control-label">链接*</label>
                                     <div className="col-sm-10">
                                         <input name="url" className="form-control"
                                             style={{ display: this.isCustomUrl() ? null : 'none' }}

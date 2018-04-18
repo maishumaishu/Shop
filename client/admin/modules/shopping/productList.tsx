@@ -37,7 +37,8 @@ class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
             quantity: dataItem.BuyLimitedNumber
         };
         this.setState(this.state);
-        $(this.restrictionDialog).modal();
+        // $(this.restrictionDialog).modal();
+        ui.showDialog(this.restrictionDialog);
     }
 
     private setBuyLimited(restriction: Restriction) {
@@ -61,7 +62,7 @@ class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
             stock: dataItem.Stock
         };
         this.setState(this.state);
-        $(this.stockDialog).modal();
+        ui.showDialog(this.stockDialog);
     }
 
     private setStock(productStock: ProductStock) {
@@ -209,7 +210,7 @@ class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
                 new wuzhui.CustomField({
                     headerText: '库存',
                     headerStyle: { textAlign: 'center', width: '60px' } as CSSStyleDeclaration,
-                    itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
+                    itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
                     createItemCell(dataItem) {
                         let cell = new wuzhui.GridViewDataCell({
                             dataField: 'Stock',
@@ -245,7 +246,7 @@ class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
                     },
                     headerText: '限购',
                     headerStyle: { textAlign: 'center', width: '60px' } as CSSStyleDeclaration,
-                    itemStyle: { textAlign: 'right' } as CSSStyleDeclaration,
+                    itemStyle: { textAlign: 'center' } as CSSStyleDeclaration,
                 }),
                 new wuzhui.BoundField({
                     dataField: 'Price' as keyof Product, headerText: '价格', dataFormatString: '￥{C2}',
@@ -424,7 +425,7 @@ class Page extends React.Component<{ shopping: ShoppingService }, PageState>{
                                         <button type="button" className="btn btn-primary"
                                             onClick={(e) => {
                                                 this.setStock(productStock).then(() => {
-                                                    $(this.stockDialog).modal('hide');
+                                                    ui.hideDialog(this.stockDialog);
                                                 })
                                             }}
                                         >确认</button>
@@ -476,19 +477,19 @@ class OperationField<T> extends wuzhui.CustomField<T> {
         super({
             createItemCell(dataItem: Product) {
                 let cell = new wuzhui.GridViewCell();
-                ReactDOM.render(<div>
-                    <button className="btn btn-minier btn-success" style={{ marginRight: 4 }} title={tips.clickCopyProductURL}>
+                ReactDOM.render([
+                    <button key={10} className="btn btn-minier btn-success" title={tips.clickCopyProductURL}>
                         商品链接
-                    </button>
-                    <button className="btn btn-minier btn-purple" style={{ marginRight: 4 }} title={tips.clickAddRegularProduct}
+                    </button>,
+                    <button key={20} className="btn btn-minier btn-purple" title={tips.clickAddRegularProduct}
                         onClick={() => app.redirect(siteMap.nodes.shopping_product_productEdit, { parentId: dataItem.Id })}>
                         <i className="icon-copy" />
-                    </button>
-                    <button className="btn btn-minier btn-info" style={{ marginRight: 4 }} title={tips.clickEditProduct}
+                    </button>,
+                    <button key={30} className="btn btn-minier btn-info" title={tips.clickEditProduct}
                         onClick={() => { app.redirect(siteMap.nodes.shopping_product_productEdit, { id: dataItem.Id }) }}>
                         <i className="icon-pencil"></i>
-                    </button>
-                    <button className="btn btn-minier btn-danger"
+                    </button>,
+                    <button key={40} className="btn btn-minier btn-danger"
                         ref={(e: HTMLButtonElement) => {
                             if (!e) return;
                             e.onclick = ui.buttonOnClick(() => {
@@ -497,8 +498,7 @@ class OperationField<T> extends wuzhui.CustomField<T> {
                         }}>
                         <i className="icon-trash"></i>
                     </button>
-
-                </div>, cell.element);
+                ], cell.element);
                 return cell;
             },
             headerText: '操作',
@@ -515,7 +515,7 @@ export default function (page: chitu.Page) {
     let shopping = page.createService(ShoppingService);
     let element = document.createElement('div');
     page.element.appendChild(element);
-    ReactDOM.render(<Page shopping={shopping}/>, element);
+    ReactDOM.render(<Page shopping={shopping} />, element);
 }
 
 // onClick={ui.buttonOnClick((e) => {
