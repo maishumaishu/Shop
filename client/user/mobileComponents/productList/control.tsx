@@ -58,34 +58,37 @@ export interface State {
     /**
      * 列表类型
      */
-    listType?: 'singleColumn' | 'doubleColumn' | 'largePicture',
+    listType: 'singleColumn' | 'doubleColumn' | 'largePicture',
 
     /**
      * 价格右侧显示内容类型
      */
     displayType?: 'none' | 'addProduct' | 'activity',
 
-    /** 
-     * 显示商品标题，仅单列显示商品有效
-     */
-    displayTitle?: boolean,
-
     // shoppingCartItems: ShoppingCartItem[],
-    imageSize?: 'small' | 'medium' | 'large',
+    imageSize: 'small' | 'medium' | 'large',
 
     productCounts?: { [key: string]: number },
 
     /**
      * 商品名称行数
      */
-    productNameLines: 'singleLine' | 'doubleColumn'
+    productNameLines: 'singleLine' | 'doubleColumn',
+
+    /**
+     * 是否显示规格型号
+     * independent 独立显示商品规格
+     * append 将商品规格追加到名称后
+     */
+    showFields: 'independent' | 'append'
 }
 
 export default class ProductListControl extends Control<Props, State> {
     get persistentMembers(): (keyof State)[] {
         return [
             'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',
-            'listType', 'displayType', 'displayTitle', 'imageSize', 'productNameLines'
+            'listType', 'displayType', 'imageSize', 'productNameLines',
+            'showFields'
         ]
     }
     constructor(args) {
@@ -98,8 +101,10 @@ export default class ProductListControl extends Control<Props, State> {
         }
 
         this.state = {
-            products: [], productSourceType: 'category', prodcutsCount: 1,
-            productCounts, productNameLines: 'singleLine'
+            products: [], prodcutsCount: 1, productCounts,
+            productSourceType: 'category', productNameLines: 'singleLine',
+            showFields: 'independent', imageSize: 'small',
+            listType: 'doubleColumn'
         };
 
 
@@ -166,11 +171,10 @@ export default class ProductListControl extends Control<Props, State> {
 
 
 
-    async renderSingleColumn(h, products): Promise<JSX.Element> {
+    async renderSingleColumn(h, products: Product[]): Promise<JSX.Element> {
 
         // var products = await this.products();
-        let { displayTitle, productCounts, imageSize, productNameLines } = this.state;
-        // var productCounts = this.state.productCounts;
+        let { showFields, productCounts, imageSize, productNameLines } = this.state;
 
         let leftClassName: string, rightClassName: string;// = displayTitle ? 'col-xs-4' : 'col-xs-3';
         // let rightClassName = displayTitle ? 'col-xs-8' : 'col-xs-9';
@@ -205,11 +209,17 @@ export default class ProductListControl extends Control<Props, State> {
                             <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
                                 onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                                 {o.Name}
+                                {showFields == 'append' && o.Fields.length > 0 ?
+                                    '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
                             </div>
-                            {displayTitle ?
-                                <div className="title interception">
-                                    {o.Title}
-                                </div> : null}
+                            {showFields == 'independent' ?
+                                o.Fields.map(f =>
+                                    <div className='fields-bar'>
+                                        <span className="label label-default">{f.value}</span>
+                                    </div>
+                                )
+                                : null
+                            }
                             <div className="price-bar">
                                 <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}
@@ -227,7 +237,7 @@ export default class ProductListControl extends Control<Props, State> {
     }
 
     async renderDoubleColumn(h, products: Product[]): Promise<JSX.Element> {
-        var { productCounts, productNameLines } = this.state;
+        var { productCounts, productNameLines, showFields } = this.state;
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map((o, i) =>
@@ -238,7 +248,17 @@ export default class ProductListControl extends Control<Props, State> {
                             <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
                                 onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                                 {o.Name}
+                                {showFields == 'append' && o.Fields.length > 0 ?
+                                    '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
                             </div>
+                            {showFields == 'independent' ?
+                                o.Fields.map(f =>
+                                    <div className="fields-bar">
+                                        <span className="label label-default">{f.value}</span>
+                                    </div>
+                                )
+                                : null
+                            }
                             <div className="price-bar" onClick={(e) => e.stopPropagation()}>
                                 <span className="pull-left">
                                     ￥{o.Price.toFixed(2)}

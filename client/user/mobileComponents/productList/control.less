@@ -17,8 +17,9 @@
         }
         .name {
             font-size: 14px;
-            color: black;
+            color: #333333;
             text-align: left;
+            margin-top: 10px;
 
             &.double-line{
                 height: 40px;
@@ -29,6 +30,7 @@
         }
         .price-bar {
             position: relative; 
+            padding-top: 4px;
             span {
                 font-size: 14px;
                 color: #f70;
@@ -39,10 +41,13 @@
                 font-size: 20px;
             }
         }
-        
+        .fields-bar {
+            text-align: left;
+            padding: 4px 0px 2px 0px;
+        }
         &.single {
             .name {
-                margin-top: 6px;
+                margin-top: 2px;
             }
             .title {
                 font-size: 14px;
@@ -68,13 +73,12 @@
         &.double {
             text-align: center;
             
-            .name {
-
-                overflow: hidden;
-                margin-bottom: 6px;
-                margin-top: 10px;
-                color: #333333;
-            }
+            // .name {
+            //     overflow: hidden;
+            //     // margin-bottom: 6px;
+            //     margin-top: 10px;
+            //     color: #333333;
+            // }
             border-bottom: solid 1px whitesmoke;
             padding: 10px 10px 10px 10px ;
 

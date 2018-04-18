@@ -19,9 +19,8 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
     constructor(props) {
         super(props);
         this.state = {
-            productSourceType: 'category', listType: 'doubleColumn', imageSize: 'small',
-            productNameLines: 'singleLine'
-        };
+
+        } as EditorState;
 
         this.loadEditorCSS();
     }
@@ -197,14 +196,14 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                 </div>
                 {listType == 'singleColumn' ?
                     [
-                        <div key={10} className="form-group">
-                            <label className="pull-left">显示商品标题</label>
-                            <div style={{ display: "block" }}>
-                                <input name="displayType" type="checkbox" value="true" style={{ marginTop: 8 }}
-                                    ref={(e: HTMLInputElement) => this.setCheckElement(e, 'displayTitle')} />
+                        // <div key={10} className="form-group">
+                        //     <label className="pull-left">显示商品标题</label>
+                        //     <div style={{ display: "block" }}>
+                        //         <input name="displayType" type="checkbox" value="true" style={{ marginTop: 8 }}
+                        //             ref={(e: HTMLInputElement) => this.setCheckElement(e, 'displayTitle')} />
 
-                            </div>
-                        </div>,
+                        //     </div>
+                        // </div>,
                         <div key={20} className="form-group">
                             <label className="pull-left">图片大小</label>
                             <span>
@@ -226,6 +225,32 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                     ] : [
 
                     ]}
+
+                <div className="form-group">
+                    <label className="pull-left">规格型号</label>
+                    <span style={{ display: "block" }}>
+                        <span>
+                            <input name="showFields" type="radio" value="independent"
+                                ref={(e: HTMLInputElement) => this.setRadioElement(e, 'showFields')} />
+                            独立显示规格型号
+                            </span>
+                        <span>
+                            <input name="showFields" type="radio" value="append"
+                                ref={(e: HTMLInputElement) => this.setRadioElement(e, 'showFields')} />
+                            将规格型号追加到品名后
+                            </span>
+                        
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <label className="pull-left">优惠标签</label>
+                    <span style={{ display: "block" }}>
+                        <input type="checkbox" />
+                        对于有优惠的商品显示优惠标签
+                    </span>
+                </div>
+
                 <div key={10} className="form-group">
                     <label className="pull-left">商品名称</label>
                     <span>
