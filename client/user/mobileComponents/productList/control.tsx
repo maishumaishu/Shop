@@ -78,7 +78,7 @@ export interface State {
     /**
      * 商品名称行数
      */
-    productNameLines?: 'singleLine' | 'doubleColumn'
+    productNameLines: 'singleLine' | 'doubleColumn'
 }
 
 export default class ProductListControl extends Control<Props, State> {
@@ -99,7 +99,7 @@ export default class ProductListControl extends Control<Props, State> {
 
         this.state = {
             products: [], productSourceType: 'category', prodcutsCount: 1,
-            productCounts
+            productCounts, productNameLines: 'singleLine'
         };
 
 
@@ -169,7 +169,7 @@ export default class ProductListControl extends Control<Props, State> {
     async renderSingleColumn(h, products): Promise<JSX.Element> {
 
         // var products = await this.products();
-        let { displayTitle, productCounts, imageSize } = this.state;
+        let { displayTitle, productCounts, imageSize, productNameLines } = this.state;
         // var productCounts = this.state.productCounts;
 
         let leftClassName: string, rightClassName: string;// = displayTitle ? 'col-xs-4' : 'col-xs-3';
@@ -193,7 +193,7 @@ export default class ProductListControl extends Control<Props, State> {
         return (
             <div className="singleColumnProductControl">
                 {products.filter(o => o != null).map(o =>
-                    <div key={o.Id} className="product single row container">
+                    <div key={o.Id} className="product single">
                         <div className={leftClassName} onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                             <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
                                 ref={(e: HTMLImageElement) => {
@@ -202,7 +202,8 @@ export default class ProductListControl extends Control<Props, State> {
                                 }} />
                         </div>
                         <div className={`content ${rightClassName}`}>
-                            <div className="name interception" onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
+                            <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
+                                onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
                                 {o.Name}
                             </div>
                             {displayTitle ?

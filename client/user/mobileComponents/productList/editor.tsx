@@ -224,21 +224,21 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                             </span>
                         </div>
                     ] : [
-                        <div key={10} className="form-group">
-                            <label className="pull-left">商品名称</label>
-                            <span>
-                                <input name="productNameLines" type="radio" value="singleLine"
-                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productNameLines')} />
-                                单行文字
-                            </span>
-                            <span>
-                                <input name="productNameLines" type="radio" value="doubleLine"
-                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productNameLines')} />
-                                双行文字
-                            </span>
-                        </div>
-                    ]}
 
+                    ]}
+                <div key={10} className="form-group">
+                    <label className="pull-left">商品名称</label>
+                    <span>
+                        <input name="productNameLines" type="radio" value="singleLine"
+                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productNameLines')} />
+                        单行文字
+                            </span>
+                    <span>
+                        <input name="productNameLines" type="radio" value="doubleLine"
+                            ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productNameLines')} />
+                        双行文字
+                            </span>
+                </div>
                 <div style={{ display: productSourceType == 'category' ? 'block' : 'none' }}>
                     <div className="form-group">
                         <label className="pull-left">商品数量</label>
