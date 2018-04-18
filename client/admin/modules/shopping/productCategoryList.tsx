@@ -256,6 +256,9 @@ class CommandCell extends React.Component<{ category: Category, dataSource: wuzh
     render() {
         return (
             <div>
+                <button className="btn btn-minier btn-info">
+                    <i className="icon-pencil" />
+                </button>
                 <button className="btn btn-minier btn-danger"
                     ref={(e: HTMLButtonElement) => {
                         if (!e) return;
@@ -264,9 +267,6 @@ class CommandCell extends React.Component<{ category: Category, dataSource: wuzh
                         }, { confirm: `确定要删除品类'${this.props.category.Name}'吗` })
                     }} >
                     <i className="icon-trash" />
-                </button>
-                <button className="btn btn-minier btn-info">
-                    <i className="icon-pencil" />
                 </button>
             </div>
         );
