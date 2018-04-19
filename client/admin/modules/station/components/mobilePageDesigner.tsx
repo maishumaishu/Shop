@@ -200,7 +200,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             console.assert(control.elementPage != null, 'element page is null');
             let editorReactElement = React.createElement(editorType, { control, elementPage: control.elementPage } as EditorProps);
             let editor: Editor<any, any> = ReactDOM.render(editorReactElement, editorElement);
-            editor.changed.add(() => {
+            control.stateChanged.add(() => {
                 this.hasChanged = true;
             })
         })

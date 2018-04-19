@@ -11,7 +11,6 @@ export interface IMobilePageDesigner {
 //==============================================================    
 export interface ComponentProp<T> extends React.Props<T> {
     onClick?: (event: MouseEvent, control: T) => void,
-    // mode?: Mode,
     createElement?: (type, props, ...children) => JSX.Element,
 }
 export interface ControlProps<T> extends React.Props<T> {
@@ -26,8 +25,8 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     private _elementPage: chitu.Page;
     private _state: S;
 
-    // static contextTypes = { designer: PropTypes.object };
-    // context: { designer: IMobilePageDesigner };
+    stateChanged = chitu.Callbacks<this, any>();
+
     id: string;
 
     constructor(props) {
@@ -79,12 +78,27 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         this._state = Object.assign(value, state);;
     }
 
+    private setStateTimes = 0;
+    setState(f: (prevState: S, props: P) => S, callback?: () => any): void;
+    setState(state: S, callback?: () => any): void;
+    setState(state: any, callback?: () => any) {
+        //=====================================================
+        // 忽略第一次设置，把第一次设置作为初始化
+        // 忽略第一次设置，把第一次设置作为初始化
+        if (this.setStateTimes > 0)
+            this.stateChanged.fire(this, state);
+        //=====================================================
+
+        this.setStateTimes = this.setStateTimes + 1;
+        return super.setState(state, callback);
+    }
+
 
 
     render() {
         if (this.mobilePage.props.designTime != null)
             return this._render(createDesignTimeElement);
-        // ReactDOM.render
+
         return this._render(React.createElement);
     }
 
