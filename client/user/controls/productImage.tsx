@@ -3,7 +3,7 @@ export interface Props extends React.Props<ProductImage> {
     product: Product
 }
 
-requirejs(['css!user/components/productImage']);
+requirejs(['css!user/controls/productImage']);
 export class ProductImage extends React.Component<Props, any>{
     constructor(props) {
         super(props);
