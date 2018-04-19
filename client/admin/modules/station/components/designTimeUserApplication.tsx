@@ -1,5 +1,5 @@
 import { Application as UserApplication } from 'user/application';
-import { MobilePage } from 'mobileComponents/mobilePage';
+import { MobilePage } from 'user/components/mobilePage';
 import userSiteMap from 'user/siteMap';
 import { renderQRCode } from 'weixin/modules/openid';
 import { WeiXinService } from 'userServices/weixinService';

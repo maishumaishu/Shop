@@ -1,9 +1,9 @@
-import components from 'mobileComponents/componentDefines';
-import StyleControl from 'mobileComponents/style/control';
+import components from 'user/components/componentDefines';
+import StyleControl from 'user/components/style/control';
 import { VirtualMobile } from 'virtualMobile';
-import { MobilePage } from 'mobileComponents/mobilePage';
-import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
-import { Editor, EditorProps } from 'mobileComponents/editor';
+import { MobilePage } from 'user/components/mobilePage';
+import { Control, componentsDir, IMobilePageDesigner } from 'user/components/common';
+import { Editor, EditorProps } from 'user/components/editor';
 import { guid, StationService } from 'adminServices/station';
 import { PropTypes } from 'prop-types';
 

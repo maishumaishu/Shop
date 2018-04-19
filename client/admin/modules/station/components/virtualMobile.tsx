@@ -1,5 +1,5 @@
-import { Control } from 'mobileComponents/common';
-import { default as StyleControl } from 'mobileComponents/style/control';
+import { Control } from 'user/components/common';
+import { default as StyleControl } from 'user/components/style/control';
 requirejs(['css!content/devices.css']);
 
 

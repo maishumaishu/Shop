@@ -1,7 +1,7 @@
 import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
-import { Tabs } from 'user/components/tabs';
-import { DataList } from 'user/components/dataList';
+import { Tabs } from 'user/controls/tabs';
+import { DataList } from 'user/controls/dataList';
 
 export default function (page: chitu.Page) {
     let shopping = page.createService(ShoppingService);

@@ -1,5 +1,5 @@
 import * as chitu from 'maishu-chitu';
-import { guid } from 'mobileComponents/editor';
+import { guid } from 'user/components/editor';
 import { urlParams, serviceHost } from 'share/common';
 import BaseService from 'share/service';
 export { guid, imageUrl, parseUrlParams, urlParams } from 'share/common';

@@ -1,7 +1,7 @@
 import { defaultNavBar } from 'site';
 import { ShoppingService } from 'userServices/shoppingService';
 import { app } from 'site';
-import { DataList } from 'user/components/dataList';
+import { DataList } from 'user/controls/dataList';
 import siteMap from 'user/siteMap';
 
 export default function (page: chitu.Page) {

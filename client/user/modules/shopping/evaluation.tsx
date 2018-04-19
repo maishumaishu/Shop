@@ -1,8 +1,8 @@
 import { ShoppingService } from 'userServices/shoppingService';
 import { ShoppingCartService } from 'userServices/shoppingCartService';
 // import { PageComponent, PageHeader, PageFooter, PageView, Dialog, Tabs, DataList, ImageBox } from 'mobileControls';
-import { Tabs } from 'user/components/tabs';
-import { DataList } from 'user/components/dataList';
+import { Tabs } from 'user/controls/tabs';
+import { DataList } from 'user/controls/dataList';
 
 export default function (page: chitu.Page) {
     let shop = page.createService(ShoppingService);

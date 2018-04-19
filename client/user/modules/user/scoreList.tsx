@@ -1,6 +1,6 @@
 import { defaultNavBar, app, formatDate } from 'site';
 import { AccountService } from 'userServices/accountService';
-import { DataList } from 'user/components/dataList';
+import { DataList } from 'user/controls/dataList';
 
 export default function (page: chitu.Page) {
     class ScroeListComponent extends React.Component<{}, {}>{

@@ -2,7 +2,7 @@ import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 
 import { FormValidator, rules } from 'dilu';
-import VerifyCodeButton from 'components/verifyCodeButton';
+import VerifyCodeButton from 'controls/verifyCodeButton';
 
 let member = new MemberService();
 // requirejs(['css!content/app/user/accountSecurity/wizard']);

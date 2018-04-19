@@ -1,8 +1,8 @@
 import { StationService } from 'userServices/stationService';
 import { ShoppingService } from 'userServices/shoppingService';
 import { guid } from 'userServices/service';
-import { MobilePage } from 'mobileComponents/mobilePage';
-import { default as ProductControl } from 'mobileComponents/product/control';
+import { MobilePage } from 'user/components/mobilePage';
+import { default as ProductControl } from 'user/components/product/control';
 
 import * as React from 'react';
 import { Page } from 'user/application';

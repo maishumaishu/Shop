@@ -1,5 +1,5 @@
 import { StationService } from 'userServices/stationService';
-import { MobilePage } from 'mobileComponents/mobilePage';
+import { MobilePage } from 'user/components/mobilePage';
 
 import * as site from 'site';
 import * as React from 'react';

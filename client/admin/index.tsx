@@ -103,7 +103,7 @@ requirejs.config({
         userServices: '../user/services',
         adminServices: './services',
         componentDesigner: 'modules/station/components/componentDesigner',
-        mobileComponents: '../user/mobileComponents',
+        mobileComponents: '../user/components',
         mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
         virtualMobile: 'modules/station/components/virtualMobile',
         'user': '../user',

@@ -1,9 +1,9 @@
 import { defaultNavBar } from 'site';
 import { imageUrl, config } from 'userServices/service';
 import { ShoppingService } from 'userServices/shoppingService';
-import { DataList, dataList, MyDataList } from 'components/dataList';
-import { Tabs } from 'components/tabs';
-import { ProductImage } from 'user/components/productImage';
+import { DataList, dataList, MyDataList } from 'user/controls/dataList';
+import { Tabs } from 'user/controls/tabs';
+import { ProductImage } from 'user/controls/productImage';
 import { Page } from 'user/application';
 
 export default async function (page: Page) {

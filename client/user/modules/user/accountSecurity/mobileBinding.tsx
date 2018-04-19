@@ -3,7 +3,7 @@ import { MemberService } from 'userServices/memberService';
 import * as ui from 'ui';
 import { FormValidator, rules } from 'dilu';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
-import VerifyCodeButton from 'components/verifyCodeButton';
+import VerifyCodeButton from 'controls/verifyCodeButton';
 import { Page } from 'user/application';
 
 export interface MobileBindingPageArguments {

@@ -7,7 +7,7 @@ import { WeiXinService } from 'userServices/weixinService';
 import { userData } from 'userServices/userData';
 
 import { Application as BaseApplication, Page as BasePage } from 'maishu-chitu';
-import { MobilePage } from 'mobileComponents/mobilePage'
+import { MobilePage } from 'user/components/mobilePage'
 import * as ui from 'ui';
 import siteMap from 'user/siteMap';
 import { AppError, ErrorCodes } from 'share/common';
