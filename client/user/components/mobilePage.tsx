@@ -71,7 +71,7 @@ export class MobilePage extends React.Component<Props, State>{
         let fileName = arr[0];
         let name = arr[1] || 'default';
 
-        let filePath = `mobileComponents/${fileName}/control`;
+        let filePath = `user/components/${fileName}/control`;
         return new Promise((resolve, reject) => {
             requirejs([filePath], function (exports) {
                 resolve({ Control: exports[name], Props: exports.Props });

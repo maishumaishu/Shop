@@ -21,7 +21,7 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
 
     getControlType(controlName: string): Promise<React.ComponentClass<any>> {
         return new Promise((resolve, reject) => {
-            requirejs([`mobileComponents/${controlName}/control`], function (exports) {
+            requirejs([`user/components/${controlName}/control`], function (exports) {
                 resolve(exports.default);
             })
         })

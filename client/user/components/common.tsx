@@ -1,5 +1,5 @@
 import { MobilePage } from 'user/components/mobilePage';
-export const componentsDir = 'mobileComponents';
+export const componentsDir = 'user/components';
 export const pageClassName = 'mobile-page';
 import { PropTypes } from 'prop-types';
 

@@ -33,6 +33,12 @@ let componets: Array<ComponentDefine> = [
         icon: "icon-map-marker",
         introduce: "在顶部显示购物车图标，显示用户位置",
         target: 'header'
+    },
+    {
+        name: "image",
+        displayName: '图片',
+        icon: " icon-picture",
+        introduce: "用于显示图片"
     }
 ];
 

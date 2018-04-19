@@ -1,7 +1,7 @@
 import { Editor,EditorProps } from 'user/components/editor';
 import { State as ControlState, Props as ControlProps, default as Control, StyleType } from 'user/components/style/control'
 let h = React.createElement;
-requirejs(['css!mobileComponents/style/editor.css']);
+requirejs(['css!user/components/style/editor.css']);
 export interface EditorState extends Partial<ControlState> {
 
 }

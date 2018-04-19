@@ -195,7 +195,7 @@ export default class ProductListControl extends Control<Props, State> {
         }
 
         return (
-            <div className="singleColumnProductControl">
+            <div className="product-list-control">
                 {products.filter(o => o != null).map(o =>
                     <div key={o.Id} className="product single">
                         <div className={leftClassName} onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
@@ -239,7 +239,7 @@ export default class ProductListControl extends Control<Props, State> {
     async renderDoubleColumn(h, products: Product[]): Promise<JSX.Element> {
         var { productCounts, productNameLines, showFields } = this.state;
         return (
-            <div className="singleColumnProductControl">
+            <div className="product-list-control">
                 {products.filter(o => o != null).map((o, i) =>
                     <div key={o.Id} className="product double col-xs-6">
                         <div onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>

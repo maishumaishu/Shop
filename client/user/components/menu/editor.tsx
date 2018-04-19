@@ -3,7 +3,7 @@ import { Props as ControlProps, State as ControlState, default as Control, MenuN
 import { StationService } from 'userServices/stationService';
 import { FormValidator, rules } from 'dilu';
 
-requirejs(['css!mobileComponents/menu/editor.css']);
+requirejs(['css!user/components/menu/editor.css']);
 let h = React.createElement;
 
 export interface MenuEditorState extends Partial<ControlState> {
