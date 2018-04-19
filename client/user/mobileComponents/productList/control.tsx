@@ -213,8 +213,8 @@ export default class ProductListControl extends Control<Props, State> {
                                     '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
                             </div>
                             {showFields == 'independent' ?
-                                o.Fields.map(f =>
-                                    <div className='fields-bar'>
+                                o.Fields.map((f, i) =>
+                                    <div key={f.key} className='fields-bar'>
                                         <span className="label label-default">{f.value}</span>
                                     </div>
                                 )
@@ -253,7 +253,7 @@ export default class ProductListControl extends Control<Props, State> {
                             </div>
                             {showFields == 'independent' ?
                                 o.Fields.map(f =>
-                                    <div className="fields-bar">
+                                    <div key={f.key} className="fields-bar">
                                         <span className="label label-default">{f.value}</span>
                                     </div>
                                 )

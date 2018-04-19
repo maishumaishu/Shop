@@ -1,7 +1,6 @@
 import { Service, config, imageUrl, guid } from 'userServices/service';
 
-
-class Pages {
+export class PageDatas {
 
     private station: StationService;
 
@@ -56,14 +55,14 @@ class Pages {
 
 
 
-    private getPage(name: string) {
+    private async getPage(name: string) {
         let pageName = `*${name}`;
-        return this.station.pageDataByName(pageName).then(pageData => {
-            if (pageData == null) {
-                pageData = this.defaultPages[name];
-            }
-            return pageData;
-        });
+        let pageData = await this.station.pageDataByName(pageName);
+
+        if (pageData == null) {
+            pageData = this.defaultPages[name];
+        }
+        return pageData;
     }
 
 
@@ -95,18 +94,18 @@ class Pages {
 
 export class StationService extends Service {
 
-    private _pages: Pages;
+    private _pages: PageDatas;
 
     constructor() {
         super();
-        this._pages = new Pages(this);
+        this._pages = new PageDatas(this);
     }
 
     url(path) {
         return `UserSite/${path}`;
     }
 
-    get pages(): Pages {
+    get pages(): PageDatas {
         return this._pages;
     }
 
@@ -179,7 +178,7 @@ export class StationService extends Service {
     private async fillPageData(pageData: PageData): Promise<PageData> {
         if (pageData == null)
             return null;
-            
+
         if (pageData.views == null && pageData['controls'] != null) {
             pageData.views = [{ controls: pageData['controls'] }];
         }
@@ -192,11 +191,15 @@ export class StationService extends Service {
         return pageData;
     }
 
-    pageData(pageId: string) {
+    async pageData(pageId: string) {
+        if (!pageId) throw Errors.argumentNull('pageId');
+
         let url = this.url('Page/GetPageDataById');
         let data = { pageId };
-        return this.getByJson<PageData>(url, { query: { _id: pageId } })
-            .then(pageData => this.fillPageData(pageData));
+        let pageData = await this.getByJson<PageData>(url, { id: pageId })
+        if (pageData == null) throw new Error(`Page ${pageId} is not exists.`);
+        pageData = await this.fillPageData(pageData);
+        return pageData;
     }
     defaultPageData() {
         let url = this.url('Page/GetDefaultPageData');

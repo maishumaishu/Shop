@@ -5,8 +5,6 @@ import { MobilePage } from 'mobileComponents/mobilePage';
 import { Control, componentsDir, IMobilePageDesigner } from 'mobileComponents/common';
 import { Editor, EditorProps } from 'mobileComponents/editor';
 import { guid, StationService } from 'adminServices/station';
-import { StationService as UserStation } from 'userServices/stationService';
-import { MemberService } from 'userServices/memberService';
 import { PropTypes } from 'prop-types';
 
 import { AppError, ErrorCodes } from 'share/common';
@@ -14,14 +12,18 @@ import { DesignTimeUserApplication } from 'modules/station/components/designTime
 
 import * as ui from 'ui';
 import 'jquery-ui';
+import app from 'application';
+import siteMap from 'siteMap';
+import { siteMap as userSiteMap, app as userApp } from 'user/site';
+import { PageDatas } from 'userServices/stationService';
 
 export interface Props extends React.Props<MobilePageDesigner> {
-    pageData?: PageData,
+    pageData: PageData,
     showComponentPanel?: boolean,
     showPageEditor?: boolean,
     showMenuSwitch?: boolean,
-    save: (pageData: PageData) => Promise<any>,
-    userStation: UserStation
+    save: (pageData: PageData) => Promise<PageData>,
+    pageDatas: PageDatas,
 }
 
 export interface State {
@@ -30,6 +32,7 @@ export interface State {
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
+    private hasChanged: boolean = false;
     private userApp: DesignTimeUserApplication;
     private virtualMobile: VirtualMobile;
     private editorsElement: HTMLElement;
@@ -41,7 +44,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private selectedControlId: string;
     private editorNameElement: HTMLElement;
     private editorName: string;
-    private userStation: UserStation;
+    // private userStation: UserStation;
 
     saved: chitu.Callback1<MobilePageDesigner, { pageData: PageData }>;
 
@@ -57,10 +60,9 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         console.assert(pageData.footer.controls != null, 'footer controls is null.');
 
         this.state = { editors: [], pageData };
-        this.userStation = this.props.userStation;
         let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
         if (!existsStyleControl) {
-            this.userStation.pages.style().then(stylePageData => {
+            this.props.pageDatas.style().then(stylePageData => {
                 let styleControl = stylePageData.footer.controls[0];
                 console.assert(styleControl != null && styleControl.controlName == 'style');
                 styleControl.selected = 'disabled';
@@ -76,10 +78,17 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         this.saved = chitu.Callbacks<MobilePageDesigner, { pageData: PageData }>();
 
+        if (pageData._id == null) {
+            // pagesDatas.createDefaultPage = (pageData) => this.station.savePageData(pageData);
+            // let station = this.props.pageData
+            this.props.save(this.props.pageData).then(data => {
+                this.props.pageData._id = data._id;
+            });
+        }
     }
 
     async loadMenu() {
-        let menuPageData = await this.userStation.pages.menu();
+        let menuPageData = await this.props.pageDatas.menu();
         let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
         console.assert(menuControlData != null);
         menuControlData.selected = 'disabled';
@@ -101,16 +110,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     get element() {
         return this._element;
-    }
-
-    loadEditor(controlName: string, control: Control<any, any>, editorElement: HTMLElement) {
-        let editorPathName = Editor.path(controlName);
-        requirejs([editorPathName], (exports) => {
-            let editorType = exports.default;
-            console.assert(editorType != null, 'editor type is null');
-            let editorReactElement = React.createElement(editorType, { control });
-            ReactDOM.render(editorReactElement, editorElement);
-        })
     }
 
     save() {
@@ -149,6 +148,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         let save = this.props.save;
         return save(pageData).then(data => {
             this.saved.fire(this, { pageData })
+            this.hasChanged = false;
             return data;
         });
     }
@@ -199,7 +199,10 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             console.assert(editorType != null, 'editor type is null');
             console.assert(control.elementPage != null, 'element page is null');
             let editorReactElement = React.createElement(editorType, { control, elementPage: control.elementPage } as EditorProps);
-            ReactDOM.render(editorReactElement, editorElement);
+            let editor: Editor<any, any> = ReactDOM.render(editorReactElement, editorElement);
+            editor.changed.add(() => {
+                this.hasChanged = true;
+            })
         })
     }
 
@@ -227,12 +230,12 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     }
 
     preview() {
-        let pageId = this.props.pageData._id;
-        if (!pageId) {
-            alert(`页面必须保存`);
+        if (this.hasChanged || !this.props.pageData._id) {
+            ui.alert({ title: '提示', message: `预览前必须先保存页面, 请点击"保存"按钮保存页面` });
             return;
         }
-        open(`#station/preView?pageId=${pageId}`, ':blank');
+        let url = userApp.createUrl(userSiteMap.nodes.page, { pageId: this.props.pageData._id });
+        open(url, '_blank');
     }
 
     renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
@@ -246,14 +249,14 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                     designTime={{
                         controlSelected: (a, b) => this.selecteControl(a, b)
                     }} />, page.element);
-    
+
                 $(this.allContainer).find('li').draggable({
                     connectToSortable: $(page.element).find("section"),
                     helper: "clone",
                     revert: "invalid"
                 });
             }
-    
+
             this.userApp.showDesignPage();
         }
         else {

@@ -8,9 +8,6 @@ import siteMap from 'siteMap';
 
 export default async function (page: chitu.Page) {
 
-    // let { loadImage, ImageBox, PullDownIndicator, PullUpIndicator, HtmlView, Panel,
-    //     PageComponent, PageHeader, PageFooter, PageView, Dialog } = controls;
-
     let shop = page.createService(ShoppingService);
     let shoppingCart = page.createService(ShoppingCartService)
     let account = page.createService(AccountService);

@@ -10,12 +10,13 @@ import { FormValidator, rules } from 'dilu';
 import tips from 'tips';
 import ImageUpload from 'adminComponents/imageUpload';
 
-const station = new StationService();
+// const station = new StationService();
 const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
 
     let shopping = page.createService(ShoppingService);
+    let station = page.createService(StationService);
 
     var editorId = guid();
     app.loadCSS(page.name);
@@ -268,7 +269,7 @@ export default function (page: chitu.Page) {
                         </div>
                     </div>
                     <div className="row form-group">
-                        {(imagePaths).map((o, i) => <ImageThumber imagePath={o} key={o}
+                        {(imagePaths).map((o, i) => <ImageThumber imagePath={o} key={o} station={station}
                             removed={() => {
                                 this.state.product.ImagePaths = imagePaths.filter((item, index) => index != i);
                                 this.setState(this.state);
@@ -278,7 +279,7 @@ export default function (page: chitu.Page) {
                                 saveImage={(data) => this.saveContentImage(data)} style={{ float: 'left' }} />
                         </a>
                         {imagePath ?
-                            <ImageThumber imagePath={imagePath}
+                            <ImageThumber imagePath={imagePath} station={station}
                                 removed={() => {
                                     this.state.product.ImagePath = '', this.setState(this.state)
                                 }} /> :
@@ -427,11 +428,15 @@ export default function (page: chitu.Page) {
                                 </div>
                             </div> */}
 
-class ImageThumber extends React.Component<React.Props<ImageThumber> & { imagePath, removed: (sender: ImageThumber) => void }, {}>{
+type ImageThumberProps = React.Props<ImageThumber> & {
+    imagePath, removed: (sender: ImageThumber) => void, station: StationService
+}
+class ImageThumber extends React.Component<ImageThumberProps, {}>{
     setDeleteButton(e: HTMLButtonElement, imagePath: string) {
         if (!e) return;
         let arr = imagePath.split('_');
         console.assert(arr.length == 3);
+        let { station } = this.props;
         e.onclick = ui.buttonOnClick(() => station.removeImage(arr[0]).then(o => this.props.removed(this)), {
             confirm: '确定删除该图片吗？'
         })

@@ -74,7 +74,17 @@ export class Application extends BaseApplication {
         return page;
     }
 
-    createUrl(pageName: string, args: any) {
+    createUrl(node: chitu.SiteMapNode, args?: any)
+    createUrl(pageName: string, args?: any)
+    createUrl(obj: any, args?: any) {
+        let pageName: string;
+        if (typeof obj == 'string')
+            pageName = obj;
+        else {
+            pageName = (obj as chitu.SiteMapNode).name;
+            console.assert(pageName != null);
+        }
+
         let url = super.createUrl(pageName, args);
         let { protocol, port, host } = location;
         let baseUrl = `${protocol}//${host}/user/?appKey=${tokens.appId}`;

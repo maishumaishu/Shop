@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { isWeixin } from 'userServices/weixinService';
 import { app } from "user/application";
 export { app } from 'user/application';
-// export app;
+export { default as siteMap } from 'user/siteMap';
 
 export function formatDate(date: Date | string) {
     if (typeof date == 'string')

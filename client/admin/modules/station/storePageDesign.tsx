@@ -1,4 +1,4 @@
-import { MobilePageDesigner } from 'mobilePageDesigner';
+import { MobilePageDesigner, Props } from 'mobilePageDesigner';
 import { StationService as AdminStation } from 'adminServices/station';
 import { StationService as UserStation } from 'userServices/stationService';
 import { AppError } from 'share/common'
@@ -14,10 +14,14 @@ export default async function (page: chitu.Page) {
     if (func == null)
         throw new Error(`Store page ${storePage} is not exists.`);
 
+    let showComponentPanel = storePage == 'home';
     let pageData = await func.apply(userStation.pages);
-
-    ReactDOM.render(
-        <MobilePageDesigner pageData={pageData} showMenuSwitch={true}
-            save={adminStation.savePageData.bind(adminStation)} pageDatas={userStation.pages}>
-        </MobilePageDesigner>, page.element);
+    let props: Props = {
+        pageData,
+        pageDatas: userStation.pages,
+        save: adminStation.savePageData.bind(adminStation),
+        showMenuSwitch: true,
+        showComponentPanel
+    }
+    ReactDOM.render(<MobilePageDesigner {...props} />, page.element);
 }

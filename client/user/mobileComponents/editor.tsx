@@ -12,6 +12,8 @@ export interface EditorProps {
 export abstract class Editor<P extends EditorProps, S> extends React.Component<P, S>{
     private controlType: React.ComponentClass<any>;
     private _state: S;
+    
+    changed = chitu.Callbacks<this, Control<any, any>>();
 
     constructor(props) {
         super(props);
@@ -61,6 +63,7 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
             controlState[key] = this.state[key];
         }
         control.setState(controlState);
+        this.changed.fire(this, control);
     }
 
     static path(controlName: string) {

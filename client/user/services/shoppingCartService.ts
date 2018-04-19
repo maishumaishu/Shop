@@ -37,8 +37,8 @@ export class ShoppingCartService extends Service {
 
     private _setItemCount(itemId: string, count: number) {
         if (count <= 0) {
-            let url = this.url('RemoveItem');
-            return this.deleteByJson(url, { itemId });
+            let url = this.url('RemoveItems');
+            return this.deleteByJson(url, { itemIds: [itemId] });
         }
         let url = this.url('SetItemCount');
         let item = { itemId, count };

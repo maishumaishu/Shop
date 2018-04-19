@@ -2,7 +2,7 @@ import { default as site } from 'site';
 import app from 'application';
 import { StationService } from 'adminServices/station';
 // import { Button } from 'common/controls';
-import { RouteValue } from 'modules/station/page';
+// import { RouteValue } from 'modules/station/page';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import siteMap from 'siteMap';
@@ -47,7 +47,7 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
         ui.showDialog(this.templateDialogElement);
     }
     private selecteTemplate(template: TemplatePageData) {
-        var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
+        // var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
         // let url = 'station/page?templateId=' + template._id;
         app.redirect(siteMap.nodes["station/page"], { templateId: template._id });
     }
@@ -154,12 +154,12 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
 class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzhui.DataSource<PageData> }, {}>{
     showPage() {
         let pageId = this.props.pageData._id;
-        var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
+        // var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
         var url = 'station/page';
         if (pageId)
             url = url + '?pageId=' + pageId;
 
-        app.redirect(siteMap.nodes["station/page"], routeValue)
+        // app.redirect(siteMap.nodes["station/page"], routeValue)
     }
     private pageSave(pageData: PageData) {
     }

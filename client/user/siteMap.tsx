@@ -11,7 +11,8 @@ let dir = 'user/modules'
 let siteMap = {
     nodes: {
         emtpy: { action: (page: chitu.Page) => null },
-        home_index: { action: home_index_action },
+        page: { action: `${dir}/page` } as chitu.SiteMapNode,
+        home_index: { action: home_index_action } as chitu.SiteMapNode,
         home_class: { action: home_class_action },
         home_product: { action: home_product_action } as chitu.SiteMapNode,
         home_productList: { action: `${dir}/home/productList` },

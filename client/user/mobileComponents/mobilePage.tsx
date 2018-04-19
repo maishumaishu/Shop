@@ -24,7 +24,8 @@ export interface ControlDescription {
 
 export type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
 const menuHeight = 50;
-export class MobilePage extends React.Component<Props, { pageData: PageData }>{
+type State = { pageData: PageData };
+export class MobilePage extends React.Component<Props, State>{
     private screenElement: HTMLElement;
     private selecteControl: ControlPair;
 

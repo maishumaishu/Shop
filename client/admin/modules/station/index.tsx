@@ -4,9 +4,12 @@ import { default as site } from 'site'
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'adminServices/service';
 import { FormValidator, rules } from 'dilu';
-import QRCode = require('qrcode');
 import 'bootstrap';
 import app from 'application';
+import { app as userApp, siteMap as userSiteMap, siteMap } from 'user/site';
+
+import QRCode = require('qrcode');
+import ClipboardJS = require('clipboard');
 
 export default async function (page: chitu.Page) {
 
@@ -66,9 +69,37 @@ export default async function (page: chitu.Page) {
                                 <div style={{ width: 180, height: 180, padding: 10 }}
                                     ref={(e: HTMLElement) => this.qrcodeElement = e || this.qrcodeElement} />
                                 <div style={{ width: '100%' }}>
-                                    <div className="pull-left">复制页面链接</div>
+                                    <button className="pull-left btn-link"
+                                        ref={(e: HTMLButtonElement) => {
+                                            if (!e) return;
+
+                                            var clipboard = new ClipboardJS(e, {
+                                                text: function () {
+                                                    let pageName = userSiteMap.nodes.home_index.name;
+                                                    console.assert(pageName != null);
+                                                    var url = userApp.createUrl(pageName);
+                                                    return url;
+                                                }
+                                            });
+
+                                            clipboard.on('success', function (e) {
+                                                ui.showToastMessage('商品链接已经成功复制');
+                                            });
+
+                                            clipboard.on('error', function (e) {
+                                                ui.alert('商品链接已经成功失败');
+                                            });
+                                        }}>
+                                        复制页面链接
+                                    </button>
                                     <div className="pull-right">
-                                        <a href={site.userClientUrl} target="_blank">电脑访问</a>
+                                        <button className="btn-link"
+                                            onClick={() => {
+                                                let url = userApp.createUrl(siteMap.nodes.home_index);
+                                                window.open(url, "_blank");
+                                            }}>
+                                            电脑访问
+                                        </button>
                                     </div>
                                 </div>
                             </div>

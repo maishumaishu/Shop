@@ -6,16 +6,16 @@ import { StationService as UserStation } from 'userServices/stationService';
 let station = new StationService();
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
 
-export interface RouteValue {
-    onSave(pageData: PageData);
-}
+// export interface RouteValue {
+//     onSave(pageData: PageData);
+// }
 
 export default async function (page: chitu.Page) {
     class State {
         componentInstances: ControlDescrtion[]
     }
 
-    let onSave = ((page.data || {}) as RouteValue).onSave;
+    // let onSave = ((page.data || {}) as RouteValue).onSave;
 
     class Page extends React.Component<{ pageData: PageData }, State>{
         private designer: MobilePageDesigner;
@@ -23,8 +23,8 @@ export default async function (page: chitu.Page) {
             super(props);
         }
         componentDidMount() {
-            if (onSave)
-                this.designer.saved.add((sender, args) => onSave(args.pageData));
+            // if (onSave)
+            //     this.designer.saved.add((sender, args) => onSave(args.pageData));
         }
         async loadControlInstance(controlId: string, controlName: string, controlHTMLElement: HTMLElement, controlData?: any) {
 
@@ -57,7 +57,7 @@ export default async function (page: chitu.Page) {
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
                     save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true} 
                     // TODO: elementPage 应该为移动端的 chitu.Page 
-                    userStation={userStation}>
+                    pageDatas={userStation.pages}>
                 </MobilePageDesigner>
             );
         }
