@@ -164,7 +164,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
         let listType = this.state.listType;
 
         return (
-            <form>
+            <form className="product-list-editor">
                 {/* <i className=" icon-remove" style={{ display: 'table-cell' }}></i>
                 <h5 style={{ display: 'table-cell', paddingLeft: 8 }}>商品列表</h5>
                 <hr style={{ marginTop: 18 }} /> */}

@@ -3,7 +3,8 @@
 (<any>window).UEDITOR_HOME_URL = '/scripts/ueditor/'
 var references = ['ue/ueditor.config', 'ue/ueditor.all.min', 'ue/third-party/zeroclipboard/ZeroClipboard'];
 
-export function createEditor(editorId: string, field: HTMLInputElement) {
+export function createEditor(editorId: string, field: HTMLInputElement,
+    onContentChanged?: (value: string) => void) {
 
     requirejs(references, function () {
 
@@ -30,11 +31,13 @@ export function createEditor(editorId: string, field: HTMLInputElement) {
             // });
 
             ue.addListener('contentChange', function (editor) {
-                let content = this.getContent();
+                let content: string = this.getContent();
                 disable_subscribe = true;
-                // field(content);
                 field.value = content;
                 disable_subscribe = false;
+                if (onContentChanged) {
+                    onContentChanged(content);
+                }
             });
         });
 
@@ -57,7 +60,7 @@ export function createUEEditor(editorId: string, field: HTMLInputElement) {
         um.addListener('contentChange', function () {
             let content = this.getContent();
             field.value = content;
-            
+
             let ev = {
                 target: field as EventTarget
             } as Event;

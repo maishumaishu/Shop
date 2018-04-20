@@ -70,8 +70,8 @@ class Application extends chitu.Application {
         // let path = pageName.split('_').join('/');
         let pageNode = siteMap.nodes[pageName];
         console.assert(pageNode != null);
-        console.assert(typeof pageNode.action == 'string');
-        requirejs([`css!${pageNode.action}`]);
+        console.assert(typeof pageNode.path == 'string');
+        requirejs([`css!${pageNode.path}`]);
     }
 
     protected createPageElement(pageName: string): HTMLElement {

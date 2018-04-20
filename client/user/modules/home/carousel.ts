@@ -112,8 +112,8 @@ class Carousel {
             this.panend(event, deltaX);
         }
 
-        element.addEventListener('touchcancel', (event) => endHorizontal(event, currentX - startX));
-        element.addEventListener('touchend', (event) => endHorizontal(event, currentX - startX));
+        element.addEventListener('touchcancel', (event: TouchEvent) => endHorizontal(event, currentX - startX));
+        element.addEventListener('touchend', (event: TouchEvent) => endHorizontal(event, currentX - startX));
     }
 
     private panstart(e: TouchEvent) {

@@ -178,6 +178,10 @@ export let menuData: MenuNode[] = [
     },
 ];
 
+for (let key in siteMap.nodes) {
+    siteMap.nodes[key].path = siteMap.nodes[key].action;
+}
+
 let stack = new Array<MenuNode>();
 for (let i = 0; i < menuData.length; i++) {
     stack.push(menuData[i]);

@@ -108,6 +108,7 @@ requirejs.config({
         'user': '../user',
         'adminComponents': 'components',
         'share': '../share',
+        'admin': './',
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
     }
 });

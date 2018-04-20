@@ -3,7 +3,7 @@ import { Props as ControlProps, State as ControlState, default as Control } from
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'userServices/service';
 
-requirejs(['css!components/member/editor.css']);
+// requirejs(['css!components/member/editor.css']);
 
 export interface EditorState extends Partial<ControlState> {
 
@@ -15,6 +15,7 @@ let station = new StationService();
 export default class MemberEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
         super(props);
+        this.loadEditorCSS();
         this.state = {};
     }
     render() {

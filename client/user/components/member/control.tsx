@@ -27,7 +27,7 @@ export interface State {
 
 export default class MemberControl extends Control<Props, State>{
 
-    static default_bg = '../../components/member/images/bg_user.png';
+    static default_bg = '../../user/components/member/images/bg_user.png';
 
     get persistentMembers(): (keyof State)[] {
         return ["showBalance", "showLevel", "showScore", "sellsCenter", "bg"];
