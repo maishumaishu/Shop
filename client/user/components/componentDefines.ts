@@ -37,8 +37,14 @@ let componets: Array<ComponentDefine> = [
     {
         name: "image",
         displayName: '图片',
-        icon: " icon-picture",
+        icon: "icon-picture",
         introduce: "用于显示图片"
+    },
+    {
+        name: "html",
+        displayName: 'HTML',
+        icon: " icon-text-width",
+        introduce: "用于创建 HTML 元素"
     }
 ];
 
