@@ -1,15 +1,4 @@
-// .productSelectDialog {
-//     .total {
-//         float: left;
-//     }
-//     ul {
-//         li {
-//             display: inline;
-//         }
-//     }
-// }
-
-.productSelectDialog.modal {
+.product-select-dialog.modal {
     .modal-dialog {
         .modal-content {
             @width:700px;
@@ -20,7 +9,7 @@
                 @padding:15px;
 
                 width: @width;
-                height: 500px;
+                min-height: 200px;
                 padding: @padding;
                 
                 .loading, .norecords {
@@ -52,8 +41,6 @@
             .modal-footer {
                 .pagination {
                     margin: 0;
-                    width: 100%;
-
                     .active {
                         color: red;
                     }
@@ -65,10 +52,10 @@
                         min-width: 32px;
                         text-align: center;
                     }
-                    .total {
-                        float: left;
-                        padding-top: 4px;
-                    }
+                }
+                .paging-bar .total {
+                    float: left;
+                    padding-top: 4px;
                 }
                 
             }

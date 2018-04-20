@@ -407,7 +407,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
                     {showComponentPanel ?
                         <div className="form-group">
-                            <div className="product-list-editor well">
+                            <div className="well">
                                 <i className="icon-remove" style={{ cursor: 'pointer' }}
                                     ref={(e: HTMLElement) => {
                                         if (e == null) return;

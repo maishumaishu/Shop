@@ -67,63 +67,12 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
             element: this.pagingBarElement,
             pagerSettings: {
                 activeButtonClassName: 'active',
-                buttonWrapper: 'li'
+                buttonWrapper: 'li',
+                buttonContainerWraper: 'ul'
             },
-
-            // createButton: () => {
-            //     let button = document.createElement('a');
-            //     button.href = 'javascript:';
-
-            //     let wrapper = document.createElement('li');
-            //     wrapper.appendChild(button);
-            //     this.pagingBarElement.appendChild(wrapper);
-
-            //     let result = {
-            //         get visible(): boolean {
-            //             return button.style.display == 'inline';
-            //         },
-            //         set visible(value: boolean) {
-            //             if (value) {
-            //                 button.style.display = 'inline';
-            //                 return;
-            //             }
-
-            //             button.style.display = 'none';
-            //         },
-            //         get pageIndex(): number {
-            //             var str = button.getAttribute('pageIndex');
-            //             return Number.parseInt(str);
-            //         },
-            //         set pageIndex(value: number) {
-            //             button.setAttribute('pageIndex', `${value}`);
-            //         },
-            //         get text(): string {
-            //             return button.innerHTML;
-            //         },
-            //         set text(value) {
-            //             button.innerHTML = value;
-            //         },
-            //         get active(): boolean {
-            //             return button.href != null;
-            //         },
-            //         set active(value: boolean) {
-            //             if (value) {
-            //                 button.parentElement.className = 'active'
-            //                 return;
-            //             }
-
-            //             button.parentElement.className = '';
-
-            //         }
-            //     } as wuzhui.NumberPagingButton;
-            //     button.onclick = () => {
-            //         if (result.onclick) {
-            //             result.onclick(result, pagingBar);
-            //         }
-            //     };
-            //     return result;
-            // }
         });
+        let ul = this.pagingBarElement.querySelector('ul');
+        ul.className = "pagination";
         this.dataSource.select();
     }
 
@@ -157,7 +106,7 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
             status = 'finish';
 
         return (
-            <div className="productSelectDialog modal fade" ref={(e: HTMLElement) => this.element = e || this.element}>
+            <div className="product-select-dialog modal fade" ref={(e: HTMLElement) => this.element = e || this.element}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -204,8 +153,9 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
                             <div className="clearfix"></div>
                         </div>
                         <div className="modal-footer">
-                            <ul className="pull-left paging-bar pagination" ref={(e: HTMLElement) => this.pagingBarElement = e || this.pagingBarElement} >
-                            </ul>
+                            <div className="paging-bar"
+                                ref={(e: HTMLElement) => this.pagingBarElement = e || this.pagingBarElement} >
+                            </div>
                         </div>
                     </div>
                 </div>
