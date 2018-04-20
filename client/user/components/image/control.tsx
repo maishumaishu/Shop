@@ -4,11 +4,11 @@ export interface State {
     /**
      * 图片源
      */
-    Source: string,
+    source: string,
     /**
      * 点击图片打开的链接
      */
-    URL: string
+    url: string
 }
 
 export interface Props extends ControlProps<ImageControl> {
@@ -20,18 +20,19 @@ export default class ImageControl extends Control<Props, State> {
         super(props);
         this.loadControlCSS();
     }
-    
+
     get persistentMembers(): (keyof State)[] {
-        return ["Source", "URL"];
+        return ["source", "url"];
     }
 
     _render(h: any): JSX.Element | JSX.Element[] {
+        let { source } = this.state;
         return (
-            <div className="image">
-                <img src="http://image.bailunmei.com/5ad85056668ae11b3949d3b6_960_960?width=200&type=jpeg"
+            <div className="image-control">
+                <img src={this.state.source}
                     ref={(e: HTMLImageElement) => {
                         if (!e) return;
-                        ui.renderImage(e, { imageText: "Hello World" })
+                        ui.renderImage(e, { imageText: "请设置图片" })
                     }} />
             </div>
         )
