@@ -5,6 +5,8 @@ import * as mongodb from 'mongodb';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as settings from './settings';
+import * as mysql from 'mysql';
+import * as cache from 'memory-cache';
 import sharp = require('sharp');
 
 const hostname = 'localhost';
@@ -74,12 +76,12 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         else if (/^\/[a-f\d]{24}_\d+_\d+$/i.test(path)) {
             var arr = path.substr(1).split('_');
             context = new mongodb.ObjectID(arr[0]);
-            action = imageById;
+            action = imageFromMongo;
         }
         else if (/^\/[a-f\d]{24}$/i.test(path)) {
             let p = path.substr(1);
             context = new mongodb.ObjectID(p);
-            action = imageById;
+            action = imageFromMongo;
         }
         else if (path == '/upload') {
             action = upload;
@@ -170,7 +172,7 @@ async function imageByName(req: http.IncomingMessage, res: http.ServerResponse):
     return { data: buffer, contentType: imageContextTypes.jpeg };
 }
 
-async function imageById(req: http.IncomingMessage, res: http.ServerResponse, _id: mongodb.ObjectId): Promise<ActionResult> {
+async function imageFromMongo(req: http.IncomingMessage, res: http.ServerResponse, _id: mongodb.ObjectId): Promise<ActionResult> {
     let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
     let collection = db.collection(imageCollectionName);
     let item = await collection.findOne({ _id });
@@ -187,6 +189,55 @@ async function imageById(req: http.IncomingMessage, res: http.ServerResponse, _i
 
     let buffer = new Buffer(arr[1], 'base64');
     return { data: buffer, contentType: imageContextTypes.jpeg };
+}
+
+async function imageFromMysql(req: http.IncomingMessage, res: http.ServerResponse, id: string): Promise<ActionResult> {
+
+    return new Promise<ActionResult>((resolve, reject) => {
+
+        let conn = mysql.createConnection(settings.mysql_image_setting);
+
+        let sql = `select id, data, from image where id = ?`;
+        conn.query(sql, id, (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            if (!rows[0]) {
+                let err = errors.objectNotExists(imageCollectionName, id);
+                return { data: err.message, statusCode: 404 }
+            }
+
+            let arr = (rows[0].data as string || '').split(',');
+            if (arr.length != 2)
+                throw errors.dataFormatError();
+
+            let buffer = new Buffer(arr[1], 'base64');
+            return { data: buffer, contentType: imageContextTypes.jpeg };
+        });
+
+
+        conn.end();
+    })
+
+
+    // let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
+    // let collection = db.collection(imageCollectionName);
+    // let item = await collection.findOne({ _id });
+    // db.close();
+
+    // if (item == null) {
+    //     let err = errors.objectNotExists(imageCollectionName, _id);
+    //     return { data: err.message, statusCode: 404 }
+    // }
+
+    // let arr = (item.data || '').split(',');
+    // if (arr.length != 2)
+    //     throw errors.dataFormatError();
+
+    // let buffer = new Buffer(arr[1], 'base64');
+    // return { data: buffer, contentType: imageContextTypes.jpeg };
 }
 
 async function resizeImage(buffer: Buffer, type: 'jpeg|png|webp', width: number, height?: number): Promise<Buffer> {
@@ -207,21 +258,46 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
     //image
     let obj = await getPostObject(req);
     let image = obj["image"];
-    let appKey = obj["application-id"] || req.headers['application-id'];
+    let application_id = obj["application-id"] || req.headers['application-id'];
     if (image == null) {
         throw errors.parameterRequired("image");
     }
 
-    if (appKey == null)
+    if (application_id == null)
         throw errors.parameterRequired('appKey');
 
-    let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
-    let collection = db.collection(imageCollectionName);
+    let value = new Date(Date.now());
+    let create_date_time = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`
 
-    let result = await collection.insertOne({ data: image, appId: appKey });
-    db.close();
-    
-    return { data: JSON.stringify({ _id: result.insertedId }), contentType: contentTypes.application_json };
+    let conn = mysql.createConnection(settings.mysql_image_setting);
+    let sql = `insert into image set ?`;
+
+    let item = { id: guid(), data: image, create_date_time, application_id };
+    return new Promise<ActionResult>((resolve, reject) => {
+        conn.query(sql, item, (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            let result: ActionResult = {
+                data: JSON.stringify({ _id: item.id }),
+                contentType: contentTypes.application_json
+            };
+            resolve(result);
+        })
+
+        conn.end();
+    })
+
+
+    // let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
+    // let collection = db.collection(imageCollectionName);
+
+    // let result = await collection.insertOne({ data: image, appId: appKey });
+    // db.close();
+
+    // return { data: JSON.stringify({ _id: result.insertedId }), contentType: contentTypes.application_json };
 }
 
 
@@ -254,6 +330,16 @@ function getPostObject(request: http.IncomingMessage): Promise<any> {
             }
         })
     });
+}
+
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
 }
 
 
