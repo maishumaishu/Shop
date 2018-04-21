@@ -12,6 +12,7 @@ import sharp = require('sharp');
 const hostname = 'localhost';
 const port = 3218;
 const imageCollectionName = 'AppImage';
+const MYSQL_IMAGE_PREFIX = 'M';
 
 const errors = {
     searchCanntNull: () => new Error('Search can not be null.'),
@@ -40,9 +41,6 @@ const imageContextTypes = {
 const defaultImageType = 'webp';
 
 const server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
-
-
-    // let db: mongodb.Db;
 
     try {
 
@@ -82,6 +80,15 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             let p = path.substr(1);
             context = new mongodb.ObjectID(p);
             action = imageFromMongo;
+        }
+        else if (/^\/M[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(path)) {
+            context =  path.substr(1+MYSQL_IMAGE_PREFIX.length);
+            action = imageFromMysql;
+        }
+        else if (/^\/M[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}_\d+_\d+$/i.test(path)) {
+            var arr = path.substr(1+MYSQL_IMAGE_PREFIX.length).split('_');
+            context = arr[0];
+            action = imageFromMysql;
         }
         else if (path == '/upload') {
             action = upload;
@@ -197,7 +204,7 @@ async function imageFromMysql(req: http.IncomingMessage, res: http.ServerRespons
 
         let conn = mysql.createConnection(settings.mysql_image_setting);
 
-        let sql = `select id, data, from image where id = ?`;
+        let sql = `select id, data from image where id = ?`;
         conn.query(sql, id, (err, rows, fields) => {
             if (err) {
                 reject(err);
@@ -206,15 +213,19 @@ async function imageFromMysql(req: http.IncomingMessage, res: http.ServerRespons
 
             if (!rows[0]) {
                 let err = errors.objectNotExists(imageCollectionName, id);
-                return { data: err.message, statusCode: 404 }
+                reject(err);
+                return;
             }
 
             let arr = (rows[0].data as string || '').split(',');
-            if (arr.length != 2)
-                throw errors.dataFormatError();
+            if (arr.length != 2) {
+                reject(errors.dataFormatError());
+                return;
+            }
 
             let buffer = new Buffer(arr[1], 'base64');
-            return { data: buffer, contentType: imageContextTypes.jpeg };
+            resolve({ data: buffer, contentType: imageContextTypes.jpeg })
+            return;
         });
 
 
@@ -281,7 +292,7 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
             }
 
             let result: ActionResult = {
-                data: JSON.stringify({ _id: item.id }),
+                data: JSON.stringify({ _id: MYSQL_IMAGE_PREFIX + item.id }),
                 contentType: contentTypes.application_json
             };
             resolve(result);
