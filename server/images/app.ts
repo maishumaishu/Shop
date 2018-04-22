@@ -96,6 +96,9 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         else if (path == '/upload') {
             action = upload;
         }
+        else if (path.startsWith('list')) {
+            action = list;
+        }
         else {
             throw errors.pathNotSupport(path);
         }
@@ -247,23 +250,23 @@ async function resizeImage(buffer: Buffer, type: 'jpeg|png|webp', width: number,
 async function upload(req: http.IncomingMessage, res: http.ServerResponse): Promise<ActionResult> {
 
     //image
-    let obj = await getPostObject(req);
+    let obj = await parsePostData(req);
     let image = obj["image"];
     if (image == null) {
         throw errors.parameterRequired("image");
     }
 
-    let application_id = obj["application-id"] || req.headers['application-id'];
+    let application_id = req.headers['application-id'] || parseQueryString(req)['application'];
     if (application_id == null)
-        throw errors.parameterRequired('appKey');
+        throw errors.parameterRequired('application-id');
 
     return new Promise<ActionResult>((resolve, reject) => {
         let value = new Date(Date.now());
         let create_date_time = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`
-    
+
         let conn = mysql.createConnection(settings.mysql_image_setting);
         let sql = `insert into image set ?`;
-    
+
         let item = { id: guid(), data: image, create_date_time, application_id };
         conn.query(sql, item, (err, rows, fields) => {
             if (err) {
@@ -283,7 +286,7 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
 }
 
 async function remove(req: http.IncomingMessage, res: http.ServerResponse, id: string): Promise<ActionResult> {
-    let obj = await getPostObject(req);
+    let obj = parseQueryString(req);;
     let application_id = obj["application-id"] || req.headers['application-id'];
     if (application_id == null)
         throw errors.parameterRequired('appKey');
@@ -291,7 +294,7 @@ async function remove(req: http.IncomingMessage, res: http.ServerResponse, id: s
     return new Promise<ActionResult>((resolve, reject) => {
         let conn = mysql.createConnection(settings.mysql_image_setting);
         let sql = `delete from image where id = ? and application_id = ?`;
-        conn.query(sql, [id,application_id], (err, rows, fields) => {
+        conn.query(sql, [id, application_id], (err, rows, fields) => {
             if (err) {
                 reject(err);
                 return;
@@ -307,8 +310,73 @@ async function remove(req: http.IncomingMessage, res: http.ServerResponse, id: s
     })
 }
 
+type SelectArguments = {
+    startRowIndex?: number;
+    maximumRows?: number;
+    sortExpression?: string;
+    filter?: string;
+}
 
-function getPostObject(request: http.IncomingMessage): Promise<any> {
+function list(req: http.IncomingMessage, res: http.ServerResponse, args: SelectArguments): Promise<ActionResult> {
+    let obj = parseQueryString(req);
+    let application_id = obj['application-id'] || req.headers['application-id'];
+    if (application_id == null)
+        throw errors.parameterRequired('application-id');
+
+    return new Promise<any[]>((resolve, reject) => {
+
+        let conn = mysql.createConnection(settings.mysql_image_setting);
+        let defaults: SelectArguments = {
+            startRowIndex: 0,
+            maximumRows: 10,
+            sortExpression: 'create_date_time desc',
+            filter: 'true'
+        }
+
+        args = Object.assign(defaults, args)
+
+        // 有 zu ru feng xiang
+        let sql = `select id from image where ${args.filter} and application_id = ${application_id} order by ${args.sortExpression}`;
+        conn.query(sql, args, (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(rows);
+        });
+        conn.end();
+
+    }).then((rows) => {
+        let result: ActionResult = {
+            data: JSON.stringify(rows),
+            contentType: contentTypes.application_json
+        };
+        return result;
+
+    });
+}
+
+
+function parseQueryString(req: http.IncomingMessage): Promise<object> {
+    let urlInfo = url.parse(req.url);
+    let { search } = urlInfo;
+    let contentType = req.headers['content-type'] as string;
+    if (!search)
+        return Promise.resolve({});
+
+    search = search[0] == '?' ? search.substr(1) : search;
+    let result: object;
+    if (contentType.indexOf('application/json') >= 0) {
+        result = querystring.parse(search.substr(1));
+    }
+    else {
+        result = JSON.parse(search);
+    }
+    return Promise.resolve(result);
+}
+
+function parsePostData(request: http.IncomingMessage): Promise<object> {
     let method = (request.method || '').toLowerCase();
     let length = request.headers['content-length'] || 0;
     let contentType = request.headers['content-type'] as string;
