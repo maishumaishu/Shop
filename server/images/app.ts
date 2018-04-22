@@ -90,7 +90,8 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             if (arr.length < 2)
                 throw errors.pathNotSupport(path);
 
-            context = arr[1].substr(1);
+            let guidRegular = /[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/;
+            context = guidRegular.exec(path)[0];
         }
         else if (path == '/upload') {
             action = upload;
