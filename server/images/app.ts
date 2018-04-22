@@ -317,7 +317,7 @@ type SelectArguments = {
 }
 
 async function list(req: http.IncomingMessage, res: http.ServerResponse): Promise<ActionResult> {
-    //, args: SelectArguments
+
     let postData = await parsePostData(req);
     let obj = parseQueryString(req);
     let args: SelectArguments = Object.assign({}, obj, postData);
@@ -349,22 +349,21 @@ async function list(req: http.IncomingMessage, res: http.ServerResponse): Promis
         }
     }
 
-    return new Promise<any[]>((resolve, reject) => {
+    // return new Promise<any[]>((resolve, reject) => {
+
+    let defaults: SelectArguments = {
+        startRowIndex: 0,
+        maximumRows: 10,
+        sortExpression: 'create_date_time desc',
+        filter: 'true'
+    }
+
+    args = Object.assign(defaults, args)
 
 
-        let defaults: SelectArguments = {
-            startRowIndex: 0,
-            maximumRows: 10,
-            sortExpression: 'create_date_time desc',
-            filter: 'true'
-        }
+    let conn = mysql.createConnection(settings.mysql_image_setting);
 
-        args = Object.assign(defaults, args)
-
-
-        let conn = mysql.createConnection(settings.mysql_image_setting);
-
-        // 有 zu ru feng xiang
+    let p1 = new Promise((resolve, reject) => {
         let sql = `select id from image where ${args.filter} and application_id = '${application_id}' order by create_date_time desc`;
         conn.query(sql, args, (err, rows, fields) => {
             if (err) {
@@ -374,16 +373,42 @@ async function list(req: http.IncomingMessage, res: http.ServerResponse): Promis
 
             resolve(rows);
         });
-        conn.end();
+    })
 
-    }).then((rows) => {
-        let result: ActionResult = {
-            data: JSON.stringify(rows),
-            contentType: contentTypes.application_json
-        };
-        return result;
+    let p2 = new Promise<number>((resolve, reject) => {
+        let sql = `select count(*) as count from image where ${args.filter} and application_id = '${application_id}' order by create_date_time desc`;
+        conn.query(sql, args, (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
 
-    });
+            resolve(rows[0].count);
+        });
+    })
+
+    conn.end();
+    
+    let r = await Promise.all([p1, p2]);
+    let dataItems = r[0];
+    let totalRowCount = r[1];
+
+
+    let result: ActionResult = {
+        data: JSON.stringify({ dataItems, totalRowCount }),
+        contentType: contentTypes.application_json
+    };
+
+    return result;
+
+    // }).then((rows) => {
+    //     let result: ActionResult = {
+    //         data: JSON.stringify(rows),
+    //         contentType: contentTypes.application_json
+    //     };
+    //     return result;
+
+    // });
 }
 
 
