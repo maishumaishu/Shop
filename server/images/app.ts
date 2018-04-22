@@ -8,11 +8,11 @@ import * as settings from './settings';
 import * as mysql from 'mysql';
 import * as cache from 'memory-cache';
 import sharp = require('sharp');
+import { resolve } from 'dns';
 
 const hostname = 'localhost';
 const port = 3218;
 const imageCollectionName = 'AppImage';
-const MYSQL_IMAGE_PREFIX = 'M';
 
 const errors = {
     searchCanntNull: () => new Error('Search can not be null.'),
@@ -81,14 +81,17 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             context = new mongodb.ObjectID(p);
             action = imageFromMongo;
         }
-        else if (/^\/M[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(path)) {
-            context =  path.substr(1+MYSQL_IMAGE_PREFIX.length);
+        else if (/^\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(path)) {
+            context = path.substr(1);//+ MYSQL_IMAGE_PREFIX.length
             action = imageFromMysql;
         }
-        else if (/^\/M[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}_\d+_\d+$/i.test(path)) {
-            var arr = path.substr(1+MYSQL_IMAGE_PREFIX.length).split('_');
-            context = arr[0];
-            action = imageFromMysql;
+        else if (/^\/delete\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(path)) {
+            action = remove;
+            let arr = path.split('/');
+            if (arr.length < 2)
+                throw errors.pathNotSupport(path);
+
+            context = arr[1].substr(1);
         }
         else if (path == '/upload') {
             action = upload;
@@ -124,11 +127,6 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         var text = JSON.stringify({ name, stack });
         res.write(text);
         res.end();
-    }
-    finally {
-        // if (db != null) {
-        //     db.close();
-        // }
     }
 });
 
@@ -231,24 +229,6 @@ async function imageFromMysql(req: http.IncomingMessage, res: http.ServerRespons
 
         conn.end();
     })
-
-
-    // let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
-    // let collection = db.collection(imageCollectionName);
-    // let item = await collection.findOne({ _id });
-    // db.close();
-
-    // if (item == null) {
-    //     let err = errors.objectNotExists(imageCollectionName, _id);
-    //     return { data: err.message, statusCode: 404 }
-    // }
-
-    // let arr = (item.data || '').split(',');
-    // if (arr.length != 2)
-    //     throw errors.dataFormatError();
-
-    // let buffer = new Buffer(arr[1], 'base64');
-    // return { data: buffer, contentType: imageContextTypes.jpeg };
 }
 
 async function resizeImage(buffer: Buffer, type: 'jpeg|png|webp', width: number, height?: number): Promise<Buffer> {
@@ -269,22 +249,22 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
     //image
     let obj = await getPostObject(req);
     let image = obj["image"];
-    let application_id = obj["application-id"] || req.headers['application-id'];
     if (image == null) {
         throw errors.parameterRequired("image");
     }
 
+    let application_id = obj["application-id"] || req.headers['application-id'];
     if (application_id == null)
         throw errors.parameterRequired('appKey');
 
-    let value = new Date(Date.now());
-    let create_date_time = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`
-
-    let conn = mysql.createConnection(settings.mysql_image_setting);
-    let sql = `insert into image set ?`;
-
-    let item = { id: guid(), data: image, create_date_time, application_id };
     return new Promise<ActionResult>((resolve, reject) => {
+        let value = new Date(Date.now());
+        let create_date_time = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`
+    
+        let conn = mysql.createConnection(settings.mysql_image_setting);
+        let sql = `insert into image set ?`;
+    
+        let item = { id: guid(), data: image, create_date_time, application_id };
         conn.query(sql, item, (err, rows, fields) => {
             if (err) {
                 reject(err);
@@ -292,7 +272,7 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
             }
 
             let result: ActionResult = {
-                data: JSON.stringify({ _id: MYSQL_IMAGE_PREFIX + item.id }),
+                data: JSON.stringify({ _id: item.id }),
                 contentType: contentTypes.application_json
             };
             resolve(result);
@@ -300,15 +280,31 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
 
         conn.end();
     })
+}
 
+async function remove(req: http.IncomingMessage, res: http.ServerResponse, id: string): Promise<ActionResult> {
+    let obj = await getPostObject(req);
+    let application_id = obj["application-id"] || req.headers['application-id'];
+    if (application_id == null)
+        throw errors.parameterRequired('appKey');
 
-    // let db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
-    // let collection = db.collection(imageCollectionName);
+    return new Promise<ActionResult>((resolve, reject) => {
+        let conn = mysql.createConnection(settings.mysql_image_setting);
+        let sql = `delete from image where id = ? and application_id = ?`;
+        conn.query(sql, [id,application_id], (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
 
-    // let result = await collection.insertOne({ data: image, appId: appKey });
-    // db.close();
-
-    // return { data: JSON.stringify({ _id: result.insertedId }), contentType: contentTypes.application_json };
+            let result: ActionResult = {
+                data: JSON.stringify({}),
+                contentType: contentTypes.application_json
+            };
+            resolve(result);
+        })
+        conn.end();
+    })
 }
 
 
