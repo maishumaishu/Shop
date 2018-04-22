@@ -40,6 +40,13 @@ export enum ExpressionTypes {
     Method,
     Table,
     Unary,
+    Order,
+}
+
+const KeyWords = {
+    like: 'like',
+    desc: 'desc',
+    asc: 'asc',
 }
 
 interface Token {
@@ -92,11 +99,12 @@ abstract class Expression {
     get type(): ExpressionTypes {
         return this._type;
     }
+    abstract toString(): string;
 }
 
 export class ConstantExpression<T> extends Expression {
-    // readonly type = ExpressionTypes.Constant;
     _value: T;
+    text: string;
 
     constructor(value: T) {
         super(ExpressionTypes.Constant);
@@ -105,6 +113,7 @@ export class ConstantExpression<T> extends Expression {
             throw Errors.argumentNull('value'); //Errors.create('value is undefined');
 
         this.value = value;
+        this.text = typeof (value) == 'string' ? `'${value}'` : `${value}`;
     }
 
     get value(): T {
@@ -114,20 +123,22 @@ export class ConstantExpression<T> extends Expression {
         this._value = value;
     }
 
-    eval() {
-        return this.value;
+    toString() {
+        return this.text;
     }
 }
 
 export class MemberExpression extends Expression {
     private _name: string;
     private _expression: Expression;
+    private text;
 
     constructor(name: string, source?: Expression) {
         super(ExpressionTypes.Member);
 
         this._name = name;
         this._expression = source;
+        this.text = `${name}`;
     }
 
     get expression(): Expression {
@@ -137,39 +148,44 @@ export class MemberExpression extends Expression {
     get name(): string {
         return this._name;
     }
+
+    toString() {
+        return this.text;
+    }
 }
 
 export class BinaryExpression extends Expression {
 
-    _operator: string;
-    _rightExpression: Expression;
-    _leftExpression: Expression;
-    type = ExpressionTypes.Binary;
+    private _operator: string;
+    private _rightExpression: Expression;
+    private _leftExpression: Expression;
 
-    constructor() {
+    private text;
+
+    constructor(op: string, left: Expression, right: Expression) {
         super(ExpressionTypes.Binary)
+
+        this._operator = op;
+        this._leftExpression = left;
+        this._rightExpression = right;
+
+        this.text = `${left.toString()} ${op} ${right.toString()}`;
     }
 
-    get_leftExpression() {
+    get leftExpression() {
         return this._leftExpression;
     }
-    set_leftExpression(value) {
-        this._leftExpression = value;
-    }
 
-    get_rightExpression() {
+    get rightExpression() {
         return this._rightExpression;
     }
-    set_rightExpression(value) {
-        this._rightExpression = value;
-    }
 
-    get_operator() {
+    get operator() {
         return this._operator;
     }
-    set_operator(value: string) {
-        console.assert(value != null && value != '');
-        this._operator = value;
+
+    toString() {
+        return this.text;
     }
 }
 
@@ -181,11 +197,13 @@ export class BinaryExpression extends Expression {
 
 export class MethodCallExpression extends Expression {
 
-    args: any[];
-    method: string;
-    instance: any;
+    private args: Expression[];
+    private method: string;
+    // private instance: any;
 
-    constructor(instance, method, args: { eval: () => any }[]) {
+    private text: string;
+
+    constructor(method: string, args: Expression[]) {
 
         super(ExpressionTypes.Method);
 
@@ -195,25 +213,58 @@ export class MethodCallExpression extends Expression {
         if (args == null)
             throw Errors.argumentNull('arugments');
 
-        this.instance = instance;
         this.method = method;
 
         this.args = [];
         for (var i = 0; i < args.length; i++) {
-            this.args[i] = args[i].eval();
+            this.args[i] = args[i];
         }
+
+        this.text = `${method}(${args.map(o => o.toString()).join(",")})`
     }
 
-    eval() {
-        let func: Function = this.instance[this.method];
-        return func.apply(this, this.args);
+    // eval() {
+    //     let func: Function = this.instance[this.method];
+    //     return func.apply(this, this.args);
+    // }
+    toString() {
+        return this.text;
     }
 }
 
 class UnaryExpression extends Expression {
-    readonly type = ExpressionTypes.Unary;
+    private text: string;
     constructor(op: string, expr: Expression) {
         super(ExpressionTypes.Unary);
+
+        this.text = `${op}${expr.toString()}`;
+    }
+
+    toString() {
+        return this.text;
+    }
+}
+
+type SortType = 'desc' | 'asc';
+export class OrderExpression extends Expression {
+    private member: MemberExpression;
+    private text: string;
+    private _sortType: SortType;
+
+    constructor(member: MemberExpression, sortType: SortType) {
+        super(ExpressionTypes.Order);
+
+        this._sortType = sortType;
+        this.member = member;
+        this.text = `${member.toString()} ${sortType}`
+    }
+
+    get sortType() {
+        return this._sortType;
+    }
+
+    toString() {
+        return this.text;
     }
 }
 
@@ -252,9 +303,31 @@ export class Parser {
         this.setTextPos(0);
     }
 
-    static parse(text: string): Expression {
+    static parseExpression(text: string): Expression {
         let parser = new Parser(text);
         return parser.parse();
+    }
+
+    static parseOrderExpression(text: string): OrderExpression {
+
+        let parser = new Parser(text);
+
+        parser.nextToken();
+        let expr = parser.parsePrimary();
+        if (expr.type != ExpressionTypes.Member)
+            throw Errors.parseError();
+
+        let tokenText = parser.token.text;
+        if (tokenText == 'asc' || tokenText == 'desc') {
+            expr = new OrderExpression(expr as MemberExpression, tokenText);
+            parser.nextToken();
+        }
+        else {
+            expr = new OrderExpression(expr as MemberExpression, 'asc');
+        }
+
+        parser.validateToken(TokenId.End);
+        return expr as OrderExpression;
     }
 
     private setTextPos(pos: number) {
@@ -522,7 +595,7 @@ export class Parser {
         this.validateToken(TokenId.CloseParen);
         this.nextToken();
 
-        let expr = new MethodCallExpression(null, func, args);
+        let expr = new MethodCallExpression(func, args);
         return expr;
     }
     private parseIdentifier(): Expression {
@@ -537,16 +610,6 @@ export class Parser {
             return this.parseFunction();
         };
 
-        // for (var k in this.instance) {
-        //     if (k == this.tokenText) {
-        //         var exp = new MemberExpression();
-        //         exp.expression = (new ConstantExpression(this.instance));
-        //         exp.member = k;
-        //         this.nextToken();
-        //         return exp;
-        //     }
-        // }
-
         let name = this.tokenText;
         this.nextToken();
         while (this.token.id == TokenId.Dot) {
@@ -556,7 +619,6 @@ export class Parser {
         }
 
         let expr = new MemberExpression(name);
-        // this.nextToken();
         return expr;
 
         // throw Errors.create(`Parse expression "${this.tokenText}" fail."`);
@@ -596,17 +658,6 @@ export class Parser {
         }
         return this.parsePrimary();
     }
-    private parseMemberAccess(instance: Expression): Expression {
-        //this._validateToken(TokenId.Dot);
-        //this._nextToken();
-        this.validateToken(TokenId.Identifier);
-        var expr = new MemberExpression(this.token.text, instance);
-        // expr.expression = instance;
-        // expr.member = this.token.text;
-        this.nextToken();
-
-        return expr;
-    }
     private parseMultiplicative(): Expression {
         var left = this.parseUnary();
         while (this.token.id == TokenId.Asterisk || this.token.id == TokenId.Slash ||
@@ -615,11 +666,7 @@ export class Parser {
             this.nextToken();
             var right = this.parseUnary();
 
-            var expr = new BinaryExpression();
-            expr.set_leftExpression(left);
-            expr.set_rightExpression(right);
-            expr.set_operator(op);
-
+            var expr = new BinaryExpression(op, left, right);
             left = expr;
         }
         return left;
@@ -629,23 +676,20 @@ export class Parser {
         if (this.token.id == TokenId.DoubleBar || this.token.text == 'or') {
             var op = this.token.text;
             var right = this.parseLogicalAnd();
-            var expr = new BinaryExpression();
-            expr.set_operator(op);
-            expr.set_leftExpression(left);
-            expr.set_rightExpression(right);
+            var expr = new BinaryExpression(op, left, right);
             left = expr;
         }
         return left;
     }
     private parseLogicalAnd(): Expression {
         var left = this.parseComparison();
-        if (this.token.id == TokenId.DoubleAmphersand || this.token.id == TokenId.Amphersand) {
+        if (this.token.id == TokenId.DoubleAmphersand || this.token.id == TokenId.Amphersand ||
+            this.token.text == 'and') {
+
             var op = this.token.text;
+            this.nextToken();
             var right = this.parseComparison();
-            var expr = new BinaryExpression();
-            expr.set_operator(op);
-            expr.set_leftExpression(left);
-            expr.set_rightExpression(right);
+            var expr = new BinaryExpression(op, left, right);
             left = expr;
         }
         return left;
@@ -656,15 +700,13 @@ export class Parser {
         while (this.token.id == TokenId.Equal || this.token.id == TokenId.DoubleEqual ||
             this.token.id == TokenId.ExclamationEqual || this.token.id == TokenId.LessGreater ||
             this.token.id == TokenId.GreaterThan || this.token.id == TokenId.GreaterThanEqual ||
-            this.token.id == TokenId.LessThan || this.token.id == TokenId.LessThanEqual) {
+            this.token.id == TokenId.LessThan || this.token.id == TokenId.LessThanEqual ||
+            this.token.text == KeyWords.like) {
 
             var op = this.token.text;
             this.nextToken();
             var right = this.parseAdditive();
-            var expr = new BinaryExpression();
-            expr.set_operator(op);
-            expr.set_leftExpression(left);
-            expr.set_rightExpression(right);
+            var expr = new BinaryExpression(op, left, right);
             left = expr;
         }
         return left;
@@ -678,10 +720,7 @@ export class Parser {
 
             this.nextToken();
             var right = this.parseMultiplicative();
-            var expr = new BinaryExpression();
-            expr.set_operator(tokenText);
-            expr.set_leftExpression(left);
-            expr.set_rightExpression(right);
+            var expr = new BinaryExpression(tokenText, left, right);
             left = expr;
         }
         return left;
@@ -698,10 +737,12 @@ export class Parser {
 
         return new ConstantExpression(value);
     }
+
     parse(): Expression {
         this.nextToken();
         var expr = this.parseExpression();
         this.validateToken(TokenId.End);
         return expr;
     }
+
 }

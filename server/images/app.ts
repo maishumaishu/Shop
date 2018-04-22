@@ -9,6 +9,7 @@ import * as mysql from 'mysql';
 import * as cache from 'memory-cache';
 import sharp = require('sharp');
 import { resolve } from 'dns';
+import { Parser, ExpressionTypes } from './expression';
 
 const hostname = 'localhost';
 const port = 3218;
@@ -58,8 +59,6 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         if (path.endsWith('/')) {
             path = path.substr(0, path.length - 1);
         }
-
-        // db = await mongodb.MongoClient.connect(settings.mongodb_shopcloud);
 
         let action: Action;
         let context: any;
@@ -323,9 +322,33 @@ function list(req: http.IncomingMessage, res: http.ServerResponse, args: SelectA
     if (application_id == null)
         throw errors.parameterRequired('application-id');
 
+
+    if (args.filter) {
+        let expr = Parser.parseExpression(args.filter);
+        if (expr.type != ExpressionTypes.Binary) {
+            let result: ActionResult = {
+                data: JSON.stringify(new Error(`Parser filter fail, filter is '${args.filter}'`)),
+                contentType: contentTypes.application_json,
+            }
+            Promise.resolve(result);
+            return;
+        }
+    }
+    if (args.sortExpression) {
+        let expr = Parser.parseOrderExpression(args.sortExpression);
+        if (expr.type != ExpressionTypes.Order) {
+            let result: ActionResult = {
+                data: JSON.stringify(new Error(`Parser filter fail, filter is '${args.filter}'`)),
+                contentType: contentTypes.application_json,
+            }
+            Promise.resolve(result);
+            return;
+        }
+    }
+
     return new Promise<any[]>((resolve, reject) => {
 
-        let conn = mysql.createConnection(settings.mysql_image_setting);
+
         let defaults: SelectArguments = {
             startRowIndex: 0,
             maximumRows: 10,
@@ -335,8 +358,11 @@ function list(req: http.IncomingMessage, res: http.ServerResponse, args: SelectA
 
         args = Object.assign(defaults, args)
 
+
+        let conn = mysql.createConnection(settings.mysql_image_setting);
+
         // 有 zu ru feng xiang
-        let sql = `select id from image where ${args.filter} and application_id = ${application_id} order by ${args.sortExpression}`;
+        let sql = `select id from image where ${args.filter} and application_id = ${application_id} order by create_date_time desc`;
         conn.query(sql, args, (err, rows, fields) => {
             if (err) {
                 reject(err);
