@@ -275,7 +275,7 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
             }
 
             let result: ActionResult = {
-                data: JSON.stringify({ _id: item.id }),
+                data: JSON.stringify({ id: item.id }),
                 contentType: contentTypes.application_json
             };
             resolve(result);
