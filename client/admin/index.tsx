@@ -106,7 +106,7 @@ requirejs.config({
         mobilePageDesigner: 'modules/station/components/mobilePageDesigner',
         virtualMobile: 'modules/station/components/virtualMobile',
         'user': '../user',
-        'adminComponents': 'components',
+        'adminComponents': 'controls',
         'share': '../share',
         'admin': './',
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'

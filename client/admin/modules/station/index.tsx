@@ -34,7 +34,7 @@ export default async function (page: chitu.Page) {
 
             if (this.imageUpload.changed) {
                 var data = await station.saveImage(this.imageUpload.state.src);
-                this.state.store.ImagePath = data._id;
+                this.state.store.ImagePath = data.id;
             }
             return station.saveStore(this.state.store);
         }

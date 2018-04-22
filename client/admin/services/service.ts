@@ -1,6 +1,6 @@
 ﻿// import $ = require('jquery');
 import * as chitu from 'maishu-chitu';
-import { urlParams, parseUrlParams, serviceHost, imageServer } from 'share/common';
+import { urlParams, parseUrlParams, serviceHost, imageServiceBaseUrl } from 'share/common';
 import BaseService from 'share/service';
 export { guid, imageUrl, parseUrlParams, formatDate, formatDateTime } from 'share/common';
 export let systemWeiXinAppId = 'wx30ac5294d9f38751';
@@ -25,7 +25,7 @@ export class Service extends BaseService {
         siteUrl: `${protocol}//${remote_service_host}/AdminSite/`,
         memberUrl: `${protocol}//${remote_service_host}/AdminMember/`,
         accountUrl: `${protocol}//${remote_service_host}/AdminAccount/`,
-        imageUrl: `${protocol}//${imageServer}/`
+        // imageUrl: imageServiceBaseUrl,
     }
 
     constructor() {

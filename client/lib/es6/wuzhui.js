@@ -165,6 +165,7 @@ var wuzhui;
                 let dataItems;
                 let totalRowCount;
                 if (Array.isArray(data)) {
+                    dataItems = data;
                     totalRowCount = data.length;
                 }
                 else if (data.dataItems !== undefined && data.totalRowCount !== undefined) {

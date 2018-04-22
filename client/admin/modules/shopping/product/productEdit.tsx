@@ -1,5 +1,5 @@
 ﻿import app from 'application';
-import { ShoppingService } from 'adminServices/shopping';
+import { ShoppingService } from 'services/shopping';
 import { StationService } from 'services/station';
 import { Service, imageUrl, guid } from 'services/service';
 
@@ -8,7 +8,7 @@ import { PropertiesComponent } from 'modules/shopping/product/properties';
 import { FormValidator, rules } from 'dilu';
 
 import tips from 'tips';
-import ImageUpload from 'adminComponents/imageUpload';
+import ImageUpload from 'admin/controls/imageUpload';
 
 // const station = new StationService();
 const imageThumbSize = 112;
@@ -80,7 +80,7 @@ export default function (page: chitu.Page) {
         updloadImage(imageFile: File) {
             ui.imageFileToBase64(imageFile)
                 .then(data => {
-                    return station.saveImage(data.base64).then(o => `${o._id}_${data.width}_${data.height}`);
+                    return station.saveImage(data.base64).then(o => `${o.id}`);
                 })
                 .then(name => {
                     this.state.product.ImagePaths.push(name);
@@ -99,14 +99,14 @@ export default function (page: chitu.Page) {
         }
         saveContentImage(data: ui.ImageFileToBase64Result) {
             return station.saveImage(data.base64).then(o => {
-                let name = `${o._id}_${data.width}_${data.height}`;
+                let name = `${o.id}`;
                 this.state.product.ImagePaths.push(name);
                 this.setState(this.state);
             });
         }
         saveCoverImage(data: ui.ImageFileToBase64Result) {
             return station.saveImage(data.base64).then(o => {
-                let name = `${o._id}_${data.width}_${data.height}`;
+                let name = `${o.id}`;
                 this.state.product.ImagePath = name;
                 this.setState(this.state);
             });
@@ -274,19 +274,18 @@ export default function (page: chitu.Page) {
                                 this.state.product.ImagePaths = imagePaths.filter((item, index) => index != i);
                                 this.setState(this.state);
                             }} />)}
-                        <a style={{ float: 'left', paddingLeft: 12 }}>
-                            <ImageUpload title="内容图片"
-                                saveImage={(data) => this.saveContentImage(data)} style={{ float: 'left' }} />
-                        </a>
+                        <div style={{ float: 'left', marginLeft: 12, width: 112 }}>
+                            <ImageUpload title="内容图片" saveImage={(data) => this.saveContentImage(data)} />
+                        </div>
                         {imagePath ?
                             <ImageThumber imagePath={imagePath} station={station}
                                 removed={() => {
                                     this.state.product.ImagePath = '', this.setState(this.state)
                                 }} /> :
-                            <a style={{ float: 'left', paddingLeft: 12 }}>
+                            <div style={{ float: 'left', marginLeft: 12, width: 112 }}>
                                 <ImageUpload title={'封面图片'}
-                                    saveImage={(data) => this.saveCoverImage(data)} style={{ float: 'left' }} />
-                            </a>}
+                                    saveImage={(data) => this.saveCoverImage(data)} />
+                            </div>}
                     </div>
                     <hr />
 

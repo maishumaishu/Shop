@@ -1,10 +1,14 @@
 import { Editor, EditorProps } from "user/components/editor";
 import { State as ControlState, default as CategoriesControl } from 'user/components/image/control';
+import ImageManager from 'admin/controls/imageManager'
+import station from "admin/services/station";
 
 export interface EditorState extends Partial<ControlState> {
 }
 
 export default class ImageEditor extends Editor<EditorProps, EditorState> {
+    imageManager: ImageManager;
+
     constructor(props) {
         super(props);
         this.loadEditorCSS();
@@ -18,6 +22,11 @@ export default class ImageEditor extends Editor<EditorProps, EditorState> {
             this.setState(this.state);
         }
     }
+
+    showImageDialog() {
+        this.imageManager.show();
+    }
+
     render() {
         return (
             <div className="image-editor form-horizontal">
@@ -28,7 +37,8 @@ export default class ImageEditor extends Editor<EditorProps, EditorState> {
                             <input className="form-control"
                                 ref={(e: HTMLInputElement) => this.bindTextElement(e, "source")} />
                             <span className="input-group-btn">
-                                <button className="btn btn-default" type="button">
+                                <button className="btn btn-default" type="button"
+                                    onClick={() => this.showImageDialog()}>
                                     <i className="icon-plus" />
                                 </button>
                             </span>
@@ -41,6 +51,7 @@ export default class ImageEditor extends Editor<EditorProps, EditorState> {
                         <input className="form-control" />
                     </div>
                 </div>
+                <ImageManager station={station} ref={(e) => this.imageManager = e || this.imageManager} />
             </div>
         )
     }

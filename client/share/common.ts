@@ -1,7 +1,11 @@
 export const shopName = '好易微商城';
 export const serviceHost = 'service.bailunmei.com'; //'service4.alinq.cn'; //'service.bailunmei.com';"192.168.1.24";//
 export const websocketUrl = "shopws.bailunmei.com";//"http://maishu.alinq.cn:48015";//
-export const imageServer = "image.bailunmei.com";
+
+let protocol = location.protocol;
+let imageServer = "image.bailunmei.com";
+export const imageServiceBaseUrl = `${protocol}//${imageServer}/`;
+
 export interface AppError extends Error {
     handled: boolean
 }
@@ -34,13 +38,13 @@ export function imageUrl(path: string, width?: number, height?: number) {
         console.assert(index > 0);
         path = path.substr(index);
     }
-    else if (path[0] != '/') {
-        path = '/' + path;
+    else if (path[0] == '/') {
+        path = path.substr(1);
     }
 
     let urlParams = new Array<{ name: string, value: string }>();
     let protocol = location.protocol;
-    let url = `${protocol}//${imageServer}` + path;
+    let url = `${imageServiceBaseUrl}${path}`;
     if (width) {
         // url = url + '?width=' + width;
         urlParams.push({ name: 'width', value: width.toString() });

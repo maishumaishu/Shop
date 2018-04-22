@@ -3,8 +3,6 @@
 // Definitions by: François Nguyen <https://github.com/lith-light-g>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-/// <reference path="../node/index.d.ts" />
-
 declare module 'sharp' {
 
     import { Duplex } from "stream";

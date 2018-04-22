@@ -23,6 +23,7 @@
     "grunt-shell": "^2.1.0"
   },
   "dependencies": {
-    "socket.io": "^2.0.4"
+    "@types/mocha": "^5.2.0",
+    "polished": "^1.9.2"
   }
 }

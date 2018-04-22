@@ -1,5 +1,6 @@
 ﻿import { default as Service, guid, imageUrl } from 'services/service';
 import templates from 'services/data/templates'
+import { imageServiceBaseUrl } from '../../share/common';
 export { guid } from 'services/service';
 
 export class StationService extends Service {
@@ -141,28 +142,22 @@ export class StationService extends Service {
      * @param name 图片名称
      * @param imageBase64 图片的 base64 字符串 
      */
-    saveImage(imageBase64: string): Promise<{ _id: string }> {
-        // let url = `${Service.config.siteUrl}Page/SaveImage`;
-        // return this.postByJson<{ _id: string }>(url, { name, image: imageBase64 });
-        let url = `${Service.config.imageUrl}upload`;
-        return this.postByJson<{ _id: string }>(url, { name, image: imageBase64 });
+    saveImage(imageBase64: string): Promise<{ id: string }> {
+        let url = `${imageServiceBaseUrl}upload`;
+        return this.postByJson<{ id: string }>(url, { name, image: imageBase64 });
     }
-
-    /**
-     * 获取图片的 base64 字符串
-     * @param name 图片名称
-     */
-    getImageBase64(name: string, maxWidth?: number): Promise<string> {
-        let url = `${Service.config.siteUrl}Page/GetImage`;
-        return this.getByJson<string>(url, { name, maxWidth });
+    // imageUrl(pageId: string, fileName: string) {
+    //     let url = imageUrl(fileName);
+    //     return url;
+    // }
+    async images(args: wuzhui.DataSourceSelectArguments, width?: number, height?: number) {
+        let url = `${imageServiceBaseUrl}list`;
+        let result = await this.postByJson<wuzhui.DataSourceSelectResult<{ id: string }>>(url, args);
+        return result;
     }
-    imageUrl(pageId: string, fileName: string) {
-        let url = imageUrl(fileName);
-        return url;
-    }
-    removeImage(_id: string) {
-        let url = `${Service.config.siteUrl}Page/RemoveImage`;
-        return this.deleteByJson(url, { _id });
+    removeImage(id: string) {
+        let url = `${imageServiceBaseUrl}delete/${id}`;
+        return this.get(url);
     }
     private pareeUrlQuery(query): any {
         let match, pl = /\+/g, search = /([^&=]+)=?([^&]*)/g, decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };

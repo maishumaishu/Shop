@@ -12,5 +12,7 @@ server/images/umeditor.net/upload
 server/images/*.js
 server/images/*.js.map
 server/images/ueditor/net/upload/image
+server/images/build
+
 out
-/package-lock.json
+**/package-lock.json

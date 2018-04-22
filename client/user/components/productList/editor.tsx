@@ -3,7 +3,7 @@ import { State as ControlState, Props as ControlProps, default as Control } from
 import { ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'services/service';
-import { ProductSelectDialog } from 'adminComponents/productSelectDialog';
+import { ProductSelectDialog } from 'admin/controls/productSelectDialog';
 export interface EditorState extends ControlState {
 
 }
