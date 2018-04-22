@@ -95,7 +95,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
         else if (path == '/upload') {
             action = upload;
         }
-        else if (path.startsWith('list')) {
+        else if (path.startsWith('/list')) {
             action = list;
         }
         else {
@@ -316,8 +316,11 @@ type SelectArguments = {
     filter?: string;
 }
 
-function list(req: http.IncomingMessage, res: http.ServerResponse, args: SelectArguments): Promise<ActionResult> {
+async function list(req: http.IncomingMessage, res: http.ServerResponse): Promise<ActionResult> {
+    //, args: SelectArguments
+    let postData = await parsePostData(req);
     let obj = parseQueryString(req);
+    let args: SelectArguments = Object.assign({}, obj, postData);
     let application_id = obj['application-id'] || req.headers['application-id'];
     if (application_id == null)
         throw errors.parameterRequired('application-id');
@@ -362,7 +365,7 @@ function list(req: http.IncomingMessage, res: http.ServerResponse, args: SelectA
         let conn = mysql.createConnection(settings.mysql_image_setting);
 
         // 有 zu ru feng xiang
-        let sql = `select id from image where ${args.filter} and application_id = ${application_id} order by create_date_time desc`;
+        let sql = `select id from image where ${args.filter} and application_id = '${application_id}' order by create_date_time desc`;
         conn.query(sql, args, (err, rows, fields) => {
             if (err) {
                 reject(err);
@@ -384,22 +387,22 @@ function list(req: http.IncomingMessage, res: http.ServerResponse, args: SelectA
 }
 
 
-function parseQueryString(req: http.IncomingMessage): Promise<object> {
+function parseQueryString(req: http.IncomingMessage): object {
     let urlInfo = url.parse(req.url);
     let { search } = urlInfo;
-    let contentType = req.headers['content-type'] as string;
+    let contentType = req.headers['content-type'] || '' as string;
     if (!search)
-        return Promise.resolve({});
+        return {};
 
     search = search[0] == '?' ? search.substr(1) : search;
     let result: object;
     if (contentType.indexOf('application/json') >= 0) {
-        result = querystring.parse(search.substr(1));
-    }
-    else {
         result = JSON.parse(search);
     }
-    return Promise.resolve(result);
+    else {
+        result = querystring.parse(search);
+    }
+    return result;
 }
 
 function parsePostData(request: http.IncomingMessage): Promise<object> {
