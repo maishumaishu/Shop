@@ -2,7 +2,9 @@ interface ImageUploadProps extends React.Props<ImageUpload> {
     style?: React.CSSProperties,
     saveImage: (data: ui.ImageFileToBase64Result) => Promise<any>,
     title?: string,
-    className?: string
+    className?: string,
+    width?: number,
+    height?: number
 }
 
 requirejs(['css!controls/imageUpload']);
@@ -11,9 +13,10 @@ class ImageUpload extends React.Component<ImageUploadProps, any> {
     file: HTMLInputElement;
     image: HTMLImageElement;
     updloadImage(imageFile: File) {
-        ui.imageFileToBase64(imageFile, { width: 200, height: 200 })
+        let { width, height } = this.props;
+        ui.imageFileToBase64(imageFile)//, { width, height }
             .then(data => {
-                this.props.saveImage(data);
+                this.props.saveImage(data);//{ base64: data, width: 200, height: 200 }
             });
     }
     setFileInput(e: HTMLInputElement) {

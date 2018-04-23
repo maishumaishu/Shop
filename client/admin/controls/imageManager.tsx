@@ -1,6 +1,6 @@
 import ImageUpload from 'controls/imageUpload';
 import ImageThumber from 'controls/imageThumber';
-import station, { StationService } from 'services/station';
+import { StationService } from 'services/station';
 import 'wuzhui';
 import { imageUrl } from 'share/common';
 
@@ -108,7 +108,8 @@ export default class ImageManager extends React.Component<Props, State> {
                                 <ImageThumber key={i} imagePath={imageUrl(o.id, 140, 140)} className="col-xs-2"
                                     remove={(imagePath: string) => this.removeImage(o)} />
                             )}
-                            <ImageUpload className="col-xs-2" saveImage={(data) => this.saveImage(data.base64)} />
+                            <ImageUpload className="col-xs-2" saveImage={(data) => this.saveImage(data.base64)}
+                                width={400} />
                             <div className="clearfix" />
                         </div>
                         <div className="modal-footer">
