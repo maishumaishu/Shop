@@ -7,5 +7,7 @@ let tips = {
     clickRemoveComponent: '点击移除该控件',
     noProductRegular: '暂无商品规格',
     noProductProperty: '暂无商品属性',
+    imageFromAlbum: '从相册选择图片',
+    uploadImage: '上传图片'
 }
 export default tips;

@@ -74,9 +74,10 @@ declare namespace ui {
         height: number;
     };
     function imageFileToBase64(imageFile: File, size?: {
-        width: number;
-        height: number;
+        width?: number;
+        height?: number;
     }): Promise<ImageFileToBase64Result>;
+    function fileToBase64(file: File): Promise<string>;
 }
 declare namespace ui {
     class Panel {

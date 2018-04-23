@@ -1,5 +1,5 @@
 import { Editor, EditorProps } from 'user/components/editor';
-import { State as ControlState, Props as ControlProps, default as Control } from 'user/components/productList/control';
+import ProductListControl, { State as ControlState, Props as ControlProps, default as Control } from 'user/components/productList/control';
 import { ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'services/service';
@@ -13,6 +13,7 @@ const station = new StationService();
 
 export default class ProductListEditor extends Editor<EditorProps, EditorState> {
 
+    templateInput: HTMLTextAreaElement;
     private productsDialog: ProductSelectDialog;
     private productAdd: HTMLElement;
 
@@ -102,7 +103,6 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
             return;
 
         e.onclick = () => {
-            //selected={(p) => this.productSelected(p)} 
             this.productsDialog.show((product) => this.productSelected(product));
         }
     }
@@ -115,6 +115,27 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
             this.state.productIds = this.state.productIds.filter(o => o != productId);
             this.setState(this.state);
         }
+    }
+
+    setTemplateInput(e: HTMLTextAreaElement) {
+        if (!e) return;
+
+        let ctrl = this.props.control as ProductListControl;
+        let tmp = ctrl.state.productTemplate || ctrl.productTemplate();
+        this.templateInput = e;
+        e.value = tmp;
+    }
+
+    updateControlTemplate() {
+        let ctrl = this.props.control as ProductListControl;
+        this.state.productTemplate = ctrl.state.productTemplate = this.templateInput.value;
+        ctrl.setState(ctrl.state);
+    }
+
+    recoverControlTemplate() {
+        let ctrl = this.props.control as ProductListControl;
+        this.state.productTemplate = ctrl.state.productTemplate = '';
+        ctrl.setState(ctrl.state);
     }
 
     productSelected(product: Product): Promise<any> {
@@ -162,12 +183,10 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
         let productSourceType = this.state.productSourceType;
         let productIds = this.state.productIds || [];
         let listType = this.state.listType;
-
+        let ctrl = this.props.control as ProductListControl;
+        let tmp = this.state.productTemplate || ctrl.productTemplate();
         return (
             <form className="product-list-editor">
-                {/* <i className=" icon-remove" style={{ display: 'table-cell' }}></i>
-                <h5 style={{ display: 'table-cell', paddingLeft: 8 }}>商品列表</h5>
-                <hr style={{ marginTop: 18 }} /> */}
                 <div className="form-group">
                     <label className="pull-left">数据来源</label>
                     <span>
@@ -239,7 +258,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                                 ref={(e: HTMLInputElement) => this.setRadioElement(e, 'showFields')} />
                             将规格型号追加到品名后
                             </span>
-                        
+
                     </span>
                 </div>
 
@@ -262,7 +281,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                         <input name="productNameLines" type="radio" value="doubleLine"
                             ref={(e: HTMLInputElement) => this.setRadioElement(e, 'productNameLines')} />
                         双行文字
-                            </span>
+                        </span>
                 </div>
                 <div style={{ display: productSourceType == 'category' ? 'block' : 'none' }}>
                     <div className="form-group">
@@ -282,13 +301,41 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                         </div>
                     </div>
                 </div>
-                <div style={{ display: productSourceType == 'custom' ? 'block' : 'none' }}
-                    ref={(e: HTMLElement) => this.renderProducts(e, productIds)}>
 
+                <div className="form-group" style={{ display: productSourceType == 'custom' ? 'block' : 'none' }}>
+                    <label className="pull-left">选取商品</label>
+                    <div style={{ width: 'calc(100% - 100px)' }} ref={(e: HTMLElement) => this.renderProducts(e, productIds)}></div>
                 </div>
-                <div className="clearfix"></div>
 
-                <ProductSelectDialog shopping={shopping as any} ref={(e: ProductSelectDialog) => this.productsDialog = e || this.productsDialog} />
+                <div className="form-group">
+                    <ProductSelectDialog shopping={shopping as any} ref={(e: ProductSelectDialog) => this.productsDialog = e || this.productsDialog} />
+                    <div className="clearfix"></div>
+                </div>
+
+                <div className="form-group">
+                    <label className="pull-left">
+                        商品模板
+                        </label>
+                    <div>
+                        <textarea className="form-control" style={{ width: 'calc(100% - 100px)', height: 200 }}
+                            ref={(e: HTMLTextAreaElement) => {
+                                if (!e) return;
+                                this.templateInput = e;
+                                this.templateInput.value = tmp;
+                            }} />
+                    </div>
+                </div>
+                <div className="form-group">
+                    <label className="pull-left">
+
+                    </label>
+                    <div>
+                        <button className="btn btn-primary" type="button"
+                            onClick={() => this.updateControlTemplate()}>更新模板</button>
+                        <button className="btn btn-default" type="button"
+                            onClick={() => this.recoverControlTemplate()}>还原回默认模板</button>
+                    </div>
+                </div>
             </form>
         );
     }

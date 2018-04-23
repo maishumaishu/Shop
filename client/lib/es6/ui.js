@@ -478,23 +478,39 @@ var ui;
                 image.src = blobURL;
                 image.onload = () => {
                     var canvas = document.createElement('canvas');
-                    let width = image.width;
-                    let height = image.height;
-                    if (size) {
-                        width = size.width;
-                        height = size.height;
+                    size = size || {};
+                    let width = size.width != null && size.width < image.width ? size.width : image.width;
+                    let height = size.height != null && size.height < image.height ? size.height : image.height;
+                    if (width != null && height == null) {
+                        height = width / image.width * image.height;
+                    }
+                    else if (width == null && height != null) {
+                        width = height / image.height * image.width;
                     }
                     canvas.width = width;
                     canvas.height = height;
                     var ctx = canvas.getContext("2d");
                     ctx.drawImage(image, 0, 0, width, height);
-                    let data = canvas.toDataURL("/jpeg", 0.7);
+                    let data = canvas.toDataURL("image/jpeg", 0.5);
                     resolve({ base64: data, width, height });
                 };
             };
         });
     }
     ui.imageFileToBase64 = imageFileToBase64;
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.onload = function () {
+                resolve(reader.result);
+            };
+            reader.onerror = function () {
+                reject(reader.error);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+    ui.fileToBase64 = fileToBase64;
 })(ui || (ui = {}));
 var ui;
 (function (ui) {

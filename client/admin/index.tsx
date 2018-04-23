@@ -62,6 +62,7 @@ requirejs.config({
         }
     },
     paths: {
+        'art-template': '../scripts/template-web',
         bootstrap: '../scripts/bootstrap',
         // chitu: '../scripts/chitu',
         css: '../scripts/css',
@@ -114,7 +115,7 @@ requirejs.config({
 });
 // requirejs(['css!content/jquery-ui-1.10.0.custom'])
 requirejs(['build'], function () {
-    var references = ['react', 'react-dom', 'application'];
+    var references = ['react', 'react-dom', 'application', 'art-template'];
     requirejs(references, function (React, ReactDOM, app, ui) {
         window['React'] = React;
         window['ReactDOM'] = ReactDOM;

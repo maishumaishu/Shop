@@ -1,5 +1,5 @@
 import { ShoppingService } from 'adminServices/shopping';
-import station from 'adminServices/station';
+import { StationService } from 'adminServices/station';
 import app from 'application';
 import { default as site } from 'site';
 import * as wz from 'myWuZhui';

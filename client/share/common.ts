@@ -48,6 +48,8 @@ export function imageUrl(path: string, width?: number, height?: number) {
     if (width) {
         // url = url + '?width=' + width;
         urlParams.push({ name: 'width', value: width.toString() });
+        if (height)
+            urlParams.push({ name: 'height', value: height.toString() });
     }
 
     if (navigator.userAgent.indexOf('chrome') < 0) {

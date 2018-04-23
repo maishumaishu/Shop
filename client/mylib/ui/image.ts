@@ -141,7 +141,7 @@ namespace ui {
     }
 
     export type ImageFileToBase64Result = { base64: string, width: number, height: number };
-    export function imageFileToBase64(imageFile: File, size?: { width: number, height: number }): Promise<ImageFileToBase64Result> {
+    export function imageFileToBase64(imageFile: File, size?: { width?: number, height?: number }): Promise<ImageFileToBase64Result> {
         if (!imageFile) throw errors.argumentNull('imageFile');
 
         return new Promise<ImageFileToBase64Result>((resolve, reject) => {
@@ -156,24 +156,40 @@ namespace ui {
                 image.onload = () => {
                     var canvas = document.createElement('canvas');
 
-                    let width = image.width;
-                    let height = image.height;
-                    if (size) {
-                        width = size.width;
-                        height = size.height;
+                    size = size || {};
+                    let width = size.width != null && size.width < image.width ? size.width : image.width;
+                    let height = size.height != null && size.height < image.height ? size.height : image.height;
+                    if (width != null && height == null) {
+                        height = width / image.width * image.height;
+                    }
+                    else if (width == null && height != null) {
+                        width = height / image.height * image.width;
                     }
 
                     canvas.width = width;
                     canvas.height = height;
                     var ctx = canvas.getContext("2d");
-                    ctx.drawImage(image, 0, 0, width, height);
+                    ctx.drawImage(image, 0, 0, width, height, );
 
-                    let data = canvas.toDataURL("/jpeg", 0.7);
+                    let data = canvas.toDataURL("image/jpeg", 0.5);
                     resolve({ base64: data, width, height });
                 }
             }
         })
 
+    }
+
+    export function fileToBase64(file: File): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            let reader = new FileReader();
+            reader.onload = function () {
+                resolve(reader.result);
+            }
+            reader.onerror = function () {
+                reject(reader.error)
+            }
+            reader.readAsDataURL(file);
+        })
     }
 }
 

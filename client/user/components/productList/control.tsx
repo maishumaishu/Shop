@@ -6,6 +6,9 @@ import { ProductImage } from 'user/controls/productImage';
 import { app } from 'site';
 import siteMap from 'siteMap';
 import product from 'user/modules/home/product';
+import template = require('art-template');
+
+requirejs(['css!user/controls/productImage']);
 
 // let { ImageBox } = controls;
 export class Data {
@@ -19,14 +22,10 @@ export class Data {
     }
 }
 
-let shopping = new ShoppingService();
-let shoppingCart = new ShoppingCartService();
 
-
-// type ProductExt = Product & { Count: number };
 
 export interface Props extends ControlProps<ProductListControl> {
-
+    // createService<T extends chitu.Service>(type: chitu.ServiceConstructor<T>): T;
 }
 
 type ProductsFromCategory = {
@@ -41,7 +40,7 @@ type ProductsByCustom = {
 }
 
 export interface State {
-    products?: Product[],
+    // products?: Product[],
     // productsType?: ProductsFromCategory | ProductsByCustom,
 
     //=======================================
@@ -80,20 +79,26 @@ export interface State {
      * independent 独立显示商品规格
      * append 将商品规格追加到名称后
      */
-    showFields: 'independent' | 'append'
+    showFields: 'independent' | 'append',
+
+    /**
+     * 商品模板
+     */
+    productTemplate?: string,
 }
 
 export default class ProductListControl extends Control<Props, State> {
+    shoppingCart: ShoppingCartService;
+    shopping: ShoppingService;
     get persistentMembers(): (keyof State)[] {
         return [
             'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',
             'listType', 'displayType', 'imageSize', 'productNameLines',
-            'showFields'
+            'showFields', 'productTemplate'
         ]
     }
     constructor(args) {
         super(args);
-
         let productCounts: { [key: string]: number } = {};
         for (let i = 0; i < ShoppingCartService.items.value.length; i++) {
             let item = ShoppingCartService.items.value[i];
@@ -101,7 +106,7 @@ export default class ProductListControl extends Control<Props, State> {
         }
 
         this.state = {
-            products: [], prodcutsCount: 1, productCounts,
+            prodcutsCount: 1, productCounts,
             productSourceType: 'category', productNameLines: 'singleLine',
             showFields: 'independent', imageSize: 'small',
             listType: 'doubleColumn'
@@ -109,73 +114,210 @@ export default class ProductListControl extends Control<Props, State> {
 
 
         this.subscribe(ShoppingCartService.items, (shoppingCartItems) => {
-            // this.state.shoppingCartItems = value;
             for (let i = 0; i < shoppingCartItems.length; i++) {
                 this.state.productCounts[shoppingCartItems[i].ProductId] = shoppingCartItems[i].Count;
             }
             this.setState(this.state);
         })
 
-
+        let props = this.props;
+        this.shopping = this.props.mobilePage.props.elementPage.createService(ShoppingService);
+        this.shoppingCart = this.props.mobilePage.props.elementPage.createService(ShoppingCartService);
 
         this.loadControlCSS();
-        Promise.all([shopping.products(0)]).then(data => {
-            let products = data[0];// as (Product & { Count: number })[];
-            // let items = data[1];
-            // for (let i = 0; i < products.length; i++) {
-            //     let item = items.filter(o => o.ProductId == products[i].Id)[0];
-            //     if (item) {
-            //         products[i].Count = item.Count;
-            //     }
-            //     else {
-            //         products[i].Count = 0;
-            //     }
-            // }
-            this.state.products = products;
-            this.setState(this.state);
-        });
+        this.stateChanged.add(()=>{
+            
+        })
     }
 
     _render(h) {
+
+        let renderProduct: (p: Product, data: any) => void;
+        let productTemplate = this.state.productTemplate || this.productTemplate();
+
         return (
-            <div
-                ref={async (e: HTMLElement) => {
-                    if (!e) return;
-                    var products = await this.products();
-                    let listType = this.state.listType;
-                    let element: React.ReactElement<any>;
+            <div className="product-list-control" ref={async (e: HTMLElement) => {
+                if (!e) return;
+                var products = await this.products();
 
-                    if (products.length == 0) {
-                        ReactDOM.render(
-                            <div className="text-center" style={{ height: 200, padding: 100 }}>
-                                暂无要显示的商品
+                if (products.length == 0) {
+                    ReactDOM.render(
+                        <div className="text-center" style={{ height: 200, padding: 100 }}>
+                            暂无要显示的商品
                             </div>, e);
-                        return;
-                    }
+                    return;
+                }
 
-                    switch (listType) {
-                        case 'doubleColumn':
-                        default:
-                            element = await this.renderDoubleColumn(h, products);
-                            break;
-                        case 'singleColumn':
-                            element = await this.renderSingleColumn(h, products);
-                            break;
-                    }
-                    ReactDOM.render(element, e);
+                let html = "";
+                products.map(o => {
+                    let product = o;
+                    let name = this.productDisplayName(product);
+                    let price = `￥` + product.Price;
+                    let image = imageUrl(product.ImagePath, 200, 200);
+                    let stock = product.Stock;
+                    let offShelve = product.OffShelve;
+                    let data = { name, price, image, stock, offShelve };
+                    html = html + template.render(productTemplate, data);
+                })
 
-                }}>
+                setTimeout(() => {
+                    e.innerHTML = html;
+                }, 100);
+
+            }}>
             </div>
         );
     }
 
+    // async renderSingleColumn(h, products: Product[]): Promise<JSX.Element> {
+
+    //     // var products = await this.products();
+    //     let { showFields, productCounts, imageSize, productNameLines } = this.state;
+
+    //     let leftClassName: string, rightClassName: string;// = displayTitle ? 'col-xs-4' : 'col-xs-3';
+    //     // let rightClassName = displayTitle ? 'col-xs-8' : 'col-xs-9';
+    //     switch (imageSize) {
+    //         case 'small':
+    //         default:
+    //             leftClassName = 'col-xs-3';
+    //             rightClassName = 'col-xs-9';
+    //             break;
+    //         case 'medium':
+    //             leftClassName = 'col-xs-4';
+    //             rightClassName = 'col-xs-8';
+    //             break;
+    //         case 'large':
+    //             leftClassName = 'col-xs-5';
+    //             rightClassName = 'col-xs-7';
+    //             break;
+    //     }
 
 
-    async renderSingleColumn(h, products: Product[]): Promise<JSX.Element> {
 
-        // var products = await this.products();
-        let { showFields, productCounts, imageSize, productNameLines } = this.state;
 
+
+    //     return (
+    //         <div className="product-list-control">
+    //             {products.filter(o => o != null).map(o =>
+    //                 <div key={o.Id} className="product single">
+    //                     <div className={leftClassName} onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
+    //                         <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
+    //                             ref={(e: HTMLImageElement) => {
+    //                                 if (!e) return;
+    //                                 ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
+    //                             }} />
+    //                     </div>
+    //                     <div className={`content ${rightClassName}`}>
+    //                         <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
+    //                             onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
+    //                             {o.Name}
+    //                             {showFields == 'append' && o.Fields.length > 0 ?
+    //                                 '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
+    //                         </div>
+    //                         {showFields == 'independent' ?
+    //                             o.Fields.map((f, i) =>
+    //                                 <div key={f.key} className='fields-bar'>
+    //                                     <span className="label label-default">{f.value}</span>
+    //                                 </div>
+    //                             )
+    //                             : null
+    //                         }
+    //                         <div className="price-bar">
+    //                             <span className="pull-left">
+    //                                 ￥{o.Price.toFixed(2)}
+    //                             </span>
+    //                             <ProductCount key={o.Id} product={o} count={productCounts[o.Id]}
+    //                                 createService={(type) => this.elementPage.createService(type)} />
+    //                         </div>
+
+    //                     </div>
+    //                     <div className="clearfix"></div>
+    //                     <hr />
+    //                 </div>
+    //             )}
+    //         </div>
+    //     );
+    // }
+
+    // async renderDoubleColumn(h, products: Product[], data: object): Promise<JSX.Element> {
+    //     var { productCounts, productNameLines, showFields } = this.state;
+    //     return (
+    //         <div className="product-list-control">
+    //             {products.filter(o => o != null).map((o, i) =>
+    //                 <div key={o.Id} ref={(e: HTMLElement) => {
+    //                     if (!e) return;
+
+    //                     let tmp = this.createProductTemplate(o);
+    //                     let html = template.render(tmp, data);
+    //                     e.innerHTML = html;
+    //                     var productCoutElement = e.querySelector('.productCout');
+    //                     ReactDOM.render(<ProductCount {...{
+    //                         product: o, count: productCounts[o.Id],
+    //                         createService: (type) => {
+    //                             return this.elementPage.createService(type);
+    //                         }
+    //                     }} />, productCoutElement);
+    //                 }}>
+    //                 </div>
+    //             )}
+    //         </div>
+    //     );
+
+
+    // }
+
+    // async renderDoubleColumnProduct(o: Product, data: object): Promise<JSX.Element> {
+    //     var { productCounts, productNameLines, showFields } = this.state;
+    //     return (
+    //         <div className="product-list-control">
+    //             <div key={o.Id} ref={(e: HTMLElement) => {
+    //                 if (!e) return;
+
+    //                 let tmp = this.createProductTemplate(o);
+    //                 let html = template.render(tmp, data);
+    //                 e.innerHTML = html;
+    //                 var productCoutElement = e.querySelector('.productCout');
+    //                 ReactDOM.render(<ProductCount {...{
+    //                     product: o, count: productCounts[o.Id],
+    //                     createService: (type) => {
+    //                         return this.elementPage.createService(type);
+    //                     }
+    //                 }} />, productCoutElement);
+    //             }}>
+    //             </div>
+    //         </div>
+    //     );
+    // }
+
+    productTemplate(): string {
+        let { listType } = this.state;
+        let productTemplate: string;
+        switch (listType) {
+            case 'doubleColumn':
+            default:
+                productTemplate = this.doubleColumnTemplate();
+                break;
+            case 'singleColumn':
+                productTemplate = this.singleColumnTemplate();
+                break;
+        }
+        return productTemplate;
+    }
+
+    private doubleColumnTemplate(): string {
+        let imageTemplate = this.createProductImageTemplate();
+        let infoTemplate = this.createProductInfoTemplate();
+        let tmp = `
+        <div class="product double col-xs-6">
+            ${imageTemplate}
+            ${infoTemplate}
+        </div>`;
+
+        return tmp;
+    }
+
+    private singleColumnTemplate(): string {
+        let { imageSize } = this.state;
         let leftClassName: string, rightClassName: string;// = displayTitle ? 'col-xs-4' : 'col-xs-3';
         // let rightClassName = displayTitle ? 'col-xs-8' : 'col-xs-9';
         switch (imageSize) {
@@ -194,116 +336,91 @@ export default class ProductListControl extends Control<Props, State> {
                 break;
         }
 
-        return (
-            <div className="product-list-control">
-                {products.filter(o => o != null).map(o =>
-                    <div key={o.Id} className="product single">
-                        <div className={leftClassName} onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-                            <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
-                                ref={(e: HTMLImageElement) => {
-                                    if (!e) return;
-                                    ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
-                                }} />
-                        </div>
-                        <div className={`content ${rightClassName}`}>
-                            <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
-                                onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-                                {o.Name}
-                                {showFields == 'append' && o.Fields.length > 0 ?
-                                    '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
-                            </div>
-                            {showFields == 'independent' ?
-                                o.Fields.map((f, i) =>
-                                    <div key={f.key} className='fields-bar'>
-                                        <span className="label label-default">{f.value}</span>
-                                    </div>
-                                )
-                                : null
-                            }
-                            <div className="price-bar">
-                                <span className="pull-left">
-                                    ￥{o.Price.toFixed(2)}
-                                </span>
-                                <ProductCount key={o.Id} product={o} count={productCounts[o.Id]} />
-                            </div>
-
-                        </div>
-                        <div className="clearfix"></div>
-                        <hr />
-                    </div>
-                )}
+        let imageTemplate = this.createProductImageTemplate();
+        let infoTemplate = this.createProductInfoTemplate();
+        // let leftHTMLE = template.render(imageTemplate,ar)
+        let template = `
+        <div class="product single">
+            <div class=${leftClassName}>
+                ${imageTemplate}
             </div>
-        );
-    }
-
-    async renderDoubleColumn(h, products: Product[]): Promise<JSX.Element> {
-        var { productCounts, productNameLines, showFields } = this.state;
-        return (
-            <div className="product-list-control">
-                {products.filter(o => o != null).map((o, i) =>
-                    <div key={o.Id} className="product double col-xs-6">
-                        <div onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-                            <ProductImage key={i} product={o} />
-
-                            <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
-                                onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-                                {o.Name}
-                                {showFields == 'append' && o.Fields.length > 0 ?
-                                    '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
-                            </div>
-                            {showFields == 'independent' ?
-                                o.Fields.map(f =>
-                                    <div key={f.key} className="fields-bar">
-                                        <span className="label label-default">{f.value}</span>
-                                    </div>
-                                )
-                                : null
-                            }
-                            <div className="price-bar" onClick={(e) => e.stopPropagation()}>
-                                <span className="pull-left">
-                                    ￥{o.Price.toFixed(2)}
-                                </span>
-                                <ProductCount key={o.Id} product={o} count={productCounts[o.Id]} />
-                            </div>
-                        </div>
-                        <div className="clearfix"></div>
-                    </div>
-                )}
+            <div class='${rightClassName}'>
+                ${infoTemplate}
             </div>
-        );
+            <div class="clearfix"/>
+        </div>
+        <hr/>
+        `;
 
-
+        return template;
     }
 
 
     async products(): Promise<Product[]> {
         var products: Product[];
         if (this.state.productSourceType == 'category')
-            products = await shopping.productsByCategory(this.state.prodcutsCount, this.state.categoryId);
+            products = await this.shopping.productsByCategory(this.state.prodcutsCount, this.state.categoryId);
         else
-            products = await shopping.productsByIds(this.state.productIds);
+            products = await this.shopping.productsByIds(this.state.productIds);
 
         products.forEach(o => o.ImagePath = o.ImagePaths[0]);
         return products;
     }
 
+    productDisplayName(product: Product) {
+        let { showFields } = this.state;
+        if (!showFields || product.Fields.length == 0)
+            return product.Name;
+
+        let fields = product.Fields.map(o => o.value).join(',');
+        return `${product.Name}(${fields})`;
+    }
+
+    createProductImageTemplate() {
+        let tmp = `
+            <img class="product-image" src="<%= image %>"/>
+            <% if(offShelve || stock == 0) { %>
+            <div class="product-image-mask"></div>
+            <div class="product-image-text"><%= offShelve ? '已下架' : '已售罄' %></div>
+            <% } %>
+        `;
+        return tmp;
+    }
+
+    createProductInfoTemplate() {
+        var { productCounts, productNameLines, showFields } = this.state;
+        let titleClassName = productNameLines == 'singleLine' ? 'name single-line' : 'name double-line';
+        let tmp = `
+            <div class='${titleClassName}'><%= name %></div>
+            <div class="price-bar">
+                <span class="pull-left"><%=price%></span>
+                <div class="productCout">
+                </div>
+            </div>
+        `;
+        return tmp;
+    }
 
 
 }
 
-class ProductCount extends React.Component<
-    { product: Product, count: number } & React.Props<Product>,
-    {}>
+type ProductCountProps = {
+    product: Product, count: number,
+    createService<T extends chitu.Service>(type?: chitu.ServiceConstructor<T>): T
+} & React.Props<Product>
+class ProductCount extends React.Component<ProductCountProps, {}>
 {
+    shoppingCart: ShoppingCartService;
     constructor(props) {
         super(props);
-
+        chitu.Page.prototype.createService
         this.state = { count: this.props.count || 0 };
+        this.shoppingCart = this.props.createService(ShoppingCartService);
     }
 
     async increaseCount(product: Product) {
         let count = (this.props.count || 0) + 1;
-        await shoppingCart.setItemCount(product, count);
+        await this.shoppingCart.setItemCount(product, count);
     }
     async decreaseCount(product: Product) {
         let count = (this.props.count || 0);
@@ -311,7 +428,7 @@ class ProductCount extends React.Component<
             return;
 
         count = count - 1;
-        await shoppingCart.setItemCount(product, count);
+        await this.shoppingCart.setItemCount(product, count);
     }
     render() {
         let product = this.props.product;
@@ -327,7 +444,7 @@ class ProductCount extends React.Component<
                             if (!value)
                                 return;
 
-                            shoppingCart.setItemCount(product, value);
+                            this.shoppingCart.setItemCount(product, value);
                         }} />,
                     <i key={1} className="icon-minus-sign pull-right" onClick={() => this.decreaseCount(product)} />
                 ] : null}
@@ -335,3 +452,31 @@ class ProductCount extends React.Component<
         );
     }
 }
+
+    // <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
+    //                             onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
+    //                             {o.Name}
+    //                             {showFields == 'append' && o.Fields.length > 0 ?
+    //                                 '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
+    //                         </div>
+    //                         {showFields == 'independent' ?
+    //                             o.Fields.map(f =>
+    //                                 <div key={f.key} className="fields-bar">
+    //                                     <span className="label label-default">{f.value}</span>
+    //                                 </div>
+    //                             )
+    //                             : null
+    //                         }
+    //                         <div className="price-bar" onClick={(e) => e.stopPropagation()}>
+    //                             <span className="pull-left">
+    //                                 ￥{o.Price.toFixed(2)}
+    //                             </span>
+    //                             <ProductCount key={o.Id} product={o} count={productCounts[o.Id]} />
+    //                         </div>
+
+    //     <div onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
+    //     <ProductImage key={i} product={o} />
+
+
+    // </div>
+    // <div className="clearfix"></div>

@@ -8,7 +8,7 @@ import { PropertiesComponent } from 'modules/shopping/product/properties';
 import { FormValidator, rules } from 'dilu';
 
 import tips from 'tips';
-import ImageUpload from 'admin/controls/imageUpload';
+import ImageUpload from 'controls/imageUpload';
 
 // const station = new StationService();
 const imageThumbSize = 112;
