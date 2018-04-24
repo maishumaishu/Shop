@@ -198,10 +198,12 @@ export default class ProductListControl extends Control<Props, State> {
         let imageTemplate = this.createProductImageTemplate();
         let infoTemplate = this.createProductInfoTemplate();
         let tmp = `
-        <div class="product double col-xs-6">
-            <div class="btn-link" product-id="<%=id%>">${imageTemplate}</div>
-            ${infoTemplate}
-        </div>`;
+<div class="product double col-xs-6">
+    <div class="btn-link" product-id="{{id}}">
+    ${imageTemplate}
+    </div>
+    ${infoTemplate}
+</div>`;
 
         return tmp;
     }
@@ -231,7 +233,7 @@ export default class ProductListControl extends Control<Props, State> {
         // let leftHTMLE = template.render(imageTemplate,ar)
         let template = `
         <div class="product single">
-            <div class="${leftClassName} btn-link" product-id="<%=id%>">
+            <div class="${leftClassName} btn-link" product-id="{{id}}">
                 ${imageTemplate}
             </div>
             <div class="${rightClassName}">
@@ -239,8 +241,7 @@ export default class ProductListControl extends Control<Props, State> {
             </div>
             <div class="clearfix"></div>
         </div>
-        <hr></hr>
-        `;
+        <hr></hr>`;
 
         return template;
     }
@@ -269,12 +270,11 @@ export default class ProductListControl extends Control<Props, State> {
 
     createProductImageTemplate() {
         let tmp = `
-            <img class="product-image" src="<%= image %>"/>
-            <% if(offShelve || stock == 0) { %>
-            <div class="product-image-mask"></div>
-            <div class="product-image-text"><%= offShelve ? '已下架' : '已售罄' %></div>
-            <% } %>
-        `;
+        <img class="product-image" src="{{image}}"/>
+        {{if(offShelve || stock == 0)}}
+        <div class="product-image-mask"></div>
+        <div class="product-image-text">{{offShelve ? '已下架' : '已售罄'}}</div>
+        {{/if}}`;
         return tmp;
     }
 
@@ -282,13 +282,12 @@ export default class ProductListControl extends Control<Props, State> {
         var { productCounts, productNameLines, showFields } = this.state;
         let titleClassName = productNameLines == 'singleLine' ? 'name single-line' : 'name double-line';
         let tmp = `
-            <div class='${titleClassName} btn-link' product-id="<%=id%>"><%= name %></div>
-            <div class="price-bar">
-                <span class="pull-left"><%=price%></span>
-                <div class="product-count">
-                </div>
+        <div class='${titleClassName} btn-link' product-id="{{id}}">{{name}}</div>
+        <div class="price-bar">
+            <span class="pull-left">{{price}}</span>
+            <div class="product-count">
             </div>
-        `;
+        </div>`;
         return tmp;
     }
 

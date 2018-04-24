@@ -4,6 +4,8 @@ import { ShoppingService } from 'adminServices/shopping';
 import { StationService } from 'adminServices/station';
 import { imageUrl } from 'services/service';
 import { ProductSelectDialog } from 'admin/controls/productSelectDialog';
+import 'ace_editor/ace';
+
 export interface EditorState extends ControlState {
 
 }
@@ -13,8 +15,9 @@ const station = new StationService();
 
 export default class ProductListEditor extends Editor<EditorProps, EditorState> {
 
+    editor: any;
     productThumbers: HTMLElement;
-    templateInput: HTMLTextAreaElement;
+    // templateInput: HTMLTextAreaElement;
     private productsDialog: ProductSelectDialog;
     private productAdd: HTMLElement;
 
@@ -118,24 +121,25 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
         }
     }
 
-    setTemplateInput(e: HTMLTextAreaElement) {
-        if (!e) return;
+    // setTemplateInput(e: HTMLTextAreaElement) {
+    //     if (!e) return;
 
-        let ctrl = this.props.control as ProductListControl;
-        let tmp = ctrl.state.productTemplate || ctrl.productTemplate();
-        this.templateInput = e;
-        e.value = tmp;
-    }
+    //     let ctrl = this.props.control as ProductListControl;
+    //     let tmp = ctrl.state.productTemplate || ctrl.productTemplate();
+    //     this.templateInput = e;
+    //     e.value = tmp;
+    // }
 
     updateControlTemplate() {
         let ctrl = this.props.control as ProductListControl;
-        this.state.productTemplate = ctrl.state.productTemplate = this.templateInput.value;
+        this.state.productTemplate = ctrl.state.productTemplate = this.editor.getValue();
         ctrl.setState(ctrl.state);
     }
 
     recoverControlTemplate() {
         let ctrl = this.props.control as ProductListControl;
         this.state.productTemplate = ctrl.state.productTemplate = '';
+        this.editor.setValue(ctrl.productTemplate());
         ctrl.setState(ctrl.state);
     }
 
@@ -152,6 +156,17 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
         this.state.productIds = productIds;
         this.setState(this.state);
         return Promise.resolve();
+    }
+
+    loadTextEditor(e: HTMLElement) {
+        if (!e) return;
+
+        let ace = window['ace'];
+        this.editor = ace.edit(e);
+        // this.editor.setTheme("ace/theme/textmate");
+        let ctrl = this.props.control as ProductListControl;
+        this.editor.session.setMode("ace/mode/html");
+        this.editor.setValue(this.state.productTemplate || ctrl.productTemplate());
     }
 
     async renderProducts(container: HTMLElement, productIds: string[]) {
@@ -191,7 +206,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                     this.setState(this.state);
                     ctrl.setState(ctrl.state);
                 },
-                cancel: '.product-add'
+                items: 'li[product-id]'
             });
         });
     }
@@ -331,28 +346,31 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                 </div>
 
                 <div className="form-group">
-                    <label className="pull-left">
+                    <label>
                         商品模板
-                        </label>
-                    <div>
-                        <textarea className="form-control" style={{ width: 'calc(100% - 100px)', height: 200 }}
+                    </label>
+                    <div className="pull-right">
+
+                    </div>
+                </div>
+                <pre style={{ height: 260 }}
+                    ref={(e: HTMLElement) => {
+                        setTimeout(() => {
+                            this.loadTextEditor(e)
+                        })
+                    }}>
+                    {/* <textarea className="form-control" style={{ width: 'calc(100% - 100px)', height: 200 }}
                             ref={(e: HTMLTextAreaElement) => {
                                 if (!e) return;
                                 this.templateInput = e;
                                 this.templateInput.value = tmp;
-                            }} />
-                    </div>
-                </div>
+                            }} /> */}
+                </pre>
                 <div className="form-group">
-                    <label className="pull-left">
-
-                    </label>
-                    <div>
-                        <button className="btn btn-primary" type="button"
-                            onClick={() => this.updateControlTemplate()}>更新模板</button>
-                        <button className="btn btn-default" type="button"
-                            onClick={() => this.recoverControlTemplate()}>还原回默认模板</button>
-                    </div>
+                    <button className="btn btn-primary btn-sm" type="button"
+                        onClick={() => this.updateControlTemplate()}>应用当前模板</button>
+                    <button className="btn btn-default btn-sm" type="button"
+                        onClick={() => this.recoverControlTemplate()}>还原回默认模板</button>
                 </div>
             </form>
         );
