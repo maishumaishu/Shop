@@ -29,13 +29,13 @@ export class ShoppingService extends Service {
         })
         return result;
     }
-    productsByIds(productIds: string[]) {
+    async productsByIds(productIds: string[]) {
         var url = this.url('Product/GetProductsByIds');
-        return this.getByJson<Product[]>(url, { ids: productIds }).then(items => {
-            let dic: { [key: string]: Product } = {};
-            items.filter(o => o != null).forEach(o => dic[o.Id] = o);
-            return productIds.map(id => dic[id]);
-        });
+        let items = await this.getByJson<Product[]>(url, { ids: productIds });//.then(items => {
+        let dic: { [key: string]: Product } = {};
+        items.filter(o => o != null).forEach(o => dic[o.Id] = o);
+        let products = productIds.map(id => dic[id]);
+        return products;
     }
     deleteProduct(id: string) {
         var url = this.url('Product/DeleteProduct');

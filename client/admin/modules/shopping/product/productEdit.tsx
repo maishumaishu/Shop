@@ -25,6 +25,7 @@ export default function (page: chitu.Page) {
         brands: Array<Brand>, product: Product
     };
     class ProductEditPage extends React.Component<{ product: Product }, PageState>{
+        productThumbers: HTMLElement;
         introduceError: HTMLElement;
         priceError: HTMLElement;
         categoryError: HTMLElement;
@@ -63,6 +64,9 @@ export default function (page: chitu.Page) {
                 { name: "price", rules: [rules.required("价格不能为空")], errorElement: this.priceError },
                 { name: 'introduce', rules: [rules.required("商品详请不能为空")], errorElement: this.introduceError }
             )
+
+            debugger;
+            $(this.productThumbers).sortable();
         }
         async save(): Promise<any> {
             let isValid = await this.validator.check();
@@ -269,11 +273,13 @@ export default function (page: chitu.Page) {
                         </div>
                     </div>
                     <div className="row form-group">
-                        {(imagePaths).map((o, i) => <ImageThumber imagePath={o} key={o} station={station}
-                            removed={() => {
-                                this.state.product.ImagePaths = imagePaths.filter((item, index) => index != i);
-                                this.setState(this.state);
-                            }} />)}
+                        <div ref={(e: HTMLElement) => this.productThumbers = e || this.productThumbers}>
+                            {(imagePaths).map((o, i) => <ImageThumber imagePath={o} key={o} station={station}
+                                removed={() => {
+                                    this.state.product.ImagePaths = imagePaths.filter((item, index) => index != i);
+                                    this.setState(this.state);
+                                }} />)}
+                        </div>
                         <div style={{ float: 'left', marginLeft: 12, width: 112 }}>
                             <ImageUpload title="内容图片" saveImage={(data) => this.saveContentImage(data)} />
                         </div>

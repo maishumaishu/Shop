@@ -13,6 +13,7 @@ const station = new StationService();
 
 export default class ProductListEditor extends Editor<EditorProps, EditorState> {
 
+    productThumbers: HTMLElement;
     templateInput: HTMLTextAreaElement;
     private productsDialog: ProductSelectDialog;
     private productAdd: HTMLElement;
@@ -145,7 +146,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
             ui.alert({ title: "提示", message: '该商品已选择' });
             return Promise.reject({});
         }
-      
+
         productIds.push(product.Id);
 
         this.state.productIds = productIds;
@@ -158,9 +159,10 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
 
         var products = await shopping.productsByIds(productIds);
         var reactElement =
-            <ul className="selected-products">
+            <ul className="selected-products"
+                ref={(e: HTMLElement) => this.productThumbers = e || this.productThumbers}>
                 {products.map(o =>
-                    <li key={o.Id} className="product">
+                    <li key={o.Id} product-id={o.Id} title="拖动图标可以对商品进行排序">
                         <img src={imageUrl(o.ImagePath, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                         <div className="delete">
                             <button type="button" className="btn-link"
@@ -170,14 +172,28 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                         </div>
                     </li>
                 )}
-                <li className="product">
-                    <div className="product-add">
-                        <i className="icon-plus icon-4x" ref={(e: HTMLElement) => this.setProductAdd(e)} />
-                    </div>
+                <li className="product-add">
+                    <i className="icon-plus icon-4x" ref={(e: HTMLElement) => this.setProductAdd(e)} />
                 </li>
             </ul>;
 
-        ReactDOM.render(reactElement, container);
+        ReactDOM.render(reactElement, container, () => {
+            $(this.productThumbers).sortable({
+                update: () => {
+                    let productIds: string[] = [];
+                    this.productThumbers.querySelectorAll("[product-id]").forEach(o => {
+                        productIds.push(o.getAttribute('product-id'));
+                    });
+
+                    let ctrl = (this.props.control as ProductListControl);
+                    this.state.productIds = productIds;
+                    ctrl.state.productIds = productIds;
+                    this.setState(this.state);
+                    ctrl.setState(ctrl.state);
+                },
+                cancel: '.product-add'
+            });
+        });
     }
 
     render() {

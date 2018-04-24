@@ -77,16 +77,19 @@ export class ShoppingService extends Service {
 
         var url = this.url('Product/GetProductsByIds');
         var arr = await Promise.all([this.getByJson<Product[]>(url, { ids: productIds }), this.productStocks(productIds)]);
-        let items = arr[0];
+        let products = arr[0];
         let stcokRecords = arr[1];
 
-        items.forEach(item => {
+        products.forEach(item => {
             let stockRecord = stcokRecords.filter(o => o.ProductId == item.Id)[0];
             if (stockRecord)
                 item.Stock = stockRecord.Quantity;
         });
 
-        return items.filter(o => productIds.indexOf(o.Id) >= 0);
+        let dic: { [key: string]: Product } = {};
+        products.forEach(o => dic[o.Id] = o);
+        let result = productIds.map(o => dic[o]).filter(o => o != null);
+        return result;
     }
     /**
      * 
