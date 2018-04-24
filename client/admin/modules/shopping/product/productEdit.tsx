@@ -9,7 +9,7 @@ import { FormValidator, rules } from 'dilu';
 
 import tips from 'tips';
 import ImageUpload from 'controls/imageUpload';
-
+import 'jquery-ui';
 // const station = new StationService();
 const imageThumbSize = 112;
 
@@ -65,8 +65,18 @@ export default function (page: chitu.Page) {
                 { name: 'introduce', rules: [rules.required("商品详请不能为空")], errorElement: this.introduceError }
             )
 
-            debugger;
-            $(this.productThumbers).sortable();
+            setTimeout(() => {
+                $(this.productThumbers).sortable({
+                    items: 'li[product-id]',
+                    update: () => {
+                        let productIds: string[] = [];
+                        this.productThumbers.querySelectorAll('[product-id]')
+                            .forEach(o => productIds.push(o.getAttribute('product-id')));
+                        this.state.product.ImagePaths = productIds;
+                        this.setState(this.state);
+                    }
+                });
+            }, 100)
         }
         async save(): Promise<any> {
             let isValid = await this.validator.check();
@@ -273,25 +283,34 @@ export default function (page: chitu.Page) {
                         </div>
                     </div>
                     <div className="row form-group">
-                        <div ref={(e: HTMLElement) => this.productThumbers = e || this.productThumbers}>
-                            {(imagePaths).map((o, i) => <ImageThumber imagePath={o} key={o} station={station}
-                                removed={() => {
-                                    this.state.product.ImagePaths = imagePaths.filter((item, index) => index != i);
-                                    this.setState(this.state);
-                                }} />)}
+                        <div className="col-sm-12">
+                            <ul className="images" ref={(e: HTMLElement) => this.productThumbers = e || this.productThumbers}>
+                                {imagePaths.map(o =>
+                                    <li key={o} product-id={o}>
+                                        <ImageThumber imagePath={o} station={station}
+                                            removed={() => {
+                                                this.state.product.ImagePaths = imagePaths.filter(item => item != o);
+                                                this.setState(this.state);
+                                            }} />
+                                    </li>
+                                )}
+                                <li>
+                                    <ImageUpload title="内容图片" saveImage={(data) => this.saveContentImage(data)} />
+                                </li>
+
+                                {imagePath ?
+                                    <li>
+                                        <ImageThumber imagePath={imagePath} station={station}
+                                            removed={() => {
+                                                this.state.product.ImagePath = '', this.setState(this.state)
+                                            }} />
+                                    </li> :
+                                    <li>
+                                        <ImageUpload title={'封面图片'}
+                                            saveImage={(data) => this.saveCoverImage(data)} />
+                                    </li>}
+                            </ul>
                         </div>
-                        <div style={{ float: 'left', marginLeft: 12, width: 112 }}>
-                            <ImageUpload title="内容图片" saveImage={(data) => this.saveContentImage(data)} />
-                        </div>
-                        {imagePath ?
-                            <ImageThumber imagePath={imagePath} station={station}
-                                removed={() => {
-                                    this.state.product.ImagePath = '', this.setState(this.state)
-                                }} /> :
-                            <div style={{ float: 'left', marginLeft: 12, width: 112 }}>
-                                <ImageUpload title={'封面图片'}
-                                    saveImage={(data) => this.saveCoverImage(data)} />
-                            </div>}
                     </div>
                     <hr />
 
@@ -440,7 +459,7 @@ class ImageThumber extends React.Component<ImageThumberProps, {}>{
     setDeleteButton(e: HTMLButtonElement, imagePath: string) {
         if (!e) return;
         let arr = imagePath.split('_');
-        console.assert(arr.length == 3);
+        // console.assert(arr.length == 3);
         let { station } = this.props;
         e.onclick = ui.buttonOnClick(() => station.removeImage(arr[0]).then(o => this.props.removed(this)), {
             confirm: '确定删除该图片吗？'
@@ -449,9 +468,9 @@ class ImageThumber extends React.Component<ImageThumberProps, {}>{
     render() {
         let imagePath = this.props.imagePath;
         return (
-            <div className="text-center" style={{ float: 'left', border: 'solid 1px #ccc', marginLeft: 12, width: imageThumbSize, height: imageThumbSize }}>
+            <div className="text-center" style={{ border: 'solid 1px #ccc' }}>
                 <img src={imageUrl(imagePath, 100)} style={{ width: '100%', height: '100%' }} />
-                <div style={{ position: 'relative', bottom: 24, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
+                <div style={{ position: 'relative', marginTop: -24, backgroundColor: 'rgba(0, 0, 0, 0.55)', color: 'white' }}>
                     <button href="javascript:" style={{ color: 'white' }} className="btn-link"
                         ref={(e: HTMLButtonElement) => this.setDeleteButton(e, imagePath)}>
                         删除
