@@ -32,36 +32,37 @@ export class ShoppingService extends Service {
     productsByIds(productIds: string[]) {
         var url = this.url('Product/GetProductsByIds');
         return this.getByJson<Product[]>(url, { ids: productIds }).then(items => {
-            // items.forEach(o => o.ImagePath = imageUrl(o.ImagePath, 100));
-            return productIds.map(id => items.filter(o => o.Id == id)[0]).filter(o => o != null);
+            let dic: { [key: string]: Product } = {};
+            items.filter(o => o != null).forEach(o => dic[o.Id] = o);
+            return productIds.map(id => dic[id]);
         });
     }
     deleteProduct(id: string) {
         var url = this.url('Product/DeleteProduct');
         return this.deleteByJson(url, { id });
     }
-    queryProducts(pageIndex: number, searchText?: string): Promise<wuzhui.DataSourceSelectResult<Product>> {
+    // queryProducts(pageIndex: number, searchText?: string): Promise<wuzhui.DataSourceSelectResult<Product>> {
 
-        var url = this.url('Product/GetProducts');
+    //     var url = this.url('Product/GetProducts');
 
-        var maximumRows = 10;
-        var start = pageIndex * maximumRows;
-        var args = { StartRowIndex: start, MaximumRows: maximumRows };
-        if (searchText)
-            args['searchText'] = encodeURI(searchText);
+    //     var maximumRows = 10;
+    //     var start = pageIndex * maximumRows;
+    //     var args = { StartRowIndex: start, MaximumRows: maximumRows };
+    //     if (searchText)
+    //         args['searchText'] = encodeURI(searchText);
 
-        return this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args).then((result) => {
-            for (var i = 0; i < result.dataItems.length; i++) {
-                result.dataItems[i].Stock = null;
-                result.dataItems[i].BuyLimitedNumber = null;
-                // result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);
-            }
+    //     return this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args).then((result) => {
+    //         for (var i = 0; i < result.dataItems.length; i++) {
+    //             result.dataItems[i].Stock = null;
+    //             result.dataItems[i].BuyLimitedNumber = null;
+    //             // result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);
+    //         }
 
 
 
-            return result;
-        });
-    }
+    //         return result;
+    //     });
+    // }
     productChildren(parentId: string) {
         var url = this.url('Product/GetProducts');
         var args = { filter: `ParentId == Guid"${parentId}"` } as wuzhui.DataSourceSelectArguments;

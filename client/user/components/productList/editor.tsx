@@ -145,6 +145,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
             ui.alert({ title: "提示", message: '该商品已选择' });
             return Promise.reject({});
         }
+      
         productIds.push(product.Id);
 
         this.state.productIds = productIds;
@@ -162,10 +163,10 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                     <li key={o.Id} className="product">
                         <img src={imageUrl(o.ImagePath, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                         <div className="delete">
-                            <button className="btn-link"
+                            <button type="button" className="btn-link"
                                 ref={(e: HTMLButtonElement) => this.setProductDelete(e, o.Id)}>
                                 删除
-                       </button>
+                            </button>
                         </div>
                     </li>
                 )}
@@ -304,7 +305,8 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
 
                 <div className="form-group" style={{ display: productSourceType == 'custom' ? 'block' : 'none' }}>
                     <label className="pull-left">选取商品</label>
-                    <div style={{ width: 'calc(100% - 100px)' }} ref={(e: HTMLElement) => this.renderProducts(e, productIds)}></div>
+                    <div style={{ width: 'calc(100% - 100px)', marginLeft: 100 }}
+                        ref={(e: HTMLElement) => this.renderProducts(e, productIds)}></div>
                 </div>
 
                 <div className="form-group">
