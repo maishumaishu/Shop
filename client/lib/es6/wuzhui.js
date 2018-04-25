@@ -1,12 +1,3 @@
-
-/*!
- * WUZHUI v1.1.0
- * https://github.com/ansiboy/WuZhui
- *
- * Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
- * Licensed under the MIT License.
- *
- */
 var wuzhui;
 (function (wuzhui) {
     const CONTROL_DATA_NAME = 'Control';
@@ -614,13 +605,13 @@ var wuzhui;
             this.dataSource = params.dataSource;
             this.pagerSettings = pagerSettings;
             this.element = params.element;
-            // this.buttonWrapper = params.pagerSettings.buttonWrapper;
             this.numberButtons = new Array();
-            this.createButton = this.createPagingButton; //params.createButton || 
-            this.createLabel = this.createTotalLabel; //params.createTotal || 
+            this.createButton = this.createPagingButton;
+            this.createLabel = this.createTotalLabel;
             let buttonContainer = params.pagerSettings.buttonContainerWraper ?
                 document.createElement(params.pagerSettings.buttonContainerWraper) :
                 document.createElement('div');
+            buttonContainer.className = "buttons";
             this.element.appendChild(buttonContainer);
             this.createPreviousButtons(buttonContainer);
             this.createNumberButtons(buttonContainer);
