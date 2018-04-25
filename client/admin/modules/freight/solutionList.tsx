@@ -96,7 +96,7 @@ export default function (page: chitu.Page) {
                                     onClick={() => {
                                         dataItem.Name = name;
                                         this.dataSource.update(dataItem).then(() => {
-                                            $(this.dialogElement).modal('hide');
+                                            ui.hideDialog(this.dialogElement);
                                         });
                                     }}>确认</button>
                             </div>

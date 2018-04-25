@@ -100,12 +100,12 @@ export default function (page: chitu.Page) {
             </div>
             , dialogElement);
 
-        $(dialogElement).modal();
+        ui.showDialog(dialogElement);
     }
 
     function save(dataItem) {
         dataSource.insert(dataItem).then(() => {
-            $(dialogElement).modal('hide');
+            ui.hideDialog(dialogElement);
         })
     }
 

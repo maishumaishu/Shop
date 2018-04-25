@@ -141,7 +141,8 @@ export default function (page: chitu.Page) {
             (this.dialogElement['Remark'] as HTMLInputElement).value = dataItem.Remark;
             (this.dialogElement['ImagePath'] as HTMLInputElement).value = dataItem.ImagePath;
             (this.dialogElement['Hidden'] as HTMLInputElement).checked = dataItem.Hidden;
-            $(this.dialogElement).modal();
+            // $(this.dialogElement).modal();
+            ui.showDialog(this.dialogElement);
         }
         componentDidMount() {
             this.createGridView(this.tableElement);
@@ -244,7 +245,6 @@ export default function (page: chitu.Page) {
         }
     }
 
-    page.element.className = "admin-pc";
     ReactDOM.render(<Page />, page.element);
 }
 
