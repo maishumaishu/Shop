@@ -20,7 +20,7 @@ export interface ControlConstructor {
     new(props): Control<any, any>
 }
 export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
-    private _element: HTMLElement;
+    // private _element: HTMLElement;
     private _page: MobilePage;
     private _elementPage: chitu.Page;
     private _state: S;
@@ -45,13 +45,13 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         return this._elementPage;
     }
 
-    get element(): HTMLElement {
-        return this._element;
-    }
-    set element(value: HTMLElement) {
-        console.assert(value != null, 'value can not null.');
-        this._element = value;
-    }
+    // get element(): HTMLElement {
+    //     return this._element;
+    // }
+    // set element(value: HTMLElement) {
+    //     console.assert(value != null, 'value can not null.');
+    //     this._element = value;
+    // }
 
     get state(): S {
         return this._state;
@@ -102,33 +102,33 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         return this._render(React.createElement);
     }
 
-    static loadEditor(controlName: string, control: Control<any, any>, editorElement: HTMLElement) {
-        let editorPathName = `pageComponent/${controlName}/editor`; //Editor.path(controlName);
-        requirejs([editorPathName], (exports) => {
-            let editorType = exports.default;
-            console.assert(editorType != null, 'editor type is null');
-            let editorReactElement = React.createElement(editorType, { control });
-            ReactDOM.render(editorReactElement, editorElement);
-        })
-    }
+    // static loadEditor(controlName: string, control: Control<any, any>, editorElement: HTMLElement) {
+    //     let editorPathName = `pageComponent/${controlName}/editor`; 
+    //     requirejs([editorPathName], (exports) => {
+    //         let editorType = exports.default;
+    //         console.assert(editorType != null, 'editor type is null');
+    //         let editorReactElement = React.createElement(editorType, { control });
+    //         ReactDOM.render(editorReactElement, editorElement);
+    //     })
+    // }
 
-    private get isDesignMode() {
-        let screenElement = this.findScreenElement(this.element);
-        return screenElement != null;
-    }
+    // private get isDesignMode() {
+    //     let screenElement = this.findScreenElement(this.element);
+    //     return screenElement != null;
+    // }
 
-    private findScreenElement(element: HTMLElement): HTMLElement {
-        let screenElement: HTMLElement;
-        let p = element;
-        while (p != null) {
-            if (p.className.indexOf('screen') >= 0) {
-                screenElement = p;
-                break;
-            }
-            p = p.parentElement;
-        }
-        return screenElement;
-    }
+    // private findScreenElement(element: HTMLElement): HTMLElement {
+    //     let screenElement: HTMLElement;
+    //     let p = element;
+    //     while (p != null) {
+    //         if (p.className.indexOf('screen') >= 0) {
+    //             screenElement = p;
+    //             break;
+    //         }
+    //         p = p.parentElement;
+    //     }
+    //     return screenElement;
+    // }
 
     protected loadControlCSS() {
         var typeName = this.constructor.name;
