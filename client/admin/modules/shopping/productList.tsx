@@ -298,7 +298,7 @@ class ProductList extends React.Component<{ shopping: ShoppingService }, PageSta
         let productStock = this.state.productStock;
         let tab = this.state.tab;
         return (
-            <div className="admin-pc">
+            <div>
                 <div name="tabs" className="tabbable">
                     <ul className="nav nav-tabs">
                         <li className={tab == 'all' ? "active" : ''}

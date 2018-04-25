@@ -7,7 +7,6 @@ import * as ReactDOM from 'react-dom';
 
 export default function (page: chitu.Page) {
     let memberService = page.createService(UserService);
-    page.element.className = 'admin-pc';
     let account = page
     class MemberListPage extends React.Component<{}, {}>{
         private amountInput: HTMLInputElement;

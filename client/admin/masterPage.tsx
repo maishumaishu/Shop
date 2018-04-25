@@ -156,7 +156,7 @@ export class MasterPage extends React.Component<Props, State> {
 
         return (
             <div className={nodeClassName}>
-                <div className="first admin-pc">
+                <div className="first">
                     <ul className="list-group" style={{ margin: 0 }}>
                         {firstLevelNodes.map((o, i) =>
                             <li key={i} className={o == firstLevelNode ? "list-group-item active" : "list-group-item"}
@@ -168,7 +168,7 @@ export class MasterPage extends React.Component<Props, State> {
                         )}
                     </ul>
                 </div>
-                <div className="second admin-pc">
+                <div className="second">
                     <ul className="list-group" style={{ margin: 0 }}>
                         {secondLevelNodes.map((o, i) =>
                             <li key={i} className={o == secondLevelNode ? "list-group-item active" : "list-group-item"}

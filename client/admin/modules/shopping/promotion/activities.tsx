@@ -13,7 +13,6 @@ export default function (page: chitu.Page) {
 
     let activity = page.createService(ActivityService);
 
-    page.element.className = 'admin-pc';
     class ActivitiesPage extends React.Component<{}, {}>{
         private dataSource: wuzhui.DataSource<any>;
         private itemEditor: GridViewItemPopupEditor;

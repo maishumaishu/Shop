@@ -1,15 +1,12 @@
 import { default as site } from 'site';
 import app from 'application';
 import { StationService } from 'adminServices/station';
-// import { Button } from 'common/controls';
-// import { RouteValue } from 'modules/station/page';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import siteMap from 'siteMap';
 
 export default function (page: chitu.Page) {
-    requirejs([`css!${page.name}.css`]);
-    page.element.className = 'admin-pc';
+    app.loadCSS(page.name);
     ReactDOM.render(<Page />, page.element);
 }
 
@@ -86,68 +83,65 @@ class Page extends React.Component<{}, { templates: TemplatePageData[] }>{
     render() {
         console.assert(this.state != null);
         let templates = this.state.templates;
-        return (
-            <div>
-                <ul style={{ margin: 0, listStyle: 'none' }}>
-                    <div className="pull-right">
-                        <div className="dropdown" style={{ marginLeft: 4, }}>
-                            <button className="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
-                                访问店铺
-                                </button>
-                            <div className="dropdown-menu dropdown-menu-right" style={{ padding: 20 }}>
-                                <div style={{ width: '100%', textAlign: 'center' }}>手机扫码访问</div>
-                                <img src="https://h5.youzan.com/v2/common/url/create?type=homepage&kdt_id=764664" style={{ width: 180, height: 180 }} />
-                                <div style={{ width: '100%' }}>
-                                    <div className="pull-left">复制页面链接</div>
-                                    <div className="pull-right">电脑访问</div>
-                                </div>
+        return [
+            <ul key={10} style={{ margin: 0, listStyle: 'none' }}>
+                <div className="pull-right">
+                    <div className="dropdown" style={{ marginLeft: 4, }}>
+                        <button className="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
+                            访问店铺
+                        </button>
+                        <div className="dropdown-menu dropdown-menu-right" style={{ padding: 20 }}>
+                            <div style={{ width: '100%', textAlign: 'center' }}>手机扫码访问</div>
+                            <img src="https://h5.youzan.com/v2/common/url/create?type=homepage&kdt_id=764664" style={{ width: 180, height: 180 }} />
+                            <div style={{ width: '100%' }}>
+                                <div className="pull-left">复制页面链接</div>
+                                <div className="pull-right">电脑访问</div>
                             </div>
                         </div>
                     </div>
-                    <li className="pull-right">
-                        <button onClick={(e) => this.showCreatePageDialog()} className="btn btn-sm btn-primary">新建页面</button>
-                    </li>
-                </ul>
-                <table ref={(e: HTMLTableElement) => {
-                    if (!e) return;
-                    this.pagesElement = e || this.pagesElement;
+                </div>
+                <li className="pull-right">
+                    <button onClick={(e) => this.showCreatePageDialog()} className="btn btn-sm btn-primary">新建页面</button>
+                </li>
+            </ul>,
+            <table key={20} ref={(e: HTMLTableElement) => {
+                if (!e) return;
+                this.pagesElement = e || this.pagesElement;
 
-                }}>
-                </table>
-                <div className="modal fade templates-dialog" ref={(e: HTMLElement) => this.templateDialogElement = e || this.templateDialogElement}>
-                    <div className="modal-dialog modal-lg">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal"
-                                    ref={(e: HTMLButtonElement) => {
-                                        if (!e) return;
-                                        e.onclick = () => ui.hideDialog(this.templateDialogElement);
-                                    }}>
-                                    <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
-                                </button>
-                                <h4 className="modal-title">请选择模板</h4>
-                            </div>
-                            <div className="modal-body row">
-                                {templates ?
-                                    templates.map(o =>
-                                        <div key={o._id} className="col-md-4 template-item"
-                                            onClick={() => this.selecteTemplate(o)}>
-                                            <img src={o.image} className="img-responsive" />
-                                            <div className="name">{o.name}</div>
-                                        </div>
-                                    ) :
-                                    <div>
-                                        数据正在加载中...
+            }} />,
+            <div key={30} className="modal fade templates-dialog" ref={(e: HTMLElement) => this.templateDialogElement = e || this.templateDialogElement}>
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal"
+                                ref={(e: HTMLButtonElement) => {
+                                    if (!e) return;
+                                    e.onclick = () => ui.hideDialog(this.templateDialogElement);
+                                }}>
+                                <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
+                            </button>
+                            <h4 className="modal-title">请选择模板</h4>
+                        </div>
+                        <div className="modal-body row">
+                            {templates ?
+                                templates.map(o =>
+                                    <div key={o._id} className="col-md-4 template-item"
+                                        onClick={() => this.selecteTemplate(o)}>
+                                        <img src={o.image} className="img-responsive" />
+                                        <div className="name">{o.name}</div>
                                     </div>
-                                }
-                                <div className="clear-fix">
-                                </div>
+                                ) :
+                                <div>
+                                    数据正在加载中...
+                            </div>
+                            }
+                            <div className="clear-fix">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        );
+        ];
     }
 }
 

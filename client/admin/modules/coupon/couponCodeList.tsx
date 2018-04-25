@@ -10,7 +10,6 @@ export default function (page: chitu.Page) {
 
     let shopping = page.createService(ShoppingService);
 
-    page.element.className = 'admin-pc';
     type Status = 'all' | 'used' | 'canUse' | 'expired';
     interface PageState {
         coupons: Array<Coupon>
