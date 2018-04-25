@@ -41,7 +41,7 @@ let siteMap = {
         station_store_menu: { action: `${dir}/station/storePageDesign`, cache: true },
 
         station_page: { action: `${dir}/station/pages/page`, cache: true },
-        station_pageList: { action: `${dir}/station/pages/pageList`, cache: true },
+        station_pageList: { action: `${dir}/station/pageList`, cache: true },
         station_preView: { action: `${dir}/station/preView`, cache: false } as chitu.SiteMapNode,
         user_myStores: { action: `${dir}/user/myStores`, cache: false } as chitu.SiteMapNode,
         weixin_setting: { action: `${dir}/weixin/setting`, cache: false },
@@ -72,11 +72,12 @@ export let menuData: MenuNode[] = [
             Object.assign(siteMap.nodes.station_store_style, { title: '店铺风格' }),
             Object.assign(siteMap.nodes.station_store_categories, { title: '商品类别' }),
             Object.assign(siteMap.nodes.station_pageList, {
+                title: '页面列表',
+                visible: true,
                 children: [
                     { title: '页面', action: 'station/page', visible: false },
                     { title: '页面', action: 'station/page1', visible: false }
                 ],
-                visible: false
             }),
         ]
     },

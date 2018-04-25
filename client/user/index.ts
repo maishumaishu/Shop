@@ -55,6 +55,7 @@ requirejs.config({
         dilu: '../scripts/dilu',
         fetch: '../scripts/fetch',
         hammer: '../scripts/hammer',
+        iscroll: '../scripts/iscroll-lite',
         react: '../scripts/react',
         'react-dom': '../scripts/react-dom',
         text: '../scripts/text',

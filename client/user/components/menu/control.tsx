@@ -10,7 +10,7 @@ export interface MenuNode {
     icon?: string,
     children?: MenuNode[]
 }
-export interface Props extends ControlProps<MenuControl> {
+interface Props extends ControlProps<MenuControl> {
     menuNodes?: MenuNode[];
     showIcon?: boolean;
 }
@@ -44,7 +44,7 @@ export default class MenuControl extends Control<Props, State>{
         let menuNodes = this.state.menuNodes || [];
         let showIcon = this.state.showIcon || false;
         return [
-            <div key="menuControl" className="menuControl" ref={(e: HTMLElement) => this.element = e || this.element}>
+            <div key="menuControl" className="menuControl">
                 {menuNodes.length <= 0 ?
                     <ul className="menu noicon"></ul> :
                     showIcon ? this.renderMenuWithIcon(h, menuNodes) : this.renderMenuWithoutIcon(h, menuNodes)

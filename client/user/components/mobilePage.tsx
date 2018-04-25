@@ -59,7 +59,7 @@ export class MobilePage extends React.Component<Props, State>{
         let reactElement = React.createElement(types.Control, props);
         let control: Control<any, any> = ReactDOM.render(reactElement, element);
         // control.mobilePage = this;
-
+        element.className = `${controlName}-control`;
         control.id = controlId;
         let result: ControlPair = { control, controlType: types.Control };
         return result;

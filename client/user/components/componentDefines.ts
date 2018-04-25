@@ -43,8 +43,14 @@ let componets: Array<ComponentDefine> = [
     {
         name: "html",
         displayName: 'HTML',
-        icon: " icon-text-width",
+        icon: "icon-text-width",
         introduce: "用于创建 HTML 元素"
+    },
+    {
+        name: "navigator",
+        displayName: '导航栏',
+        icon: "icon-sitemap",
+        introduce: "导航栏"
     }
 ];
 

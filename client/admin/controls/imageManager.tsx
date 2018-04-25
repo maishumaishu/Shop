@@ -74,7 +74,7 @@ export default class ImageManager extends React.Component<Props, State> {
         let ul = this.pagingBarElement.querySelector('ul');
         ul.className = "pagination";
 
-        dataSource.selectArguments.maximumRows = 15;
+        dataSource.selectArguments.maximumRows = 17;
         dataSource.select();
     }
 

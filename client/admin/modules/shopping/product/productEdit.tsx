@@ -10,8 +10,6 @@ import { FormValidator, rules } from 'dilu';
 import tips from 'tips';
 import ImageUpload from 'controls/imageUpload';
 import 'jquery-ui';
-// const station = new StationService();
-const imageThumbSize = 112;
 
 export default function (page: chitu.Page) {
 
@@ -286,7 +284,7 @@ export default function (page: chitu.Page) {
                         <div className="col-sm-12">
                             <ul className="images" ref={(e: HTMLElement) => this.productThumbers = e || this.productThumbers}>
                                 {imagePaths.map(o =>
-                                    <li key={o} product-id={o}>
+                                    <li key={o} product-id={o} title="拖动图片可以对图片进行排序">
                                         <ImageThumber imagePath={o} station={station}
                                             removed={() => {
                                                 this.state.product.ImagePaths = imagePaths.filter(item => item != o);

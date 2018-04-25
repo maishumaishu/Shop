@@ -62,6 +62,7 @@ requirejs.config({
         }
     },
     paths: {
+        ace_editor: '../scripts/ace-builds/src',
         'art-template': '../scripts/template-web',
         bootstrap: '../scripts/bootstrap',
         // chitu: '../scripts/chitu',
@@ -70,6 +71,7 @@ requirejs.config({
         dilu: '../scripts/dilu',
         formValidator: '../scripts/formValidator',
         hammer: '../scripts/hammer',
+        iscroll: '../scripts/iscroll-lite',
         jquery: '../scripts/jquery-2.1.3',
         react: 'https://cdn.bootcss.com/react/16.0.0/umd/react.development',//'../scripts/react',
         mobileControls: '../scripts/mobileControls',
@@ -77,6 +79,7 @@ requirejs.config({
         text: '../scripts/text',
 
         polyfill: '../scripts/polyfill',
+        polished: '../scripts/polished',
 
         ui: '../scripts/ui',
         um: '../scripts/umeditor/umeditor',

@@ -1,5 +1,5 @@
 import { Editor, EditorProps } from 'user/components/editor';
-import { Props as ControlProps, State as ControlState, default as Control, MenuNode } from 'user/components/menu/control';
+import { State as ControlState, default as Control, MenuNode } from 'user/components/menu/control';
 import { StationService } from 'userServices/stationService';
 import { FormValidator, rules } from 'dilu';
 

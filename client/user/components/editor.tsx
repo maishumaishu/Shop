@@ -1,8 +1,8 @@
 import { componentsDir, Control } from 'user/components/common'
 
-export interface MobiePageDesigner {
-    loadEditor();
-}
+// export interface MobiePageDesigner {
+//     loadEditor();
+// }
 
 export interface EditorProps {
     control: Control<any, any>,
@@ -50,9 +50,6 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
         return this.props.elementPage;
     }
 
-    componentDidMount() {
-    }
-
     componentDidUpdate() {
         let control = this.props.control;
         console.assert(control != null);
@@ -64,13 +61,6 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
         }
         control.setState(controlState);
     }
-
-    // setState(f: (prevState: S, props: P) => S, callback?: () => any): void;
-    // setState(state: S, callback?: () => any): void;
-    // setState(arg: any, callback?: () => any) {
-    //     this.changed.fire(this, this.props.control);
-    //     return super.setState(arg, callback);
-    // }
 
 
     static path(controlName: string) {

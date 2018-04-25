@@ -365,7 +365,11 @@ async function list(req: http.IncomingMessage, res: http.ServerResponse): Promis
     let conn = mysql.createConnection(settings.mysql_image_setting);
 
     let p1 = new Promise((resolve, reject) => {
-        let sql = `select id from image where ${args.filter} and application_id = '${application_id}' order by create_date_time desc`;
+        let sql = `select id from image 
+                   where ${args.filter} and application_id = '${application_id}'
+                   limit ${args.startRowIndex} ${args.startRowIndex + args.maximumRows} 
+                   order by create_date_time desc`;
+
         conn.query(sql, args, (err, rows, fields) => {
             if (err) {
                 reject(err);
@@ -389,7 +393,7 @@ async function list(req: http.IncomingMessage, res: http.ServerResponse): Promis
     })
 
     conn.end();
-    
+
     let r = await Promise.all([p1, p2]);
     let dataItems = r[0];
     let totalRowCount = r[1];

@@ -186,7 +186,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         }
 
         editorElement = document.createElement('div');
-        editorElement.className = controlName;
+        editorElement.className = `${controlName}-editor`;
         editorElement.id = editorId;
         this.editorsElement.appendChild(editorElement);
 
@@ -287,22 +287,15 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                     <VirtualMobile ref={(e) => {
                         if (!e) return;
                         this.virtualMobile = e;
-
-                        // let routeData = userApp.parseRouteString("");
-
                         setTimeout(() => {
-                            // debugger;
                             this.renederVirtualMobile(e.screenElement, pageData);
-
                         }, 100);
-
                     }} >
-
                         {children}
                     </VirtualMobile>
                 </div>
 
-                <div className="admin-pc" style={{ paddingLeft: 390 }} >
+                <div style={{ paddingLeft: 390 }} >
                     <ul style={{ margin: 0 }}>
                         {this.props.showMenuSwitch ? <li className="pull-left">
                             <div className="pull-left" style={{ paddingTop: 4, paddingRight: 10 }}>
