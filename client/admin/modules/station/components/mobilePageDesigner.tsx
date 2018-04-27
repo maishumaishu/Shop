@@ -16,6 +16,7 @@ import app from 'application';
 import siteMap from 'siteMap';
 import { siteMap as userSiteMap, app as userApp } from 'user/site';
 import { PageDatas } from 'userServices/stationService';
+import { FormValidator, rules } from 'dilu';
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData: PageData,
@@ -32,6 +33,8 @@ export interface State {
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
+    validator: FormValidator;
+    nameInput: HTMLInputElement;
     private hasChanged: boolean = false;
     private userApp: DesignTimeUserApplication;
     private virtualMobile: VirtualMobile;
@@ -44,7 +47,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private selectedControlId: string;
     private editorNameElement: HTMLElement;
     private editorName: string;
-    // private userStation: UserStation;
+    private form: HTMLElement;
 
     saved: chitu.Callback1<MobilePageDesigner, { pageData: PageData }>;
 
@@ -78,13 +81,13 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         this.saved = chitu.Callbacks<MobilePageDesigner, { pageData: PageData }>();
 
-        if (pageData._id == null) {
-            // pagesDatas.createDefaultPage = (pageData) => this.station.savePageData(pageData);
-            // let station = this.props.pageData
-            this.props.save(this.props.pageData).then(data => {
-                this.props.pageData._id = data._id;
-            });
-        }
+        // if (pageData.id == null) {
+        //     // pagesDatas.createDefaultPage = (pageData) => this.station.savePageData(pageData);
+        //     // let station = this.props.pageData
+        //     this.props.save(this.props.pageData).then(data => {
+        //         this.props.pageData.id = data.id;
+        //     });
+        // }
     }
 
     async loadMenu() {
@@ -112,8 +115,18 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         return this._element;
     }
 
-    save() {
-        let pageData = this.props.pageData;
+    async save() {
+
+        if (this.validator != null) {
+            this.validator.clearErrors();
+            let isValid = await this.validator.check();
+            if (!isValid) {
+                return Promise.reject('validate fail');
+            }
+        }
+
+        let pageData = this.state.pageData;
+        pageData.name = this.nameInput.value;
         let controlDatas = new Array<ControlDescrtion>();
         //=====================================================================
         // 将 pageData 中的所以控件找出来，放入到 controlDatas
@@ -230,11 +243,11 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     }
 
     preview() {
-        if (this.hasChanged || !this.props.pageData._id) {
+        if (this.hasChanged || !this.props.pageData.id) {
             ui.alert({ title: '提示', message: `预览前必须先保存页面, 请点击"保存"按钮保存页面` });
             return;
         }
-        let url = userApp.createUrl(userSiteMap.nodes.page, { pageId: this.props.pageData._id });
+        let url = userApp.createUrl(userSiteMap.nodes.page, { pageId: this.props.pageData.id });
         open(url, '_blank');
     }
 
@@ -274,21 +287,27 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     }
 
+    async componentDidMount() {
+        if (this.props.showPageEditor) {
+            this.validator = new FormValidator(this.form,
+                { name: 'name', rules: [rules.required('请输入页面名称')] }
+            )
+        }
+    }
+
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
         let { pageData } = this.state;
-        // let selectedControlId = this.selectedControlId;
         let { showComponentPanel } = this.props;
-
         return (
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
                     <VirtualMobile ref={(e) => {
-                        if (!e) return;
-                        this.virtualMobile = e;
+                        // if (!e) return;
+                        this.virtualMobile = e || this.virtualMobile;
                         setTimeout(() => {
-                            this.renederVirtualMobile(e.screenElement, pageData);
+                            this.renederVirtualMobile(this.virtualMobile.screenElement, pageData);
                         }, 100);
                     }} >
                         {children}
@@ -320,7 +339,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                         </li> : null}
                         <li className="pull-right">
                             <button className="btn btn-sm btn-primary"
-                                ref={(e: HTMLButtonElement) => e != null ? e.onclick = ui.buttonOnClick(() => this.save(), { toast: '保存页面成功' }) : null}>
+                                ref={(e: HTMLButtonElement) => e != null ? ui.buttonOnClick(e, () => this.save(), { toast: '保存页面成功' }) : null}>
                                 <i className="icon-save" />
                                 <span>保存</span>
                             </button>
@@ -338,19 +357,17 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                     <div className="clear-fix" />
                     <hr style={{ margin: 0 }} />
 
-                    <div className="form-group" style={{ height: 40, display: this.props.showPageEditor == true ? 'block' : 'none', marginTop: 20 }}>
+                    <div className="form-group"
+                        ref={(e: HTMLElement) => this.form = e || this.form}
+                        style={{ height: 40, display: this.props.showPageEditor == true ? 'block' : 'none', marginTop: 20 }}>
                         <div className="row">
                             <div className="col-sm-4">
                                 <label className="control-label pull-left" style={{ paddingTop: 8 }}>名称</label>
                                 <div style={{ paddingLeft: 40 }}>
                                     <input name="name" className="form-control" placeholder="请输入页面名称（必填）"
                                         ref={(e: HTMLInputElement) => {
-                                            if (!e) return;
-                                            e.value = pageData.name || '';
-                                            e.onchange = () => {
-                                                pageData.name = e.value;
-                                                {/* this.setState(this.state); */ }
-                                            }
+                                            this.nameInput = e || this.nameInput;
+                                            this.nameInput.value = pageData.name || '';
                                         }} />
                                 </div>
                             </div>

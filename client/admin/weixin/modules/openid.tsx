@@ -217,7 +217,6 @@ export let renderQRCode = (function () {
                         let data: any = msg.data;
                         switch (msg.action) {
                             case `${action}_execute`:
-                                debugger;
                                 options.callback(data.code)
                                     .then(() => {
                                         // 发送消息，告诉手机端执行成功

@@ -139,7 +139,7 @@ export default class ProductListControl extends Control<Props, State> {
                 if (products.length == 0) {
                     ReactDOM.render(
                         <div className="text-center" style={{ height: 200, padding: 100 }}>
-                            暂无要显示的商品
+                            暂无可显示的商品
                         </div>, e);
                     return;
                 }

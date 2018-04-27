@@ -1,5 +1,5 @@
 import { Service, config, imageUrl, guid } from 'userServices/service';
-
+import { StationService as AdminStationService } from 'admin/services/station';
 export class PageDatas {
 
     private station: StationService;
@@ -53,15 +53,34 @@ export class PageDatas {
         }
     };
 
-
-
     private async getPage(name: string) {
         let pageName = `*${name}`;
-        let pageData = await this.station.pageDataByName(pageName);
+        let pageData = await pageDataByName(this.station, pageName); //this.station.pageDataByName(pageName);
 
         if (pageData == null) {
             pageData = this.defaultPages[name];
+            //===========================================
+            // 如果是后台，对于没有的 PageData 自动添加
+            if (window['admin-app'] != null && pageData != null) {
+                requirejs(['admin/services/station'], function (e: any) {
+                    let adminStation: AdminStationService = new e['StationService']();
+                    adminStation.savePageData(pageData);
+                })
+            }
+            //===========================================
         }
+        return pageData;
+    }
+
+
+    async pageById(pageId: string) {
+        if (!pageId) throw new Error('argument pageId null');
+
+        let url = this.station.url('Page/GetPageDataById');
+        let data = { pageId };
+        let pageData = await this.station.getByJson<PageData>(url, { id: pageId })
+        if (pageData == null) throw new Error(`Page ${pageId} is not exists.`);
+        pageData = await fillPageData(pageData);
         return pageData;
     }
 
@@ -91,6 +110,34 @@ export class PageDatas {
     }
 }
 
+
+function pageDataByName(service: StationService, name: string): Promise<PageData> {
+    let url = service.url('Page/GetPageDataByName');
+    return service.getByJson<PageData>(url, { name }).then(o => {
+        if (o["_id"]) {
+            o.id = o["_id"];
+            delete o["_id"];
+        }
+
+        return fillPageData(o);
+    });
+}
+
+async function fillPageData(pageData: PageData): Promise<PageData> {
+    if (pageData == null)
+        return null;
+
+    if (pageData.views == null && pageData['controls'] != null) {
+        pageData.views = [{ controls: pageData['controls'] }];
+    }
+
+    pageData.footer = pageData.footer || { controls: [] };
+    pageData.footer.controls = pageData.footer.controls || [];
+    pageData.header = pageData.header || { controls: [] };
+    pageData.header.controls = pageData.header.controls || [];
+
+    return pageData;
+}
 
 export class StationService extends Service {
 
@@ -171,62 +218,6 @@ export class StationService extends Service {
         pageData.header = pageData.header || { controls: [] };
         return pageData;
     }
-
-    //============================================================
-    // PageData
-
-    private async fillPageData(pageData: PageData): Promise<PageData> {
-        if (pageData == null)
-            return null;
-
-        if (pageData.views == null && pageData['controls'] != null) {
-            pageData.views = [{ controls: pageData['controls'] }];
-        }
-
-        pageData.footer = pageData.footer || { controls: [] };
-        pageData.footer.controls = pageData.footer.controls || [];
-        pageData.header = pageData.header || { controls: [] };
-        pageData.header.controls = pageData.header.controls || [];
-
-        return pageData;
-    }
-
-    async pageData(pageId: string) {
-        if (!pageId) throw Errors.argumentNull('pageId');
-
-        let url = this.url('Page/GetPageDataById');
-        let data = { pageId };
-        let pageData = await this.getByJson<PageData>(url, { id: pageId })
-        if (pageData == null) throw new Error(`Page ${pageId} is not exists.`);
-        pageData = await this.fillPageData(pageData);
-        return pageData;
-    }
-    defaultPageData() {
-        let url = this.url('Page/GetDefaultPageData');
-        return this.getByJson<PageData>(url).then(pageData => this.fillPageData(pageData));
-    }
-    //============================================================
-
-    pageDataByName(name: string): Promise<PageData> {
-        let url = this.url('Page/GetPageDataByName');
-        // let query = { name };
-        return this.getByJson<PageData>(url, { name }).then(o => {
-            return this.fillPageData(o);
-        });
-    }
-
-    controlData(name: string) {
-        let url = this.url('Page/GetControlData');
-        return this.getByJson<ControlData>(url, { query: { controlName: name } });
-    }
-    saveControlData(data: ControlData) {
-        let url = this.url('Page/SaveControlData');
-        return this.postByJson(url, { data }).then(result => {
-            Object.assign(data, result);
-        });
-    }
-
-    //============================================================
 
     async fullPage(page: () => Promise<PageData>) {
         let result = await Promise.all([page.bind(this)(), this.pages.style(), this.pages.menu()]);

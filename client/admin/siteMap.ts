@@ -40,7 +40,7 @@ let siteMap = {
         station_store_member: { action: `${dir}/station/storePageDesign`, cache: true },
         station_store_menu: { action: `${dir}/station/storePageDesign`, cache: true },
 
-        station_page: { action: `${dir}/station/pages/page`, cache: true },
+        station_page: { action: `${dir}/station/page`, cache: false },
         station_pageList: { action: `${dir}/station/pageList`, cache: true },
         station_preView: { action: `${dir}/station/preView`, cache: false } as chitu.SiteMapNode,
         user_myStores: { action: `${dir}/user/myStores`, cache: false } as chitu.SiteMapNode,

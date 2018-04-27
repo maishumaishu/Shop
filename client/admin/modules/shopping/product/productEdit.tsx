@@ -293,7 +293,7 @@ export default function (page: chitu.Page) {
                                     </li>
                                 )}
                                 <li>
-                                    <ImageUpload title="内容图片" saveImage={(data) => this.saveContentImage(data)} />
+                                    <ImageUpload title="内容图片" style={{ width: 114, height: 114 }} saveImage={(data) => this.saveContentImage(data)} />
                                 </li>
 
                                 {imagePath ?
@@ -304,7 +304,7 @@ export default function (page: chitu.Page) {
                                             }} />
                                     </li> :
                                     <li>
-                                        <ImageUpload title={'封面图片'}
+                                        <ImageUpload title={'封面图片'} style={{ width: 114, height: 114 }}
                                             saveImage={(data) => this.saveCoverImage(data)} />
                                     </li>}
                             </ul>

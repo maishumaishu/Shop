@@ -1,6 +1,6 @@
 ﻿
 
-(<any>window).UEDITOR_HOME_URL = '/scripts/ueditor/'
+// (<any>window).UEDITOR_HOME_URL = '/scripts/ueditor/'
 var references = ['ue/ueditor.config', 'ue/ueditor.all.min', 'ue/third-party/zeroclipboard/ZeroClipboard'];
 
 export function createEditor(editorId: string, field: HTMLInputElement,
@@ -8,7 +8,7 @@ export function createEditor(editorId: string, field: HTMLInputElement,
 
     requirejs(references, function () {
 
-        window['UEDITOR_CONFIG'].serverUrl = `${location.protocol}//web.bailunmei.com/ueditor/net/controller.ashx`;
+        // window['UEDITOR_CONFIG'].serverUrl = `${location.protocol}//web.bailunmei.com/ueditor/net/controller.ashx`;
 
         (<any>window).ZeroClipboard = arguments[2];
         let UE = window['UE'];

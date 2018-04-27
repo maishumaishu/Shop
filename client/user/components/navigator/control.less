@@ -8,7 +8,12 @@
 	// background: #ccc;
 	overflow: hidden;
 
-
+	.page-view {
+		height: unset;
+		position: unset;
+	}
+	section {
+	}
 }
 
 // iscoll begin
@@ -27,7 +32,7 @@
 	// position: absolute;
 	z-index: 1;
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
-	width: 800px;
+	width: 8000px;
 	// height: 100%;
 	// background-color: #a00;
 	-webkit-transform: translateZ(0);
@@ -71,7 +76,7 @@
     display: inline-flex;
     align-items: center;
 
-    &:first-child {
+    &.active {
         // padding-left: 20px;
         border-bottom: 2px solid;
     }

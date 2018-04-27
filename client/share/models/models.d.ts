@@ -191,7 +191,7 @@ interface ControlData {
 }
 
 interface PageData {
-    _id?: string,
+    id?: string,
     name?: string,
     remark?: string,
     // controls?: Array<ControlData>,

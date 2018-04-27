@@ -68,8 +68,9 @@ requirejs.config({
         userServices: './services',
         // services: './services',
         ui: '../scripts/ui',
-        'user': '.',
-        'share': '../share',
+        user: '.',
+        admin: '../admin',
+        share: '../share',
         'share/common': '../share/common',
     }
 });

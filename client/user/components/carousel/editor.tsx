@@ -1,10 +1,10 @@
 import { Editor, EditorProps, guid } from 'user/components/editor';
 import { default as Control, Props as ControlProps, State as ControlState, CarouselItem } from 'user/components/carousel/control';
-// import site = require('Site');
-import { StationService } from 'userServices/stationService';
-// import { ImagePreview } from 'common/ImagePreview';
-// import { Button } from 'common/controls';
+import { StationService } from 'admin/services/station';
 import FormValidator from 'lib/formValidator';
+import { ImageFileToBase64Result } from 'ui';
+import { imageUrl, ImageUpload, ImageManager } from 'admin/images';
+
 
 /**
  * TODO:
@@ -12,14 +12,65 @@ import FormValidator from 'lib/formValidator';
  * 2. 窗口关闭后，数据清除
  * 3. 编辑，删除功能
  */
-requirejs([`css!${Editor.path('carousel')}.css`]);
-// & { editItemIndex: number }
-export interface EditorState {
+export interface EditorState extends Partial<ControlState> {
     editItemIndex: number
 }
-export default class EditorComponent extends Editor<EditorProps, EditorState>{
+export default class CarouselEditor extends Editor<EditorProps, EditorState>{
+    imageManager: ImageManager;
+    station: StationService;
+
     constructor(props) {
         super(props);
+        this.loadEditorCSS();
+        this.station = this.props.elementPage.createService(StationService);
     }
+    async saveContentImage(data: ImageFileToBase64Result) {
+        let result = await this.station.saveImage(data.base64);
 
+        let item: CarouselItem = { image: imageUrl(result.id), title: result.id, url: "" };
+        this.state.items.push(item);
+        this.setState(this.state);
+        return result;
+    }
+    async showImageDialog() {
+        this.imageManager.show((images) => {
+            images.forEach(o => {
+                this.state.items.push({ image: o, url: '', title: '' });
+                this.setState(this.state);
+            })
+        });
+    }
+    render() {
+        let { items } = this.state;
+        items = items || [];
+        return [
+            <ul key="ul" className="carousel-items">
+                {items.map((o, i) =>
+                    <li key={i}>
+                        <div className="bottom">
+                            <button className="btn-link"
+                                ref={(e: HTMLButtonElement) => {
+                                    if (!e) return;
+                                    ui.buttonOnClick(e, () => {
+                                        items = items.filter(c => c != o);
+                                        this.state.items = items;
+                                        this.setState(this.state);
+                                        return Promise.resolve();
+                                    }, { confirm: '确定删除吗' })
+
+                                }}>删除</button>
+                        </div>
+                        <img src={o.image} style={{ width: '100%', height: '100%' }} />
+                    </li>
+                )}
+                <li onClick={() => this.showImageDialog()}>
+                    <i className="icon-plus icon-4x"></i>
+                    <div>从相册选取图片</div>
+                </li>
+            </ul>,
+            <div key="div" className="clearfix"></div>,
+            <ImageManager key="images" station={this.station}
+                ref={(e) => this.imageManager = e || this.imageManager} />
+        ]
+    }
 }

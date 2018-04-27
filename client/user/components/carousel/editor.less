@@ -1,0 +1,43 @@
+.carousel-editor {
+    ul.carousel-items {
+        @item_height: 120px;
+        @item_width: 200px;
+        li {
+            float: left;
+            width: @item_width;
+            height: @item_height;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            &:last-child {
+                background-color: white;
+                padding-top: 22px;
+                text-align: center;
+                border: solid #ccc 1px;
+            }
+
+            @bottom_height:26px;
+            .bottom {
+                position: absolute;
+                // width: calc(100% - 32px);
+                width: @item_width;
+                height: @bottom_height;
+                background-color: rgba(0, 0, 0, 0.55);
+                color: white;
+                margin-top: @item_height - @bottom_height;
+                text-align: center;
+                .btn-link {
+                    color: white;
+                }
+                button {
+                    width: 100%;
+                }
+            }
+            .icon-remove {
+                position: absolute;
+                right: 0px;
+                margin-left: 186px;
+            }
+
+        }
+    }
+}
