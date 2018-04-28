@@ -159,7 +159,9 @@ export default class ProductListControl extends Control<Props, State> {
 
                 setTimeout(() => {
                     e.innerHTML = html;
-                    e.querySelectorAll('[product-id]').forEach((o: HTMLElement) => {
+                    let q = e.querySelectorAll('[product-id]');
+                    for (let i = 0; i < q.length; i++) {
+                        let o = q.item(i) as HTMLElement;
                         o.onclick = () => {
                             if (this.mobilePage.props.designTime) {
                                 return;
@@ -170,7 +172,7 @@ export default class ProductListControl extends Control<Props, State> {
                             }
                             app.redirect(siteMap.nodes.home_product, { id: productId });
                         }
-                    })
+                    }
                 }, 100);
 
             }}>

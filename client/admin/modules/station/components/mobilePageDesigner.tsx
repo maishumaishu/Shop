@@ -4,7 +4,7 @@ import { VirtualMobile } from 'virtualMobile';
 import { MobilePage } from 'user/components/mobilePage';
 import { Control, componentsDir, IMobilePageDesigner } from 'user/components/common';
 import { Editor, EditorProps } from 'user/components/editor';
-import { guid, StationService } from 'adminServices/station';
+import { guid, StationService } from 'services/station';
 import { PropTypes } from 'prop-types';
 
 import { AppError, ErrorCodes } from 'share/common';

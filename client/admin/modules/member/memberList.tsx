@@ -1,4 +1,4 @@
-﻿import { UserService } from 'adminServices/user';
+﻿import { UserService } from 'services/user';
 import * as wz from 'myWuZhui';
 import { FormValidator, rules } from 'dilu';
 import { userInfo } from 'userServices/memberService';

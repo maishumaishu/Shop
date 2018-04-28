@@ -3,6 +3,7 @@ import { Editor, EditorProps } from 'user/components/editor';
 import { State as ControlState, default as Control, NavigatorItem } from 'user/components/navigator/control';
 import 'wuzhui';
 import { FormValidator, rules } from 'dilu';
+import { StationService } from 'userServices/stationService';
 
 export interface EditorState extends Partial<ControlState> {
 }
@@ -83,11 +84,35 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
     render() {
         let { items } = this.state;
         return [
+            <div key="form" className="form-horizontal">
+                <div className="form-group">
+                    <label className="col-sm-2">边距</label>
+                    <div className="col-sm-5">
+                        <input className="form-control" placeholder="设置导航栏的上边距" />
+                    </div>
+                    <div className="col-sm-5">
+                        <input className="form-control" placeholder="设置导航栏的下边距" />
+                    </div>
+                </div>
+            </div>,
             <ul key="items">
                 {items.length > 0 ?
                     items.map((o, i) =>
                         <li key={i}>
-                            {o.name}
+                            <div className="name">{o.name}</div>
+
+                            <div className="page-name btn-link"
+                                onClick={() => null}
+                                title={"点击修改导航页面"}
+                                ref={async (e: HTMLElement) => {
+                                    if (!e) return;
+                                    let station = this.elementPage.createService(StationService);
+                                    if (!o.pageId) return;
+                                    let pageData = await station.pages.pageById(o.pageId);
+                                    if (pageData != null) {
+                                        e.innerHTML = pageData.name;
+                                    }
+                                }}>{o.pageId}</div>
 
                             <button className="btn-link pull-right" type="button"
                                 ref={(e: HTMLButtonElement) => e ?
@@ -96,6 +121,7 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
                             <button className="btn-link pull-right" type="button"
                                 onClick={() => this.showDialog(o)}>编辑</button>
 
+                            <div className="clearfix"></div>
                         </li>
                     ) :
                     <li className="text-center no-records">

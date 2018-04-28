@@ -116,14 +116,14 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             result.contentType = contentType;
         }
 
-        res.setHeader("Content-Type", result.contentType || contentTypes.text_plain);
+        res.setHeader("content-type", result.contentType || contentTypes.text_plain);
         res.statusCode = result.statusCode || 200;
 
         res.end(result.data);
     }
     catch (e) {
         let err = e as Error;
-        res.setHeader('Content-Type', contentTypes.application_json);
+        res.setHeader('content-type', contentTypes.application_json);
         res.statusCode = 600;
 
         let { name, stack } = err;

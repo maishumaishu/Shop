@@ -47,8 +47,14 @@ export default class CarouselEditor extends Editor<EditorProps, EditorState>{
             <ul key="ul" className="carousel-items">
                 {items.map((o, i) =>
                     <li key={i}>
-                        <div className="bottom">
-                            <button className="btn-link"
+                        <div className="form-group">
+                            <img src={o.image} />
+                        </div>
+                        <div className="form-group">
+                            <input className="form-control" placeholder="请输入和图片对应的链接" />
+                        </div>
+                        <div className="form-group">
+                            <button className="btn btn-block btn-danger"
                                 ref={(e: HTMLButtonElement) => {
                                     if (!e) return;
                                     ui.buttonOnClick(e, () => {
@@ -58,9 +64,10 @@ export default class CarouselEditor extends Editor<EditorProps, EditorState>{
                                         return Promise.resolve();
                                     }, { confirm: '确定删除吗' })
 
-                                }}>删除</button>
+                                }}>
+                                删除
+                            </button>
                         </div>
-                        <img src={o.image} style={{ width: '100%', height: '100%' }} />
                     </li>
                 )}
                 <li onClick={() => this.showImageDialog()}>

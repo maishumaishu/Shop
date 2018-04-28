@@ -5,7 +5,6 @@
         li {
             float: left;
             width: @item_width;
-            height: @item_height;
             margin-right: 10px;
             margin-bottom: 10px;
             &:last-child {
@@ -13,6 +12,7 @@
                 padding-top: 22px;
                 text-align: center;
                 border: solid #ccc 1px;
+                height: @item_height;
             }
 
             @bottom_height:26px;
@@ -36,6 +36,11 @@
                 position: absolute;
                 right: 0px;
                 margin-left: 186px;
+            }
+
+            img {
+                width: @item_width;
+                height: @item_height;
             }
 
         }

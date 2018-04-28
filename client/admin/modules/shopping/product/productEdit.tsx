@@ -68,8 +68,10 @@ export default function (page: chitu.Page) {
                     items: 'li[product-id]',
                     update: () => {
                         let productIds: string[] = [];
-                        this.productThumbers.querySelectorAll('[product-id]')
-                            .forEach(o => productIds.push(o.getAttribute('product-id')));
+                        let thumberElements = this.productThumbers.querySelectorAll('[product-id]');
+                        for (let i = 0; i < thumberElements.length; i++) {
+                            productIds.push(thumberElements.item(i).getAttribute('product-id'));
+                        }
                         this.state.product.ImagePaths = productIds;
                         this.setState(this.state);
                     }

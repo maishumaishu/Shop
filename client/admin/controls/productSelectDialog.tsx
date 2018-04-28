@@ -1,12 +1,11 @@
 import { imageUrl } from 'services/service';
-import { ShoppingService } from 'adminServices/shopping';
+import { ShoppingService } from 'services/shopping';
 import 'wuzhui';
 
 requirejs(['css!adminComponents/productSelectDialog']);
 
 type ProductsDialogProps = {
     shopping: ShoppingService,
-    // selected?: (product: Product) => Promise<any> | void
 } & React.Props<ProductSelectDialog>;
 
 export class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[] }>{

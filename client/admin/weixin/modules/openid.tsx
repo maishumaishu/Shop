@@ -127,7 +127,7 @@ export let showQRCodeDialog = (function () {
                     socket.on('connect', () => {
                         console.log(socket.id);
                         let appid = systemWeiXinAppId;
-                        let redirect_uri = encodeURIComponent(`${protocol}//${hostname}${pathname}weixin/?from=${socket.id}#${options.mobilePageName}`);
+                        let redirect_uri = encodeURIComponent(`${protocol}//${hostname}/admin/weixin/?from=${socket.id}#${options.mobilePageName}`);
                         let auth_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base#wechat_redirect`
                         qrcodeDialog.setUrl(auth_url);
 

@@ -101,10 +101,17 @@ export default class Service extends chitu.Service {
     }
 
     put<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { data, method: 'put' });
+        let headers = { "content-type": 'application/x-www-form-urlencoded' };
+        return this.ajax<T>(url, { headers, data, method: 'put' });
     }
 
     post<T>(url: string, data?: any) {
-        return this.ajax<T>(url, { data, method: 'post', });
+        let headers = { "content-type": 'application/x-www-form-urlencoded' };
+        return this.ajax<T>(url, { headers, data, method: 'post', });
+    }
+
+    delete<T>(url: string, data: any) {
+        let headers = { "content-type": 'application/x-www-form-urlencoded' };
+        return this.ajax<T>(url, { headers, data, method: 'delete' });
     }
 }

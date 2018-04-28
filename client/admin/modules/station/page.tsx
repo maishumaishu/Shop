@@ -1,5 +1,5 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { StationService, guid } from 'adminServices/station';
+import { StationService, guid } from 'services/station';
 import { componentsDir } from 'user/components/common';
 import { StationService as UserStation } from 'userServices/stationService';
 import { Page } from 'chitu';

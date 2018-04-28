@@ -1,7 +1,7 @@
 
 import app from 'application';
 import val = require('knockout.validation');
-import { ShoppingService } from 'adminServices/shopping';
+import { ShoppingService } from 'services/shopping';
 import * as wz from 'myWuZhui';
 
 export default function (page: chitu.Page) {

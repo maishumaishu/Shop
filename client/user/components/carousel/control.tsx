@@ -419,21 +419,14 @@ export class CarouselControl extends Control<Props, State> {
             this.c = new Carousel(this.element, { autoplay });
         }
     }
-    _render() {
+    _render(h) {
         let { items, autoplay } = this.state;
         items = items || [];
-        //==============================================
-        // 如果只有一个，就 copy 第一个，轮播需要两个
-        if (items.length == 1) {
-            items.push(items[0]);
-        }
-        //==============================================
         return (
-            items.length > 0 ?
+            items.length > 1 ?
                 <div style={{ minHeight: '80px' }} name="ad-swiper" className="carousel slide"
                     ref={(e: HTMLElement) => {
                         this.element = e || this.element;
-                        debugger
                     }}>
                     <ol className="carousel-indicators">
                         {items.map((o, i) =>
@@ -452,13 +445,17 @@ export class CarouselControl extends Control<Props, State> {
                         )}
                     </div>
                 </div> :
-                <div style={{ backgroundColor: '#ccc' }}
-                    ref={() => this.element = null}>
-                    <img style={{ width: '100%' }} className="img-responsive" ref={(e: HTMLImageElement) => {
-                        if (!e) return;
-                        ui.renderImage(e, { imageText: '暂无轮播图片', imageSize: { width: 800, height: 400 } })
-                    }} />
-                </div>
+                items.length > 0 ?
+                    <div ref={() => this.element = null}>
+                        <img style={{ width: '100%' }} src={items[0].image} />
+                    </div>
+                    :
+                    <div ref={() => this.element = null}>
+                        <img style={{ width: '100%' }} className="img-responsive" ref={(e: HTMLImageElement) => {
+                            if (!e) return;
+                            ui.renderImage(e, { imageText: '暂无轮播图片', imageSize: { width: 800, height: 400 } })
+                        }} />
+                    </div>
         );
     }
 }

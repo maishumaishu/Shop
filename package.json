@@ -26,6 +26,7 @@
     "@types/jquery": "^3.3.1",
     "@types/jqueryui": "^1.12.2",
     "@types/mocha": "^5.2.0",
-    "polished": "^1.9.2"
+    "polished": "^1.9.2",
+    "url-search-params-polyfill": "^3.0.0"
   }
 }

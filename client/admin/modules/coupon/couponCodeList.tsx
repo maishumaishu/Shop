@@ -1,10 +1,10 @@
 import * as wz from 'myWuZhui';
 import { buttonOnClick } from 'ui';
-import { ShoppingService } from 'adminServices/shopping';
+import { ShoppingService } from 'services/shopping';
 import { FormValidator, rules } from 'dilu';
 import * as ui from 'ui';
 import { customField } from 'myWuZhui';
-import { formatDate } from 'adminServices/service';
+import { formatDate } from 'services/service';
 
 export default function (page: chitu.Page) {
 
@@ -254,7 +254,7 @@ export default function (page: chitu.Page) {
 // import val = require('jquery.validate');
 // import site = require('site');
 // import bootbox = require('bootbox');
-// import { default as shopping } from 'adminServices/shopping'
+// import { default as shopping } from 'services/shopping'
 // let JData = window['JData'];
 
 // // let selectUrl = site.config.shopUrl + 'ShoppingData/Select?source=CouponCodes&selection=Code,Coupon.Title,UsedDateTime,Coupon.ValidEnd';

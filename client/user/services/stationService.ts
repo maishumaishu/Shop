@@ -110,11 +110,10 @@ export class PageDatas {
     }
 }
 
-
 function pageDataByName(service: StationService, name: string): Promise<PageData> {
     let url = service.url('Page/GetPageDataByName');
     return service.getByJson<PageData>(url, { name }).then(o => {
-        if (o["_id"]) {
+        if (o != null && o["_id"] != null) {
             o.id = o["_id"];
             delete o["_id"];
         }

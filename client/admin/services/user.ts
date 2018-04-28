@@ -40,7 +40,7 @@ export class UserService extends Service {
     }
     login(username: string, password: string) {
         let url = `${Service.config.memberUrl}Seller/Login`;
-        return this.ajax<LoginResult>(url, { data: { username, password }, method: 'post' })
+        return this.postByJson<LoginResult>(url, { username, password })
             .then(d => {
                 Service.token.value = d.token;
             });
@@ -58,7 +58,7 @@ export class UserService extends Service {
         Service.token.value = result.token;
         return result;
     }
-    async resetPassword(model: RegisterModel){
+    async resetPassword(model: RegisterModel) {
         let url = `${Service.config.memberUrl}Seller/resetPassword`;
         let result = await this.postByJson<{ token: string, userId: string, appToken: string }>(url, model)
         Service.token.value = result.token;

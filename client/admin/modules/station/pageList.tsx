@@ -1,6 +1,6 @@
 import { default as site } from 'site';
 import app from 'application';
-import { StationService } from 'adminServices/station';
+import { StationService } from 'services/station';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import siteMap from 'siteMap';

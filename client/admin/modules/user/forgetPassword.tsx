@@ -1,5 +1,5 @@
 import { FormValidator, rules } from 'dilu';
-import { UserService } from 'adminServices/user';
+import { UserService } from 'services/user';
 import * as ui from 'ui';
 import app from 'application';
 import siteMap from 'siteMap';
