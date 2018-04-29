@@ -7,7 +7,7 @@ import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import { GridViewItemPopupEditor } from 'myWuZhui';
 // let JData = window['JData'];
-import siteMap from 'siteMap';
+import siteMap from 'admin/siteMap';
 
 export default function (page: chitu.Page) {
 

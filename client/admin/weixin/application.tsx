@@ -2,7 +2,7 @@ import * as chitu from 'maishu-chitu';
 import * as ui from 'ui';
 import { parseUrlParams, shopName } from 'share/common';
 import { loadjs } from 'common'
-import { WeiXinService } from 'services/weixin'
+import { WeiXinService } from 'admin/services/weixin'
 import { Props as OpenIdPageProps, OpenIdPage } from 'weixin/modules/openid'
 
 export type SiteMapNodes = {

@@ -1,4 +1,4 @@
-﻿import { WeiXinService } from 'services/weixin';
+﻿import { WeiXinService } from 'admin/services/weixin';
 
 const label_max_width = 120;
 const input_max_width = 300;

@@ -4,7 +4,7 @@ import { ShoppingCartService } from 'user/services/shoppingCartService';
 import { AccountService } from 'user/services/accountService';
 import { userData } from 'user/services/userData';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
-import siteMap from 'siteMap';
+import siteMap from 'user/siteMap';
 
 export default async function (page: chitu.Page) {
 

@@ -2,7 +2,7 @@ import { defaultNavBar, app, formatDate } from 'site';
 import { ShoppingService } from 'user/services/shoppingService';
 import { AccountService } from 'user/services/accountService';
 import * as ui from 'ui';
-import siteMap from 'siteMap';
+import siteMap from 'user/siteMap';
 
 
 export default function (page: chitu.Page) {

@@ -1,6 +1,6 @@
 ﻿import { Service, systemWeiXinAppId } from 'services/service';
-import { UserService } from 'services/user';
-import { WeiXinService } from 'services/weixin';
+import { UserService } from 'admin/services/user';
+import { WeiXinService } from 'admin/services/weixin';
 import app from 'application';
 import { default as site } from 'site';
 import { FormValidator, rules } from 'dilu';
@@ -9,7 +9,7 @@ import * as ui from 'ui';
 import QRCode = require('qrcode');
 import { websocketUrl, shopName } from 'share/common'
 import { showQRCodeDialog } from 'weixin/modules/openid';
-import siteMap from 'siteMap';
+import siteMap from 'admin/siteMap';
 
 export default async function (page: chitu.Page) {
     app.loadCSS(page.name);

@@ -1,6 +1,6 @@
 import { parseUrlParams, websocketUrl } from 'share/common';
 import { loadjs, WebSockentMessage } from 'weixin/common'
-import { WeiXinService } from 'services/weixin'
+import { WeiXinService } from 'admin/services/weixin'
 import { Service, systemWeiXinAppId } from 'services/service';
 import app, { SiteMapNodes } from 'application';
 import QRCode = require('qrcode');

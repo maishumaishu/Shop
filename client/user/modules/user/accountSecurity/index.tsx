@@ -2,7 +2,7 @@ import { defaultNavBar, app } from 'site';
 import { MobileBindingPageArguments } from 'modules/user/accountSecurity/mobileBinding';
 import { MemberService } from 'user/services/memberService';
 import { FormValidator, rules } from 'dilu';
-import siteMap from 'siteMap';
+import siteMap from 'user/siteMap';
 
 export default function (page: chitu.Page) {
     class IndexPage extends React.Component<{ userInfo: UserInfo }, { userInfo: UserInfo }>{

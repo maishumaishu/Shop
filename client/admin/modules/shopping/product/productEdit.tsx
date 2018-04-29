@@ -1,6 +1,6 @@
 ﻿import app from 'application';
 import { ShoppingService } from 'services/shopping';
-import { StationService } from 'services/station';
+import { StationService } from 'admin/services/station';
 import { Service, imageUrl, guid } from 'services/service';
 
 import UE = require('ue.ext');

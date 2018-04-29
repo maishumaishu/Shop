@@ -1,4 +1,4 @@
-import { UserService, Application } from 'services/user';
+import { UserService, Application } from 'admin/services/user';
 import { FormValidator, rules } from 'dilu';
 // import { Page, app } from 'Application';
 import * as ui from 'ui';

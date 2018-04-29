@@ -4,7 +4,7 @@ import * as ui from 'ui';
 import { Service } from 'services/service';
 import { shopName } from 'share/common';
 import { MasterPage } from 'masterPage';
-import siteMap from 'siteMap';
+import siteMap from 'admin/siteMap';
 import site from './site';
 
 let h = React.createElement;

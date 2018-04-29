@@ -6,7 +6,7 @@ import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import tips from 'tips';
 import 'wuzhui';
-import siteMap from 'siteMap';
+import siteMap from 'admin/siteMap';
 import { app as userApp } from 'user/application';
 import userSiteMap from 'user/siteMap';
 import ClipboardJS = require('clipboard');

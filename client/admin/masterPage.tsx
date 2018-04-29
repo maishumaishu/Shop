@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // import { menuData, MenuNode } from 'menuData';
 import { Service } from 'services/service';
-import { default as siteMap, menuData, MenuNode } from './siteMap';
+import { default as siteMap, menuData, MenuNode } from 'admin/siteMap';
 import app from 'application';
 
 let h = React.createElement;

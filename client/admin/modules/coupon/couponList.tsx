@@ -3,7 +3,7 @@ import { ShoppingService } from 'services/shopping';
 import site from 'site';
 import app from 'application';
 import * as wz from 'myWuZhui';
-import siteMap from 'siteMap';
+import siteMap from 'admin/siteMap';
 
 export default function (page: chitu.Page) {
 

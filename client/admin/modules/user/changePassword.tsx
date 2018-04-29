@@ -1,6 +1,6 @@
 ﻿import { Service, systemWeiXinAppId } from 'services/service';
-import { UserService, Seller } from 'services/user';
-import { WeiXinService } from 'services/weixin';
+import { UserService, Seller } from 'admin/services/user';
+import { WeiXinService } from 'admin/services/weixin';
 import site from 'site';
 import QRCode = require('qrcode');
 import { WebSockentMessage } from 'weixin/common';

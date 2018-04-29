@@ -1,8 +1,8 @@
 import { FormValidator, rules } from 'dilu';
-import { UserService } from 'services/user';
+import { UserService } from 'admin/services/user';
 import * as ui from 'ui';
 import app from 'application';
-import siteMap from 'siteMap';
+import siteMap from 'admin/siteMap';
 
 export default function (page: chitu.Page) {
 
