@@ -194,13 +194,12 @@ interface PageData {
     id?: string,
     name?: string,
     remark?: string,
-    // controls?: Array<ControlData>,
     isDefault?: boolean,
     showMenu?: boolean,
     className?: string,
     header?: { controls: ControlData[] },
     footer?: { controls: ControlData[] },
-    views?: { controls: ControlData[] }[]
+    view?: { controls: ControlData[] }
 }
 
 interface News {

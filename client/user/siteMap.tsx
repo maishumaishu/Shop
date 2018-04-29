@@ -106,13 +106,11 @@ async function home_product_action(page: chitu.Page) {
                     { controlId: guid(), controlName: 'product:Header' }
                 ]
             },
-            views: [
-                {
-                    controls: [
-                        { controlId: guid(), controlName: 'product', data: { product } }
-                    ]
-                }
-            ],
+            view: {
+                controls: [
+                    { controlId: guid(), controlName: 'product', data: { product } }
+                ]
+            },
             footer: {
                 controls: [
                     { controlId: guid(), controlName: 'product:Footer', data: { product } }

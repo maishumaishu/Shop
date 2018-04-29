@@ -20,10 +20,12 @@ let siteMap = {
         freight_freightList: { action: `${dir}/freight/freightList`, cache: true },
         freight_inCitySend: { action: `${dir}/freight/inCitySend`, cache: true },
         member_memberList: { action: `${dir}/member/memberList`, cache: true },
+
         user_changePassword: { action: `${dir}/user/changePassword`, cache: true },
         user_login,
         user_register,
         user_forgetPassword,
+
         shopping_brandList: { action: `${dir}/shopping/brandList`, cache: true },
         shopping_categoryList: { action: `${dir}/shopping/productCategoryList`, cache: true },
         shopping_paymentSetting: { action: `${dir}/shopping/paymentSetting`, cache: true },
@@ -32,6 +34,8 @@ let siteMap = {
         shopping_promotion_activities: { action: `${dir}/shopping/promotion/activities`, cache: true },
         shopping_promotion_activityEdit: { action: `${dir}/shopping/promotion/activityEdit2`, cache: false },
         shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit`, cache: false },
+        shopping_product_productEdit1: { action: `${dir}/shopping/product/newProductEdit`, cache: false },
+
         station_index: { action: `${dir}/station/index`, cache: true },
         station_store_home: { action: `${dir}/station/storePageDesign`, cache: true },
         station_store_style: { action: `${dir}/station/storePageDesign`, cache: true },
@@ -79,6 +83,7 @@ export let menuData: MenuNode[] = [
                     { title: '页面', action: 'station/page1', visible: false }
                 ],
             }),
+            Object.assign(siteMap.nodes.shopping_product_productEdit1, { title: 'Test' })
         ]
     },
     {
@@ -93,7 +98,7 @@ export let menuData: MenuNode[] = [
                 ]
             }),
             Object.assign(siteMap.nodes.shopping_categoryList, { title: '商品分类' }),
-            Object.assign(siteMap.nodes.shopping_brandList, { title: "商品品牌" })
+            Object.assign(siteMap.nodes.shopping_brandList, { title: "商品品牌" }),
         ]
     },
     {

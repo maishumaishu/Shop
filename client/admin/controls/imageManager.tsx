@@ -4,7 +4,7 @@ import { StationService } from 'admin/services/station';
 import 'wuzhui';
 import { imageUrl } from 'share/common';
 
-requirejs(['css!controls/imageManager']);
+requirejs(['css!admin/controls/imageManager']);
 
 type State = {
     images: { id: string }[],

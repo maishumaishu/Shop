@@ -9,9 +9,10 @@ let templates: (TemplatePageData & { pageData: PageData })[] = [
         pageData: {
             "header": { "controls": [] },
             "footer": { "controls": [] },
-            "views": [
-                { "controls": [{ "controlId": guid(), "controlName": "summaryHeader" }] }
-            ]
+            "view": {
+                "controls": [{ "controlId": guid(), "controlName": "summaryHeader" }]
+            }
+
         }
     }
 ]

@@ -11,7 +11,7 @@ export class PageDatas {
     private defaultPages = {
         member: <PageData>{
             name: '*member',
-            views: [{ controls: [{ controlId: guid(), controlName: 'member', selected: true }] }]
+            view: { controls: [{ controlId: guid(), controlName: 'member', selected: true }] }
         },
         menu: <PageData>{
             name: '*menu',
@@ -23,11 +23,11 @@ export class PageDatas {
         },
         categories: <PageData>{
             name: '*categories',
-            views: [{ controls: [{ controlId: guid(), controlName: 'categories', selected: true }] }]
+            view: { controls: [{ controlId: guid(), controlName: 'categories', selected: true }] }
         },
         home: <PageData>{
             name: '*home',
-            views: [{ controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }]
+            view: { controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }
         },
         shoppingCart: <PageData>{
             name: '*shoppingCart',
@@ -38,13 +38,11 @@ export class PageDatas {
                     { controlId: guid(), controlName: 'shoppingCart:Header' }
                 ]
             },
-            views: [
-                {
-                    controls: [
-                        { controlId: guid(), controlName: 'shoppingCart' }
-                    ]
-                }
-            ],
+            view: {
+                controls: [
+                    { controlId: guid(), controlName: 'shoppingCart' }
+                ]
+            },
             footer: {
                 controls: [
                     { controlId: guid(), controlName: 'shoppingCart:Footer' }
@@ -126,8 +124,11 @@ async function fillPageData(pageData: PageData): Promise<PageData> {
     if (pageData == null)
         return null;
 
-    if (pageData.views == null && pageData['controls'] != null) {
-        pageData.views = [{ controls: pageData['controls'] }];
+    if (pageData.view == null && pageData['controls'] != null) {
+        pageData.view = { controls: pageData['controls'] };
+    }
+    else if (pageData.view == null && pageData['views'] != null) {
+        pageData.view = pageData['views'][0] || {};
     }
 
     pageData.footer = pageData.footer || { controls: [] };
@@ -205,13 +206,11 @@ export class StationService extends Service {
     }
 
     private translatePageData(pageData: PageData): PageData {
-        if (pageData.views == null && pageData['controls'] != null) {
-            pageData.views = [{ controls: pageData['controls'] }];
+        if (pageData.view == null && pageData['controls'] != null) {
+            pageData.view = { controls: pageData['controls'] };
         }
 
-        pageData.views = pageData.views || [
-            { controls: [] }
-        ];
+        pageData.view = pageData.view || { controls: [] };
 
         pageData.footer = pageData.footer || { controls: [] };
         pageData.header = pageData.header || { controls: [] };

@@ -30,13 +30,11 @@ async function createPageData(shopping: ShoppingService, productId: string) {
                 { controlId: guid(), controlName: 'product:Header' }
             ]
         },
-        views: [
-            {
-                controls: [
-                    { controlId: guid(), controlName: 'product', data: { product } }
-                ]
-            }
-        ],
+        view: {
+            controls: [
+                { controlId: guid(), controlName: 'product', data: { product } }
+            ]
+        },
         footer: {
             controls: [
                 { controlId: guid(), controlName: 'product:Footer', data: { product } }

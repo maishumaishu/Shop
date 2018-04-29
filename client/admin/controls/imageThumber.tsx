@@ -11,7 +11,7 @@ type ImageThumberState = {
     // selectedText: string
 }
 
-requirejs(['css!controls/imageThumber']);
+requirejs(['css!admin/controls/imageThumber']);
 export default class ImageThumber extends React.Component<ImageThumberProps, ImageThumberState>{
     constructor(props) {
         super(props);

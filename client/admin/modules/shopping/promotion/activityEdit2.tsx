@@ -2,7 +2,7 @@
 import validation = require('knockout.validation');
 import { ActivityService } from 'admin/services/activity';
 import { ShoppingService } from 'admin/services/shopping';
-import { ProductSelectDialog } from 'controls/productSelectDialog';
+import { ProductSelectDialog } from 'admin/controls/productSelectDialog';
 import app from 'application';
 
 

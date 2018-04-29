@@ -127,22 +127,27 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         let pageData = this.state.pageData;
         pageData.name = this.nameInput.value;
-        let controlDatas = new Array<ControlDescrtion>();
+        // let controlDatas = new Array<ControlDescrtion>();
         //=====================================================================
         // 将 pageData 中的所以控件找出来，放入到 controlDatas
-        (pageData.views || []).forEach(view => controlDatas.push(...view.controls || []));
-        pageData.views = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.views || []));
-        pageData.footer = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.footer || []));
-        pageData.header = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.header || {}));
+        // (pageData.view || []).forEach(view => controlDatas.push(...view.controls || []));
+        // controlDatas.push(...pageData.view.controls || []);
+        // pageData.view = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.view || {}));
+        // pageData.footer = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.footer || {}));
+        // pageData.header = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.header || {}));
 
-        for (let i = 0; i < pageData.views.length; i++) {
-            setControlValues(this.mobilePage, pageData.views[i].controls);
+        setControlValues(this.mobilePage, pageData.view.controls);
+
+        if (pageData.header) {
+            setControlValues(this.mobilePage, pageData.header.controls);
         }
-
         if (pageData.footer) {
             setControlValues(this.mobilePage, pageData.footer.controls);
         }
 
+        /**
+         * 件页面上控件的值，写进 pageData
+         */
         function setControlValues(mobilePage: MobilePage, controls: ControlDescrtion[]) {
             for (let i = 0; i < controls.length; i++) {
                 let componet = (mobilePage.controls.filter(c => c.controlId == controls[i].controlId)[0]) as any as Control<any, any>;
@@ -225,13 +230,14 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             pageData.header.controls = pageData.header.controls.filter(o => o.controlId != controlId);
         }
 
-        if (pageData.views != null) {
-            for (let i = 0; i < pageData.views.length; i++) {
-                if (pageData.views[i].controls == null)
-                    continue;
+        if (pageData.view != null) {
+            // for (let i = 0; i < pageData.view.length; i++) {
+            //     if (pageData.view[i].controls == null)
+            //         continue;
 
-                pageData.views[i].controls = pageData.views[i].controls.filter(o => o.controlId != controlId);
-            }
+            //     pageData.view[i].controls = pageData.view[i].controls.filter(o => o.controlId != controlId);
+            // }
+            pageData.view.controls = pageData.view.controls.filter(o => o.controlId != controlId);
         }
 
         if (pageData.footer != null && pageData.footer.controls != null) {
@@ -243,11 +249,13 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     }
 
     preview() {
-        if (this.hasChanged || !this.props.pageData.id) {
+        let { pageData } = this.state;
+        console.assert(pageData != null);
+        if (this.hasChanged || !pageData.id) {
             ui.alert({ title: '提示', message: `预览前必须先保存页面, 请点击"保存"按钮保存页面` });
             return;
         }
-        let url = userApp.createUrl(userSiteMap.nodes.page, { pageId: this.props.pageData.id });
+        let url = userApp.createUrl(userSiteMap.nodes.page, { pageId: pageData.id });
         open(url, '_blank');
     }
 

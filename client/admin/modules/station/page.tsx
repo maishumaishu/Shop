@@ -65,17 +65,18 @@ export default async function (page: chitu.Page) {
 }
 
 function checkStyleControl(pageData: PageData) {
-    if (pageData.views == null) {
+    if (pageData.view == null) {
 
     }
 }
 
 async function getPageData(page: Page) {
     let station = page.createService(StationService);
+    let userStation = page.createService(UserStation);
     let { pageId, templateId } = page.data;
     let pageData: PageData;
     if (pageId) {
-        pageData = await station.pageData(pageId);
+        pageData = await userStation.pages.pageById(pageId);
     }
     else if (templateId) {
         pageData = await station.pageDataByTemplate(templateId);
@@ -83,9 +84,7 @@ async function getPageData(page: Page) {
     else {
         pageData = {
             id: guid(),
-            views: [
-                { controls: [] }
-            ]
+            view:  { controls: [] }
         };
     }
 
