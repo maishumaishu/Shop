@@ -29,10 +29,12 @@ namespace ui {
         element.className = itemsRemain.join(' ');
     }
 
+    let dialogElements = new Array<HTMLElement>();
+    let dialogCallbacks = new Array<Function>();
     /** 弹窗
      * @param element bootstrap 的 modal 元素
      */
-    export function showDialog(element: HTMLElement) {
+    export function showDialog(element: HTMLElement, callback?: (button: HTMLButtonElement) => void) {
 
         removeClassName(element, 'out');
         element.style.display = 'block';
@@ -40,10 +42,28 @@ namespace ui {
             addClassName(element, 'modal fade in');
         }, 100);
 
-        let closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
-        for (let i = 0; i < closeButtons.length; i++) {
-            (closeButtons[i] as HTMLElement).onclick = () => hideDialog(element);
+        let dialogIndex = dialogElements.indexOf(element);
+        if (dialogIndex < 0) {
+            dialogElements.push(element);
+            dialogIndex = dialogElements.length - 1;
+
+            let closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
+            for (let i = 0; i < closeButtons.length; i++) {
+                (closeButtons[i] as HTMLElement).onclick = () => hideDialog(element);
+            }
+
+            let allButtons = element.querySelectorAll('button');
+            for (let i = 0; i < allButtons.length; i++) {
+                allButtons.item(i).addEventListener('click', function (event) {
+                    let callback = dialogCallbacks[dialogIndex];
+                    if (callback) {
+                        callback(event.currentTarget as HTMLButtonElement);
+                    }
+                })
+            }
         }
+
+        dialogCallbacks[dialogIndex] = callback;
     }
 
     export function hideDialog(element: HTMLElement) {
@@ -230,7 +250,7 @@ namespace ui {
         // 点击非窗口区域，关窗口。并禁用上级元素的 touch 操作。
         // let panel = this.panel; //this.refs['panel'] as HTMLElement;
         // let modalDialog = this.modalDialog; //this.refs['modalDialog'] as HTMLElement;
-        panel.addEventListener('touchstart', (event:TouchEvent) => {
+        panel.addEventListener('touchstart', (event: TouchEvent) => {
             let dialogRect = modalDialog.getBoundingClientRect();
             for (let i = 0; i < event.touches.length; i++) {
                 let { clientX } = event.touches[i];

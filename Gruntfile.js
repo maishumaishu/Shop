@@ -169,23 +169,26 @@ module.exports = function (grunt) {
                 options: {
                     baseUrl: `${out}/user`,
                     include: [
-                        "polyfill",
+                        "polyfill", 'url-search-params-polyfill', 'fetch',
                         "css", "react", "react-dom", 'prop-types', 'ui',
                         "dilu",
                         'site', 'errorHandle',
                         'mobileComponents/common',
-                        'modules/home/index'
+                        'modules/home/index',
+
                     ],
                     out: `www/user/build.js`,
-                    optimize: 'uglify', //'none',//
+                    optimize: 'uglify', // 'none',//
                     paths: {
                         css: '../scripts/css',
                         'chitu.mobile': '../scripts/chitu.mobile',
                         dilu: '../scripts/dilu',
+                        fetch: '../scripts/fetch',
                         react: '../scripts/react.production',
                         'react-dom': '../scripts/react-dom.production',
                         'prop-types': '../scripts/prop-types',
                         polyfill: '../scripts/polyfill',
+                        'url-search-params-polyfill': '../scripts/url-search-params-polyfill',
                         // text: 'scripts/text',
                         // carousel: 'scripts/carousel',
                         // mobileComponents: 'pageComponents',
@@ -210,19 +213,25 @@ module.exports = function (grunt) {
                 options: {
                     baseUrl: `${out}/admin`,
                     include: [
-                        "polyfill",
+                        "polyfill", 'url-search-params-polyfill', 'fetch',
                         "css", "react", "react-dom", 'prop-types', 'ui',
-                        "dilu"
+                        "dilu", 'share/common', 'share/service', 'template-web',
+                        'services/service', 'services/weixin', 'services/user'
+
                     ],
                     out: `www/admin/build.js`,
-                    // optimize: 'none',
+                    optimize: 'uglify', //'none',
                     paths: {
                         css: '../scripts/css',
                         dilu: '../scripts/dilu',
+                        fetch: '../scripts/fetch',
                         react: '../scripts/react.production',
                         'react-dom': '../scripts/react-dom.production',
                         'prop-types': '../scripts/prop-types',
                         polyfill: '../scripts/polyfill',
+                        qrcode: '../scripts/qrcode',
+                        'template-web': '../scripts/template-web',
+                        'url-search-params-polyfill': '../scripts/url-search-params-polyfill',
                         ui: '../scripts/ui',
                         'maishu-chitu': '../scripts/chitu',
                         'user': './',
@@ -300,6 +309,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
     grunt.registerTask('run', ['connect', 'watch']);
 
+    grunt.registerTask('es5-debug', ['common', 'build-es5', 'copy:es5_www', 'requirejs']);
     grunt.registerTask('release', ['common', 'build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
     grunt.registerTask('dev', ['common', 'build-es6', 'copy:es6_www', 'connect', 'watch']);
 }

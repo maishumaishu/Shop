@@ -9,7 +9,7 @@ interface ControlDescrtion {
 }
 
 interface TemplatePageData {
-    _id: string;
+    id: string;
     name: string;
     image: string;
 }

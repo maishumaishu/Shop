@@ -43,6 +43,8 @@ var ui;
             }
         });
         let result = function (event) {
+            event.stopPropagation();
+            event.cancelBubble = true;
             if (!args.confirm) {
                 execute(event);
                 return;
@@ -114,19 +116,36 @@ var ui;
         var itemsRemain = c1.filter(o => c2.indexOf(o) < 0);
         element.className = itemsRemain.join(' ');
     }
+    let dialogElements = new Array();
+    let dialogCallbacks = new Array();
     /** 弹窗
      * @param element bootstrap 的 modal 元素
      */
-    function showDialog(element) {
+    function showDialog(element, callback) {
         removeClassName(element, 'out');
         element.style.display = 'block';
         setTimeout(() => {
             addClassName(element, 'modal fade in');
         }, 100);
-        let closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
-        for (let i = 0; i < closeButtons.length; i++) {
-            closeButtons[i].onclick = () => hideDialog(element);
+        let dialogIndex = dialogElements.indexOf(element);
+        if (dialogIndex < 0) {
+            dialogElements.push(element);
+            dialogIndex = dialogElements.length - 1;
+            let closeButtons = element.querySelectorAll('[data-dismiss="modal"]') || [];
+            for (let i = 0; i < closeButtons.length; i++) {
+                closeButtons[i].onclick = () => hideDialog(element);
+            }
+            let allButtons = element.querySelectorAll('button');
+            for (let i = 0; i < allButtons.length; i++) {
+                allButtons.item(i).addEventListener('click', function (event) {
+                    let callback = dialogCallbacks[dialogIndex];
+                    if (callback) {
+                        callback(event.currentTarget);
+                    }
+                });
+            }
         }
+        dialogCallbacks[dialogIndex] = callback;
     }
     ui.showDialog = showDialog;
     function hideDialog(element) {

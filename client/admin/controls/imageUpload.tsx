@@ -14,9 +14,9 @@ class ImageUpload extends React.Component<ImageUploadProps, any> {
     image: HTMLImageElement;
     updloadImage(imageFile: File) {
         let { width, height } = this.props;
-        ui.imageFileToBase64(imageFile)//, { width, height }
+        ui.imageFileToBase64(imageFile)
             .then(data => {
-                this.props.saveImage(data);//{ base64: data, width: 200, height: 200 }
+                this.props.saveImage(data);
             });
     }
     setFileInput(e: HTMLInputElement) {
@@ -44,12 +44,14 @@ class ImageUpload extends React.Component<ImageUploadProps, any> {
         //==========================================
 
         let height = width;
+        let itemPaddingTop: number;
         this.itemElement.style.height = `${height}px`;
         if (height > 80) {
-            this.itemElement.style.paddingTop = `${(height - 80) / 2}px`;
+            itemPaddingTop = (height - 80) / 2;
+            this.itemElement.style.paddingTop = `${itemPaddingTop}px`;
         }
 
-        this.file.style.marginTop = `-${height}px`;
+        this.file.style.marginTop = `-${height - itemPaddingTop}px`;
         this.file.style.width = `${width}px`;
         this.file.style.height = `${height}px`;
 
@@ -75,16 +77,3 @@ class ImageUpload extends React.Component<ImageUploadProps, any> {
 
 export default ImageUpload;
 
-{/* <i className="icon-plus icon-4x"></i>
-<div>{title}</div>*/}
-{/* <div className="bottom">
-<button className="btn-link"
-ref={(e: HTMLButtonElement) => this.setDeleteButton(e, imagePath)}>
-删除
-</button>
-</div> */}
-// text-center pull-left
-
-// style = "width: 112px; height: 112px; padding: 16px 0px 0px; border: 1px solid rgb(204, 204, 204);"
-
-// style = "position: relative; top: -100%; width: 100%; height: 100%; opacity: 0;"

@@ -253,11 +253,21 @@ export class MobilePage extends React.Component<Props, State>{
     renderDesigntimeViews(pageData: PageData) {
         let sortableElement = (element: HTMLElement, viewIndex: number) => {
             type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
+
+            let newControlIndex: number;
             $(element).sortable({
                 axis: "y",
+                change: () => {
+                    for (let i = 0; i < element.children.length; i++) {
+                        if (!element.children.item(i).id) {
+                            newControlIndex = i;
+                            break;
+                        }
+                    }
+                },
                 receive: (event: Event, ui: UI) => {
-                    let element = ui.helper[0] as HTMLElement;
-                    element.removeAttribute('style');
+                    let helper = ui.helper[0] as HTMLElement;
+                    helper.removeAttribute('style');
                     let controlName = ui.item.attr('data-control-name');
                     let target = ui.item.attr('data-target');
                     console.assert(controlName != null);
@@ -266,8 +276,14 @@ export class MobilePage extends React.Component<Props, State>{
                         pageData.footer.controls.push({ controlId: guid(), controlName, data: {} });
                     else if (target == 'header')
                         pageData.header.controls.push({ controlId: guid(), controlName, data: {} });
-                    else
-                        pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
+                    else {
+                        let children = element.children;
+                        debugger;
+                        console.assert(newControlIndex != null);
+                        pageData.views[viewIndex].controls.splice(newControlIndex, 0, { controlId: guid(), controlName, data: {} });
+                        newControlIndex = null;
+                        // pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
+                    }
 
                     this.setState(this.state);
                 },

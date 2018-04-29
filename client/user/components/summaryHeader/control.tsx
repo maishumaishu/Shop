@@ -71,29 +71,27 @@ class NormalHeader extends React.Component<Props, State>{
         store = store || {} as any;
 
         let src = store.ImagePath ? imageUrl(store.ImagePath) : ui.generateImageBase64(100, 100, store.Name || "");
-        return (
-            <div className="summaryHeaderControl">
-                <div className="headerImage pull-left">
-                    <img src={src} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+        return [
+            <div key={10} className="headerImage pull-left">
+                <img src={src} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+            </div>,
+            <div key={20} className="headerContent">
+                <h4 className="title">{store.Name}</h4>
+                <div className="item">
+                    <div className="number">0</div>
+                    <div className="text">全部商品</div>
                 </div>
-                <div className="headerContent">
-                    <h4 className="title">{store.Name}</h4>
-                    <div className="item">
-                        <div className="number">0</div>
-                        <div className="text">全部商品</div>
-                    </div>
-                    <div className="item">
-                        <div className="number">0</div>
-                        <div className="text">上新商品</div>
-                    </div>
-                    <div className="item">
-                        <div className="number">0</div>
-                        <div className="text">我的订单</div>
-                    </div>
-                    <div className="clearfix"></div>
+                <div className="item">
+                    <div className="number">0</div>
+                    <div className="text">上新商品</div>
                 </div>
+                <div className="item">
+                    <div className="number">0</div>
+                    <div className="text">我的订单</div>
+                </div>
+                <div className="clearfix"></div>
             </div>
-        )
+        ]
     }
 }
 

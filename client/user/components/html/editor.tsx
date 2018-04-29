@@ -10,6 +10,8 @@ export interface EditorState extends Partial<ControlState> {
 }
 
 export default class HtmlEditor extends Editor<EditorProps, EditorState> {
+    sourceEditorElement: HTMLElement;
+    richEditorElement: HTMLInputElement;
     editor: any;
     htmlElement: HTMLInputElement;
     editorId: string;
@@ -18,10 +20,6 @@ export default class HtmlEditor extends Editor<EditorProps, EditorState> {
         this.loadEditorCSS();
         this.editorId = guid();
         this.state = { type: 'rich' }
-    }
-
-    componentDidMount() {
-
     }
 
     setCheckElement(e: HTMLInputElement, member: keyof EditorState) {
@@ -59,32 +57,27 @@ export default class HtmlEditor extends Editor<EditorProps, EditorState> {
         }
     }
 
+    componentDidMount() {
+        setTimeout(() => {
+            if (this.richEditorElement)
+                this.loadRichEditor(this.richEditorElement);
+
+            if (this.sourceEditorElement)
+                this.loadTextEditor(this.sourceEditorElement);
+        });
+    }
+
     render() {
         let { html, type } = this.state;
         return [
-            type == 'rich' ?
-                <form key="form" className="html-editor form-horizontal">
-                    <div className="form-group">
-                        <div className="col-sm-12">
-                            <script id={this.editorId} type="text/html" dangerouslySetInnerHTML={{ __html: html || '' }} />
-                            <input type="hidden" value={html}
-                                ref={(e: HTMLInputElement) => {
-                                    setTimeout(() => {
-                                        this.loadRichEditor(e)
-                                    });
-                                }} />
-                        </div>
-                    </div>
-                </form> :
-                <div key="text" className="form-group">
-                    <pre style={{ height: 400 }}
-                        ref={(e: HTMLElement) => {
-                            setTimeout(() => {
-                                this.loadTextEditor(e)
-                            })
-                        }} />
+            <div key="richEditor" className="form-group" style={{ display: type == 'rich' ? 'block' : 'none' }}>
+                <script id={this.editorId} type="text/html" dangerouslySetInnerHTML={{ __html: html || '' }} />
+                <input type="hidden" value={html} ref={(e: HTMLInputElement) => this.richEditorElement = e || this.richEditorElement} />
+            </div>,
+            <div key="sourceEditor" className="form-group" style={{ display: type == 'source' ? 'block' : 'none' }}>
+                <pre style={{ height: 400 }} ref={(e: HTMLElement) => this.sourceEditorElement = e || this.sourceEditorElement} />
 
-                </div>,
+            </div>,
             <div key="type" className="form-group">
                 <button type="button" className="btn btn-primary" onClick={() => this.apply()}>
                     应用当前HTML

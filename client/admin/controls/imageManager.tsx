@@ -6,10 +6,14 @@ import { imageUrl } from 'share/common';
 
 requirejs(['css!controls/imageManager']);
 
-type State = { images: { id: string }[] }
+type State = {
+    images: { id: string }[],
+    selectedItems: number[]
+}
 type Props = { station: StationService } & React.Props<ImageManager>;
 export default class ImageManager extends React.Component<Props, State> {
 
+    private showDialogCallback: (images: string[]) => void;
     private dataSource: wuzhui.DataSource<{ id: string }>;
     private pagingBarElement: HTMLElement;
     private element: HTMLElement;
@@ -17,7 +21,7 @@ export default class ImageManager extends React.Component<Props, State> {
     constructor(props) {
         super(props);
 
-        this.state = { images: [] };
+        this.state = { images: [], selectedItems: [] };
     }
 
     async componentDidMount() {
@@ -47,19 +51,6 @@ export default class ImageManager extends React.Component<Props, State> {
             }
         })
 
-        // dataSource.selected.add((sender, result) => {
-        //     this.state.images = result.dataItems;
-        //     this.setState(this.state);
-        // })
-        // dataSource.deleted.add((sender, item) => {
-        //     this.state.images = this.state.images.filter(o => o.id != item.id);
-        //     this.setState(this.state);
-        // })
-        // dataSource.inserted.add((sender, item) => {
-        //     this.state.images.unshift(item);
-        //     this.setState(this.state);
-        // })
-
         let pagingBar = new wuzhui.NumberPagingBar({
             dataSource: dataSource,
             element: this.pagingBarElement,
@@ -78,7 +69,11 @@ export default class ImageManager extends React.Component<Props, State> {
         dataSource.select();
     }
 
-    show() {
+    show(callback?: (images: string[]) => void) {
+        this.showDialogCallback = callback;
+        this.state.selectedItems = [];
+        this.setState(this.state);
+        
         ui.showDialog(this.element);
     }
 
@@ -91,7 +86,8 @@ export default class ImageManager extends React.Component<Props, State> {
     }
 
     render() {
-        let { images } = this.state;
+        let { images, selectedItems } = this.state;
+
         return (
             <div className="image-manager modal fade" ref={(e: HTMLElement) => this.element = e || this.element}>
                 <div className="modal-dialog modal-lg">
@@ -104,10 +100,22 @@ export default class ImageManager extends React.Component<Props, State> {
                             <h4 className="modal-title">选择图片</h4>
                         </div>
                         <div className="modal-body">
-                            {images.map((o, i) =>
-                                <ImageThumber key={i} imagePath={imageUrl(o.id, 140, 140)} className="col-xs-2"
-                                    remove={(imagePath: string) => this.removeImage(o)} />
-                            )}
+                            {images.map((o, i) => {
+                                let thumber = <ImageThumber key={i} imagePath={imageUrl(o.id, 140, 140)} className="col-xs-2"
+                                    remove={(imagePath: string) => this.removeImage(o)}
+                                    selectedText={selectedItems.indexOf(i) >= 0 ? `${selectedItems.indexOf(i) + 1}` : ''}
+                                    onClick={(sender, e) => {
+                                        if (selectedItems.indexOf(i) >= 0) {
+                                            this.state.selectedItems = selectedItems.filter(o => o != i);
+                                        }
+                                        else {
+                                            this.state.selectedItems.push(i);
+                                        }
+                                        this.setState(this.state);
+                                    }} />
+
+                                return thumber;
+                            })}
                             <ImageUpload className="col-xs-2" saveImage={(data) => this.saveImage(data.base64)}
                                 width={400} />
                             <div className="clearfix" />
@@ -120,7 +128,15 @@ export default class ImageManager extends React.Component<Props, State> {
                                 onClick={() => ui.hideDialog(this.element)}>
                                 取消
                             </button>
-                            <button name="ok" type="button" className="btn btn-primary">
+                            <button name="ok" type="button" className="btn btn-primary"
+                                onClick={() => {
+                                    if (this.showDialogCallback) {
+                                        let imageIds = this.state.selectedItems.map(o => this.state.images[o].id);
+                                        let images = imageIds.map(o => imageUrl(o));
+                                        this.showDialogCallback(images);
+                                    }
+                                    ui.hideDialog(this.element);
+                                }}>
                                 确定
                         </button>
                         </div>

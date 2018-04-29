@@ -1,20 +1,24 @@
 import { MobilePageDesigner } from 'mobilePageDesigner';
-import { StationService, guid } from 'adminServices/station';
+import { StationService, guid } from 'services/station';
 import { componentsDir } from 'user/components/common';
 import { StationService as UserStation } from 'userServices/stationService';
+import { Page } from 'chitu';
 
-let station = new StationService();
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
 
 export default async function (page: chitu.Page) {
+
+    let station = page.createService(StationService);
+
     class State {
-        componentInstances: ControlDescrtion[]
+        pageData: PageData
     }
 
-    class Page extends React.Component<{ pageData: PageData }, State>{
+    class MobilePage extends React.Component<{ pageData: PageData }, State>{
         private designer: MobilePageDesigner;
         constructor(props) {
             super(props);
+            this.state = { pageData: this.props.pageData };
         }
         async loadControlInstance(controlId: string, controlName: string, controlHTMLElement: HTMLElement, controlData?: any) {
 
@@ -46,27 +50,44 @@ export default async function (page: chitu.Page) {
             let userStation = page.createService(UserStation);
             return (
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
-                    save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true} 
+                    save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true}
                     pageDatas={userStation.pages}>
                 </MobilePageDesigner>
             );
         }
     }
 
-    let { pageId, templateId } = page.data;
-    let pageData: PageData;
-    if (pageId) {
-        pageData = await station.pageData(pageId);
-    }
-    else {
-        pageData = await station.pageDataByTemplate(templateId);
-    }
 
-    ReactDOM.render(<Page pageData={pageData} />, page.element);
+    let pageData = await getPageData(page);
+    let mobilePage = ReactDOM.render(<MobilePage pageData={pageData} />, page.element);
+
+
 }
 
 function checkStyleControl(pageData: PageData) {
     if (pageData.views == null) {
 
     }
+}
+
+async function getPageData(page: Page) {
+    let station = page.createService(StationService);
+    let { pageId, templateId } = page.data;
+    let pageData: PageData;
+    if (pageId) {
+        pageData = await station.pageData(pageId);
+    }
+    else if (templateId) {
+        pageData = await station.pageDataByTemplate(templateId);
+    }
+    else {
+        pageData = {
+            id: guid(),
+            views: [
+                { controls: [] }
+            ]
+        };
+    }
+
+    return pageData;
 }

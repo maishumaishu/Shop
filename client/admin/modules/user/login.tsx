@@ -1,6 +1,6 @@
 ﻿import { Service, systemWeiXinAppId } from 'services/service';
-import { UserService } from 'adminServices/user';
-import { WeiXinService } from 'adminServices/weixin';
+import { UserService } from 'services/user';
+import { WeiXinService } from 'services/weixin';
 import app from 'application';
 import { default as site } from 'site';
 import { FormValidator, rules } from 'dilu';

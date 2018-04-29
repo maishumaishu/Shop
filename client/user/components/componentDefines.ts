@@ -51,6 +51,12 @@ let componets: Array<ComponentDefine> = [
         displayName: '导航栏',
         icon: "icon-sitemap",
         introduce: "导航栏"
+    },
+    {
+        name: "carousel",
+        displayName: "轮播",
+        icon: "icon-list-alt",
+        introduce: "多张图片轮流播放"
     }
 ];
 

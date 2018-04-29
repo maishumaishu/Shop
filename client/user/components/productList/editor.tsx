@@ -348,6 +348,9 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                 <div className="form-group">
                     <label>
                         商品模板
+                        <button type="button" className="btn-link" style={{ color: 'unset' }}>
+                            <i className="icon-plus" />
+                        </button>
                     </label>
                     <div className="pull-right">
 

@@ -41,6 +41,9 @@ namespace ui {
         }
 
         let result = function (event: Event) {
+            
+            event.stopPropagation();
+            event.cancelBubble = true;
 
             if (!args.confirm) {
                 execute(event);

@@ -103,7 +103,7 @@ requirejs.config({
 
         ace: 'assets/js/uncompressed/ace',
 
-        'ue': 'http://web.bailunmei.com/ueditor',
+        'ue': '../scripts/ueditor',//'http://web.bailunmei.com/ueditor',//
         userServices: '../user/services',
         adminServices: './services',
         componentDesigner: 'modules/station/components/componentDesigner',

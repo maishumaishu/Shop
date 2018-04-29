@@ -32,7 +32,7 @@ export default class ImageControl extends Control<Props, State> {
                 <img src={this.state.source}
                     ref={(e: HTMLImageElement) => {
                         if (!e) return;
-                        ui.renderImage(e, { imageText: "请设置图片" })
+                        ui.renderImage(e, { imageText: "暂无图片" })
                     }} />
             </div>
         )

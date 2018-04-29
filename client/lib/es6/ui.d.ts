@@ -15,7 +15,7 @@ declare namespace ui {
     /** 弹窗
      * @param element bootstrap 的 modal 元素
      */
-    function showDialog(element: HTMLElement): void;
+    function showDialog(element: HTMLElement, callback?: (button: HTMLButtonElement) => void): void;
     function hideDialog(element: HTMLElement): Promise<{}>;
     function alert(args: string | {
         title: string;

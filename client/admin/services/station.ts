@@ -49,18 +49,17 @@ export class StationService extends Service {
         }
         return pageDataCopy;
     }
-    savePageData(pageData: PageData) {
+    savePageData(pageData: PageData, isSystem?: boolean) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
-        // let _pageData = this.trimPageData(pageData);
-        return this.postByJson(url, { pageData }).then((data) => {
+        return this.postByJson(url, { pageData, isSystem }).then((data) => {
             Object.assign(pageData, data);
             return data;
         });
     }
     pageData(pageId: string) {
-        let url = `${Service.config.siteUrl}Page/GetPageData`;
-        let query = { _id: pageId };
-        return this.getByJson<PageData>(url, { query });
+        let url = `${Service.config.siteUrl}Page/GetPageDataById`;
+        let query = { id: pageId };
+        return this.getByJson<PageData>(url, { id: pageId });
     }
     pageDataByName(name: string) {
         let url = `${Service.config.siteUrl}Page/GetPageData`;
@@ -73,7 +72,7 @@ export class StationService extends Service {
         // let url = `${Service.config.siteUrl}Page/GetPageDataByTemplate`;
         // let data = { templateId };
         // return this.get<PageData>(url, data).then(o => this.fillPageData(o));
-        var pageData = templates.filter(o => o._id == templateId).map(o => o.pageData)[0];
+        var pageData = templates.filter(o => o.id == templateId).map(o => o.pageData)[0];
         return Promise.resolve(pageData);
     }
     pageDatas() {
