@@ -70,6 +70,15 @@ class Carousel {
         if (this.autoplay) {
             this.play();
         }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState == 'visible' && this.autoplay) {
+                this.play();
+            }
+            else {
+                this.stop();
+            }
+        })
     }
 
     private listenTouch(element: HTMLElement) {
