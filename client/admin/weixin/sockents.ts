@@ -1,6 +1,6 @@
 // import { parseUrlParams, websocketUrl } from 'share/common';
 // import { loadjs, WebSockentMessage } from 'weixin/common'
-// import { Service, systemWeiXinAppId } from 'services/service';
+// import { Service, systemWeiXinAppId } from 'admin/services/service';
 
 // export function getPCSocket() {
 //     return new Promise((resolve, reject) => {

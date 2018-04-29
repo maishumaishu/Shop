@@ -1,4 +1,4 @@
-import { default as Service, guid } from 'services/service';
+import { default as Service, guid } from 'admin/services/service';
 
 export class AccountService extends Service {
     private url(path: string): string {

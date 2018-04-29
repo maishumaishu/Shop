@@ -1,4 +1,4 @@
-import { Service } from 'services/service';
+import { Service } from 'admin/services/service';
 import app from 'application';
 import siteMap from 'admin/siteMap';
 

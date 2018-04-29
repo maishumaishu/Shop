@@ -2,7 +2,7 @@
 import { default as site } from 'site';
 import { customField } from 'myWuZhui';
 import { FormValidator, rules } from 'dilu';
-import { ShoppingService } from 'services/shopping';
+import { ShoppingService } from 'admin/services/shopping';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {

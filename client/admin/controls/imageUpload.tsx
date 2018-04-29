@@ -7,7 +7,7 @@ interface ImageUploadProps extends React.Props<ImageUpload> {
     height?: number
 }
 
-requirejs(['css!controls/imageUpload']);
+requirejs(['css!admin/controls/imageUpload']);
 class ImageUpload extends React.Component<ImageUploadProps, any> {
     itemElement: HTMLElement;
     file: HTMLInputElement;

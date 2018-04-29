@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as ui from 'ui';
-import { Service } from 'services/service';
+import { Service } from 'admin/services/service';
 import { shopName } from 'share/common';
 import { MasterPage } from 'masterPage';
 import siteMap from 'admin/siteMap';

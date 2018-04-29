@@ -1,6 +1,6 @@
 import * as wz from 'myWuZhui';
-import { ShoppingService } from 'services/shopping';
-import { AccountService } from 'services/account';
+import { ShoppingService } from 'admin/services/shopping';
+import { AccountService } from 'admin/services/account';
 
 import { FormValidator, rules } from 'dilu';
 

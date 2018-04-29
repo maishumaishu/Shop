@@ -1,4 +1,4 @@
-import { default as Service } from 'services/service';
+import { default as Service } from 'admin/services/service';
 import { userInfo } from 'user/services/memberService';
 // import { LoginResult } from 'adminServices/weixin';
 

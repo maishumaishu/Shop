@@ -1,6 +1,6 @@
 /** 同城配送 页面*/
 import { FormValidator, rules } from 'dilu';
-import { ShoppingService } from 'services/shopping';
+import { ShoppingService } from 'admin/services/shopping';
 
 export default function (page: chitu.Page) {
 

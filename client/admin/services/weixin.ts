@@ -21,7 +21,7 @@
 //     return services;
 // });
 
-import { Service } from 'services/service';
+import { Service } from 'admin/services/service';
 import { tokens } from 'user/services/service';
 
 let headers = {};

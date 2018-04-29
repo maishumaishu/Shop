@@ -1,5 +1,5 @@
-import { imageUrl } from 'services/service';
-import { ShoppingService } from 'services/shopping';
+import { imageUrl } from 'admin/services/service';
+import { ShoppingService } from 'admin/services/shopping';
 import 'wuzhui';
 
 requirejs(['css!controls/productSelectDialog']);

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // import { menuData, MenuNode } from 'menuData';
-import { Service } from 'services/service';
+import { Service } from 'admin/services/service';
 import { default as siteMap, menuData, MenuNode } from 'admin/siteMap';
 import app from 'application';
 

@@ -1,7 +1,7 @@
-import { guid } from 'services/service';
-import { ActivityService } from 'services/activity';
+import { guid } from 'admin/services/service';
+import { ActivityService } from 'admin/services/activity';
 import { ProductSelectDialog } from 'controls/productSelectDialog';
-import { ShoppingService } from 'services/shopping';
+import { ShoppingService } from 'admin/services/shopping';
 import app from 'application';
 import * as dilu from 'dilu';
 

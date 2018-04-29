@@ -1,7 +1,7 @@
-﻿import { default as Service, guid, imageUrl } from 'services/service';
+﻿import { default as Service, guid, imageUrl } from 'admin/services/service';
 import templates from 'admin/services/data/templates'
 import { imageServiceBaseUrl } from 'share/common';
-export { guid } from 'services/service';
+export { guid } from 'admin/services/service';
 
 export class StationService extends Service {
     private url(path: string) {

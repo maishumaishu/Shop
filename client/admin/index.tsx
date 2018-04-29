@@ -114,7 +114,11 @@ requirejs.config({
         content: 'admin/content',
         build: 'admin/build',
         weixin: 'admin/weixin',
-        'services/service': 'admin/services/service',
+        // 'admin/services/service': 'admin/services/service',
+        'tips': 'admin/tips',
+        'ue.ext': 'admin/ue.ext',
+        // 'controls': 'admin/controls',
+        myWuZhui: 'admin/myWuZhui',
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
     }
 });

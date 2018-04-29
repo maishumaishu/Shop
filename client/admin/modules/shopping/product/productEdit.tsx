@@ -1,14 +1,14 @@
 ﻿import app from 'application';
-import { ShoppingService } from 'services/shopping';
+import { ShoppingService } from 'admin/services/shopping';
 import { StationService } from 'admin/services/station';
-import { Service, imageUrl, guid } from 'services/service';
+import { Service, imageUrl, guid } from 'admin/services/service';
 
 import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';
 import { FormValidator, rules } from 'dilu';
 
 import tips from 'tips';
-import ImageUpload from 'controls/imageUpload';
+import ImageUpload from 'admin/controls/imageUpload';
 import 'jquery-ui';
 
 export default function (page: chitu.Page) {

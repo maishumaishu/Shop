@@ -1,4 +1,4 @@
-import { ShoppingService } from 'services/shopping';
+import { ShoppingService } from 'admin/services/shopping';
 import { StationService } from 'admin/services/station';
 import app from 'application';
 import { default as site } from 'site';

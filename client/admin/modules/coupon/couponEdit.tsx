@@ -1,6 +1,6 @@
 import app from 'application';
 import { formatDate } from 'share/common';
-import { ShoppingService } from 'services/shopping';
+import { ShoppingService } from 'admin/services/shopping';
 import { buttonOnClick } from 'ui';
 import { PromotionRangeComponent } from 'modules/shopping/promotion/activityEdit'
 import 'jquery-ui';

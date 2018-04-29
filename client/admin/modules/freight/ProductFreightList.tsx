@@ -1,5 +1,5 @@
-﻿import { Service } from 'services/service';
-import { ShoppingService } from 'services/shopping';
+﻿import { Service } from 'admin/services/service';
+import { ShoppingService } from 'admin/services/shopping';
 import * as wz from 'myWuZhui';
 
 export default function (page: chitu.Page) {

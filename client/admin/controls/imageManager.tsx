@@ -1,5 +1,5 @@
-import ImageUpload from 'controls/imageUpload';
-import ImageThumber from 'controls/imageThumber';
+import ImageUpload from 'admin/controls/imageUpload';
+import ImageThumber from 'admin/controls/imageThumber';
 import { StationService } from 'admin/services/station';
 import 'wuzhui';
 import { imageUrl } from 'share/common';

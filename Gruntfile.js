@@ -217,7 +217,7 @@ module.exports = function (grunt) {
                         "polyfill", 'url-search-params-polyfill', 'fetch',
                         "css", "react", "react-dom", 'prop-types', 'ui',
                         "dilu", 'share/common', 'share/service', 'template-web',
-                        'services/service', 'services/weixin', 'services/user'
+                        'admin/services/service', 'services/weixin', 'services/user'
 
                     ],
                     out: `www/admin/build.js`,

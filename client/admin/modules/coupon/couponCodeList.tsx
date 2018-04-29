@@ -1,10 +1,10 @@
 import * as wz from 'myWuZhui';
 import { buttonOnClick } from 'ui';
-import { ShoppingService } from 'services/shopping';
+import { ShoppingService } from 'admin/services/shopping';
 import { FormValidator, rules } from 'dilu';
 import * as ui from 'ui';
 import { customField } from 'myWuZhui';
-import { formatDate } from 'services/service';
+import { formatDate } from 'admin/services/service';
 
 export default function (page: chitu.Page) {
 

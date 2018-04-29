@@ -2,7 +2,7 @@
 // import { Button, ImageBox } from 'common/controls';
 import { default as site } from 'site'
 import { StationService } from 'admin/services/station';
-import { imageUrl } from 'services/service';
+import { imageUrl } from 'admin/services/service';
 import { FormValidator, rules } from 'dilu';
 import 'bootstrap';
 import app from 'application';

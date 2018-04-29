@@ -1,4 +1,4 @@
-﻿import { Service, systemWeiXinAppId } from 'services/service';
+﻿import { Service, systemWeiXinAppId } from 'admin/services/service';
 import { UserService } from 'admin/services/user';
 import { WeiXinService } from 'admin/services/weixin';
 import app from 'application';
