@@ -201,8 +201,7 @@ export class MobilePage extends React.Component<Props, State>{
      * 渲染页面视图
      * @param pageData 页面数据，用于描述一个页面
      */
-    renderViews(pageData: PageData) {
-        let views = pageData.views || [];
+    renderView(pageData: PageData) {
 
         let designMode = this.props.designTime;
         if (designMode) {
@@ -213,28 +212,26 @@ export class MobilePage extends React.Component<Props, State>{
     }
 
     renderRuntimeViews(pageData: PageData) {
-        let views = pageData.views || [];
-        return views.map((o, i) => (
-            <section key={`view${i}`} className="page-view"
-                ref={(e: HTMLElement) => {
-                    if (!e) return;
-                    this.setPageElementClassName(e, pageData);
-                    setTimeout(() => {
-                        if (this.footerElement) {
-                            let height = this.footerElement.offsetHeight;
-                            e.style.paddingBottom = `${height}px`;
-                        }
+        let view = pageData.view || { controls: [] };
+        return <section key={`view`} className="page-view"
+            ref={(e: HTMLElement) => {
+                if (!e) return;
+                this.setPageElementClassName(e, pageData);
+                setTimeout(() => {
+                    if (this.footerElement) {
+                        let height = this.footerElement.offsetHeight;
+                        e.style.paddingBottom = `${height}px`;
+                    }
 
-                        if (this.headerElement) {
-                            let height = this.headerElement.offsetHeight;
-                            e.style.paddingTop = `${height}px`;
-                        }
+                    if (this.headerElement) {
+                        let height = this.headerElement.offsetHeight;
+                        e.style.paddingTop = `${height}px`;
+                    }
 
-                    }, 500);
-                }}>
-                {this.renderControls(o.controls)}
-            </section>
-        ));
+                }, 500);
+            }}>
+            {this.renderControls(view.controls)}
+        </section>
     }
 
     private setPageElementClassName(viewElement: HTMLElement, pageData: PageData) {
@@ -251,10 +248,10 @@ export class MobilePage extends React.Component<Props, State>{
     }
 
     renderDesigntimeViews(pageData: PageData) {
-        let sortableElement = (element: HTMLElement, viewIndex: number) => {
+        let sortableElement = (element: HTMLElement) => {
             type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
 
-            let newControlIndex: number;
+            let newControlIndex: number = 0;
             $(element).sortable({
                 axis: "y",
                 change: () => {
@@ -280,9 +277,8 @@ export class MobilePage extends React.Component<Props, State>{
                         let children = element.children;
                         debugger;
                         console.assert(newControlIndex != null);
-                        pageData.views[viewIndex].controls.splice(newControlIndex, 0, { controlId: guid(), controlName, data: {} });
+                        pageData.view.controls.splice(newControlIndex, 0, { controlId: guid(), controlName, data: {} });
                         newControlIndex = null;
-                        // pageData.views[viewIndex].controls.push({ controlId: guid(), controlName, data: {} });
                     }
 
                     this.setState(this.state);
@@ -294,7 +290,7 @@ export class MobilePage extends React.Component<Props, State>{
                     // 排序 view controls
                     for (let i = 0; i < element.children.length; i++) {
                         let child = element.children[i] as HTMLElement;
-                        let control = pageData.views[viewIndex].controls.filter(o => o.controlId == child.id)[0];
+                        let control = pageData.view.controls.filter(o => o.controlId == child.id)[0];
                         console.assert(control != null);
                         view_controls[i] = control;
                     }
@@ -306,35 +302,34 @@ export class MobilePage extends React.Component<Props, State>{
                     }
                     //===================================================
 
-                    pageData.views[viewIndex].controls = view_controls;
+                    pageData.view.controls = view_controls;
                     pageData.footer.controls = footer_controls;
                 }
             })
         }
 
-        return (pageData.views || []).map((o, i) => (
-            <section key={i}
-                ref={(e: HTMLElement) => {
-                    if (!e) return;
-                    sortableElement(e, i);
-                    this.setPageElementClassName(e, pageData);
-                    setTimeout(() => {
-                        if (this.footerElement) {
-                            let height = this.footerElement.offsetHeight;
-                            e.style.paddingBottom = `${height}px`;
-                        }
+        return <section key='view'
+            ref={(e: HTMLElement) => {
+                if (!e) return;
+                sortableElement(e);
+                this.setPageElementClassName(e, pageData);
+                setTimeout(() => {
+                    if (this.footerElement) {
+                        let height = this.footerElement.offsetHeight;
+                        e.style.paddingBottom = `${height}px`;
+                    }
 
-                        if (this.headerElement) {
-                            let height = this.headerElement.offsetHeight;
-                            e.style.paddingTop = `${height}px`;
-                        }
+                    if (this.headerElement) {
+                        let height = this.headerElement.offsetHeight;
+                        e.style.paddingTop = `${height}px`;
+                    }
 
-                    }, 500);
-                }}
-            >
-                {this.renderControls(o.controls)}
-            </section>
-        ));
+                }, 500);
+            }}
+        >
+            {this.renderControls(pageData.view.controls)}
+        </section>
+        // ));
     }
 
     render() {
@@ -347,20 +342,15 @@ export class MobilePage extends React.Component<Props, State>{
         if (pageData.footer && pageData.footer.controls)
             this.footerControlsCount = pageData.footer.controls.length;
 
-        let views = pageData.views || [];
+        pageData.view = pageData.view || { controls: [] };
         this.viewControlsCount = 0;
-        for (let i = 0; i < views.length; i++) {
-            this.viewControlsCount = this.viewControlsCount + (views[i].controls || []).length;
-        }
+        this.viewControlsCount = this.viewControlsCount + (pageData.view.controls || []).length;
 
         var result = [
             this.renderHeader(pageData),
             this.renderFooter(pageData),
-            ...this.renderViews(pageData),
+            this.renderView(pageData),
         ];
-
-        // let footer_height = this.footerElement.offsetHeight;
-        // debugger;
 
         if (this.props.designTime && this.props.designTime.controlSelected) {
             // 加上延时，否则编辑器有可能显示不出来

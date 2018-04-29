@@ -2,7 +2,7 @@ import { imageUrl } from 'admin/services/service';
 import { ShoppingService } from 'admin/services/shopping';
 import 'wuzhui';
 
-requirejs(['css!controls/productSelectDialog']);
+requirejs(['css!admin/controls/productSelectDialog']);
 
 type ProductsDialogProps = {
     shopping: ShoppingService,
