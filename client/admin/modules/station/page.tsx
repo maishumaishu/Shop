@@ -76,7 +76,7 @@ async function getPageData(page: Page) {
     let { pageId, templateId } = page.data;
     let pageData: PageData;
     if (pageId) {
-        pageData = await userStation.pages.pageById(pageId);
+        pageData = await userStation.pages.pageDataById(pageId);
     }
     else if (templateId) {
         pageData = await station.pageDataByTemplate(templateId);

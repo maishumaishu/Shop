@@ -51,18 +51,18 @@ export class PageDatas {
         }
     };
 
-    private async getPage(name: string) {
+    private async pageDataByName(name: string) {
         let pageName = `*${name}`;
         let pageData = await pageDataByName(this.station, pageName); //this.station.pageDataByName(pageName);
 
         if (pageData == null) {
-            pageData = this.defaultPages[name];
             //===========================================
-            // 如果是后台，对于没有的 PageData 自动添加
+            // 获取默认的数据，如果是后台，自动添加默认的 PageData 
+            pageData = this.defaultPages[name];
             if (window['admin-app'] != null && pageData != null) {
                 requirejs(['admin/services/station'], function (e: any) {
                     let adminStation: AdminStationService = new e['StationService']();
-                    adminStation.savePageData(pageData);
+                    adminStation.savePageData(pageData, true);
                 })
             }
             //===========================================
@@ -71,7 +71,7 @@ export class PageDatas {
     }
 
 
-    async pageById(pageId: string) {
+    async pageDataById(pageId: string) {
         if (!pageId) throw new Error('argument pageId null');
 
         let url = this.station.url('Page/GetPageDataById');
@@ -84,27 +84,27 @@ export class PageDatas {
 
 
     home(): Promise<PageData> {
-        return this.getPage('home');
+        return this.pageDataByName('home');
     }
 
     member(): Promise<PageData> {
-        return this.getPage('member');
+        return this.pageDataByName('member');
     }
 
     menu(): Promise<PageData> {
-        return this.getPage('menu');
+        return this.pageDataByName('menu');
     }
 
     style(): Promise<PageData> {
-        return this.getPage('style');
+        return this.pageDataByName('style');
     }
 
     categories(): Promise<PageData> {
-        return this.getPage('categories');
+        return this.pageDataByName('categories');
     }
 
     shoppingCart(): Promise<PageData> {
-        return this.getPage('shoppingCart');
+        return this.pageDataByName('shoppingCart');
     }
 }
 

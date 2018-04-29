@@ -108,7 +108,7 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
                                     if (!e) return;
                                     let station = this.elementPage.createService(StationService);
                                     if (!o.pageId) return;
-                                    let pageData = await station.pages.pageById(o.pageId);
+                                    let pageData = await station.pages.pageDataById(o.pageId);
                                     if (pageData != null) {
                                         e.innerHTML = pageData.name;
                                     }

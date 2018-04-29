@@ -6,7 +6,7 @@ export default async function (page: chitu.Page) {
     let { pageId } = page.data;
     let station = page.createService(StationService);
 
-    let result = await Promise.all([station.pages.pageById(pageId), station.pages.style(), station.pages.menu()]);
+    let result = await Promise.all([station.pages.pageDataById(pageId), station.pages.style(), station.pages.menu()]);
     let pageData = result[0];
     let stylePageData = result[1];
     let menuPageData = result[2];
