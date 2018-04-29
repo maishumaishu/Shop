@@ -1,7 +1,7 @@
-import { MobilePageDesigner } from 'mobilePageDesigner';
+import { MobilePageDesigner } from 'components/mobilePageDesigner';
 import { StationService, guid } from 'services/station';
-import { componentsDir } from 'user/components/common';
-import { StationService as UserStation } from 'userServices/stationService';
+import { componentsDir } from 'components/common';
+import { StationService as UserStation } from 'user/services/stationService';
 import { Page } from 'chitu';
 
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};

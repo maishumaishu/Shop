@@ -12,28 +12,28 @@
                 "lib/*",
                 "lib/es6/*"
             ],
-            "adminComponents/*": [
-                "client/admin/components/*"
-            ],
+            // "adminComponents/*": [
+            //     "client/admin/components/*"
+            // ],
             "adminServices/*": [
                 "client/admin/services/*"
             ],
-            "componentDesigner": [
-                "client/admin/modules/station/components/componentDesigner"
-            ],
-            "mobileComponents/*": [
-                "client/user/mobileComponents/*"
-            ],
-            "mobilePageDesigner": [
-                "client/admin/modules/station/components/mobilePageDesigner"
-            ],
+            // "componentDesigner": [
+            //     "client/admin/modules/station/components/componentDesigner"
+            // ],
+            // "mobileComponents/*": [
+            //     "client/user/mobileComponents/*"
+            // ],
+            // "mobilePageDesigner": [
+            //     "client/admin/modules/station/components/mobilePageDesigner"
+            // ],
             "userServices/*": [
                 "client/user/userServices/*",
                 "client/user/services/*"
             ],
-            "virtualMobile": [
-                "client/admin/modules/station/components/virtualMobile"
-            ]
+            // "virtualMobile": [
+            //     "client/admin/modules/station/components/virtualMobile"
+            // ]
         },
         "experimentalDecorators": true
     },
@@ -53,6 +53,10 @@
         "user/*.tsx",
         "user/**/*.tsx",
         "user/*.ts",
-        "user/**/*.ts"
+        "user/**/*.ts",
+        "components/*.tsx",
+        "components/**/*.tsx",
+        "components/*.ts",
+        "components/**/*.ts"
     ]
 }

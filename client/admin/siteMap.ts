@@ -1,6 +1,6 @@
 import { SiteMapNode } from "chitu";
 
-let dir = 'modules';
+let dir = 'admin/modules';
 
 let user_forgetPassword = { action: `${dir}/user/forgetPassword`, cache: false } as MenuNode;
 let user_login = { action: `${dir}/user/login`, cache: false } as MenuNode;

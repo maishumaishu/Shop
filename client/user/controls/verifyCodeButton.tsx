@@ -1,4 +1,4 @@
-import { MemberService, VerifyCodeType } from 'userServices/memberService';
+import { MemberService, VerifyCodeType } from 'user/services/memberService';
 
 let member = new MemberService();
 

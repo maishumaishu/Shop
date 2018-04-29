@@ -1,4 +1,4 @@
-import { Service, config, tokens } from 'userServices/service';
+import { Service, config, tokens } from 'user/services/service';
 // import { userData } from 'user/services/userData';
 export type VerifyCodeType = 'reigster' | 'changeMobile';
 

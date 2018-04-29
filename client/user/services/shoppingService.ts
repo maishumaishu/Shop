@@ -1,4 +1,4 @@
-import { Service, config, imageUrl } from 'userServices/service';
+import { Service, config, imageUrl } from 'user/services/service';
 
 export class ShoppingService extends Service {
     constructor() {

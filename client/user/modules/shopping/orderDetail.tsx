@@ -1,5 +1,5 @@
 import { defaultNavBar, app, formatDate } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
+import { ShoppingService } from 'user/services/shoppingService';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
 import * as ui from 'ui';
 

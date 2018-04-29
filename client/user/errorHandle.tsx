@@ -1,5 +1,5 @@
-import { Service } from 'userServices/service';
-import { userData } from 'userServices/userData';
+import { Service } from 'user/services/service';
+import { userData } from 'user/services/userData';
 import { app } from 'application';
 import { AppError, ErrorCodes } from 'share/common';
 // import siteMap from 'siteMap';

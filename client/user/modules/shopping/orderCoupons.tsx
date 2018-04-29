@@ -1,5 +1,5 @@
 import { defaultNavBar } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
+import { ShoppingService } from 'user/services/shoppingService';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {

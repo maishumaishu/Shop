@@ -1,5 +1,5 @@
 import { defaultNavBar } from 'user/site';
-import { MemberService } from 'userServices/memberService';
+import { MemberService } from 'user/services/memberService';
 import { app } from 'user/site';
 import { FormValidator, rules } from 'dilu';
 import { Page } from 'user/application';

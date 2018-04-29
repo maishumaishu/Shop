@@ -1,7 +1,7 @@
 ﻿import { UserService } from 'services/user';
 import * as wz from 'myWuZhui';
 import { FormValidator, rules } from 'dilu';
-import { userInfo } from 'userServices/memberService';
+import { userInfo } from 'user/services/memberService';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 

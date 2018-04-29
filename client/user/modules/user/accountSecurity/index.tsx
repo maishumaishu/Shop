@@ -1,6 +1,6 @@
 import { defaultNavBar, app } from 'site';
 import { MobileBindingPageArguments } from 'modules/user/accountSecurity/mobileBinding';
-import { MemberService } from 'userServices/memberService';
+import { MemberService } from 'user/services/memberService';
 import { FormValidator, rules } from 'dilu';
 import siteMap from 'siteMap';
 

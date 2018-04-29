@@ -1,5 +1,5 @@
 import { defaultNavBar } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
+import { ShoppingService } from 'user/services/shoppingService';
 import { Tabs } from 'user/controls/tabs';
 import { DataList } from 'user/controls/dataList';
 

@@ -1,5 +1,5 @@
-import { StationService } from 'userServices/stationService';
-import { MobilePage } from 'user/components/mobilePage';
+import { StationService } from 'user/services/stationService';
+import { MobilePage } from 'components/mobilePage';
 
 export default async function (page: chitu.Page) {
 

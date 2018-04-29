@@ -1,4 +1,4 @@
-import { Service } from 'userServices/service';
+import { Service } from 'user/services/service';
 
 export class AccountService extends Service {
     private url(path: string) {

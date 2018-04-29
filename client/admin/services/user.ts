@@ -1,5 +1,5 @@
 import { default as Service } from 'services/service';
-import { userInfo } from 'userServices/memberService';
+import { userInfo } from 'user/services/memberService';
 // import { LoginResult } from 'adminServices/weixin';
 
 function guid() {

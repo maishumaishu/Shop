@@ -1,6 +1,6 @@
 import { defaultNavBar, app, formatDate } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
-import { AccountService } from 'userServices/accountService';
+import { ShoppingService } from 'user/services/shoppingService';
+import { AccountService } from 'user/services/accountService';
 import * as ui from 'ui';
 import siteMap from 'siteMap';
 

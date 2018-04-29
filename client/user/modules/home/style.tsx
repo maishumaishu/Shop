@@ -1,6 +1,6 @@
-// import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'userServices';
-import { StationService } from 'userServices/stationService';
-import { MobilePage } from 'user/components/mobilePage';
+// import { ShoppingCartService, ShoppingService, ShoppingCartItem, userData, StationService } from 'user/services';
+import { StationService } from 'user/services/stationService';
+import { MobilePage } from 'components/mobilePage';
 import * as ReactDOM from 'react-dom';
 
 

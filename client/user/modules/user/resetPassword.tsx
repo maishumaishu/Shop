@@ -1,6 +1,6 @@
 import { defaultNavBar, app } from 'site';
 import { FormValidator, rules } from 'dilu';
-import { MemberService } from 'userServices/memberService';
+import { MemberService } from 'user/services/memberService';
 import * as ui from 'ui';
 
 export default function (page: chitu.Page) {

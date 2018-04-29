@@ -1,7 +1,7 @@
-import { default as ProductControl } from 'user/components/product/control';
-import { guid } from 'userServices/service';
-import { ShoppingService } from 'userServices/shoppingService';
-import { MobilePage } from 'user/components/mobilePage';
+import { default as ProductControl } from 'components/product/control';
+import { guid } from 'user/services/service';
+import { ShoppingService } from 'user/services/shoppingService';
+import { MobilePage } from 'components/mobilePage';
 import { Page } from 'application';
 
 export default async function (page: Page) {

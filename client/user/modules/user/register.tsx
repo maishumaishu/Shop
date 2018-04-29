@@ -1,7 +1,7 @@
 import { defaultNavBar, app } from 'site';
 import { FormValidator, rules } from 'dilu';
-// import * as services from 'userServices';
-import { MemberService } from 'userServices/memberService';
+// import * as services from 'user/services';
+import { MemberService } from 'user/services/memberService';
 import * as ui from 'ui';
 import siteMap from 'user/siteMap';
 

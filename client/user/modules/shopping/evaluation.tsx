@@ -1,5 +1,5 @@
-import { ShoppingService } from 'userServices/shoppingService';
-import { ShoppingCartService } from 'userServices/shoppingCartService';
+import { ShoppingService } from 'user/services/shoppingService';
+import { ShoppingCartService } from 'user/services/shoppingCartService';
 // import { PageComponent, PageHeader, PageFooter, PageView, Dialog, Tabs, DataList, ImageBox } from 'mobileControls';
 import { Tabs } from 'user/controls/tabs';
 import { DataList } from 'user/controls/dataList';

@@ -1,6 +1,6 @@
 import { defaultNavBar } from 'site';
-import { imageUrl, config } from 'userServices/service';
-import { ShoppingService } from 'userServices/shoppingService';
+import { imageUrl, config } from 'user/services/service';
+import { ShoppingService } from 'user/services/shoppingService';
 import { DataList, dataList, MyDataList } from 'user/controls/dataList';
 import { Tabs } from 'user/controls/tabs';
 import { ProductImage } from 'user/controls/productImage';

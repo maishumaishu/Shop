@@ -22,7 +22,7 @@
 // });
 
 import { Service } from 'services/service';
-import { tokens } from 'userServices/service';
+import { tokens } from 'user/services/service';
 
 let headers = {};
 if (Service.token)

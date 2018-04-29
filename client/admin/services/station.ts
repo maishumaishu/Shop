@@ -1,6 +1,6 @@
 ﻿import { default as Service, guid, imageUrl } from 'services/service';
-import templates from 'services/data/templates'
-import { imageServiceBaseUrl } from '../../share/common';
+import templates from 'admin/services/data/templates'
+import { imageServiceBaseUrl } from 'share/common';
 export { guid } from 'services/service';
 
 export class StationService extends Service {

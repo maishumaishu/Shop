@@ -1,8 +1,8 @@
-import { Service } from 'userServices/service';
+import { Service } from 'user/services/service';
 // import { ShoppingCartService } from 'user/services/shoppingCartService';
-import { MemberService } from 'userServices/memberService';
-import { AccountService } from 'userServices/accountService';
-import { ShoppingService } from 'userServices/shoppingService';
+import { MemberService } from 'user/services/memberService';
+import { AccountService } from 'user/services/accountService';
+import { ShoppingService } from 'user/services/shoppingService';
 
 /** 与用户相关的数据 */
 export class UserData {

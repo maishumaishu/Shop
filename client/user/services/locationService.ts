@@ -1,4 +1,4 @@
-import { Service, config } from 'userServices/service';
+import { Service, config } from 'user/services/service';
 
 
 export class LocationService extends Service {

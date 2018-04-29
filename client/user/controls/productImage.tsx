@@ -1,4 +1,4 @@
-import { imageUrl } from 'userServices/service';
+import { imageUrl } from 'user/services/service';
 export interface Props extends React.Props<ProductImage> {
     product: Product
 }

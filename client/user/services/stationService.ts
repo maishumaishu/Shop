@@ -1,4 +1,4 @@
-import { Service, config, imageUrl, guid } from 'userServices/service';
+import { Service, config, imageUrl, guid } from 'user/services/service';
 import { StationService as AdminStationService } from 'admin/services/station';
 export class PageDatas {
 

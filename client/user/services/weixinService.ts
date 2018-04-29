@@ -1,4 +1,4 @@
-import { Service, tokens } from 'userServices/service';
+import { Service, tokens } from 'user/services/service';
 
 var ua = navigator.userAgent.toLowerCase();
 export let isWeixin = (ua.match(/MicroMessenger/i) as any) == 'micromessenger';

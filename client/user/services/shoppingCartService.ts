@@ -1,4 +1,4 @@
-import { Service, imageUrl, tokens, guid } from 'userServices/service';
+import { Service, imageUrl, tokens, guid } from 'user/services/service';
 export class ShoppingCartService extends Service {
 
     private static _items = new chitu.ValueStore<ShoppingCartItem[]>([]);

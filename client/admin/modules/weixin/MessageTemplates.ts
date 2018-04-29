@@ -1,5 +1,5 @@
 import site from 'site';
-import weixin from 'adminServices/weixin';
+import weixin from 'admin/services/weixin';
 import validation = require('knockout.validation');
 
 let JData = window['JData'];

@@ -1,6 +1,6 @@
-import { MobilePageDesigner, Props } from 'mobilePageDesigner';
-import { StationService as AdminStation } from 'services/station';
-import { StationService as UserStation } from 'userServices/stationService';
+import { MobilePageDesigner, Props } from 'components/mobilePageDesigner';
+import { StationService as AdminStation } from 'admin/services/station';
+import { StationService as UserStation } from 'user/services/stationService';
 import { AppError } from 'share/common'
 export default async function (page: chitu.Page) {
 

@@ -1,8 +1,8 @@
 import { defaultNavBar, app } from 'site';
 // import { ShoppingService, MemberService, isWeixin, createWeixinClient, userData } from 'services';
-import { MemberService } from 'userServices/memberService';
-import { userData } from 'userServices/userData';
-import { isWeixin, createWeixinClient, WeiXinService } from 'userServices/weixinService';
+import { MemberService } from 'user/services/memberService';
+import { userData } from 'user/services/userData';
+import { isWeixin, createWeixinClient, WeiXinService } from 'user/services/weixinService';
 import { RegionsPageRouteValues } from 'modules/user/regions';
 
 import * as ui from 'ui';

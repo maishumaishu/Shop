@@ -146,21 +146,22 @@ module.exports = function (grunt) {
                     src: [`**/*.less`],
                     dest: `${user_dest}`,
                     ext: '.css',
+
+                }]
+            },
+            components: {
+                files: [{
+                    expand: true,
+                    cwd: `client/components`,
+                    src: ['**/*.less'],
+                    dest: `${out}/components`,
+                    ext: '.css',
                     filter: function (filepath) {
                         if (filepath.endsWith('style.less'))
                             return false;
 
                         return true;
                     }
-                }]
-            },
-            mobileComponents: {
-                files: [{
-                    expand: true,
-                    cwd: `mobileComponents`,
-                    src: ['**/*.less'],
-                    dest: `mobileComponents/dest/mobileComponents`,
-                    ext: '.css'
                 },]
             }
         },

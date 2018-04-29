@@ -1,8 +1,8 @@
 import { defaultNavBar, app } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
-import { ShoppingCartService } from 'userServices/shoppingCartService';
-import { AccountService } from 'userServices/accountService';
-import { userData } from 'userServices/userData';
+import { ShoppingService } from 'user/services/shoppingService';
+import { ShoppingCartService } from 'user/services/shoppingCartService';
+import { AccountService } from 'user/services/accountService';
+import { userData } from 'user/services/userData';
 import { SetAddress, ReceiptListRouteValues } from 'modules/user/receiptList';
 import siteMap from 'siteMap';
 

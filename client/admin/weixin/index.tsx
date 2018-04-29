@@ -17,7 +17,6 @@ requirejs.config({
         react: '../../scripts/react',
 
         services: '../services',
-        userServices: '../../user/services',
         qrcode: '../../scripts/qrcode',
         weixin: './',
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io',

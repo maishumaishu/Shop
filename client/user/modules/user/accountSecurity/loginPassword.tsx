@@ -1,7 +1,7 @@
 import { defaultNavBar } from 'site';
 import { FormValidator, rules } from 'dilu';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
-import { MemberService } from 'userServices/memberService';
+import { MemberService } from 'user/services/memberService';
 import * as ui from 'ui';
 import { Page } from 'user/application';
 

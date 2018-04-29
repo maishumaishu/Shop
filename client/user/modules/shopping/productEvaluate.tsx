@@ -1,5 +1,5 @@
 import { defaultNavBar } from 'site';
-import { ShoppingService } from 'userServices/shoppingService';
+import { ShoppingService } from 'user/services/shoppingService';
 import { ImageFileSelector } from 'user/controls/imageFileSelector';
 
 export type RouteValues = { orderDetailId: string, productImageUrl: string };
