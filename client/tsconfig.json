@@ -11,13 +11,13 @@
             "*": [
                 "lib/*",
                 "lib/es6/*"
-            ],
+            ]
             // "adminComponents/*": [
             //     "client/admin/components/*"
             // ],
-            "adminServices/*": [
-                "client/admin/services/*"
-            ],
+            // "adminServices/*": [
+            //     "client/admin/services/*"
+            // ]
             // "componentDesigner": [
             //     "client/admin/modules/station/components/componentDesigner"
             // ],
@@ -27,10 +27,10 @@
             // "mobilePageDesigner": [
             //     "client/admin/modules/station/components/mobilePageDesigner"
             // ],
-            "userServices/*": [
-                "client/user/userServices/*",
-                "client/user/services/*"
-            ],
+            // "userServices/*": [
+            //     "client/user/userServices/*",
+            //     "client/user/services/*"
+            // ]
             // "virtualMobile": [
             //     "client/admin/modules/station/components/virtualMobile"
             // ]

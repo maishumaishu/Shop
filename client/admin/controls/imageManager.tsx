@@ -27,7 +27,7 @@ export default class ImageManager extends React.Component<Props, State> {
     async componentDidMount() {
         let { station } = this.props;
         let self = this;
-        let dataSource = this.dataSource = new wuzhui.DataSource({
+        let dataSource = this.dataSource = new wuzhui.DataSource<{ id: string }>({
             primaryKeys: ['id'],
             async select(args) {
                 let result = await station.images(args, 140, 140);
