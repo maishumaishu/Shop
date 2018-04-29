@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
 import MenuControl from 'user/components/menu/control';
-import { Control, ControlProps } from 'user/components/common';
+import { Control, ControlProps, componentsDir } from 'user/components/common';
+import { guid } from 'share/common';
 
 export interface Props extends React.Props<MobilePage> {
     pageData: PageData;
@@ -25,6 +26,10 @@ export interface ControlDescription {
 export type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
 const menuHeight = 50;
 type State = { pageData: PageData };
+
+/**
+ * 移动端页面，将 PageData 渲染为移动端页面。
+ */
 export class MobilePage extends React.Component<Props, State>{
     private screenElement: HTMLElement;
     private selecteControl: ControlPair;
@@ -49,6 +54,11 @@ export class MobilePage extends React.Component<Props, State>{
         return (element as any).mobilePage;
     }
 
+    /**
+     * 创建控件
+     * @param controlData 描述控件的数据
+     * @param element 承载控件的 HTML 元素
+     */
     async createControlInstance(controlData: ControlDescription, element: HTMLElement): Promise<ControlPair> {
         let { controlId, controlName, data, selected } = controlData;
         let types = await MobilePage.getControlType(controlName);
@@ -65,13 +75,17 @@ export class MobilePage extends React.Component<Props, State>{
         return result;
     }
 
+    /**
+     * 获取控件在类型
+     * @param controlName 控件的名称
+     */
     static getControlType(controlName: string): Promise<{ Control: React.ComponentClass<any>, Props: { new() } }> {
 
         let arr = controlName.split(':');
         let fileName = arr[0];
         let name = arr[1] || 'default';
 
-        let filePath = `user/components/${fileName}/control`;
+        let filePath = `${componentsDir}/${fileName}/control`;
         return new Promise((resolve, reject) => {
             requirejs([filePath], function (exports) {
                 resolve({ Control: exports[name], Props: exports.Props });
@@ -84,22 +98,6 @@ export class MobilePage extends React.Component<Props, State>{
     getChildContext(): { mobilePage: MobilePage } {
         return { mobilePage: this }
     }
-
-    //======================================================================================
-    // For Design Time
-    // controlCreated(control: Control<any, any>, controlType: React.ComponentClass<any>) {
-    //     this.createdControlCount = this.createdControlCount + 1;
-    //     var total = this.headerControlsCount + this.footerControlsCount + this.viewControlsCount;
-    //     if (this.createdControlCount == total && this.selecteControl != null &&
-    //         this.props.designTime.controlSelected != null) {
-    //         let c = this.selecteControl;
-    //         // 加上延时，否则编辑器有可能显示不出来
-    //         setTimeout(() => {
-    //             this.props.designTime.controlSelected(c.control, c.controlType);
-    //         }, 100);
-    //     }
-    // }
-    //======================================================================================
 
     renderControls(controls: ControlDescription[]) {
         if (this.props.designTime) {
@@ -166,6 +164,10 @@ export class MobilePage extends React.Component<Props, State>{
         );
     }
 
+    /**
+     * 渲染页面的头部
+     * @param pageData 页面的数据，用于描述一个页面
+     */
     renderHeader(pageData: PageData): JSX.Element {
         if (!pageData.header)
             return null;
@@ -180,6 +182,10 @@ export class MobilePage extends React.Component<Props, State>{
         )
     }
 
+    /**
+     * 渲染页面的脚
+     * @param pageData 页面的数据，用于描述一个页面
+     */
     renderFooter(pageData: PageData): JSX.Element {
         let footerControls = (pageData.footer || { controls: [] }).controls || [];
         return (
@@ -191,6 +197,10 @@ export class MobilePage extends React.Component<Props, State>{
     }
 
 
+    /**
+     * 渲染页面视图
+     * @param pageData 页面数据，用于描述一个页面
+     */
     renderViews(pageData: PageData) {
         let views = pageData.views || [];
 
@@ -350,12 +360,3 @@ export class MobilePage extends React.Component<Props, State>{
     }
 }
 
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}

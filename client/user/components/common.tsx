@@ -20,7 +20,6 @@ export interface ControlConstructor {
     new(props): Control<any, any>
 }
 export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
-    // private _element: HTMLElement;
     private _page: MobilePage;
     private _elementPage: chitu.Page;
     private _state: S;
@@ -44,14 +43,6 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     get elementPage() {
         return this._elementPage;
     }
-
-    // get element(): HTMLElement {
-    //     return this._element;
-    // }
-    // set element(value: HTMLElement) {
-    //     console.assert(value != null, 'value can not null.');
-    //     this._element = value;
-    // }
 
     get state(): S {
         return this._state;
@@ -93,42 +84,12 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         return super.setState(state, callback);
     }
 
-
-
     render() {
         if (this.mobilePage.props.designTime != null)
             return this._render(createDesignTimeElement);
 
         return this._render(React.createElement);
     }
-
-    // static loadEditor(controlName: string, control: Control<any, any>, editorElement: HTMLElement) {
-    //     let editorPathName = `pageComponent/${controlName}/editor`; 
-    //     requirejs([editorPathName], (exports) => {
-    //         let editorType = exports.default;
-    //         console.assert(editorType != null, 'editor type is null');
-    //         let editorReactElement = React.createElement(editorType, { control });
-    //         ReactDOM.render(editorReactElement, editorElement);
-    //     })
-    // }
-
-    // private get isDesignMode() {
-    //     let screenElement = this.findScreenElement(this.element);
-    //     return screenElement != null;
-    // }
-
-    // private findScreenElement(element: HTMLElement): HTMLElement {
-    //     let screenElement: HTMLElement;
-    //     let p = element;
-    //     while (p != null) {
-    //         if (p.className.indexOf('screen') >= 0) {
-    //             screenElement = p;
-    //             break;
-    //         }
-    //         p = p.parentElement;
-    //     }
-    //     return screenElement;
-    // }
 
     protected loadControlCSS() {
         var typeName = this.constructor.name;
@@ -163,7 +124,6 @@ export function createDesignTimeElement(type: string | React.ComponentClass<any>
         (props as any).href = 'javascript:';
     }
 
-    // props.mode = 'design';
     let args = [type, props];
     for (let i = 2; i < arguments.length; i++) {
         args[i] = arguments[i];
