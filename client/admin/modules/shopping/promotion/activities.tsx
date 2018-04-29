@@ -1,5 +1,5 @@
 
-import { ActivityService } from 'services/activity';
+import { ActivityService } from 'admin/services/activity';
 import site from 'site';
 import app from 'application';
 import { FormValidator, rules } from 'dilu';
