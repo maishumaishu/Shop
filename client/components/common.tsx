@@ -4,6 +4,7 @@ export const pageClassName = 'mobile-page';
 import { PropTypes } from 'prop-types';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { ADMIN_APP } from 'share/common';
 
 export interface IMobilePageDesigner {
     selecteControl(control: Control<any, any>, controlType: React.ComponentClass<any>);
@@ -108,6 +109,10 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
             item.remove(func);
             componentWillUnmount();
         }
+    }
+
+    get isDesignTime(): boolean {
+        return window[ADMIN_APP] != null;
     }
 }
 

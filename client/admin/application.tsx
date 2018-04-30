@@ -2,7 +2,7 @@
 import * as ReactDOM from 'react-dom';
 import * as ui from 'ui';
 import { Service } from 'admin/services/service';
-import { shopName } from 'share/common';
+import { shopName, ADMIN_APP } from 'share/common';
 import { MasterPage } from 'masterPage';
 import siteMap from 'admin/siteMap';
 import site from './site';
@@ -108,6 +108,6 @@ class Application extends chitu.Application {
 
 
 
-let app: Application = window['admin-app'] = window['admin-app'] || new Application();
+let app: Application = window[ADMIN_APP] = window[ADMIN_APP] || new Application();
 
 export default app;

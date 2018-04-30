@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { isWeixin } from 'user/services/weixinService';
 import { app } from "user/application";
+import { ADMIN_APP } from 'share/common';
 export { app } from 'user/application';
 export { default as siteMap } from 'user/siteMap';
 
@@ -28,8 +29,8 @@ export function subscribe<T>(component: React.Component<any, any>, item: chitu.V
 export function defaultNavBar(elementPage: chitu.Page,
     options?: { title?: string, right?: JSX.Element, showBackButton?: boolean }) {
     //=============================
-    // window['admin-app'] 表明为设计时
-    if (window['admin-app']) {
+    // window[ADMIN_APP] 表明为设计时
+    if (window[ADMIN_APP]) {
         return null;
     }
     //=============================

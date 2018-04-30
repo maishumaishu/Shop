@@ -163,7 +163,7 @@ export default class ProductListControl extends Control<Props, State> {
                     for (let i = 0; i < q.length; i++) {
                         let o = q.item(i) as HTMLElement;
                         o.onclick = () => {
-                            if (this.mobilePage.props.designTime) {
+                            if (this.isDesignTime) {
                                 return;
                             }
                             let productId = o.getAttribute('product-id');
