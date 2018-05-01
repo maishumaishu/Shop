@@ -73,14 +73,14 @@ requirejs.config({
         // admin: '../admin',
         // share: '../share',
         // 'share/common': '../share/common',
-        build: 'user/build',
-        site: 'user/site',
+        // build: 'user/build',
+        // site: 'user/site',
     }
 });
 
-requirejs(['build'], function () {
+requirejs(['user/build'], function () {
     requirejs(["css!user/content/font-awesome"]);
-    requirejs(['react', 'react-dom', 'site', 'ui', 'prop-types'],
+    requirejs(['react', 'react-dom', 'user/site', 'ui', 'prop-types'],
         function (React, ReactDOM, site) {
             window['React'] = React;
             window['ReactDOM'] = ReactDOM;
