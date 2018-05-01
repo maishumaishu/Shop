@@ -11,6 +11,19 @@
             button {
                 color: white
             }
+        } 
+        
+        .top {
+            position: absolute; 
+            right: 16px;
+            top: 0px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+
+            .remove {
+                display: none;
+            }
         }  
         
         @selected_color:blue;
@@ -34,16 +47,23 @@
                 transform: rotate(45deg);
             }
 
-            .top {
-                position: absolute; 
-                right: 16px;
-                top: 0px;
-                color: white;
-                font-size: 12px;
-
-                font-weight: bold;
-            }  
+            &:hover .remove {
+                display: none;
+            }
         }
+
+        &:hover .remove {
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            padding-top: 2px;
+            display: block;
+            background-color: rgba(0, 0, 0, 0.55);
+            i {
+                color: white;
+            }
+        }
+        
     }
 
     

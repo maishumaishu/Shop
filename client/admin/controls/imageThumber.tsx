@@ -4,7 +4,8 @@ const imageThumbSize = 112;
 type ImageThumberProps = React.Props<ImageThumber> & {
     imagePath: string, remove?: (imagePath: string) => Promise<any>,
     className?: string, onClick?: (sender: ImageThumber, e: React.MouseEvent) => void,
-    selectedText?: string
+    selectedText?: string,
+    text?: string, title?: string
 }
 
 type ImageThumberState = {
@@ -17,10 +18,6 @@ export default class ImageThumber extends React.Component<ImageThumberProps, Ima
         super(props);
         this.state = { selectedText: '' }
     }
-    // set selectedText(value: string) {
-    //     this.state.selectedText = value;
-    //     this.setState(this.state);
-    // }
     private setDeleteButton(e: HTMLButtonElement, imagePath: string) {
         if (!e) return;
         if (this.props.remove) {
@@ -36,22 +33,30 @@ export default class ImageThumber extends React.Component<ImageThumberProps, Ima
         }
     }
     render() {
-        let { imagePath, className, onClick, selectedText } = this.props;
+        let { imagePath, className, onClick, selectedText, text, title } = this.props;
         className = className || '';
+        text = text || '';
         return (
-            <div className={`image-thumber ${className}`}
+            <div className={`image-thumber ${className}`} title={title}
                 onClick={(e) => {
                     this.props.onClick ? this.props.onClick(this, e) : null
                 }}>
                 <div className={`item text-center  ${selectedText ? 'selected' : ''}`}>
                     <div className="triangle"></div>
-                    <div className="top">{selectedText}</div>
-                    <img className="img-responsive" src={imagePath} />
+                    <div className="top">
+                        {selectedText}
+                        <div className="remove">
+                            <i className="icon-remove" ref={(e: any) => this.setDeleteButton(e, imagePath)} />
+
+                            {/* <button className="btn-link"
+                                ref={(e: HTMLButtonElement) => this.setDeleteButton(e, imagePath)}>
+                            </button> */}
+                        </div>
+                    </div>
+                    <img className="img-responsive" src={imagePath}
+                        ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
                     <div className="bottom">
-                        <button className="btn-link"
-                            ref={(e: HTMLButtonElement) => this.setDeleteButton(e, imagePath)}>
-                            删除
-                        </button>
+                        {text}
                     </div>
                 </div>
             </div>

@@ -7,14 +7,15 @@ import { imageUrl } from 'share/common';
 requirejs(['css!admin/controls/imageManager']);
 
 type State = {
-    images: { id: string }[],
-    selectedItems: number[]
+    images: SiteImageData[],
+    selectedItems: string[]
 }
+
 type Props = { station: StationService } & React.Props<ImageManager>;
 export default class ImageManager extends React.Component<Props, State> {
 
     private showDialogCallback: (images: string[]) => void;
-    private dataSource: wuzhui.DataSource<{ id: string }>;
+    private dataSource: wuzhui.DataSource<SiteImageData>;
     private pagingBarElement: HTMLElement;
     private element: HTMLElement;
 
@@ -27,7 +28,7 @@ export default class ImageManager extends React.Component<Props, State> {
     async componentDidMount() {
         let { station } = this.props;
         let self = this;
-        let dataSource = this.dataSource = new wuzhui.DataSource<{ id: string }>({
+        let dataSource = this.dataSource = new wuzhui.DataSource<SiteImageData>({
             primaryKeys: ['id'],
             async select(args) {
                 let result = await station.images(args, 140, 140);
@@ -41,10 +42,11 @@ export default class ImageManager extends React.Component<Props, State> {
                 self.setState(self.state);
                 return result;
             },
-            async insert(item: { id: string, data: string }) {
-                console.assert(item.data != null);
-                let result = await station.saveImage(item.data);
-                item.id = result.id;
+            async insert(item) {
+                console.assert((item as any).data != null);
+                let result = await station.saveImage((item as any).data);
+                // item.id = result.id;
+                Object.assign(item, result);
                 self.state.images.unshift(item);
                 self.setState(self.state);
                 return result;
@@ -73,7 +75,7 @@ export default class ImageManager extends React.Component<Props, State> {
         this.showDialogCallback = callback;
         this.state.selectedItems = [];
         this.setState(this.state);
-        
+
         ui.showDialog(this.element);
     }
 
@@ -101,15 +103,16 @@ export default class ImageManager extends React.Component<Props, State> {
                         </div>
                         <div className="modal-body">
                             {images.map((o, i) => {
-                                let thumber = <ImageThumber key={i} imagePath={imageUrl(o.id, 140, 140)} className="col-xs-2"
+                                let thumber = <ImageThumber key={o.id} imagePath={imageUrl(o.id, 140, 140)} className="col-xs-2"
                                     remove={(imagePath: string) => this.removeImage(o)}
-                                    selectedText={selectedItems.indexOf(i) >= 0 ? `${selectedItems.indexOf(i) + 1}` : ''}
+                                    selectedText={selectedItems.indexOf(o.id) >= 0 ? `${selectedItems.indexOf(o.id) + 1}` : ''}
+                                    text={o.width != null && o.height != null ? `${o.width} X ${o.height}` : " "}
                                     onClick={(sender, e) => {
-                                        if (selectedItems.indexOf(i) >= 0) {
-                                            this.state.selectedItems = selectedItems.filter(o => o != i);
+                                        if (selectedItems.indexOf(o.id) >= 0) {
+                                            this.state.selectedItems = selectedItems.filter(c => c != o.id);
                                         }
                                         else {
-                                            this.state.selectedItems.push(i);
+                                            this.state.selectedItems.push(o.id);
                                         }
                                         this.setState(this.state);
                                     }} />
@@ -131,7 +134,7 @@ export default class ImageManager extends React.Component<Props, State> {
                             <button name="ok" type="button" className="btn btn-primary"
                                 onClick={() => {
                                     if (this.showDialogCallback) {
-                                        let imageIds = this.state.selectedItems.map(o => this.state.images[o].id);
+                                        let imageIds = this.state.selectedItems.map(o => o);
                                         let images = imageIds.map(o => imageUrl(o));
                                         this.showDialogCallback(images);
                                     }
