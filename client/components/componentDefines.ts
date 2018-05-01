@@ -1,6 +1,7 @@
 export interface ComponentDefine {
     name: string, displayName: string, icon: string, introduce: string,
-    target?: 'view' | 'footer' | 'header'
+    target?: 'view' | 'footer' | 'header',
+    visible?: boolean,
 }
 // type T = { [propName:string]: Array<ComponentDefine> };
 // let a: T;
@@ -57,6 +58,13 @@ let componets: Array<ComponentDefine> = [
         displayName: "轮播",
         icon: "icon-list-alt",
         introduce: "多张图片轮流播放"
+    },
+    {
+        name: "productInfo",
+        displayName: "商品信息",
+        icon: "",
+        introduce: "",
+        visible: false,
     }
 ];
 

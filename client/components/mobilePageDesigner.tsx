@@ -403,7 +403,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                 padding: 0, listStyle: 'none',
                                 display: showComponentPanel == true ? 'block' : 'none'
                             }}>
-                            {components.map((c, i) => {
+                            {components.filter(o => o.visible != false).map((c, i) => {
                                 return (
                                     <li key={c.name} data-control-name={c.name} data-target={c.target}
                                         style={{
