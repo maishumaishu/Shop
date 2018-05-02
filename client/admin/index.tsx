@@ -104,20 +104,16 @@ requirejs.config({
         ace: 'assets/js/uncompressed/ace',
 
         'ue': 'scripts/ueditor',//'http://web.bailunmei.com/ueditor',//
-        //user/services: 'user/services',
         adminServices: 'admin/services',
         'masterPage': 'admin/masterPage',
-        // 'siteMap': 'admin/siteMap',
         'application': 'admin/application',
         site: 'admin/site',
         modules: 'admin/modules',
         content: 'admin/content',
         build: 'admin/build',
         weixin: 'admin/weixin',
-        // 'admin/services/service': 'admin/services/service',
         'tips': 'admin/tips',
         'ue.ext': 'admin/ue.ext',
-        // 'controls': 'admin/controls',
         myWuZhui: 'admin/myWuZhui',
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
     }

@@ -114,9 +114,12 @@ class ProductPropertiesModel {
     //===========================================
 }
 
-export class PropertiesComponent extends React.Component<
-    React.Props<PropertiesComponent> & { name: string, properties: KeyValue[], emptyText?: string },
-    { properties: KeyValue[] }>{
+type Props = React.Props<PropertiesComponent> & {
+    name: string, properties: KeyValue[], emptyText?: string,
+    changed?: (value: KeyValue[]) => void
+}
+
+export class PropertiesComponent extends React.Component<Props, { properties: KeyValue[] }>{
     private dialogElement: HTMLFormElement;
     private fieldsInput: HTMLInputElement;
 
@@ -141,8 +144,19 @@ export class PropertiesComponent extends React.Component<
 
         this.state.properties = properties;
         this.setState(this.state);
-
         ui.hideDialog(this.dialogElement);
+
+        if (this.props.changed) {
+            this.props.changed(properties);
+        }
+    }
+    bindInput(e: React.FormEvent, c: KeyValue) {
+        var property = this.state.properties.filter(d => d.key == c.key)[0];
+        property.value = (e.target as HTMLInputElement).value;
+        this.setState(this.state);
+        if (this.props.changed) {
+            this.props.changed(this.state.properties);
+        }
     }
     render() {
         let inputValue = this.state.properties.map(o => o.key).join(', ');
@@ -154,7 +168,7 @@ export class PropertiesComponent extends React.Component<
                         <h4>{this.props.name}</h4>
                     </div>
                     <div className="col-sm-6 button-bar">
-                        <button className="btn btn-primary btn-sm"
+                        <button className="btn btn-primary btn-sm pull-right"
                             onClick={() => this.showPropertiesDialog()}>设置</button>
                     </div>
                 </div>
@@ -174,11 +188,7 @@ export class PropertiesComponent extends React.Component<
                                 </label>
                                 <div className="col-lg-9">
                                     <input className="form-control" value={c.value}
-                                        onChange={(e) => {
-                                            var property = this.state.properties.filter(d => d.key == c.key)[0];
-                                            property.value = (e.target as HTMLInputElement).value;
-                                            this.setState(this.state);
-                                        }} />
+                                        onChange={(e) => this.bindInput(e, c)} />
                                 </div>
                             </div>
                         )}

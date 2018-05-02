@@ -14,6 +14,7 @@ export interface Props extends React.Props<MobilePage> {
             controlType: React.ComponentClass<any>
         ) => void
     };
+    controlCreated?: (control: Control<any, any> & { controlName: string }) => void
 }
 
 export interface ControlDescription {
@@ -68,7 +69,6 @@ export class MobilePage extends React.Component<Props, State>{
         console.assert(this.props.elementPage != null);
         let reactElement = React.createElement(types.Control, props);
         let control: Control<any, any> = ReactDOM.render(reactElement, element);
-        // control.mobilePage = this;
         element.className = `${controlName}-control`;
         control.id = controlId;
         let result: ControlPair = { control, controlType: types.Control };
@@ -107,21 +107,22 @@ export class MobilePage extends React.Component<Props, State>{
         return this.renderRuntimeControls(controls);
     }
 
-    renderControl(controlData: ControlDescription) {
-        let o = controlData;
-        let runtimeControl = (
-            <div id={o.controlId} key={o.controlId}
-                ref={async (e: HTMLElement) => {
-                    if (!e) return;
-                    var c = await this.createControlInstance(o, e);
-                    let obj = Object.assign(c.control, { controlId: o.controlId, controlName: o.controlName });
-                    this.controls.push(obj);
+    // renderControl(controlData: ControlDescription) {
+    //     let o = controlData;
+    //     let runtimeControl = (
+    //         <div id={o.controlId} key={o.controlId}
+    //             ref={async (e: HTMLElement) => {
+    //                 if (!e) return;
+    //                 var c = await this.createControlInstance(o, e);
+    //                 let obj = Object.assign(c.control, { controlId: o.controlId, controlName: o.controlName });
+    //                 this.controls.push(obj);
+    //                 if (this.props.controlCreated)
+    //                     this.props.controlCreated(obj);
+    //             }} />
+    //     );
 
-                }} />
-        );
-
-        return runtimeControl;
-    }
+    //     return runtimeControl;
+    // }
 
     renderRuntimeControls(controls: ControlDescription[]) {
         controls = controls || [];
@@ -132,6 +133,8 @@ export class MobilePage extends React.Component<Props, State>{
                     var c = await this.createControlInstance(o, e);
                     var componet = Object.assign(c.control, { controlId: o.controlId, controlName: o.controlName });
                     this.controls.push(componet);
+                    if (this.props.controlCreated)
+                        this.props.controlCreated(componet);
                 }} />
         );
     }
@@ -159,6 +162,9 @@ export class MobilePage extends React.Component<Props, State>{
                     if (o.selected == true) {
                         this.selecteControl = c;
                     }
+
+                    if (this.props.controlCreated)
+                        this.props.controlCreated(componet);
 
                 }} />
         );

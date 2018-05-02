@@ -33,8 +33,8 @@ export interface State {
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
-    validator: FormValidator;
-    nameInput: HTMLInputElement;
+    private validator: FormValidator;
+    private nameInput: HTMLInputElement;
     private hasChanged: boolean = false;
     private userApp: DesignTimeUserApplication;
     private virtualMobile: VirtualMobile;
@@ -43,12 +43,13 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private allContainer: HTMLElement;
     private _element: HTMLElement;
     private selectedContainer: HTMLElement;
-    private mobilePage: MobilePage;
     private selectedControlId: string;
     private editorNameElement: HTMLElement;
     private editorName: string;
     private form: HTMLElement;
+    private editors = new Array<Editor<EditorProps, any>>();
 
+    mobilePage: MobilePage;
     saved: chitu.Callback1<MobilePageDesigner, { pageData: PageData }>;
 
     constructor(props: Props) {
@@ -80,14 +81,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         }
 
         this.saved = chitu.Callbacks<MobilePageDesigner, { pageData: PageData }>();
-
-        // if (pageData.id == null) {
-        //     // pagesDatas.createDefaultPage = (pageData) => this.station.savePageData(pageData);
-        //     // let station = this.props.pageData
-        //     this.props.save(this.props.pageData).then(data => {
-        //         this.props.pageData.id = data.id;
-        //     });
-        // }
     }
 
     async loadMenu() {
@@ -125,16 +118,18 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             }
         }
 
+        for (let i = 0; i < this.editors.length; i++) {
+            if (this.editors[i].validate) {
+                let result = await this.editors[i].validate();
+                if (!result) {
+                    this.selecteControl(this.editors[i].props.control as any);
+                    return Promise.reject(`Editor validate fail`);
+                }
+            }
+        }
+
         let pageData = this.state.pageData;
         pageData.name = this.nameInput.value;
-        // let controlDatas = new Array<ControlDescrtion>();
-        //=====================================================================
-        // 将 pageData 中的所以控件找出来，放入到 controlDatas
-        // (pageData.view || []).forEach(view => controlDatas.push(...view.controls || []));
-        // controlDatas.push(...pageData.view.controls || []);
-        // pageData.view = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.view || {}));
-        // pageData.footer = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.footer || {}));
-        // pageData.header = JSON.parse(JSON.stringify(this.mobilePage.state.pageData.header || {}));
 
         setControlValues(this.mobilePage, pageData.view.controls);
 
@@ -171,17 +166,15 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         });
     }
 
-    selecteControl(control: Control<any, any> & { id?: string }, controlType: React.ComponentClass<any>) {
-        if (!control.id)
-            control.id = guid();
+    selecteControl(control: Control<any, any> & { id?: string, controlName: string }) {
 
-        let controlName = controlType.name;
-        if (controlName.endsWith('Control')) {
-            controlName = controlName[0].toLowerCase() + controlName.substr(1, controlName.length - 'Control'.length - 1);
-        }
+        console.assert(control.id != null);
+
+        let controlName = control.controlName;
         let editorPathName = Editor.path(controlName);
         let editorId = `editor-${control.id}`;
         let editorElement = this.editorsElement.querySelector(`[id='${editorId}']`) as HTMLElement;
+        console.assert(editorElement != null);
 
         this.selectedControlId = control.id;
         this.editorName =
@@ -197,27 +190,45 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         if (this.currentEditor)
             this.currentEditor.style.display = 'none';
 
+        editorElement.style.display = 'block';
+        // if (this.currentEditor)
+        //     this.currentEditor.style.display = 'none';
+
+        this.currentEditor = editorElement;
+    }
+
+    loadControlEditor(control: Control<any, any> & { id?: string, controlName: string }) {
+        if (!control.id)
+            control.id = guid();
+
+        let controlName = control.controlName;
+        let editorPathName = Editor.path(controlName);
+        let editorId = `editor-${control.id}`;
+        let editorElement = this.editorsElement.querySelector(`[id='${editorId}']`) as HTMLElement;
+
         if (editorElement != null) {
-            editorElement.style.display = 'block';
-            this.currentEditor = editorElement;
+            // editorElement.style.display = 'none';
+            // this.currentEditor = editorElement;
             return;
         }
 
         editorElement = document.createElement('div');
         editorElement.className = `${controlName}-editor`;
         editorElement.id = editorId;
+        editorElement.style.display = 'none';
         this.editorsElement.appendChild(editorElement);
 
-        if (this.currentEditor)
-            this.currentEditor.style.display = 'none';
+        // if (this.currentEditor)
+        //     this.currentEditor.style.display = 'none';
 
-        this.currentEditor = editorElement;
+        // this.currentEditor = editorElement;
         requirejs([editorPathName], (exports) => {
             let editorType = exports.default;
             console.assert(editorType != null, 'editor type is null');
             console.assert(control.elementPage != null, 'element page is null');
             let editorReactElement = React.createElement(editorType, { control, elementPage: control.elementPage } as EditorProps);
             let editor: Editor<any, any> = ReactDOM.render(editorReactElement, editorElement);
+            this.editors.push(editor);
             control.stateChanged.add(() => {
                 this.hasChanged = true;
             })
@@ -231,12 +242,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         }
 
         if (pageData.view != null) {
-            // for (let i = 0; i < pageData.view.length; i++) {
-            //     if (pageData.view[i].controls == null)
-            //         continue;
-
-            //     pageData.view[i].controls = pageData.view[i].controls.filter(o => o.controlId != controlId);
-            // }
             pageData.view.controls = pageData.view.controls.filter(o => o.controlId != controlId);
         }
 
@@ -265,10 +270,18 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         if (this.userApp == null) {
             this.userApp = new DesignTimeUserApplication(screenElement);
             this.userApp.designPageNode.action = (page: chitu.Page) => {
-                ReactDOM.render(<MobilePage ref={(e) => this.mobilePage = e} pageData={pageData}
+                ReactDOM.render(<MobilePage pageData={pageData}
                     elementPage={page}
+                    ref={(e) => this.mobilePage = e || this.mobilePage}
+                    controlCreated={(c) => {
+                        this.loadControlEditor(c);
+                    }}
                     designTime={{
-                        controlSelected: (a, b) => this.selecteControl(a, b)
+                        controlSelected: (a, b) => {
+                            let controlName = (a as any).controlName;
+                            console.assert(controlName != null);
+                            this.selecteControl(a as Control<any, any> & { controlName: string });
+                        }
                     }} />, page.element);
 
                 $(this.allContainer).find('li').draggable({
@@ -301,6 +314,10 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                 { name: 'name', rules: [rules.required('请输入页面名称')] }
             )
         }
+
+        // this.mobilePage.controls.forEach(o => {
+        //     this.loadControlEditor(o);
+        // })
     }
 
     render() {

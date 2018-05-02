@@ -41,9 +41,20 @@ export default class CarouselEditor extends Editor<EditorProps, EditorState>{
         });
     }
     render() {
-        let { items } = this.state;
+        let { items, autoplay } = this.state;
         items = items || [];
         return [
+            <div key={10} className="form-group">
+                <label className="pull-left" style={{ width: 100 }}>自动播放</label>
+                <span style={{ paddingRight: 10 }}>
+                    <input type="radio" name="autoplay" value="true"
+                        ref={(e: any) => this.bindCheckElement(e, 'autoplay', 'boolean')} />启用
+                </span>
+                <span>
+                    <input type="radio" name="autoplay" value="false"
+                        ref={(e: any) => this.bindCheckElement(e, 'autoplay', 'boolean')} />禁用
+                </span>
+            </div>,
             <ul key="ul" className="carousel-items">
                 {items.map((o, i) =>
                     <li key={i}>

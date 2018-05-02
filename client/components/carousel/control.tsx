@@ -345,8 +345,6 @@ class Carousel {
         if (this.playTimeId == 0) {
             return;
         }
-
-
         window.clearInterval(this.playTimeId);
         this.playTimeId = 0;
     }
@@ -367,6 +365,24 @@ class Carousel {
         this.playTimeId = window.setInterval(() => {
             this.moveNext();
         }, this.playInterval);
+    }
+
+    public setActiveIndex(index: number) {
+        if (index < 0) index = 0;
+        if (index > this.items.length - 1) index = this.items.length - 1;
+
+        this.active_index = index;
+        for (let i = 0; i < this.items.length; i++) {
+            if (i == index) {
+                addClassName(this.items[i], 'active');
+                addClassName(this.indicators[i], 'active');
+                continue;
+            }
+
+            removeClassName(this.items[i], 'active');
+            removeClassName(this.indicators[i], 'active');
+        }
+
     }
 }
 
@@ -400,7 +416,7 @@ export interface State {
 }
 
 export class CarouselControl extends Control<Props, State> {
-    c: Carousel;
+    carousel: Carousel;
     element: HTMLElement;
     constructor(props) {
         super(props);
@@ -415,17 +431,27 @@ export class CarouselControl extends Control<Props, State> {
         // 如果没有设置轮播图片，element 为空
         if (this.element) {
             let { autoplay } = this.state;
-            this.c = new Carousel(this.element, { autoplay });
+            this.carousel = new Carousel(this.element, { autoplay });
         }
         //=======================================================
     }
     componentDidUpdate() {
         let { autoplay } = this.state;
-        if (this.c) {
-            this.c.stop();
+
+        if (this.element == null && this.carousel == null)
+            return;
+
+        if (this.element != null && this.carousel == null) {
+            this.carousel = new Carousel(this.element, { autoplay });
+            return;
         }
-        if (this.element) {
-            this.c = new Carousel(this.element, { autoplay });
+
+        if (autoplay == false) {
+            this.carousel.stop();
+            this.carousel.setActiveIndex(0);
+        }
+        else {
+            this.carousel.play();
         }
     }
     _render(h) {

@@ -251,7 +251,7 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
 
     //image
     let obj = await parsePostData(req);
-    let image = obj["image"];
+    let { image, width, height } = obj as any;
     if (image == null) {
         throw errors.parameterRequired("image");
     }
@@ -267,7 +267,7 @@ async function upload(req: http.IncomingMessage, res: http.ServerResponse): Prom
         let conn = mysql.createConnection(settings.mysql_image_setting);
         let sql = `insert into image set ?`;
 
-        let item = { id: guid(), data: image, create_date_time, application_id };
+        let item = { id: guid(), data: image, create_date_time, application_id, width, height };
         conn.query(sql, item, (err, rows, fields) => {
             if (err) {
                 reject(err);
@@ -365,9 +365,9 @@ async function list(req: http.IncomingMessage, res: http.ServerResponse): Promis
     let conn = mysql.createConnection(settings.mysql_image_setting);
 
     let p1 = new Promise((resolve, reject) => {
-        let sql = `select id from image 
+        let sql = `select id, width, height from image 
                    where ${args.filter} and application_id = '${application_id}'
-                   limit ${args.startRowIndex} ${args.startRowIndex + args.maximumRows} 
+                   limit ${args.startRowIndex} ${args.maximumRows} 
                    order by create_date_time desc`;
 
         conn.query(sql, args, (err, rows, fields) => {

@@ -215,3 +215,7 @@ interface HomeProduct {
 interface LoginResult {
     token: string
 }
+
+type SiteImageData = {
+    id: string, width?: number, height?: number
+}

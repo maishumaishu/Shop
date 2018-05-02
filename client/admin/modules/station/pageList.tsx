@@ -11,26 +11,22 @@ export default function (page: chitu.Page) {
     ReactDOM.render(<PageList {...{ station }} />, page.element);
 }
 
+type DataItem = { Id: string, Name: string };
 
 class PageList extends React.Component<{ station: StationService }, {}>{
     private pagesElement: HTMLTableElement;
-    private dataSource: wuzhui.DataSource<PageData>;
+    private dataSource: wuzhui.DataSource<DataItem>;
     private templateDialog: TemplateDialog;
 
     constructor(props) {
         super(props);
         this.state = { templates: null };
         let station = this.props.station;
-        this.dataSource = new wuzhui.DataSource<PageData>({
+        this.dataSource = new wuzhui.DataSource<DataItem>({
             primaryKeys: ['id'],
-            select: (args) => station.pageDatas(),
-            delete: (item) => station.deletePageData(item.id)
+            select: (args) => station.pageList(args),
+            delete: (item) => station.deletePageData(item.Id)
         });
-        // station.pageTemplates().then(templates => {
-        //     this.state.templates = templates;
-        //     this.setState(this.state);
-        // })
-        // templates: TemplatePageData[]
     }
     private showPage(pageId?: string) {
         // var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
@@ -52,8 +48,8 @@ class PageList extends React.Component<{ station: StationService }, {}>{
         wz.createGridView({
             element: this.pagesElement,
             columns: [
-                wz.boundField({ dataField: 'name', headerText: '名称' }),
-                wz.boundField({ dataField: 'remark', headerText: '备注' }),
+                wz.boundField({ dataField: 'Name', headerText: '名称' }),
+                wz.boundField({ dataField: 'Remark', headerText: '备注' }),
                 wz.customField({
                     createItemCell(o: PageData) {
                         let cell = new wuzhui.GridViewCell()
@@ -65,7 +61,7 @@ class PageList extends React.Component<{ station: StationService }, {}>{
                     itemStyle: { textAlign: 'center' } as CSSStyleDeclaration
                 }),
                 wz.customField({
-                    createItemCell(o: PageData) {
+                    createItemCell(o) {
                         let cell = new wuzhui.GridViewCell();
                         ReactDOM.render(<CommandCell pageData={o} dataSource={self.dataSource} />, cell.element);
                         return cell;
@@ -97,7 +93,7 @@ class PageList extends React.Component<{ station: StationService }, {}>{
     }
 }
 
-class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzhui.DataSource<PageData> }, {}>{
+class CommandCell extends React.Component<{ pageData: DataItem, dataSource: wuzhui.DataSource<DataItem> }, {}>{
     showPage(pageId: string) {
         // let pageId = this.props.pageData.id;
         // var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
@@ -107,9 +103,9 @@ class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzh
 
         app.redirect(siteMap.nodes.station_page, { pageId });
     }
-    private pageSave(pageData: PageData) {
-    }
-    private deletePage(pageData: PageData) {
+    // private pageSave(pageData: PageData) {
+    // }
+    private deletePage(pageData: DataItem) {
         return this.props.dataSource.delete(pageData);
     }
     render() {
@@ -121,7 +117,7 @@ class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzh
                 </button>
                 <button className="btn btn-minier btn-info" style={{ marginLeft: 4 }}
                     onClick={e => {
-                        this.showPage(this.props.pageData.id)
+                        this.showPage(this.props.pageData.Id)
                     }}>
                     <i className="icon-pencil"></i>
                 </button>
@@ -129,7 +125,7 @@ class CommandCell extends React.Component<{ pageData: PageData, dataSource: wuzh
                     ref={(e: HTMLButtonElement) => {
                         if (!e) return;
                         e.onclick = ui.buttonOnClick(() => this.deletePage(pageData),
-                            { confirm: `确定要删除页面”${pageData.name}“吗？` });
+                            { confirm: `确定要删除页面”${pageData.Name}“吗？` });
                     }}>
                     <i className="icon-trash"></i>
                 </button>

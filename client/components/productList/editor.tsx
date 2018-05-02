@@ -17,7 +17,6 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
 
     editor: any;
     productThumbers: HTMLElement;
-    // templateInput: HTMLTextAreaElement;
     private productsDialog: ProductSelectDialog;
     private productAdd: HTMLElement;
 
@@ -245,37 +244,25 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                         双列
                     </span>
                 </div>
-                {listType == 'singleColumn' ?
-                    [
-                        // <div key={10} className="form-group">
-                        //     <label className="pull-left">显示商品标题</label>
-                        //     <div style={{ display: "block" }}>
-                        //         <input name="displayType" type="checkbox" value="true" style={{ marginTop: 8 }}
-                        //             ref={(e: HTMLInputElement) => this.setCheckElement(e, 'displayTitle')} />
-
-                        //     </div>
-                        // </div>,
-                        <div key={20} className="form-group">
-                            <label className="pull-left">图片大小</label>
-                            <span>
-                                <input name="imageSize" type="radio" value="small"
-                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
-                                小
+                {listType == 'singleColumn' ? [
+                    <div key={20} className="form-group">
+                        <label className="pull-left">图片大小</label>
+                        <span>
+                            <input name="imageSize" type="radio" value="small"
+                                ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
+                            小
                             </span>
-                            <span>
-                                <input name="imageSize" type="radio" value="medium"
-                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
-                                中
+                        <span>
+                            <input name="imageSize" type="radio" value="medium"
+                                ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
+                            中
                             </span>
-                            <span>
-                                <input name="imageSize" type="radio" value="large"
-                                    ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
-                                大
+                        <span>
+                            <input name="imageSize" type="radio" value="large"
+                                ref={(e: HTMLInputElement) => this.setRadioElement(e, 'imageSize')} />
+                            大
                             </span>
-                        </div>
-                    ] : [
-
-                    ]}
+                    </div>] : []}
 
                 <div className="form-group">
                     <label className="pull-left">规格型号</label>

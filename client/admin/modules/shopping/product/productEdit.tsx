@@ -86,7 +86,7 @@ export default function (page: chitu.Page) {
             this.state.product.Introduce = this.introduceInput.value;
             this.state.product.Fields = this.fieldPropertiies.state.properties;
             this.state.product.Arguments = this.argumentsProperties.state.properties;
-            return shopping.saveProduct(this.state.product, page.data.parentId).then(data => {
+            return shopping.saveProduct({ product: this.state.product, parentId: page.data.parentId }).then(data => {
                 this.state.product.Id = data.Id;
                 return data;
             })
@@ -337,8 +337,6 @@ export default function (page: chitu.Page) {
                                 }} />
                         </div>
                     </div>
-
-
                 </div>,
                 <CategoryDialog key="categoryDialog"
                     container={this}
@@ -459,7 +457,6 @@ class ImageThumber extends React.Component<ImageThumberProps, {}>{
     setDeleteButton(e: HTMLButtonElement, imagePath: string) {
         if (!e) return;
         let arr = imagePath.split('_');
-        // console.assert(arr.length == 3);
         let { station } = this.props;
         e.onclick = ui.buttonOnClick(() => station.removeImage(arr[0]).then(o => this.props.removed(this)), {
             confirm: '确定删除该图片吗？'

@@ -162,16 +162,13 @@ export default class ProductListControl extends Control<Props, State> {
                     let q = e.querySelectorAll('[product-id]');
                     for (let i = 0; i < q.length; i++) {
                         let o = q.item(i) as HTMLElement;
-                        o.onclick = () => {
-                            if (this.isDesignTime) {
-                                return;
-                            }
+                        this.elementOnClick(o, () => {
                             let productId = o.getAttribute('product-id');
                             if (!productId) {
                                 ui.alert({ title: '错误', message: 'Product id is emtpy.' });
                             }
                             app.redirect(siteMap.nodes.home_product, { id: productId });
-                        }
+                        })
                     }
                 }, 100);
 
@@ -344,152 +341,3 @@ class ProductCount extends React.Component<ProductCountProps, {}>
         );
     }
 }
-
-    // <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
-    //                             onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-    //                             {o.Name}
-    //                             {showFields == 'append' && o.Fields.length > 0 ?
-    //                                 '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
-    //                         </div>
-    //                         {showFields == 'independent' ?
-    //                             o.Fields.map(f =>
-    //                                 <div key={f.key} className="fields-bar">
-    //                                     <span className="label label-default">{f.value}</span>
-    //                                 </div>
-    //                             )
-    //                             : null
-    //                         }
-    //                         <div className="price-bar" onClick={(e) => e.stopPropagation()}>
-    //                             <span className="pull-left">
-    //                                 ￥{o.Price.toFixed(2)}
-    //                             </span>
-    //                             <ProductCount key={o.Id} product={o} count={productCounts[o.Id]} />
-    //                         </div>
-
-    //     <div onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-    //     <ProductImage key={i} product={o} />
-
-
-    // </div>
-    // <div className="clearfix"></div>
-
-
-    // async renderSingleColumn(h, products: Product[]): Promise<JSX.Element> {
-
-    //     // var products = await this.products();
-    //     let { showFields, productCounts, imageSize, productNameLines } = this.state;
-
-    //     let leftClassName: string, rightClassName: string;// = displayTitle ? 'col-xs-4' : 'col-xs-3';
-    //     // let rightClassName = displayTitle ? 'col-xs-8' : 'col-xs-9';
-    //     switch (imageSize) {
-    //         case 'small':
-    //         default:
-    //             leftClassName = 'col-xs-3';
-    //             rightClassName = 'col-xs-9';
-    //             break;
-    //         case 'medium':
-    //             leftClassName = 'col-xs-4';
-    //             rightClassName = 'col-xs-8';
-    //             break;
-    //         case 'large':
-    //             leftClassName = 'col-xs-5';
-    //             rightClassName = 'col-xs-7';
-    //             break;
-    //     }
-
-
-
-
-
-    //     return (
-    //         <div className="product-list-control">
-    //             {products.filter(o => o != null).map(o =>
-    //                 <div key={o.Id} className="product single">
-    //                     <div className={leftClassName} onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-    //                         <img className="image img-responsive" src={imageUrl(o.ImagePath, 300)}
-    //                             ref={(e: HTMLImageElement) => {
-    //                                 if (!e) return;
-    //                                 ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
-    //                             }} />
-    //                     </div>
-    //                     <div className={`content ${rightClassName}`}>
-    //                         <div className={productNameLines == 'singleLine' ? 'name single-line' : 'name double-line'}
-    //                             onClick={() => app.redirect(siteMap.nodes.home_product, { id: o.Id })}>
-    //                             {o.Name}
-    //                             {showFields == 'append' && o.Fields.length > 0 ?
-    //                                 '(' + o.Fields.map(o => o.value).join(',') + ')' : null}
-    //                         </div>
-    //                         {showFields == 'independent' ?
-    //                             o.Fields.map((f, i) =>
-    //                                 <div key={f.key} className='fields-bar'>
-    //                                     <span className="label label-default">{f.value}</span>
-    //                                 </div>
-    //                             )
-    //                             : null
-    //                         }
-    //                         <div className="price-bar">
-    //                             <span className="pull-left">
-    //                                 ￥{o.Price.toFixed(2)}
-    //                             </span>
-    //                             <ProductCount key={o.Id} product={o} count={productCounts[o.Id]}
-    //                                 createService={(type) => this.elementPage.createService(type)} />
-    //                         </div>
-
-    //                     </div>
-    //                     <div className="clearfix"></div>
-    //                     <hr />
-    //                 </div>
-    //             )}
-    //         </div>
-    //     );
-    // }
-
-    // async renderDoubleColumn(h, products: Product[], data: object): Promise<JSX.Element> {
-    //     var { productCounts, productNameLines, showFields } = this.state;
-    //     return (
-    //         <div className="product-list-control">
-    //             {products.filter(o => o != null).map((o, i) =>
-    //                 <div key={o.Id} ref={(e: HTMLElement) => {
-    //                     if (!e) return;
-
-    //                     let tmp = this.createProductTemplate(o);
-    //                     let html = template.render(tmp, data);
-    //                     e.innerHTML = html;
-    //                     var productCoutElement = e.querySelector('.productCout');
-    //                     ReactDOM.render(<ProductCount {...{
-    //                         product: o, count: productCounts[o.Id],
-    //                         createService: (type) => {
-    //                             return this.elementPage.createService(type);
-    //                         }
-    //                     }} />, productCoutElement);
-    //                 }}>
-    //                 </div>
-    //             )}
-    //         </div>
-    //     );
-
-
-    // }
-
-    // async renderDoubleColumnProduct(o: Product, data: object): Promise<JSX.Element> {
-    //     var { productCounts, productNameLines, showFields } = this.state;
-    //     return (
-    //         <div className="product-list-control">
-    //             <div key={o.Id} ref={(e: HTMLElement) => {
-    //                 if (!e) return;
-
-    //                 let tmp = this.createProductTemplate(o);
-    //                 let html = template.render(tmp, data);
-    //                 e.innerHTML = html;
-    //                 var productCoutElement = e.querySelector('.productCout');
-    //                 ReactDOM.render(<ProductCount {...{
-    //                     product: o, count: productCounts[o.Id],
-    //                     createService: (type) => {
-    //                         return this.elementPage.createService(type);
-    //                     }
-    //                 }} />, productCoutElement);
-    //             }}>
-    //             </div>
-    //         </div>
-    //     );
-    // }

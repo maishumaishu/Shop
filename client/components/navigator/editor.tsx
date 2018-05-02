@@ -6,12 +6,15 @@ import { FormValidator, rules } from 'dilu';
 import { StationService } from 'user/services/stationService';
 
 export interface EditorState extends Partial<ControlState> {
-}
-
-interface MenuEditorProps extends EditorProps {
 
 }
-export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState> {
+
+interface NavigatorEditorProps extends EditorProps {
+
+}
+export default class NavigatorEditor extends Editor<NavigatorEditorProps, EditorState> {
+    marginBootomElement: any;
+    marginTopElement: any;
     validator: FormValidator;
     dialog: HTMLElement;
     itemsElement: HTMLTableElement;
@@ -66,11 +69,7 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
         this.setState(this.state);
         return Promise.resolve();
     }
-    componentDidMount() {
-        this.validator = new FormValidator(this.dialog,
-            { name: 'name', rules: [rules.required('请输入导航菜单项名称')] }
-        )
-    }
+
     value(name: string, value?: string) {
         let element = this.dialog.querySelector(`[name="${name}"]`) as HTMLInputElement;
         if (element == null)
@@ -81,6 +80,16 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
         }
         return element.value;
     }
+
+    componentDidMount() {
+        this.validator = new FormValidator(this.dialog,
+            { name: 'name', rules: [rules.required('请输入导航菜单项名称')] }
+        )
+
+        this.bindInputElement(this.marginTopElement, 'marginTop');
+        this.bindInputElement(this.marginBootomElement, 'marginBottom');
+    }
+
     render() {
         let { items } = this.state;
         return [
@@ -88,10 +97,18 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
                 <div className="form-group">
                     <label className="col-sm-2">边距</label>
                     <div className="col-sm-5">
-                        <input className="form-control" placeholder="设置导航栏的上边距" />
+                        <div className="input-group">
+                            <input className="form-control" placeholder="导航栏的上边距"
+                                ref={(e) => this.marginTopElement = e || this.marginTopElement} />
+                            <span className="input-group-addon">px</span>
+                        </div>
                     </div>
                     <div className="col-sm-5">
-                        <input className="form-control" placeholder="设置导航栏的下边距" />
+                        <div className="input-group">
+                            <input className="form-control" placeholder="导航栏的下边距"
+                                ref={(e) => this.marginBootomElement = e || this.marginBootomElement} />
+                            <span className="input-group-addon">px</span>
+                        </div>
                     </div>
                 </div>
             </div>,
@@ -100,7 +117,6 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
                     items.map((o, i) =>
                         <li key={i}>
                             <div className="name">{o.name}</div>
-
                             <div className="page-name btn-link"
                                 onClick={() => null}
                                 title={"点击修改导航页面"}
@@ -169,7 +185,6 @@ export default class NavigatorEditor extends Editor<MenuEditorProps, EditorState
                                     <input name="pageId" type="text" className="form-control" placeholder="pageId" />
                                 </div>
                             </div>
-                            {/* <input name="pageId" type="hidden" /> */}
                             <input name="pageName" type="hidden" />
                         </div>
                         <div className="modal-footer">

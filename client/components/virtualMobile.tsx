@@ -8,34 +8,7 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
     constructor(props) {
         super(props);
     }
-
-    // static getInstanceByElement(element: HTMLElement): VirtualMobile {
-    //     return (element as any).mobilePage;
-    // }
-
-    async createControlInstance(controlId: string, controlName: string, element: HTMLElement, controlData?: any) {
-        let controlType = await this.getControlType(controlName);
-        let reactElement = React.createElement(controlType, controlData);
-        ReactDOM.render(reactElement, element);
-    }
-
-    getControlType(controlName: string): Promise<React.ComponentClass<any>> {
-        return new Promise((resolve, reject) => {
-            requirejs([`components/${controlName}/control`], function (exports) {
-                resolve(exports.default);
-            })
-        })
-    }
-
-    controlCreated(component, type) {
-        // if (type == PageView) {
-        //     let c = component as PageView;
-        // }
-        // else if (type == PageFooter) {
-        //     let c = component as PageFooter;
-        // }
-    }
-
+    
     get screenElement() {
         return this._screenElement;
     }
@@ -54,7 +27,6 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
                     ref={(e: HTMLElement) => {
                         if (!e) return;
                         this._screenElement = e;
-                        // (e as any).mobilePage = this;
                     }}>
                     {children}
                 </div>

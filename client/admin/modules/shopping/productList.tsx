@@ -33,10 +33,9 @@ class ProductList extends React.Component<{ shopping: ShoppingService }, PageSta
     }
 
     async copyProductUrl(product: Product): Promise<any> {
-        // throw new Error("Method not implemented.");
         var clipboard = new ClipboardJS('.btn', {
             text: function () {
-                return 'to be or not to be';
+                return 'none';
             }
         });
     }
@@ -50,7 +49,6 @@ class ProductList extends React.Component<{ shopping: ShoppingService }, PageSta
             quantity: dataItem.BuyLimitedNumber
         };
         this.setState(this.state);
-        // $(this.restrictionDialog).modal();
         ui.showDialog(this.restrictionDialog);
     }
 
@@ -549,9 +547,3 @@ export default function (page: chitu.Page) {
     page.element.appendChild(element);
     ReactDOM.render(<ProductList shopping={shopping} />, element);
 }
-
-// onClick={ui.buttonOnClick((e) => {
-//                                                 return this.setBuyLimited(restriction).then(() => {
-//                                                     $(this.restrictionDialog).modal('hide');
-//                                                 })
-//                                             })}

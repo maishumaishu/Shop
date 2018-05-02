@@ -10,8 +10,10 @@ export interface State {
 }
 
 export interface Props extends ControlProps<HtmlControl> {
-
+    emptyText?: string
 }
+
+const defaultEmptyText = '请设置 HTML';
 
 export default class HtmlControl extends Control<Props, State> {
     get persistentMembers(): (keyof State)[] {
@@ -20,8 +22,9 @@ export default class HtmlControl extends Control<Props, State> {
     _render(h: any): JSX.Element | JSX.Element[] {
         let { html } = this.state;
         if (!html) {
-            html = `<div class="text-center" style="padding:20px 0 20px 0">请设置 HTML</div>`;
+            let emptyText = this.props.emptyText || defaultEmptyText;
+            html = `<div class="text-center" style="padding:20px 0 20px 0">${emptyText}</div>`;
         }
-        return <div className="html-control" dangerouslySetInnerHTML={{ __html: html }} />;
+        return <div dangerouslySetInnerHTML={{ __html: html }} />;
     }
 }

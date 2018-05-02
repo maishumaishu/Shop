@@ -1,9 +1,5 @@
 import { componentsDir, Control } from 'components/common'
 
-// export interface MobiePageDesigner {
-//     loadEditor();
-// }
-
 export interface EditorProps {
     control: Control<any, any>,
     elementPage: chitu.Page
@@ -13,7 +9,7 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
     private controlType: React.ComponentClass<any>;
     private _state: S;
 
-    // changed = chitu.Callbacks<this, Control<any, any>>();
+    validate: () => Promise<boolean>;
 
     constructor(props) {
         super(props);
@@ -23,6 +19,7 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
     get state(): S {
         return this._state;
     }
+    
     /**
      * 重写 set state， 在第一次赋值，将控件中 state 的持久化成员赋值过来。 
      */
@@ -73,6 +70,63 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
 
         requirejs([`css!${componentsDir}/${typeName}/editor`]);
+    }
+
+    bindInputElement(e: HTMLInputElement | HTMLSelectElement, fieldName: keyof S);
+    bindInputElement<T>(e: HTMLInputElement | HTMLSelectElement, obj: T, fieldName?: keyof T, fieldType?: 'number' | 'string')
+    bindInputElement<T>(e: HTMLInputElement | HTMLSelectElement, obj: any, fieldName?: string, fieldType?: 'number' | 'string') {
+        if (!e) return;
+
+        if (typeof obj == 'string') {
+            fieldName = obj;
+            obj = this.state;
+        }
+
+        e.value = `${obj[fieldName] || ''}`;
+        e.onchange = () => {
+            if (fieldType == 'number') {
+                obj[fieldName] = Number.parseFloat(e.value);
+            }
+            else {
+                obj[fieldName] = e.value as any
+            }
+            this.setState(this.state);
+        }
+    }
+
+    bindCheckElement(e: HTMLInputElement | HTMLSelectElement, fieldName: keyof S, fieldType: 'number' | 'string' | 'boolean');
+    bindCheckElement<T>(e: HTMLInputElement | HTMLSelectElement, obj: T, fieldName: keyof T, fieldType: 'number' | 'string' | 'boolean')
+    bindCheckElement(e: HTMLInputElement, obj: any, fieldName: string, fieldType?: 'number' | 'string' | 'boolean') {
+        if (!e) return;
+
+        if (arguments.length == 3) {
+            fieldName = arguments[1];
+            fieldType = arguments[2];
+            obj = this.state;
+        }
+
+        let parseValue = (text: string) => {
+            let value: any;
+            if (fieldType == 'number') {
+                value = text.indexOf('.') > 0 ? Number.parseFloat(text) : Number.parseInt(text);
+            }
+            else if (fieldType == 'boolean') {
+                value = text == 'false' ? false : text == 'true' ? true : null;
+            }
+            else {
+                value = text;
+            }
+            return value;
+        }
+
+        let sourceValue = obj[fieldName];
+        let targetValue = parseValue(e.value);
+        e.checked = sourceValue == targetValue;
+        e.onchange = () => {
+            let value = parseValue(e.value);
+            obj[fieldName] = value;
+            this.setState(this.state);
+        }
     }
 
 }

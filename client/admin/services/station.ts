@@ -3,6 +3,10 @@ import templates from 'admin/services/data/templates'
 import { imageServiceBaseUrl } from 'share/common';
 export { guid } from 'admin/services/service';
 
+// type ImageData = {
+//     id: string, width?: number, height?: number
+// }
+
 export class StationService extends Service {
     private url(path: string) {
         let url = `${Service.config.siteUrl}${path}`;
@@ -25,6 +29,24 @@ export class StationService extends Service {
             return o || [];
         });
     }
+    pageList(args: wuzhui.DataSourceSelectArguments) {
+        let url = this.url('Page/GetPageList');
+        return this.getByJson<wuzhui.DataSourceSelectResult<{ Id: string, Name: string }>>(url);
+    }
+    async pageDataById(pageId: string) {
+        if (!pageId) throw new Error('argument pageId null');
+
+        let url = this.url('Page/GetPageDataById');
+        let data = { pageId };
+        let pageData = await this.getByJson<PageData>(url, { id: pageId })
+        if (pageData == null) {
+            let error = new Error(`Page data ${pageId} is not exists.`);
+            this.error.fire(this, error);
+            throw error;
+        }
+        // pageData = await fillPageData(pageData);
+        return pageData;
+    }
     deletePageData(pageId: string) {
         let url = this.url('Page/DeletePage');
         return this.deleteByJson(url, { pageId });
@@ -45,14 +67,23 @@ export class StationService extends Service {
      * @param name 图片名称
      * @param imageBase64 图片的 base64 字符串 
      */
-    saveImage(imageBase64: string): Promise<{ id: string }> {
+    async saveImage(imageBase64: string) {
         let url = `${imageServiceBaseUrl}upload`;
-        return this.postByJson<{ id: string }>(url, { name, image: imageBase64 });
+        let image = document.createElement('img');
+        return new Promise<SiteImageData>((resovle, reject) => {
+            image.onload = async () => {
+                let { width, height } = image;
+                let result = await this.postByJson<{ id: string }>(url, { name, image: imageBase64, width, height });
+                resovle({ id: result.id, width, height });
+            }
+            image.src = imageBase64;
+        })
+
     }
 
     async images(args: wuzhui.DataSourceSelectArguments, width?: number, height?: number) {
         let url = `${imageServiceBaseUrl}list`;
-        let result = await this.postByJson<wuzhui.DataSourceSelectResult<{ id: string }>>(url, args);
+        let result = await this.postByJson<wuzhui.DataSourceSelectResult<SiteImageData>>(url, args);
         return result;
     }
     removeImage(id: string) {

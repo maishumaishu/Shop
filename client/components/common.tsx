@@ -28,7 +28,6 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     private _state: S;
 
     stateChanged = chitu.Callbacks<this, any>();
-
     id: string;
 
     constructor(props) {
@@ -78,7 +77,6 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     setState(state: any, callback?: () => any) {
         //=====================================================
         // 忽略第一次设置，把第一次设置作为初始化
-        // 忽略第一次设置，把第一次设置作为初始化
         if (this.setStateTimes > 0)
             this.stateChanged.fire(this, state);
         //=====================================================
@@ -113,6 +111,17 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
 
     get isDesignTime(): boolean {
         return window[ADMIN_APP] != null;
+    }
+
+    elementOnClick(e: HTMLElement, callback: (event: MouseEvent) => void) {
+        let isDesignTime = this.isDesignTime;
+        e.onclick = function (event) {
+            if (isDesignTime) {
+                return;
+            }
+
+            callback(event);
+        }
     }
 }
 

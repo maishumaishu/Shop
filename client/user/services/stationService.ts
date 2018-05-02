@@ -77,7 +77,11 @@ export class PageDatas {
         let url = this.station.url('Page/GetPageDataById');
         let data = { pageId };
         let pageData = await this.station.getByJson<PageData>(url, { id: pageId })
-        if (pageData == null) throw new Error(`Page ${pageId} is not exists.`);
+        if (pageData == null) {
+            let error = new Error(`Page data ${pageId} is not exists.`);
+            this.station.error.fire(this.station, error);
+            throw error;
+        }
         pageData = await fillPageData(pageData);
         return pageData;
     }

@@ -1,7 +1,4 @@
-﻿
-// import Product = require('models/Product');
-import { Service as Service } from 'admin/services/service';
-
+﻿import { Service as Service } from 'admin/services/service';
 
 export class ShoppingService extends Service {
     url(path: string) {
@@ -9,16 +6,13 @@ export class ShoppingService extends Service {
     }
     async product(productId: string) {
         let url = Service.config.shopUrl + 'Product/GetProduct';
-        // let data = { productId: productId };
         let arr = await Promise.all([this.getByJson<Product>(url, { productId }), this.productStocks([productId])])
-        // return this.getByJson<Product>(url, data).then((data) => {
         let data = arr[0];
         data.Stock = arr[1][0] != null ? arr[1][0].Quantity : null;
         data.Fields = data.Fields || [];
         data.Arguments = data.Arguments || [];
 
         return data;
-        // });
     }
     async products(args: wuzhui.DataSourceSelectArguments) {
         var url = this.url('Product/GetProducts');
@@ -41,28 +35,6 @@ export class ShoppingService extends Service {
         var url = this.url('Product/DeleteProduct');
         return this.deleteByJson(url, { id });
     }
-    // queryProducts(pageIndex: number, searchText?: string): Promise<wuzhui.DataSourceSelectResult<Product>> {
-
-    //     var url = this.url('Product/GetProducts');
-
-    //     var maximumRows = 10;
-    //     var start = pageIndex * maximumRows;
-    //     var args = { StartRowIndex: start, MaximumRows: maximumRows };
-    //     if (searchText)
-    //         args['searchText'] = encodeURI(searchText);
-
-    //     return this.getByJson<wuzhui.DataSourceSelectResult<Product>>(url, args).then((result) => {
-    //         for (var i = 0; i < result.dataItems.length; i++) {
-    //             result.dataItems[i].Stock = null;
-    //             result.dataItems[i].BuyLimitedNumber = null;
-    //             // result.DataItems[i] = mapping.fromJS(result.DataItems[i], {}, new Product()); //translators.product(result.DataItems[i]);
-    //         }
-
-
-
-    //         return result;
-    //     });
-    // }
     productChildren(parentId: string) {
         var url = this.url('Product/GetProducts');
         var args = { filter: `ParentId == Guid"${parentId}"` } as wuzhui.DataSourceSelectArguments;
@@ -71,21 +43,18 @@ export class ShoppingService extends Service {
     commonProduct(product) {
         alert(product.Id());
     }
-    saveProduct(product: Product, parentId): Promise<{ Id: string }> {
-        var obj = Object.assign({ parentId }, product);// ko.mapping.toJS(product, { ignore: ['ExtProperties'] });
-        // obj.parentId = parentId;
+    async saveProduct(args: { product: Product, parentId?, id?}): Promise<{ Id: string }> {
+
+        let { product, parentId, id } = args
+        var obj = Object.assign({}, product);
         obj.Arguments = JSON.stringify(product.Arguments) as any;
         obj.Fields = JSON.stringify(product.Fields) as any;
-        obj.ImagePaths = product.ImagePaths.join(',') as any;
+        obj.ImagePaths = (product.ImagePaths || []).join(',') as any;
         obj.Unit = obj.Unit || '件';
 
-        if (!obj.Id) {
-            product.Id = undefined;
-            return this.postByJson(Service.config.shopUrl + 'Product/AddProduct', obj);
-        }
-        else {
-            return this.putByJson(Service.config.shopUrl + 'Product/UpdateProduct', obj);
-        }
+        let result = await this.postByJson<{ Id: string }>(Service.config.shopUrl + 'Product/SaveProduct', { model: obj, parentId, id });
+        Object.assign(product, result);
+        return result;
     }
     removeProduct(productId) {
         let url = Service.config.shopUrl + 'Product/DeleteProduct';

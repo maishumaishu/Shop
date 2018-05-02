@@ -15,6 +15,8 @@ export interface State {
     items: NavigatorItem[],
     width?: number,
     activeIndex: number,
+    marginTop?: string,
+    marginBottom?: string,
 }
 
 export default class NavigatorControl extends Control<Props, State> {
@@ -32,7 +34,7 @@ export default class NavigatorControl extends Control<Props, State> {
     }
 
     get persistentMembers(): (keyof State)[] {
-        return ["items", "width"];
+        return ["items", "width", "marginTop", "marginBottom"];
     };
 
     componentDidMount() {
@@ -55,8 +57,14 @@ export default class NavigatorControl extends Control<Props, State> {
         this.pageMaster = new chitu.PageMaster(this.siteMap, this.container);
         let activeIndex = this.state.activeIndex;
         let pageId = this.state.items[activeIndex].pageId;
-        // this.pageMaster.showPage(this.siteMap.nodes.page, { pageId })
         this.showPage(pageId, 0);
+
+        // if (this.state.marginBottom) {
+        //     this.element.style.marginBottom = `${this.state.marginBottom}px`;
+        // }
+        // if (this.state.marginTop) {
+        //     this.element.style.marginTop = `${this.state.marginTop}px`;
+        // }
     }
 
     showPage(pageId: string, index: number) {
@@ -90,12 +98,14 @@ export default class NavigatorControl extends Control<Props, State> {
     }
 
     _render(h: any): JSX.Element | JSX.Element[] {
-        let { items, activeIndex } = this.state;
-        // if (this.pageMaster != null)
-        //     this.pageMaster.showPage(this.siteMap.nodes[`${activeIndex}`])
+        let { items, activeIndex, marginBottom, marginTop } = this.state;
+        marginBottom = marginBottom || '0';
+        marginTop = marginTop || '0';
 
         return [
-            <div key="bar" id="scroller" ref={(e: HTMLElement) => this.element = e || this.element}>
+            <div key="bar" className="scroller"
+                style={{ marginTop: `${marginTop}px`, marginBottom: `${marginBottom}px` }}
+                ref={(e: HTMLElement) => this.element = e || this.element}>
                 <ul>
                     {items.map((o, i) =>
                         <li key={i} className={`btn-link ${activeIndex == i ? 'active' : ''}`}
