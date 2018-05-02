@@ -7,7 +7,7 @@ import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';
 import { FormValidator, rules } from 'dilu';
 
-import tips from 'tips';
+import tips from 'admin/tips';
 import ImageUpload from 'admin/controls/imageUpload';
 import 'jquery-ui';
 

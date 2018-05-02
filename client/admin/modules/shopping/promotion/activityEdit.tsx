@@ -2,7 +2,7 @@ import { guid } from 'admin/services/service';
 import { ActivityService } from 'admin/services/activity';
 import { ProductSelectDialog } from 'admin/controls/productSelectDialog';
 import { ShoppingService } from 'admin/services/shopping';
-import app from 'admin/application';
+import app from 'application';
 import * as dilu from 'dilu';
 
 dilu.FormValidator.errorClassName = "validationMessage";

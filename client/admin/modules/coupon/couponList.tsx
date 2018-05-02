@@ -1,7 +1,7 @@
 
 import { ShoppingService } from 'admin/services/shopping';
 import site from 'site';
-import app from 'application';
+import { app } from 'site';
 import * as wz from 'myWuZhui';
 import siteMap from 'admin/siteMap';
 

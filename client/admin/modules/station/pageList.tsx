@@ -1,9 +1,8 @@
-import { default as site } from 'site';
-import app from 'application';
+import { default as site, app, siteMap, } from 'site';
+
 import { StationService } from 'admin/services/station';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
-import siteMap from 'admin/siteMap';
 
 export default function (page: chitu.Page) {
     app.loadCSS(page.name);

@@ -2,8 +2,7 @@ import { UserService, Application } from 'admin/services/user';
 import { FormValidator, rules } from 'dilu';
 // import { Page, app } from 'Application';
 import * as ui from 'ui';
-import app from 'application';
-import siteMap from '../../siteMap';
+import { app, siteMap } from 'site';
 export default async function (page: chitu.Page) {
     // requirejs([`css!${page.name}.css`]);
     app.loadCSS(page.name);

@@ -106,13 +106,13 @@ requirejs.config({
         'ue': 'scripts/ueditor',//'http://web.bailunmei.com/ueditor',//
         adminServices: 'admin/services',
         'masterPage': 'admin/masterPage',
-        'application': 'admin/application',
+        // 'application': 'admin/application',
         site: 'admin/site',
         modules: 'admin/modules',
         content: 'admin/content',
         build: 'admin/build',
         weixin: 'admin/weixin',
-        'tips': 'admin/tips',
+        // 'tips': 'admin/tips',
         'ue.ext': 'admin/ue.ext',
         myWuZhui: 'admin/myWuZhui',
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
@@ -120,7 +120,7 @@ requirejs.config({
 });
 // requirejs(['css!content/jquery-ui-1.10.0.custom'])
 requirejs(['build'], function () {
-    var references = ['react', 'react-dom', 'application', 'art-template'];
+    var references = ['react', 'react-dom', 'admin/application', 'art-template'];
     requirejs(references, function (React, ReactDOM, app, ui) {
         window['React'] = React;
         window['ReactDOM'] = ReactDOM;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Service } from 'admin/services/service';
-import { default as siteMap, menuData, MenuNode } from 'admin/siteMap';
-import app from 'application';
+import { menuData, MenuNode } from 'admin/siteMap';
+import { app, siteMap } from 'site';
 
 let h = React.createElement;
 interface State {

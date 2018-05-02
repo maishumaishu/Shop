@@ -3,6 +3,7 @@ import { StationService, guid } from 'admin/services/station';
 import { componentsDir } from 'components/common';
 import { StationService as UserStation } from 'user/services/stationService';
 import { Page } from 'chitu';
+import { app } from 'site';
 
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
 
@@ -51,6 +52,12 @@ export default async function (page: chitu.Page) {
             return (
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
                     save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true}
+                    buttons={[
+                        <button key="return" className="btn btn-sm btn-primary" onClick={() => app.back()}>
+                            <i className="icon-reply" />
+                            <span>返回</span>
+                        </button>
+                    ]}
                     pageDatas={userStation.pages}>
                 </MobilePageDesigner>
             );
@@ -84,7 +91,7 @@ async function getPageData(page: Page) {
     else {
         pageData = {
             id: guid(),
-            view:  { controls: [] }
+            view: { controls: [] }
         };
     }
 

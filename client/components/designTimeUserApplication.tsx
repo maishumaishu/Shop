@@ -1,7 +1,7 @@
 import { Application as UserApplication } from 'user/application';
 import { MobilePage } from 'components/mobilePage';
 import userSiteMap from 'user/siteMap';
-import { renderQRCode } from 'admin/weixin/modules/openid';
+import { renderQRCode } from 'weixin/modules/openid';
 import { WeiXinService } from 'user/services/weixinService';
 
 export class DesignTimeUserApplication extends UserApplication {

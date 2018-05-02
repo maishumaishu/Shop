@@ -4,7 +4,7 @@ import app from 'application';
 import { default as site } from 'site';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
-import tips from 'tips';
+import tips from 'admin/tips';
 import 'wuzhui';
 import siteMap from 'admin/siteMap';
 import { app as userApp } from 'user/application';
