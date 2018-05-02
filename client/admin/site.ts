@@ -1,4 +1,6 @@
 ﻿import { default as Service } from 'admin/services/service'
+export { default as app } from 'admin/application';
+export { default as siteMap } from 'admin/siteMap';
 
 // let bootbox = window['bootbox'];
 
