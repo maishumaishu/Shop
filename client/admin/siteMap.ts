@@ -9,7 +9,7 @@ let user_register = { action: `${dir}/user/register`, cache: false } as MenuNode
 let anonymous = [
     user_register, user_forgetPassword, user_login
 ]
-let siteMap = {
+export let siteMap = {
     nodes: {
         home_index: { action: `${dir}/home/index`, cache: true },
         coupon_couponList: { action: `${dir}/coupon/couponList`, cache: true },
@@ -33,8 +33,8 @@ let siteMap = {
         shopping_orderList: { action: `${dir}/shopping/orderList`, cache: true },
         shopping_promotion_activities: { action: `${dir}/shopping/promotion/activities`, cache: true },
         shopping_promotion_activityEdit: { action: `${dir}/shopping/promotion/activityEdit2`, cache: false },
-        shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit`, cache: false },
-        shopping_product_productEdit1: { action: `${dir}/shopping/product/newProductEdit`, cache: false },
+        // shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit`, cache: false },
+        shopping_product_productEdit: { action: `${dir}/shopping/product/newProductEdit`, cache: false },
 
         station_index: { action: `${dir}/station/index`, cache: true },
         station_store_home: { action: `${dir}/station/storePageDesign`, cache: true },
@@ -69,7 +69,12 @@ export let menuData: MenuNode[] = [
         action: null,
         children: [
             Object.assign(siteMap.nodes.station_index, { title: '店铺设置' }),
-            Object.assign(siteMap.nodes.station_store_home, { title: '店铺首页' }),
+            Object.assign(siteMap.nodes.station_store_home, {
+                title: '店铺首页',
+                children: [
+                    Object.assign(siteMap.nodes.station_page, { visible: false })
+                ]
+            }),
             Object.assign(siteMap.nodes.station_store_member, { title: '会员主页' }),
             Object.assign(siteMap.nodes.station_store_menu, { title: '店铺导航' }),
             Object.assign(siteMap.nodes.station_store_shoppingCart, { title: '购物车' }),
@@ -83,7 +88,7 @@ export let menuData: MenuNode[] = [
                     { title: '页面', action: 'station/page1', visible: false }
                 ],
             }),
-            Object.assign(siteMap.nodes.shopping_product_productEdit1, { title: 'Test' })
+            // Object.assign(siteMap.nodes.shopping_product_productEdit1, { title: 'Test' })
         ]
     },
     {
@@ -203,4 +208,4 @@ while (stack.length > 0) {
 }
 
 
-export default siteMap;
+// export default siteMap;

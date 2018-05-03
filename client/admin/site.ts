@@ -1,6 +1,5 @@
 ﻿import { default as Service } from 'admin/services/service'
 export { default as app } from 'admin/application';
-export { default as siteMap } from 'admin/siteMap';
 
 // let bootbox = window['bootbox'];
 
@@ -17,7 +16,6 @@ class Site {
     style = {
         tableClassName: 'table table-striped table-bordered table-hover'
     }
-    startUrl: 'Home/Index';
     get userClientUrl() {
         let { protocol, host, pathname } = location;
         pathname = pathname.replace('admin', 'user');

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Service } from 'admin/services/service';
-import { menuData, MenuNode } from 'admin/siteMap';
-import { app, siteMap } from 'site';
+import { siteMap, menuData, MenuNode } from 'admin/siteMap';
 
 let h = React.createElement;
 interface State {
@@ -151,6 +150,7 @@ export class MasterPage extends React.Component<Props, State> {
         // let currentPageName = app.currentPage != null ? app.currentPage.name : '';
         // let hideExistsButton = location.hash == '#user/login' || !Service.token;
         let { hideExistsButton, hideStoreButton } = this.state;
+        let { app } = this.props;
 
         return (
             <div className={nodeClassName}>

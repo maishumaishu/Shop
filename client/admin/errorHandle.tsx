@@ -1,5 +1,6 @@
 import { Service } from 'admin/services/service';
-import { app, siteMap } from 'site';
+import { app } from 'site';
+import { siteMap } from 'admin/siteMap';
 
 Service.error.add((sender, err) => {
     //724
