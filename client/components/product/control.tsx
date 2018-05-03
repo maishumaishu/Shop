@@ -94,7 +94,7 @@ export class Footer extends Control<ControlProps<Footer> & { product: Product },
         let buttonText = p.Stock == 0 ? "商品已售罄" : p.OffShelve == true ? "商品已下架" : "加入购物车";
         return (
             <nav className="product-control-footer">
-                <a href={'#shopping_shoppingCartNoMenu'} className="pull-left">
+                <a href={'#shopping_shoppingCart'} className="pull-left">
                     <i className="icon-shopping-cart"></i>
                     {productsCount ?
                         <span className="badge bg-primary">{productsCount}</span>
@@ -383,7 +383,7 @@ export default class ProductControl extends Control<Props, State>{
             <div key="main" className="product-control" ref={(e: HTMLElement) => this.pageComponent = e || this.pageComponent}>
                 <div name="productImages" className="carousel slide">
                     <div className="carousel-inner">
-                        {p.ImagePaths.map((o, i) => (
+                        {/* {p.ImagePaths.map((o, i) => (
                             <div key={i} className={i == 0 ? "item active" : "item"} style={{ textAlign: "center" }}>
                                 <img src={imageUrl(o, 300, 300)} className="img-responsive-100 img-full"
                                     ref={(e: HTMLImageElement) => {
@@ -391,7 +391,7 @@ export default class ProductControl extends Control<Props, State>{
                                         ui.renderImage(e)
                                     }} />
                             </div>
-                        ))}
+                        ))} */}
                     </div>
                 </div>
                 <ul className="list-group">

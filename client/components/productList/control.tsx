@@ -254,7 +254,7 @@ export default class ProductListControl extends Control<Props, State> {
             products = await this.shopping.productsByIds(this.state.productIds);
         }
 
-        products.forEach(o => o.ImagePath = o.ImagePaths[0]);
+        // products.forEach(o => o.ImagePath = o.ImagePaths[0]);
         return products;
     }
 

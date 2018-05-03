@@ -72,7 +72,7 @@ export default function (page: chitu.Page) {
                         for (let i = 0; i < thumberElements.length; i++) {
                             productIds.push(thumberElements.item(i).getAttribute('product-id'));
                         }
-                        this.state.product.ImagePaths = productIds;
+                        // this.state.product.ImagePaths = productIds;
                         this.setState(this.state);
                     }
                 });
@@ -97,7 +97,7 @@ export default function (page: chitu.Page) {
                     return station.saveImage(data.base64).then(o => `${o.id}`);
                 })
                 .then(name => {
-                    this.state.product.ImagePaths.push(name);
+                    // this.state.product.ImagePaths.push(name);
                     this.setState(this.state);
                 });
         }
@@ -105,8 +105,8 @@ export default function (page: chitu.Page) {
             let arr = imageName.split('_');
             console.assert(arr.length == 3);
             return station.removeImage(arr[0]).then(data => {
-                var imagePaths = this.state.product.ImagePaths.filter(o => o != imageName);
-                this.state.product.ImagePaths = imagePaths;
+                // var imagePaths = this.state.product.ImagePaths.filter(o => o != imageName);
+                // this.state.product.ImagePaths = imagePaths;
                 this.setState(this.state);
                 return data;
             });
@@ -114,7 +114,7 @@ export default function (page: chitu.Page) {
         saveContentImage(data: ui.ImageFileToBase64Result) {
             return station.saveImage(data.base64).then(o => {
                 let name = `${o.id}`;
-                this.state.product.ImagePaths.push(name);
+                // this.state.product.ImagePaths.push(name);
                 this.setState(this.state);
             });
         }
@@ -128,7 +128,7 @@ export default function (page: chitu.Page) {
 
         render() {
             let product = this.state.product;
-            let imagePaths = this.state.product.ImagePaths || [];
+            // let imagePaths = this.state.product.ImagePaths || [];
             let imagePath = this.state.product.ImagePath;
             return [
                 <div key="main" className="Shopping-ProductEdit"
@@ -285,7 +285,7 @@ export default function (page: chitu.Page) {
                     <div className="row form-group">
                         <div className="col-sm-12">
                             <ul className="images" ref={(e: HTMLElement) => this.productThumbers = e || this.productThumbers}>
-                                {imagePaths.map(o =>
+                                {/* {imagePaths.map(o =>
                                     <li key={o} product-id={o} title="拖动图片可以对图片进行排序">
                                         <ImageThumber imagePath={o} station={station}
                                             removed={() => {
@@ -293,7 +293,7 @@ export default function (page: chitu.Page) {
                                                 this.setState(this.state);
                                             }} />
                                     </li>
-                                )}
+                                )} */}
                                 <li>
                                     <ImageUpload title="内容图片" style={{ width: 114, height: 114 }} saveImage={(data) => this.saveContentImage(data)} />
                                 </li>
@@ -353,9 +353,9 @@ export default function (page: chitu.Page) {
         p = shopping.product(productId);
     }
     else {
-        p = Promise.resolve({
-            ImagePaths: []
-        } as Product);
+        // p = Promise.resolve({
+        //     ImagePaths: []
+        // } as Product);
     }
 
     p.then((product) => {

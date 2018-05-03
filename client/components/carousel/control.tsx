@@ -413,6 +413,12 @@ export interface State {
     // imagePaths: string[],
     items: CarouselItem[],
     autoplay: boolean,
+
+    // 图片的长宽比
+    itemScale?: number,
+
+    // 点图片执行的动作，showImage 显示大图，openPage 打开页面
+    clickType: 'showImage' | 'openPage'
 }
 
 export class CarouselControl extends Control<Props, State> {
@@ -421,10 +427,10 @@ export class CarouselControl extends Control<Props, State> {
     constructor(props) {
         super(props);
         this.loadControlCSS();
-        this.state = { items: [], autoplay: true };
+        this.state = { items: [], autoplay: true, clickType: 'openPage' };
     }
     get persistentMembers(): (keyof State)[] {
-        return ["items", "autoplay"]
+        return ["items", "autoplay", "itemScale", "clickType"]
     }
     componentDidMount() {
         //=======================================================

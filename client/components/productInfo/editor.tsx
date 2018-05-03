@@ -4,6 +4,20 @@ import { PropertiesComponent } from 'admin/modules/shopping/product/properties';
 import tips from "admin/tips";
 import { ShoppingService } from "admin/services/shopping";
 import { FormValidator, rules } from "dilu";
+import { ImageInput } from "../../admin/controls/imageInput";
+import { StationService } from "../../admin/services/station";
+
+let styles = {
+    convertImageFile: {
+        position: 'relative',
+        left: 0,
+        top: 0,
+        width: 14,
+        height: 30,
+        marginTop: -30,
+        opacity: 0
+    } as React.CSSProperties
+}
 
 export interface EditorState extends Partial<ControlState> {
     categories: Array<Category>,
@@ -11,6 +25,7 @@ export interface EditorState extends Partial<ControlState> {
 }
 
 export default class ProductInfoEditor extends Editor<EditorProps, EditorState>  {
+    station: StationService;
     argumentsProperties: PropertiesComponent;
     fieldPropertiies: PropertiesComponent;
     priceError: HTMLElement;
@@ -23,6 +38,7 @@ export default class ProductInfoEditor extends Editor<EditorProps, EditorState> 
     constructor(props) {
         super(props);
         this.loadEditorCSS();
+        this.station = this.props.elementPage.createService(StationService);
     }
     componentDidMount() {
         let shopping = this.props.elementPage.createService(ShoppingService);
@@ -50,6 +66,21 @@ export default class ProductInfoEditor extends Editor<EditorProps, EditorState> 
             return result;
         }
     }
+    bindCategoryId(e: HTMLSelectElement, product: Product, categories: Category[]) {
+        if (!e) return;
+        this.bindInputElement<Product>(e, product, 'ProductCategoryId');
+        let _onchange = e.onchange;
+        e.onchange = (event) => {
+            if (_onchange)
+                _onchange.apply(e, event);
+
+            let category = categories.filter(o => o.Id == e.value)[0];
+            if (category) {
+                this.state.product.ProductCategoryName = category.Name;
+                this.setState(this.state);
+            }
+        }
+    }
     render() {
         let { product, categories, brands } = this.state;
         categories = categories || [];
@@ -67,21 +98,7 @@ export default class ProductInfoEditor extends Editor<EditorProps, EditorState> 
                     <div className="col-md-9">
                         <div className="input-group">
                             <select name="categoryId" className="form-control"
-                                ref={(e: HTMLSelectElement) => {
-                                    if (!e) return;
-                                    this.bindInputElement<Product>(e, product, 'ProductCategoryId');
-                                    let _onchange = e.onchange;
-                                    e.onchange = (event) => {
-                                        if (_onchange)
-                                            _onchange.apply(e, event);
-
-                                        let category = categories.filter(o => o.Id == e.value)[0];
-                                        if (category) {
-                                            this.state.product.ProductCategoryName = category.Name;
-                                            this.setState(this.state);
-                                        }
-                                    }
-                                }} >
+                                ref={(e: HTMLSelectElement) => this.bindCategoryId(e, product, categories)} >
                                 <option value="">请选择类别</option>
                                 {categories.map(o =>
                                     <option key={o.Id} value={o.Id}>{o.Name}</option>
@@ -152,6 +169,21 @@ export default class ProductInfoEditor extends Editor<EditorProps, EditorState> 
                     </div>
                 </div>
             </div>
+            <div key="convertImage" className="row form-group">
+                <div className="col-md-6">
+                    <label className="col-lg-3">封面图片</label>
+                    <div className="col-lg-9">
+                        <ImageInput station={this.station} imageId={product.ImagePath}
+                            ref={(e) => {
+                                if (!e) return;
+                                e['componentDidUpdate'] = () => {
+                                    debugger;
+                                    product.ImagePath = e.state.imageId;
+                                }
+                            }} />
+                    </div>
+                </div>
+            </div>
             <hr />
             <PropertiesComponent ref={(e) => this.fieldPropertiies = e || this.fieldPropertiies}
                 name="商品规格" properties={product.Fields} emptyText={tips.noProductRegular}
@@ -174,6 +206,17 @@ export default class ProductInfoEditor extends Editor<EditorProps, EditorState> 
             <BrandDialog key="brandDialog"
                 container={this} shop={this.props.elementPage.createService(ShoppingService)}
                 ref={(e) => this.brandDialog = e || this.brandDialog} />
+            <div key={50} className="row form-group">
+                <div className="col-md-12">
+                    <input type="checkbox"
+                        checked={this.state.hideProperties}
+                        onChange={() => {
+                            this.state.hideProperties = !this.state.hideProperties;
+                            this.setState(this.state);
+                        }} />
+                    <span>隐藏商品属性</span>
+                </div>
+            </div>
         </div>
     }
 }

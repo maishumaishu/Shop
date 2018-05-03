@@ -55,29 +55,6 @@ interface ReceiptInfo {
     ProvinceName: string,
     RegionId: string
 }
-// export interface Product {
-//     Id: string, Arguments: Array<{ key: string, value: string }>,
-//     BrandId: string, BrandName: string, Price: number,
-//     Score: number, Unit: string, MemberPrice: number,
-//     Fields: Array<{ key: string, value: string }>,
-//     GroupId: string, ImagePath: string, ImagePaths: Array<string>,
-//     ProductCategoryId: string, Name: string, //IsFavored?: boolean,
-//     ProductCategoryName: string,
-//     CustomProperties: Array<CustomProperty>,
-//     Promotions: Promotion[],
-//     Title: string,
-// }
-// export interface CustomProperty {
-//     Name: string,
-//     Options: Array<{ Name: string, Selected: boolean, Value: string }>
-// }
-// export interface Promotion {
-//     Type: 'Given' | 'Reduce' | 'Discount',
-//     Contents: {
-//         Id: string,
-//         Description: string
-//     }[],
-// }
 interface ProductCategory {
     Id: string, Name: string, ImagePath: string
 }

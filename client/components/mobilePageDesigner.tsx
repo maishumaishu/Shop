@@ -13,7 +13,7 @@ import { DesignTimeUserApplication } from 'components/designTimeUserApplication'
 import * as ui from 'ui';
 import 'jquery-ui';
 import app from 'admin/application';
-import siteMap from 'admin/siteMap';
+import { siteMap } from 'admin/siteMap';
 import { siteMap as userSiteMap, app as userApp } from 'user/site';
 import { PageDatas } from 'user/services/stationService';
 import { FormValidator, rules } from 'dilu';
@@ -25,6 +25,7 @@ export interface Props extends React.Props<MobilePageDesigner> {
     showMenuSwitch?: boolean,
     save: (pageData: PageData) => Promise<PageData>,
     pageDatas: PageDatas,
+    buttons?: JSX.Element[]
 }
 
 export interface State {
@@ -198,17 +199,19 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     }
 
     loadControlEditor(control: Control<any, any> & { id?: string, controlName: string }) {
-        if (!control.id)
-            control.id = guid();
+        // if (!control.id)
+        //     control.id = guid();
+        console.assert(control.id != null && control.id != '');
 
+        if (!control.hasEditor) {
+            return;
+        }
         let controlName = control.controlName;
         let editorPathName = Editor.path(controlName);
         let editorId = `editor-${control.id}`;
         let editorElement = this.editorsElement.querySelector(`[id='${editorId}']`) as HTMLElement;
 
         if (editorElement != null) {
-            // editorElement.style.display = 'none';
-            // this.currentEditor = editorElement;
             return;
         }
 
@@ -218,10 +221,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         editorElement.style.display = 'none';
         this.editorsElement.appendChild(editorElement);
 
-        // if (this.currentEditor)
-        //     this.currentEditor.style.display = 'none';
-
-        // this.currentEditor = editorElement;
         requirejs([editorPathName], (exports) => {
             let editorType = exports.default;
             console.assert(editorType != null, 'editor type is null');
@@ -297,15 +296,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             this.userApp.currentPage.reload();
         }
 
-        //==============================================
-        // 关闭所以页面
-        // while (this.userApp.currentPage != null) {
-        //     this.userApp.currentPage.close();
-        // }
-        //==============================================
-
-
-
     }
 
     async componentDidMount() {
@@ -314,22 +304,18 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                 { name: 'name', rules: [rules.required('请输入页面名称')] }
             )
         }
-
-        // this.mobilePage.controls.forEach(o => {
-        //     this.loadControlEditor(o);
-        // })
     }
 
     render() {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
         let { pageData } = this.state;
-        let { showComponentPanel } = this.props;
+        let { showComponentPanel, buttons } = this.props;
+        buttons = buttons || [];
         return (
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
                     <VirtualMobile ref={(e) => {
-                        // if (!e) return;
                         this.virtualMobile = e || this.virtualMobile;
                         setTimeout(() => {
                             this.renederVirtualMobile(this.virtualMobile.screenElement, pageData);
@@ -363,17 +349,16 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             </label>
                         </li> : null}
                         <li className="pull-right">
+                            <button className="btn btn-sm btn-primary" onClick={() => this.preview()}>
+                                <i className="icon-eye-open" />
+                                <span>预览</span>
+                            </button>
                             <button className="btn btn-sm btn-primary"
                                 ref={(e: HTMLButtonElement) => e != null ? ui.buttonOnClick(e, () => this.save(), { toast: '保存页面成功' }) : null}>
                                 <i className="icon-save" />
                                 <span>保存</span>
                             </button>
-                        </li>
-                        <li className="pull-right">
-                            <button className="btn btn-sm btn-primary" onClick={() => this.preview()}>
-                                <i className="icon-eye-open" />
-                                <span>预览</span>
-                            </button>
+                            {buttons}
                         </li>
                         <li className="clearfix">
                         </li>

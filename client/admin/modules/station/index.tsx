@@ -1,11 +1,10 @@
 /** 店铺概况　页面 */
 // import { Button, ImageBox } from 'common/controls';
-import { default as site } from 'site'
+import { default as site, app } from 'site'
 import { StationService } from 'admin/services/station';
 import { imageUrl } from 'admin/services/service';
 import { FormValidator, rules } from 'dilu';
 import 'bootstrap';
-import app from 'application';
 import { app as userApp, siteMap as userSiteMap, siteMap } from 'user/site';
 
 import QRCode = require('qrcode');

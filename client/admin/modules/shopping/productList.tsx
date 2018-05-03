@@ -1,12 +1,11 @@
 import { ShoppingService } from 'admin/services/shopping';
 import { StationService } from 'admin/services/station';
-import app from 'application';
-import { default as site } from 'site';
+import { default as site, app } from 'site';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import tips from 'admin/tips';
 import 'wuzhui';
-import siteMap from 'admin/siteMap';
+import { siteMap } from 'admin/siteMap';
 import { app as userApp } from 'user/application';
 import userSiteMap from 'user/siteMap';
 import ClipboardJS = require('clipboard');

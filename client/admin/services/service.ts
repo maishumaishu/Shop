@@ -70,6 +70,7 @@ export class Service extends BaseService {
 }
 
 Service.token.add((value) => {
+    debugger;
     localStorage.setItem("adminToken", value);
 });
 

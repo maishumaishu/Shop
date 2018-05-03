@@ -71,6 +71,10 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         this._state = Object.assign(value, state);;
     }
 
+    get hasEditor() {
+        return true;
+    }
+
     private setStateTimes = 0;
     setState(f: (prevState: S, props: P) => S, callback?: () => any): void;
     setState(state: S, callback?: () => any): void;
@@ -96,7 +100,6 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         var typeName = this.constructor.name;
         typeName = typeName.replace('Control', '');
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
-
         requirejs([`css!${componentsDir}/${typeName}/control`]);
     }
 
@@ -158,16 +161,7 @@ export interface ComponentClass<T> extends React.ComponentClass<T> {
     attributes: { editorPath?: string, editorExport?: string }
 }
 
-type Attributes = { editorPath?: string, editorExport?: string }
-export function editor(pathName: string, exportName?: string) {
-    return function (constructor: React.ComponentClass<any>) {
-        let componentClass = constructor as ComponentClass<any>;
-        let attrs = componentClass.attributes = componentClass.attributes || {};
-        attrs.editorPath = pathName;
-        attrs.editorExport = exportName;
-    }
-}
-
 export interface ControlState {
     persistentMembers: (keyof this)[];
 }
+

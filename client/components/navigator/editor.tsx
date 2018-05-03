@@ -4,6 +4,8 @@ import { State as ControlState, default as Control, NavigatorItem } from 'compon
 import 'wuzhui';
 import { FormValidator, rules } from 'dilu';
 import { StationService } from 'user/services/stationService';
+import app from 'admin/application';
+import { siteMap } from '../../admin/siteMap';
 
 export interface EditorState extends Partial<ControlState> {
 
@@ -128,6 +130,10 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                                     if (pageData != null) {
                                         e.innerHTML = pageData.name;
                                     }
+                                    e.onclick = () => {
+                                        app.redirect(siteMap.nodes.station_page, { pageId: o.pageId });
+                                    }
+
                                 }}>{o.pageId}</div>
 
                             <button className="btn-link pull-right" type="button"
@@ -163,14 +169,14 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                         </div>
                         <div className="modal-body form-horizontal">
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">名称</label>
-                                <div className="col-sm-10">
+                                <label className="col-lg-3 control-label">名称</label>
+                                <div className="col-lg-9">
                                     <input name="name" type="text" className="form-control" placeholder="请输名称" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">显示页面</label>
-                                <div className="col-sm-10">
+                                <label className="col-lg-3 control-label">显示页面</label>
+                                <div className="col-lg-9">
                                     <div className="input-group">
                                         <input name="url" type="text" className="form-control" placeholder="请选择要显示的页面" />
                                         <span className="input-group-addon">
@@ -180,8 +186,8 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">PageId</label>
-                                <div className="col-sm-10">
+                                <label className="col-lg-3 control-label">PageId</label>
+                                <div className="col-lg-9">
                                     <input name="pageId" type="text" className="form-control" placeholder="pageId" />
                                 </div>
                             </div>

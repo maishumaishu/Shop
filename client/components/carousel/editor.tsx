@@ -5,6 +5,10 @@ import FormValidator from 'lib/formValidator';
 import { ImageFileToBase64Result } from 'ui';
 import { imageUrl, ImageUpload, ImageManager } from 'admin/images';
 
+//========================================
+// 列表项的宽度，这 css 样式设定，要与它相同
+const itemHeight = 120;
+//========================================
 
 /**
  * TODO:
@@ -12,10 +16,17 @@ import { imageUrl, ImageUpload, ImageManager } from 'admin/images';
  * 2. 窗口关闭后，数据清除
  * 3. 编辑，删除功能
  */
-export interface EditorState extends Partial<ControlState> {
-    editItemIndex: number
+interface State extends Partial<ControlState> {
+    editItemIndex: number,
+
+
 }
-export default class CarouselEditor extends Editor<EditorProps, EditorState>{
+
+interface Props extends EditorProps {
+}
+
+
+export default class CarouselEditor extends Editor<Props, State>{
     imageManager: ImageManager;
     station: StationService;
 
@@ -33,15 +44,21 @@ export default class CarouselEditor extends Editor<EditorProps, EditorState>{
         return result;
     }
     async showImageDialog() {
-        this.imageManager.show((images) => {
-            images.forEach(o => {
-                this.state.items.push({ image: o, url: '', title: '' });
+        this.imageManager.show((imageIds) => {
+            imageIds.forEach(o => {
+                this.state.items.push({ image: imageUrl(o, 100), url: '', title: '' });
                 this.setState(this.state);
             })
         });
     }
     render() {
-        let { items, autoplay } = this.state;
+        let { items, autoplay, itemScale, clickType } = this.state;
+
+        let itemWidth: number;
+        if (itemScale) {
+            itemWidth = itemHeight / itemScale;
+        }
+
         items = items || [];
         return [
             <div key={10} className="form-group">
@@ -57,13 +74,15 @@ export default class CarouselEditor extends Editor<EditorProps, EditorState>{
             </div>,
             <ul key="ul" className="carousel-items">
                 {items.map((o, i) =>
-                    <li key={i}>
+                    <li key={i} style={{ width: itemWidth }}>
                         <div className="form-group">
                             <img src={o.image} />
                         </div>
-                        <div className="form-group">
-                            <input className="form-control" placeholder="请输入和图片对应的链接" />
-                        </div>
+                        {clickType == 'openPage' ?
+                            <div className="form-group">
+                                <input className="form-control" placeholder="请输入和图片对应的链接" />
+                            </div> : null
+                        }
                         <div className="form-group">
                             <button className="btn btn-block btn-danger"
                                 ref={(e: HTMLButtonElement) => {
@@ -81,14 +100,13 @@ export default class CarouselEditor extends Editor<EditorProps, EditorState>{
                         </div>
                     </li>
                 )}
-                <li onClick={() => this.showImageDialog()}>
+                <li style={{ width: itemWidth }} onClick={() => this.showImageDialog()}>
                     <i className="icon-plus icon-4x"></i>
                     <div>从相册选取图片</div>
                 </li>
             </ul>,
             <div key="div" className="clearfix"></div>,
-            <ImageManager key="images" station={this.station}
-                ref={(e) => this.imageManager = e || this.imageManager} />
+
         ]
     }
 }

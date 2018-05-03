@@ -1,4 +1,4 @@
-import { defaultNavBar, app } from 'site';
+import { defaultNavBar, app } from 'user/site';
 import { FormValidator, rules } from 'dilu';
 // import * as services from 'user/services';
 import { MemberService } from 'user/services/memberService';

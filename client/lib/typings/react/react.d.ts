@@ -430,6 +430,7 @@ declare module React {
         listStyle?: string,
 
         maxWidth?: number | string,
+        maxHeight?: number | string,
         margin?: number | string;
         marginBottom?: number | string;
         marginLeft?: number | string;

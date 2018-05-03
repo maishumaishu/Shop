@@ -16,6 +16,10 @@ export interface Props extends ControlProps<HtmlControl> {
 const defaultEmptyText = '请设置 HTML';
 
 export default class HtmlControl extends Control<Props, State> {
+    constructor(props) {
+        super(props);
+        this.loadControlCSS();
+    }
     get persistentMembers(): (keyof State)[] {
         return ["html"]
     }

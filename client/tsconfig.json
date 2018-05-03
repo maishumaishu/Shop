@@ -11,6 +11,9 @@
             "*": [
                 "lib/*",
                 "lib/es6/*"
+            ],
+            "weixin/modules/openid": [
+                "client/admin/weixin/modules/openid"
             ]
             // "adminComponents/*": [
             //     "client/admin/components/*"

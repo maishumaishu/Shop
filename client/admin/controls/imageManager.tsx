@@ -14,7 +14,7 @@ type State = {
 type Props = { station: StationService } & React.Props<ImageManager>;
 export default class ImageManager extends React.Component<Props, State> {
 
-    private showDialogCallback: (images: string[]) => void;
+    private showDialogCallback: (imageIds: string[]) => void;
     private dataSource: wuzhui.DataSource<SiteImageData>;
     private pagingBarElement: HTMLElement;
     private element: HTMLElement;
@@ -71,7 +71,7 @@ export default class ImageManager extends React.Component<Props, State> {
         dataSource.select();
     }
 
-    show(callback?: (images: string[]) => void) {
+    show(callback?: (imageIds: string[]) => void) {
         this.showDialogCallback = callback;
         this.state.selectedItems = [];
         this.setState(this.state);
@@ -135,8 +135,8 @@ export default class ImageManager extends React.Component<Props, State> {
                                 onClick={() => {
                                     if (this.showDialogCallback) {
                                         let imageIds = this.state.selectedItems.map(o => o);
-                                        let images = imageIds.map(o => imageUrl(o));
-                                        this.showDialogCallback(images);
+                                        // let images = imageIds.map(o => imageUrl(o));
+                                        this.showDialogCallback(imageIds);
                                     }
                                     ui.hideDialog(this.element);
                                 }}>

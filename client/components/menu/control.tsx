@@ -1,4 +1,4 @@
-import { componentsDir, Control, editor, ControlState, ControlProps } from 'components/common';
+import { componentsDir, Control, ControlState, ControlProps } from 'components/common';
 import { app } from 'user/site';
 import { ShoppingCartService } from 'user/services/shoppingCartService';
 import siteMap from 'user/siteMap';

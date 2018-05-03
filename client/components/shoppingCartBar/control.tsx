@@ -1,4 +1,6 @@
 import { Control, ControlProps, componentsDir } from 'components/common';
+import { app } from '../../user/site';
+import { siteMap } from '../../user/siteMap';
 
 export interface Props extends ControlProps<ShoppingCartBarControl> {
 
@@ -22,7 +24,8 @@ export default class ShoppingCartBarControl extends Control<Props, State>{
     _render() {
         return (
             <div className="settlement">
-                <div className="pull-left">
+                <div className="pull-left btn-link"
+                    onClick={() => app.redirect(siteMap.nodes.shopping_shoppingCart)}>
                     <i className="icon-shopping-cart"></i>
                 </div>
                 <div className="pull-right">

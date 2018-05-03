@@ -147,7 +147,7 @@ interface Product {
     CostPrice: string;
     Introduce: string;
     ImagePath: string;
-    ImagePaths: string[];
+    // ImagePaths: string[];
     ImageCover: string;
     Score: number;
     ProductCategoryId: string,

@@ -8,7 +8,7 @@ import * as React from 'react';
 import { Page } from 'user/application';
 
 let dir = 'user/modules'
-let siteMap = {
+export let siteMap = {
     nodes: {
         emtpy: { action: (page: chitu.Page) => null },
         page: { action: `${dir}/page` } as chitu.SiteMapNode,
@@ -27,6 +27,7 @@ let siteMap = {
         user_forgetPassword: { action: `${dir}/user/forgetPassword` },
         user_login: { action: `${dir}/user/login` } as chitu.SiteMapNode,
         user_regions: { action: `${dir}/user/regions`, cache: true },
+        user_register: { action: `${dir}/user/register`, cache: true },
         user_receiptEdit: { action: `${dir}/user/receiptEdit` },
         user_receiptList: { action: `${dir}/user/receiptList`, cache: true },
         user_userInfo: { action: `${dir}/user/userInfo` },

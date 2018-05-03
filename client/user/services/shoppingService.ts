@@ -23,11 +23,11 @@ export class ShoppingService extends Service {
             .then(o => this.processProduct(o));
     }
     private processProduct(product: Product): Product {
-        if (!product.ImagePaths && product.ImagePath != null) {
-            product.ImagePaths = product.ImagePath.split(',').map(o => imageUrl(o));
-        }
-        product.ImagePaths = product.ImagePaths || [];
-        product.ImagePath = product.ImagePaths[0];
+        // if (!product.ImagePaths && product.ImagePath != null) {
+        //     product.ImagePaths = product.ImagePath.split(',').map(o => imageUrl(o));
+        // }
+        // product.ImagePaths = product.ImagePaths || [];
+        // product.ImagePath = product.ImagePaths[0];
         product.Arguments = product.Arguments || [];
         product.Fields = product.Fields || [];
 

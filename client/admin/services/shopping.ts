@@ -49,7 +49,7 @@ export class ShoppingService extends Service {
         var obj = Object.assign({}, product);
         obj.Arguments = JSON.stringify(product.Arguments) as any;
         obj.Fields = JSON.stringify(product.Fields) as any;
-        obj.ImagePaths = (product.ImagePaths || []).join(',') as any;
+        // obj.ImagePaths = (product.ImagePaths || []).join(',') as any;
         obj.Unit = obj.Unit || '件';
 
         let result = await this.postByJson<{ Id: string }>(Service.config.shopUrl + 'Product/SaveProduct', { model: obj, parentId, id });

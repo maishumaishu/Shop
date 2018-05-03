@@ -84,7 +84,6 @@ export class MobilePage extends React.Component<Props, State>{
         let arr = controlName.split(':');
         let fileName = arr[0];
         let name = arr[1] || 'default';
-
         let filePath = `${componentsDir}/${fileName}/control`;
         return new Promise((resolve, reject) => {
             requirejs([filePath], function (exports) {
@@ -106,23 +105,6 @@ export class MobilePage extends React.Component<Props, State>{
 
         return this.renderRuntimeControls(controls);
     }
-
-    // renderControl(controlData: ControlDescription) {
-    //     let o = controlData;
-    //     let runtimeControl = (
-    //         <div id={o.controlId} key={o.controlId}
-    //             ref={async (e: HTMLElement) => {
-    //                 if (!e) return;
-    //                 var c = await this.createControlInstance(o, e);
-    //                 let obj = Object.assign(c.control, { controlId: o.controlId, controlName: o.controlName });
-    //                 this.controls.push(obj);
-    //                 if (this.props.controlCreated)
-    //                     this.props.controlCreated(obj);
-    //             }} />
-    //     );
-
-    //     return runtimeControl;
-    // }
 
     renderRuntimeControls(controls: ControlDescription[]) {
         controls = controls || [];
@@ -335,7 +317,6 @@ export class MobilePage extends React.Component<Props, State>{
         >
             {this.renderControls(pageData.view.controls)}
         </section>
-        // ));
     }
 
     render() {

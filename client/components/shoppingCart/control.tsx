@@ -43,6 +43,9 @@ export class Header extends Control<any, { status: ControlStatus }> {
     private cancle() {
         this.shoppingCart.cancel();
     }
+    get hasEditor() {
+        return false;
+    }
     _render() {
         let { status } = this.state;
         let showBackButton = this.elementPage.name == 'shopping.shoppingCartNoMenu';
@@ -101,6 +104,9 @@ export class Footer extends Control<any, FooterStatus>{
 
     get persistentMembers() {
         return [];
+    }
+    get hasEditor() {
+        return false;
     }
     deleteConfirmText(items) {
         return "";
