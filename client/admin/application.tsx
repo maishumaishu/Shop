@@ -1,11 +1,11 @@
-﻿import * as React from 'react';
+﻿
+import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as ui from 'ui';
 import { Service } from 'admin/services/service';
 import { shopName, ADMIN_APP } from 'share/common';
 import { MasterPage } from 'masterPage';
-import siteMap from 'admin/siteMap';
-import site from './site';
+import { siteMap } from 'admin/siteMap';
 
 let h = React.createElement;
 
@@ -76,6 +76,10 @@ class Application extends chitu.Application {
         element.className = className;
         this.masterPage.viewContainer.appendChild(element);
         return element;
+    }
+
+    redirect(node, args?) {
+        return super.redirect(node, args);
     }
 
     private errorHandle(err: Error) {
