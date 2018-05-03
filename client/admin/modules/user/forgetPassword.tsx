@@ -2,7 +2,7 @@ import { FormValidator, rules } from 'dilu';
 import { UserService } from 'admin/services/user';
 import * as ui from 'ui';
 import app from 'application';
-import siteMap from 'admin/siteMap';
+import { siteMap } from 'admin/siteMap';
 
 export default function (page: chitu.Page) {
 
@@ -31,7 +31,7 @@ export default function (page: chitu.Page) {
             let verifyCode = this.formElement.querySelector('[name="verifyCode"]') as HTMLInputElement;
             let password = this.formElement.querySelector('[name="password"]') as HTMLInputElement;
             let confirmPassword = this.formElement.querySelector('[name="confirmPassword"]') as HTMLInputElement;
- 
+
 
             this.registerValidation = new FormValidator(this.formElement,
                 { name: "mobile", rules: [rules.required("手机不能为空"), rules.mobile('手机号码不正确')] },

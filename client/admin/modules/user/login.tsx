@@ -1,7 +1,7 @@
 ﻿import { Service, systemWeiXinAppId } from 'admin/services/service';
 import { UserService } from 'admin/services/user';
 import { WeiXinService } from 'admin/services/weixin';
-import { app } from 'site';
+import app from 'admin/application';
 import { default as site } from 'site';
 import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
@@ -9,7 +9,7 @@ import * as ui from 'ui';
 import QRCode = require('qrcode');
 import { websocketUrl, shopName } from 'share/common'
 import { showQRCodeDialog } from 'weixin/modules/openid';
-import siteMap from 'admin/siteMap';
+import { siteMap } from 'admin/siteMap';
 
 export default async function (page: chitu.Page) {
     app.loadCSS(page.name);
@@ -26,7 +26,7 @@ export default async function (page: chitu.Page) {
 
         constructor(props) {
             super(props);
-            Service.token.value = '';
+            // Service.token.value = '';
         }
 
         componentDidMount() {
