@@ -1,5 +1,5 @@
 import { Service } from 'admin/services/service';
-import { app } from 'site';
+import { app } from 'admin/site';
 import { siteMap } from 'admin/siteMap';
 
 Service.error.add((sender, err) => {

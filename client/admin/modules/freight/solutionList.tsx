@@ -1,6 +1,6 @@
 
 import { ShoppingService } from 'admin/services/shopping';
-import * as site from 'site';
+import * as site from 'admin/site';
 import * as wz from 'myWuZhui';
 
 export default function (page: chitu.Page) {

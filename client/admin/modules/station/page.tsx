@@ -3,7 +3,7 @@ import { StationService, guid } from 'admin/services/station';
 import { componentsDir } from 'components/common';
 import { StationService as UserStation } from 'user/services/stationService';
 import { Page } from 'chitu';
-import { app } from 'site';
+import { app } from 'admin/site';
 
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
 

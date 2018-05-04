@@ -1,6 +1,6 @@
 /** 店铺概况　页面 */
 // import { Button, ImageBox } from 'common/controls';
-import { default as site, app } from 'site'
+import { default as site, app } from 'admin/site'
 import { StationService } from 'admin/services/station';
 import { imageUrl } from 'admin/services/service';
 import { FormValidator, rules } from 'dilu';

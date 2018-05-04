@@ -1,5 +1,5 @@
 
-import { default as site } from 'site';
+import { default as site } from 'admin/site';
 import { customField } from 'myWuZhui';
 import { FormValidator, rules } from 'dilu';
 import { ShoppingService } from 'admin/services/shopping';

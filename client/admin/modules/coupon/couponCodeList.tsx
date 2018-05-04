@@ -252,7 +252,7 @@ export default function (page: chitu.Page) {
 }
 
 // import val = require('jquery.validate');
-// import site = require('site');
+// import site = require('admin/site');
 // import bootbox = require('bootbox');
 // import { default as shopping } from 'services/shopping'
 // let JData = window['JData'];

@@ -2,7 +2,7 @@
 import { UserService } from 'admin/services/user';
 import { WeiXinService } from 'admin/services/weixin';
 import app from 'admin/application';
-import { default as site } from 'site';
+import { default as site } from 'admin/site';
 import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';

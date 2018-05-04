@@ -1,6 +1,6 @@
 
 import { ActivityService } from 'admin/services/activity';
-import site from 'site';
+import site from 'admin/site';
 import app from 'application';
 import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';

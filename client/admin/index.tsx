@@ -107,7 +107,7 @@ requirejs.config({
         adminServices: 'admin/services',
         'masterPage': 'admin/masterPage',
         // 'application': 'admin/application',
-        site: 'admin/site',
+        // site: 'admin/site',
         modules: 'admin/modules',
         content: 'admin/content',
         build: 'admin/build',
