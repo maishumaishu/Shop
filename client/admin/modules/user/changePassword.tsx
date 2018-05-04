@@ -6,7 +6,7 @@ import QRCode = require('qrcode');
 import { WebSockentMessage } from 'weixin/common';
 import { websocketUrl } from 'share/common';
 import { showQRCodeDialog } from 'weixin/modules/openid';
-import app from 'application';
+import app from 'admin/application';
 
 const label_max_width = 80;
 const input_max_width = 300;

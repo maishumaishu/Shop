@@ -24,7 +24,7 @@ type Props = {
 
 requirejs(['css!admin/controls/imageInput']);
 export class ImageInput extends React.Component<Props, State>{
-    imageManager: ImageManager;
+    // imageManager: ImageManager;
 
     constructor(props) {
         super(props);
@@ -41,7 +41,7 @@ export class ImageInput extends React.Component<Props, State>{
     }
 
     showImageDialog() {
-        this.imageManager.show((images) => {
+        ImageManager.show((images) => {
             this.state.imageId = images[0];//imageUrl(images[0], 100);
             this.setState(this.state);
         });
@@ -74,11 +74,7 @@ export class ImageInput extends React.Component<Props, State>{
                             e.onchange = () => this.uploadImage(e.files[0]);
                         }} />
                 </span>
-                <ImageManager key="images" station={station}
-                    ref={(e) => this.imageManager = e || this.imageManager} />
             </div>,
-            <ImageManager key="images" station={station}
-                ref={(e) => this.imageManager = e || this.imageManager} />,
             imageId ? <img key="image" className="image-input" src={imageUrl(imageId, 120)} /> : null
         ];
     }

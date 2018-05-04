@@ -34,20 +34,15 @@ declare namespace wuzhui {
         selecting: Callback1<DataSource<T>, DataSourceSelectArguments>;
         selected: Callback1<DataSource<T>, DataSourceSelectResult<T>>;
         error: Callback1<this, DataSourceError>;
-        constructor(args: {
-            primaryKeys?: string[];
-            select: ((args: DataSourceSelectArguments) => Promise<Array<T> | DataSourceSelectResult<T>>);
-            insert?: ((item: T) => Promise<any>);
-            update?: ((item: T) => Promise<any>);
-            delete?: ((item: T) => Promise<any>);
-        });
+        constructor(args: DataSourceArguments<T>);
         readonly canDelete: boolean;
         readonly canInsert: boolean;
         readonly canUpdate: boolean;
         readonly selectArguments: DataSourceSelectArguments;
-        insert(item: T, index?: number): Promise<any>;
-        delete(item: T): Promise<any>;
-        update(item: T): Promise<any>;
+        insert(item: T): any;
+        insert(item: T, index?: number): any;
+        delete(item: T, args?: any): Promise<any>;
+        update(item: T, args?: any): Promise<any>;
         isSameItem(theItem: T, otherItem: T): boolean;
         private checkPrimaryKeys(item);
         select(): Promise<T[] | DataSourceSelectResult<T>>;
@@ -60,6 +55,13 @@ declare namespace wuzhui {
         filter?: string;
         constructor();
     }
+    type DataSourceArguments<T> = {
+        primaryKeys?: string[];
+        select: ((args: DataSourceSelectArguments) => Promise<Array<T> | DataSourceSelectResult<T>>);
+        insert?: ((item: T, args?: any) => Promise<any>);
+        update?: ((item: T, args?: any) => Promise<any>);
+        delete?: ((item: T, args?: any) => Promise<any>);
+    };
 }
 declare namespace wuzhui {
     class Errors {

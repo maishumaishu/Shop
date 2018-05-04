@@ -1,9 +1,11 @@
-import { VirtualMobile } from "components/virtualMobile";
+import { VirtualMobile } from 'components/virtualMobile';
 import { MobilePage } from 'components/mobilePage';
-import { MobilePageDesigner } from "components/mobilePageDesigner";
+import { MobilePageDesigner } from 'components/mobilePageDesigner';
 import { StationService as UserStation } from 'user/services/stationService';
 import { StationService as AdminStation, guid, StationService } from 'admin/services/station';
-import { ShoppingService } from "admin/services/shopping";
+import { ShoppingService } from 'admin/services/shopping';
+import { product as dataSource } from 'admin/services/dataSource';
+
 import { State as CarouselState } from 'components/carousel/control'
 export default async function (page: chitu.Page) {
     type Props = { pageData: PageData } & React.Props<ProductEditPage>;
@@ -20,7 +22,8 @@ export default async function (page: chitu.Page) {
             console.assert(product != null);
 
             let parentId = page.data.parentId;
-            return shop.saveProduct({ product, parentId, id: pageData.id });
+            // return shop.saveProduct({ product, parentId, id: pageData.id });
+            return dataSource.update(product, { parentId, id: pageData.id });
         }
 
         render() {

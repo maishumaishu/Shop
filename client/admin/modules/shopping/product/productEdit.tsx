@@ -2,6 +2,7 @@
 import { ShoppingService } from 'admin/services/shopping';
 import { StationService } from 'admin/services/station';
 import { Service, imageUrl, guid } from 'admin/services/service';
+import { product as dataSource } from 'admin/services/dataSource';
 
 import UE = require('ue.ext');
 import { PropertiesComponent } from 'modules/shopping/product/properties';
@@ -86,10 +87,11 @@ export default function (page: chitu.Page) {
             this.state.product.Introduce = this.introduceInput.value;
             this.state.product.Fields = this.fieldPropertiies.state.properties;
             this.state.product.Arguments = this.argumentsProperties.state.properties;
-            return shopping.saveProduct({ product: this.state.product, parentId: page.data.parentId }).then(data => {
-                this.state.product.Id = data.Id;
-                return data;
-            })
+            // return shopping.saveProduct({ product: this.state.product, parentId: page.data.parentId }).then(data => {
+            //     this.state.product.Id = data.Id;
+            //     return data;
+            // })
+            return dataSource.update(this.state.product, { parentId: page.data.parentId })
         }
         updloadImage(imageFile: File) {
             ui.imageFileToBase64(imageFile)

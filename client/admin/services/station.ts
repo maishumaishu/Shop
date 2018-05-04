@@ -29,9 +29,11 @@ export class StationService extends Service {
             return o || [];
         });
     }
-    pageList(args: wuzhui.DataSourceSelectArguments) {
+    async pageList(args: wuzhui.DataSourceSelectArguments): Promise<wuzhui.DataSourceSelectResult<PageData>> {
         let url = this.url('Page/GetPageList');
-        return this.getByJson<wuzhui.DataSourceSelectResult<{ Id: string, Name: string }>>(url);
+        let pageList = await this.getByJson<wuzhui.DataSourceSelectResult<{ Id: string, Name: string }>>(url);
+        let pages = pageList.dataItems.map(o => <PageData>{ id: o.Id, name: o.Name });
+        return { totalRowCount: pageList.totalRowCount, dataItems: pages };
     }
     async pageDataById(pageId: string) {
         if (!pageId) throw new Error('argument pageId null');

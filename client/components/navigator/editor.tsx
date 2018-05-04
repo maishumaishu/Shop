@@ -94,8 +94,8 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
     showPageSelectDialog() {
         this.pageSelectDialog.show((item) => {
             if (this.editItem) {
-                this.value('pageName', item.Name);
-                this.value('pageId', item.Id);
+                this.value('pageName', item.name);
+                this.value('pageId', item.id);
             }
         })
     }

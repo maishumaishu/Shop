@@ -27,7 +27,7 @@ interface Props extends EditorProps {
 
 
 export default class CarouselEditor extends Editor<Props, State>{
-    imageManager: ImageManager;
+    // imageManager: ImageManager;
     station: StationService;
 
     constructor(props) {
@@ -44,7 +44,7 @@ export default class CarouselEditor extends Editor<Props, State>{
         return result;
     }
     async showImageDialog() {
-        this.imageManager.show((imageIds) => {
+        ImageManager.show((imageIds) => {
             imageIds.forEach(o => {
                 this.state.items.push({ image: imageUrl(o, 100), url: '', title: '' });
                 this.setState(this.state);

@@ -80,14 +80,18 @@ var wuzhui;
         get selectArguments() {
             return this._currentSelectArguments;
         }
-        insert(item, index) {
+        insert(item, args, index) {
             if (!this.canInsert)
                 throw wuzhui.Errors.dataSourceCanntInsert();
             if (!item)
                 throw wuzhui.Errors.argumentNull("item");
+            if (typeof args == 'number') {
+                index = args;
+                args = null;
+            }
             this.checkPrimaryKeys(item);
             this.inserting.fire(this, item, index);
-            return this.args.insert(item).then((data) => {
+            return this.args.insert(item, args).then((data) => {
                 Object.assign(item, data);
                 this.inserted.fire(this, item, index);
                 return data;
@@ -96,14 +100,14 @@ var wuzhui;
                 throw exc;
             });
         }
-        delete(item) {
+        delete(item, args) {
             if (!this.canDelete)
                 throw wuzhui.Errors.dataSourceCanntDelete();
             if (!item)
                 throw wuzhui.Errors.argumentNull("item");
             this.checkPrimaryKeys(item);
             this.deleting.fire(this, item);
-            return this.args.delete(item).then((data) => {
+            return this.args.delete(item, args).then((data) => {
                 this.deleted.fire(this, item);
                 return data;
             }).catch(exc => {
@@ -111,14 +115,14 @@ var wuzhui;
                 throw exc;
             });
         }
-        update(item) {
+        update(item, args) {
             if (!this.canUpdate)
                 throw wuzhui.Errors.dataSourceCanntUpdate();
             if (!item)
                 throw wuzhui.Errors.argumentNull("item");
             this.checkPrimaryKeys(item);
             this.updating.fire(this, item);
-            return this.args.update(item).then((data) => {
+            return this.args.update(item, args).then((data) => {
                 Object.assign(item, data);
                 this.updated.fire(this, item);
                 return data;

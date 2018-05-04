@@ -1,13 +1,13 @@
 
 import { ActivityService } from 'admin/services/activity';
 import site from 'admin/site';
-import app from 'application';
+import app from 'admin/application';
 import { FormValidator, rules } from 'dilu';
+import { siteMap } from 'admin/siteMap';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import { GridViewItemPopupEditor } from 'myWuZhui';
 // let JData = window['JData'];
-import { siteMap } from 'admin/siteMap';
 
 export default function (page: chitu.Page) {
 

@@ -3,13 +3,13 @@ import { UserService } from 'admin/services/user';
 import { WeiXinService } from 'admin/services/weixin';
 import app from 'admin/application';
 import { default as site } from 'admin/site';
+import { siteMap } from 'admin/siteMap';
 import { FormValidator, rules } from 'dilu';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import QRCode = require('qrcode');
 import { websocketUrl, shopName } from 'share/common'
 import { showQRCodeDialog } from 'weixin/modules/openid';
-import { siteMap } from 'admin/siteMap';
 
 export default async function (page: chitu.Page) {
     app.loadCSS(page.name);

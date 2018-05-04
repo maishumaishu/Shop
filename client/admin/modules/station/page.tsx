@@ -4,6 +4,7 @@ import { componentsDir } from 'components/common';
 import { StationService as UserStation } from 'user/services/stationService';
 import { Page } from 'chitu';
 import { app } from 'admin/site';
+import { pageData as dataSource } from 'admin/services/dataSource';
 
 let controlTypes: { [propName: string]: React.ComponentClass<any> } = {};
 
@@ -47,11 +48,15 @@ export default async function (page: chitu.Page) {
                 })
             })
         }
+        async savePageData(item: PageData) {
+            await dataSource.update(item);
+            return item;
+        }
         render() {
             let userStation = page.createService(UserStation);
             return (
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
-                    save={(pageData) => station.savePageData(pageData)} showMenuSwitch={true}
+                    save={(pageData) => this.savePageData(pageData)} showMenuSwitch={true}
                     buttons={[
                         <button key="return" className="btn btn-sm btn-primary" onClick={() => app.back()}>
                             <i className="icon-reply" />

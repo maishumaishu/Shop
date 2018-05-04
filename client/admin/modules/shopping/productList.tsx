@@ -1,13 +1,14 @@
 import { ShoppingService } from 'admin/services/shopping';
 import { StationService } from 'admin/services/station';
 import { default as site, app } from 'admin/site';
-import * as wz from 'myWuZhui';
-import * as ui from 'ui';
 import tips from 'admin/tips';
-import 'wuzhui';
 import { siteMap } from 'admin/siteMap';
+import { product as dataSource } from 'admin/services/dataSource';
 import { app as userApp } from 'user/application';
 import userSiteMap from 'user/siteMap';
+import 'wuzhui';
+import * as wz from 'myWuZhui';
+import * as ui from 'ui';
 import ClipboardJS = require('clipboard');
 
 type Restriction = { unlimit: boolean, quantity: number, productId: string, productName: string };
@@ -29,6 +30,7 @@ class ProductList extends React.Component<{ shopping: ShoppingService }, PageSta
     constructor(props) {
         super(props);
         this.state = { dataItem: {}, tab: 'all' };
+        this.dataSource = dataSource;
     }
 
     async copyProductUrl(product: Product): Promise<any> {
@@ -146,12 +148,7 @@ class ProductList extends React.Component<{ shopping: ShoppingService }, PageSta
     componentDidMount() {
 
         let { shopping } = this.props;
-        let dataSource = this.dataSource = new wuzhui.DataSource<Product>({
-            primaryKeys: ['Id'],
-            select: (args) => shopping.products(args),
-            delete: (item) => shopping.deleteProduct(item.Id)
-        });
-        // dataSource.ajaxMethods.delete = 'delete';
+        // let dataSource = this.dataSource;
         dataSource.selected.add((sender, args) => {
             let productIds = args.dataItems.map(o => o.Id as string);
             shopping.productStocks(productIds).then(data => {
@@ -457,11 +454,11 @@ class NameField<T> extends wuzhui.CustomField<T> {
                 let status: 'collapsed' | 'collapsing' | 'expanding' | 'expanded' = 'collapsed';
                 let cell = new wuzhui.GridViewDataCell<Product>({
                     dataField: 'Name',
-                    render(value) {
+                    render(value, element) {
                         ReactDOM.render(
                             <div>
                                 <span>
-                                    {dataItem.Name}
+                                    {value}
                                 </span>
                                 <span style={{ paddingLeft: 8 }}>
                                     {(dataItem.Fields || []).map(o =>
@@ -469,7 +466,7 @@ class NameField<T> extends wuzhui.CustomField<T> {
                                     )}
                                 </span>
 
-                            </div>, cell.element);
+                            </div>, element);
                     }
                 })
                 return cell;

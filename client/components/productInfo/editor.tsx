@@ -177,7 +177,6 @@ export default class ProductInfoEditor extends Editor<EditorProps, EditorState> 
                             ref={(e) => {
                                 if (!e) return;
                                 e['componentDidUpdate'] = () => {
-                                    debugger;
                                     product.ImagePath = e.state.imageId;
                                 }
                             }} />

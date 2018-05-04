@@ -1,43 +1,44 @@
 import { StationService } from "../services/station";
 import 'css!admin/controls/pageSelectDialog';
+import { pageData as dataSource } from 'admin/services/dataSource';
 
 interface Props extends React.Props<PageSelectDialog> {
     station: StationService
 }
-interface Item {
-    Id: string, Name: string
-}
+// interface Item {
+//     Id: string, Name: string
+// }
 interface State {
-    items: Item[];
+    items: PageData[];
 
 }
 export class PageSelectDialog extends React.Component<Props, State> {
-    callback: (item: Item) => void;
+    callback: (item: PageData) => void;
     pagingBarElement: HTMLElement;
     element: HTMLElement;
-    dataSource: wuzhui.DataSource<Item>;
+    // dataSource: wuzhui.DataSource<PageData>;
 
     constructor(props) {
         super(props);
         let { station } = this.props;
         this.state = { items: [] };
-        this.dataSource = new wuzhui.DataSource({
-            select: (args) => station.pageList(args)
-        })
-        this.dataSource.selected.add((sender, data) => {
+        // this.dataSource = new wuzhui.DataSource({
+        //     select: (args) => station.pageList(args)
+        // })
+        dataSource.selected.add((sender, data) => {
             this.state.items = data.dataItems;
             this.setState(this.state);
         })
     }
-    show(callback: (item: Item) => void) {
-        this.dataSource.selectArguments.startRowIndex = 0;
-        this.dataSource.select();
+    show(callback: (item: PageData) => void) {
+        dataSource.selectArguments.startRowIndex = 0;
+        dataSource.select();
         ui.showDialog(this.element);
         this.callback = callback;
     }
     componentDidMount() {
         let pagingBar = new wuzhui.NumberPagingBar({
-            dataSource: this.dataSource,
+            dataSource: dataSource,
             element: this.pagingBarElement,
             pagerSettings: {
                 activeButtonClassName: 'active',
@@ -49,7 +50,7 @@ export class PageSelectDialog extends React.Component<Props, State> {
         let ul = this.pagingBarElement.querySelector('ul');
         ul.className = "pagination";
     }
-    selecteItem(item: Item) {
+    selecteItem(item: PageData) {
         if (!this.callback)
             return;
 
@@ -72,7 +73,7 @@ export class PageSelectDialog extends React.Component<Props, State> {
                         <ul>
                             {items.map((o, i) =>
                                 <li key={i} className="btn-link" title="点击选择页面"
-                                    onClick={() => this.selecteItem(o)}>{o.Name}</li>
+                                    onClick={() => this.selecteItem(o)}>{o.name}</li>
                             )}
                         </ul>
                     </div>
