@@ -1,9 +1,12 @@
-import { defaultNavBar, app } from 'site';
-import { ShoppingService } from 'services/shoppingService';
+import { defaultNavBar, app } from 'user/site';
+import { ShoppingService } from 'user/services/shoppingService';
 import { FormValidator, rules } from 'dilu';
-import { RegionsPageRouteValues } from 'modules/user/regions';
+import { RegionsPageRouteValues } from 'user/modules/user/regions';
+import { RegionSelector } from 'user/controls/regionSelector'
 import * as ui from 'ui';
 import siteMap from 'user/siteMap';
+import { RouteValues } from '../shopping/productEvaluate';
+
 
 export interface ReceiptEditPageArguments {
     id?: string,
@@ -18,17 +21,23 @@ export default async function (page: chitu.Page) {
     let routeValues = page.data as ReceiptEditPageArguments;
     let receiptInfo: ReceiptInfo = await getReceiptInfo(routeValues, shop);
 
+
     let receiptEditPage: ReceiptEditPage;
-    ReactDOM.render(<ReceiptEditPage receiptInfo={receiptInfo} elementPage={page} onSaved={routeValues.onSaved}
+    ReactDOM.render(<ReceiptEditPage receiptInfo={receiptInfo} elementPage={page}
         ref={(e) => receiptEditPage = e || receiptEditPage} />, page.element);
 
-    page.showing.add(async () => {
-        receiptEditPage.validator.clearErrors();
-        let receiptInfo: ReceiptInfo = await getReceiptInfo(page.data as ReceiptEditPageArguments, shop);
-        receiptEditPage.state.receiptInfo = receiptInfo;
-        receiptEditPage.setState(receiptEditPage.state);
-    })
-
+    // let id = routeValues.id;
+    // page.showing.add(async () => {
+    //     let changed = page.data.id != id;
+    //     id = page.data.id;
+    //     if (!changed) {
+    //         return;
+    //     }
+    //     receiptEditPage.validator.clearErrors();
+    //     let receiptInfo: ReceiptInfo = await getReceiptInfo(page.data as ReceiptEditPageArguments, shop);
+    //     receiptEditPage.state.receiptInfo = receiptInfo;
+    //     receiptEditPage.setState(receiptEditPage.state);
+    // })
 }
 
 async function getReceiptInfo(args: ReceiptEditPageArguments, shop: ShoppingService) {
@@ -45,14 +54,16 @@ async function getReceiptInfo(args: ReceiptEditPageArguments, shop: ShoppingServ
     return receiptInfo;
 }
 
+
 interface Props extends React.Props<ReceiptEditPage> {
     receiptInfo?: ReceiptInfo,
     elementPage: chitu.Page,
-    onSaved: (receiptInfo: ReceiptInfo) => void
+    // onSaved: (receiptInfo: ReceiptInfo) => void
 }
 class ReceiptEditPage extends React.Component<
     Props,
     { receiptInfo: ReceiptInfo }>{
+    regionSelector: RegionSelector;
     private formElement: HTMLFormElement;
     validator: FormValidator;
     constructor(props) {
@@ -62,14 +73,7 @@ class ReceiptEditPage extends React.Component<
         this.state = { receiptInfo: receiptInfo };
     }
     componentDidMount() {
-        // let fromElement = page.element.querySelector('form') as HTMLElement;
-        // this.validator = new FormValidator(fromElement, {
-        //     Name: { rules: ['required'], display: '地址名称', messages: { required: '请输入地址名称' } },
-        //     Consignee: { rules: ['required'], display: '收货人', messages: { required: '请输入收货人姓名' } },
-        //     Mobile: { rules: ['required'], display: '手机号码', messages: { required: '请输入手机号码' } },
-        //     Address: { rules: ['required'], display: '详细地址', messages: { required: '请输入详细地址' } },
-        //     RegionId: { rules: ['required'], display: '地区', messages: { required: '请选择地区' } },
-        // });
+
         let { required } = rules;
         let e = (name: string) => this.formElement.querySelector(`[name='${name}']`) as HTMLInputElement;
         this.validator = new FormValidator(this.formElement,
@@ -102,12 +106,11 @@ class ReceiptEditPage extends React.Component<
 
         let shop = this.props.elementPage.createService(ShoppingService); //this.props.shop;
         return shop.saveReceiptInfo(this.state.receiptInfo).then(data => {
-            Object.assign(this.state.receiptInfo, data);
+            // Object.assign(this.state.receiptInfo, data);
             this.setState(this.state);
-
-            if (this.props.onSaved) {
-                this.props.onSaved(this.state.receiptInfo);
-                // app.back();
+            let routeValues = this.props.elementPage.data as ReceiptEditPageArguments;
+            if (routeValues.onSaved) {
+                routeValues.onSaved(this.state.receiptInfo);
             }
             return data;
         });
@@ -115,8 +118,12 @@ class ReceiptEditPage extends React.Component<
     changeRegion() {
         let r = this.state.receiptInfo;
         let routeValues: RegionsPageRouteValues = {
-            province: { Id: r.ProvinceId, Name: r.ProvinceName }, city: { Id: r.CityId, Name: r.CityName },
-            county: { Id: r.CountyId, Name: r.CountyName },
+            provinceId: r.ProvinceId,
+            provinceName: r.ProvinceName,
+            cityId: r.CityId,
+            cityName: r.CityName,
+            countyId: r.CountyId,
+            countyName: r.CountyName,
             selecteRegion: (province, city, county) => {
                 r.ProvinceName = province.Name;
                 r.ProvinceId = province.Id;
@@ -128,7 +135,12 @@ class ReceiptEditPage extends React.Component<
                 this.setState(this.state);
             }
         };
+
         app.redirect(siteMap.nodes.user_regions, routeValues);
+    }
+    clear() {
+        this.state.receiptInfo = {} as ReceiptInfo;
+        this.setState(this.state);
     }
     render() {
         let receiptInfo = this.state.receiptInfo;//请选择地区
@@ -137,6 +149,9 @@ class ReceiptEditPage extends React.Component<
             region = `${receiptInfo.ProvinceName} ${receiptInfo.CityName} ${receiptInfo.CountyName}`;
         }
 
+        let province: Region = { Id: receiptInfo.ProvinceId, Name: receiptInfo.ProvinceName };
+        let city: Region = { Id: receiptInfo.CityId, Name: receiptInfo.CityName };
+        let county: Region = { Id: receiptInfo.CountyId, Name: receiptInfo.CountyName };
         return [
             <header key="header">
                 {defaultNavBar(this.props.elementPage, { title: '编辑地址' })}
@@ -160,7 +175,7 @@ class ReceiptEditPage extends React.Component<
                         <div className="form-group">
                             <label className="col-xs-3" style={{ paddingRight: 0 }}>
                                 <span className="color-red">*</span> 收货人
-                        </label>
+                            </label>
                             <div className="col-xs-9">
                                 <input type="text" name="Consignee" className="form-control"
                                     value={receiptInfo.Consignee || ''}
@@ -244,7 +259,7 @@ class ReceiptEditPage extends React.Component<
 
                     <div className="form-group">
                         <span className="color-red">*</span>为必填项目
-                </div>
+                    </div>
                     <div className="form-group">
                         <button className="btn btn-primary btn-block"
                             ref={(o: HTMLButtonElement) => {

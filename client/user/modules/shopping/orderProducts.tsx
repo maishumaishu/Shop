@@ -1,4 +1,4 @@
-import { defaultNavBar, app } from 'site';
+import { defaultNavBar, app } from 'user/site';
 import { ShoppingService } from 'user/services/shoppingService';
 import { ShoppingCartService } from 'user/services/shoppingCartService';
 import { AccountService } from 'user/services/accountService';
@@ -25,6 +25,7 @@ export default async function (page: chitu.Page) {
             this.state = { order: this.props.order };
             this.setAddress = (address: string, order: Order) => {
                 Object.assign(this.state.order, order);
+                this.state.order.ReceiptAddress = address;
                 this.setState(this.state);
             }
         }

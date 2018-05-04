@@ -7,33 +7,39 @@ declare namespace chitu {
         private cachePages;
         private page_stack;
         private container;
-        siteMap: chitu.SiteMap<SiteMapNode>;
+        nodes: {
+            [key: string]: PageNode;
+        };
         error: Callback2<this, Error, Page>;
-        constructor(siteMap: SiteMap<SiteMapNode>, container: HTMLElement);
+        constructor(nodes: {
+            [key: string]: PageNode;
+        }, container: HTMLElement);
         private wrapAction(action);
         private on_pageCreated(page);
         readonly currentPage: Page;
-        private getPage(node, values?);
+        private getPage(node, allowCache, values?);
         protected createPage(pageName: string, values: any): Page;
         private allowCache(pageName);
         protected createPageElement(pageName: string): HTMLElement;
-        showPage(node: SiteMapNode, args?: any): Page;
+        showPage(node: PageNode, args?: any): any;
+        showPage(node: PageNode, focusNotCache?: boolean, args?: any): any;
         private pushPage(page);
         private findSiteMapNode(pageName);
         closeCurrentPage(): void;
+        setPageNode(name: string, action: string | Action): PageNode;
     }
 }
 declare namespace chitu {
     type Action = ((page: Page) => void);
-    type SiteMapChildren<T extends SiteMapNode> = {
+    type SiteMapChildren<T extends PageNode> = {
         [key: string]: T;
     };
-    interface SiteMapNode {
+    interface PageNode {
         action: Action | string;
         name?: string;
         cache?: boolean;
     }
-    interface SiteMap<T extends SiteMapNode> {
+    interface SiteMap<T extends PageNode> {
         nodes: {
             [key: string]: T;
         };
@@ -41,7 +47,7 @@ declare namespace chitu {
     class Application extends PageMaster {
         private static skipStateName;
         private _runned;
-        constructor(siteMap: SiteMap<SiteMapNode>);
+        constructor(siteMap: SiteMap<PageNode>);
         parseUrl(url: string): {
             pageName: string;
             values: PageData;
@@ -51,9 +57,10 @@ declare namespace chitu {
         }): string;
         protected hashchange(): void;
         run(): void;
-        private showPageByUrl(url, args?);
+        private showPageByUrl(url);
         setLocationHash(url: string): void;
-        redirect(node: SiteMapNode, args?: any): Page;
+        redirect(node: PageNode, args?: any): Page;
+        redirect(node: PageNode, focusNotCache?: boolean, args?: any): any;
         back(): void;
     }
 }
@@ -207,7 +214,7 @@ declare namespace chitu {
         static settings: {
             ajaxTimeout: number;
         };
-        ajax<T>(url: string, options?: AjaxOptions): any;
+        ajax<T>(url: string, options?: AjaxOptions): Promise<T>;
     }
 }
 declare namespace chitu {

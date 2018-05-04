@@ -21,7 +21,7 @@ export interface State {
 
 export default class NavigatorControl extends Control<Props, State> {
 
-    siteMap: chitu.SiteMap<chitu.SiteMapNode>;
+    siteMap: chitu.SiteMap<chitu.PageNode>;
     container: HTMLElement;
     element: HTMLElement;
     pageMaster: chitu.PageMaster;
@@ -54,7 +54,7 @@ export default class NavigatorControl extends Control<Props, State> {
                 page2: { action: 'user/modules/page', cache: true }
             }
         }
-        this.pageMaster = new chitu.PageMaster(this.siteMap, this.container);
+        this.pageMaster = new chitu.PageMaster(this.siteMap.nodes, this.container);
         let activeIndex = this.state.activeIndex;
         let pageId = this.state.items[activeIndex].pageId;
         this.showPage(pageId, 0);

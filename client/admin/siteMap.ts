@@ -1,4 +1,4 @@
-import { SiteMapNode } from "chitu";
+import { PageNode } from "chitu";
 
 let dir = 'admin/modules';
 
@@ -46,8 +46,8 @@ export let siteMap = {
 
         station_page: { action: `${dir}/station/page`, cache: false },
         station_pageList: { action: `${dir}/station/pageList`, cache: true },
-        station_preView: { action: `${dir}/station/preView`, cache: false } as chitu.SiteMapNode,
-        user_myStores: { action: `${dir}/user/myStores`, cache: false } as chitu.SiteMapNode,
+        station_preView: { action: `${dir}/station/preView`, cache: false } as chitu.PageNode,
+        user_myStores: { action: `${dir}/user/myStores`, cache: false } as chitu.PageNode,
         weixin_setting: { action: `${dir}/weixin/setting`, cache: false },
     },
     anonymous
@@ -55,7 +55,7 @@ export let siteMap = {
 
 
 
-export type MenuNode = chitu.SiteMapNode & {
+export type MenuNode = chitu.PageNode & {
     title?: string, icon?: string, visible?: boolean,
     children?: MenuNode[],
     parent?: MenuNode,

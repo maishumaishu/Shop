@@ -79,7 +79,7 @@ export class ImageInput extends React.Component<Props, State>{
             </div>,
             <ImageManager key="images" station={station}
                 ref={(e) => this.imageManager = e || this.imageManager} />,
-            imageId ? <img key={imageId} className="image-input" src={imageUrl(imageId, 120)} /> : null
+            imageId ? <img key="image" className="image-input" src={imageUrl(imageId, 120)} /> : null
         ];
     }
 }

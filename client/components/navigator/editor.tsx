@@ -3,37 +3,53 @@ import { Editor, EditorProps } from 'components/editor';
 import { State as ControlState, default as Control, NavigatorItem } from 'components/navigator/control';
 import 'wuzhui';
 import { FormValidator, rules } from 'dilu';
-import { StationService } from 'user/services/stationService';
+import { StationService as UserStation } from 'user/services/stationService';
+import { StationService as AdminStation } from 'admin/services/station';
 import app from 'admin/application';
 import { siteMap } from '../../admin/siteMap';
+import { PageSelectDialog } from '../../admin/controls/pageSelectDialog';
 
 export interface EditorState extends Partial<ControlState> {
-
 }
 
 interface NavigatorEditorProps extends EditorProps {
 
 }
 export default class NavigatorEditor extends Editor<NavigatorEditorProps, EditorState> {
+    pageSelectDialog: PageSelectDialog;
     marginBootomElement: any;
     marginTopElement: any;
     validator: FormValidator;
     dialog: HTMLElement;
     itemsElement: HTMLTableElement;
+    editItem: NavigatorItem
 
     constructor(props) {
         super(props);
         this.loadEditorCSS();
     }
     showDialog(item?: NavigatorItem) {
+        this.editItem = item;
+        this.validator.clearErrors();
         if (item) {
             this.value('name', item.name);
             this.value('pageId', item.pageId);
             this.value('pageName', item.pageName);
         }
-        ui.showDialog(this.dialog, (button) => {
+        else {
+            this.value('name', '');
+            this.value('pageId', '');
+            this.value('pageName', '');
+        }
+        ui.showDialog(this.dialog, async (button) => {
             if (button.name != 'ok')
                 return;
+
+            this.validator.clearErrors();
+            let isVaid = await this.validator.check();
+            if (!isVaid) {
+                return Promise.resolve('validate fail');
+            }
 
             if (item == null)
                 this.addItem();
@@ -44,14 +60,7 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
         });
     }
     async addItem() {
-        this.validator.clearErrors();
-        let isVaid = await this.validator.check();
-        if (!isVaid) {
-            return Promise.resolve('validate fail');
-        }
-
         let name = this.value('name');
-        let url = this.value('url');
         let pageId = this.value('pageId');
         let pageName = this.value('pageName')
         this.state.items.push({ name, pageId });
@@ -60,10 +69,9 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
     }
     updateItem(item: NavigatorItem) {
         let name = this.value('name');
-        let url = this.value('url');
         let pageId = this.value('pageId');
         let pageName = this.value('pageName');
-        Object.assign(item, { name, url, pageId, pageName } as NavigatorItem);
+        Object.assign(item, { name, pageId, pageName } as NavigatorItem);
         this.setState(this.state);
     }
     removeItem(item: NavigatorItem) {
@@ -83,9 +91,18 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
         return element.value;
     }
 
+    showPageSelectDialog() {
+        this.pageSelectDialog.show((item) => {
+            if (this.editItem) {
+                this.value('pageName', item.Name);
+                this.value('pageId', item.Id);
+            }
+        })
+    }
+
     componentDidMount() {
         this.validator = new FormValidator(this.dialog,
-            { name: 'name', rules: [rules.required('请输入导航菜单项名称')] }
+            { name: 'pageId', rules: [rules.required('请选择页面')] }
         )
 
         this.bindInputElement(this.marginTopElement, 'marginTop');
@@ -94,6 +111,8 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
 
     render() {
         let { items } = this.state;
+        let station = this.props.elementPage.createService(AdminStation);
+
         return [
             <div key="form" className="form-horizontal">
                 <div className="form-group">
@@ -124,7 +143,7 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                                 title={"点击修改导航页面"}
                                 ref={async (e: HTMLElement) => {
                                     if (!e) return;
-                                    let station = this.elementPage.createService(StationService);
+                                    let station = this.elementPage.createService(UserStation);
                                     if (!o.pageId) return;
                                     let pageData = await station.pages.pageDataById(o.pageId);
                                     if (pageData != null) {
@@ -165,7 +184,7 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                                 onClick={() => ui.hideDialog(this.dialog)}>
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 className="modal-title">添加导航菜单项</h4>
+                            <h4 className="modal-title">导航菜单项</h4>
                         </div>
                         <div className="modal-body form-horizontal">
                             <div className="form-group">
@@ -178,20 +197,17 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                                 <label className="col-lg-3 control-label">显示页面</label>
                                 <div className="col-lg-9">
                                     <div className="input-group">
-                                        <input name="url" type="text" className="form-control" placeholder="请选择要显示的页面" />
+                                        <input name="pageName" type="text" className="form-control" placeholder="请选择要显示的页面"
+                                            readOnly={true} />
                                         <span className="input-group-addon">
-                                            <i className=" icon-cog"></i>
+                                            <i className=" icon-cog" style={{ cursor: 'pointer' }}
+                                                onClick={() => this.showPageSelectDialog()}>
+                                            </i>
                                         </span>
                                     </div>
+                                    <input name="pageId" type="hidden" className="form-control" placeholder="pageId" />
                                 </div>
                             </div>
-                            <div className="form-group">
-                                <label className="col-lg-3 control-label">PageId</label>
-                                <div className="col-lg-9">
-                                    <input name="pageId" type="text" className="form-control" placeholder="pageId" />
-                                </div>
-                            </div>
-                            <input name="pageName" type="hidden" />
                         </div>
                         <div className="modal-footer">
                             <button name="cancel" type="button" className="btn btn-default"
@@ -204,7 +220,11 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>,
+            ReactDOM.createPortal([
+                <PageSelectDialog key="pageSelectDialog" station={station}
+                    ref={(e) => this.pageSelectDialog = e || this.pageSelectDialog} />
+            ], document.body)
         ]
     }
 }

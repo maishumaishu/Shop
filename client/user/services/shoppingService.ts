@@ -345,10 +345,11 @@ export class ShoppingService extends Service {
         var result = this.getByJson<Region[]>(this.url('Address/GetCounties'), { cityId: cityId });
         return result;
     }
-    saveReceiptInfo(receiptInfo: ReceiptInfo) {
+    async saveReceiptInfo(receiptInfo: ReceiptInfo) {
         var self = this;
         let url = this.url('Address/SaveReceiptInfo');
-        var result = this.postByJson<{ Id: string, IsDefault: boolean }>(url, receiptInfo);
+        var result = await this.postByJson<{ Id: string, IsDefault: boolean }>(url, receiptInfo);
+        Object.assign(receiptInfo, result);
         return result;
     }
     setDefaultReceiptInfo(receiptInfoId: string) {

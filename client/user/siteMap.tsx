@@ -11,10 +11,10 @@ let dir = 'user/modules'
 export let siteMap = {
     nodes: {
         emtpy: { action: (page: chitu.Page) => null },
-        page: { action: `${dir}/page` } as chitu.SiteMapNode,
-        home_index: { action: home_index_action, cache: true } as chitu.SiteMapNode,
+        page: { action: `${dir}/page` } as chitu.PageNode,
+        home_index: { action: home_index_action, cache: true } as chitu.PageNode,
         home_class: { action: home_class_action, cache: true },
-        home_product: { action: home_product_action, cache: false } as chitu.SiteMapNode,
+        home_product: { action: home_product_action, cache: false } as chitu.PageNode,
         home_productList: { action: `${dir}/home/productList`, cache: true },
         shopping_invoice: { action: `${dir}/shopping/invoice` },
         shopping_purchase: { action: `${dir}/shopping/purchase` },
@@ -25,10 +25,13 @@ export let siteMap = {
         user_index: { action: user_index_action },
         user_favors: { action: `${dir}/user/favors`, cache: true },
         user_forgetPassword: { action: `${dir}/user/forgetPassword` },
-        user_login: { action: `${dir}/user/login` } as chitu.SiteMapNode,
+        user_login: { action: `${dir}/user/login` } as chitu.PageNode,
         user_regions: { action: `${dir}/user/regions`, cache: true },
+        // user_provinces: { action: `${dir}/user/regions`, cache: true },
+        // user_cities: { action: `${dir}/user/regions`, cache: true },
+        // user_countries: { action: `${dir}/user/regions`, cache: true },
         user_register: { action: `${dir}/user/register`, cache: true },
-        user_receiptEdit: { action: `${dir}/user/receiptEdit` },
+        user_receiptEdit: { action: `${dir}/user/receiptEdit`, cache: true },
         user_receiptList: { action: `${dir}/user/receiptList`, cache: true },
         user_userInfo: { action: `${dir}/user/userInfo` },
         user_accountSecurity_index: { action: `${dir}/user/accountSecurity/index` },
@@ -36,7 +39,7 @@ export let siteMap = {
         user_accountSecurity_paymentPassword: { action: `${dir}/user/accountSecurity/paymentPassword` },
         user_accountSecurity_mobileBinding: { action: `${dir}/user/accountSecurity/mobileBinding` }
     },
-    default: null as chitu.SiteMapNode
+    default: null as chitu.PageNode
 }
 
 if (window['userSiteMap']) {

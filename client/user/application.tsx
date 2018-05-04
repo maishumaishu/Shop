@@ -74,14 +74,14 @@ export class Application extends BaseApplication {
         return page;
     }
 
-    createUrl(node: chitu.SiteMapNode, args?: any)
+    createUrl(node: chitu.PageNode, args?: any)
     createUrl(pageName: string, args?: any)
     createUrl(obj: any, args?: any) {
         let pageName: string;
         if (typeof obj == 'string')
             pageName = obj;
         else {
-            pageName = (obj as chitu.SiteMapNode).name;
+            pageName = (obj as chitu.PageNode).name;
             console.assert(pageName != null);
         }
 

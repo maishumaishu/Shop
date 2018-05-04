@@ -1,4 +1,4 @@
-import { defaultNavBar, app, formatDate } from 'site';
+import { defaultNavBar, app, formatDate } from 'user/site';
 import { ShoppingService } from 'user/services/shoppingService';
 import { AccountService } from 'user/services/accountService';
 import * as ui from 'ui';

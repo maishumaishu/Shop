@@ -159,4 +159,7 @@ export default function (page: chitu.Page) {
     }
 
     ReactDOM.render(<RegisterPage />, page.element);
+    page.showing.add(() => {
+        debugger;
+    })
 }

@@ -14,7 +14,7 @@ export class DesignTimeUserApplication extends UserApplication {
         console.assert(pageName != null);
 
         let app = this;
-        this.siteMap.nodes[pageName].action = function (page: chitu.Page) {
+        this.nodes[pageName].action = function (page: chitu.Page) {
             ReactDOM.render([
                 <div key={10} className="text-center" style={{ paddingTop: 100 }}>
                     <b>该页面需要登录后才能操作</b>

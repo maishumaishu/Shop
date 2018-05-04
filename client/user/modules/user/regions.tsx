@@ -1,16 +1,26 @@
-import { defaultNavBar, app } from 'site';
-import { ShoppingService } from 'services/shoppingService';
+import { defaultNavBar, app } from 'user/site';
+import { ShoppingService } from 'user/services/shoppingService';
 
 export interface RegionsPageRouteValues {
-    province: Region,
-    city: Region,
-    county: Region,
-    selecteRegion: (province: Region, city: Region, county: Region) => void
+    // province: Region,
+    // city: Region,
+    // county: Region,
+    selecteRegion: (province: Region, city: Region, county: Region) => void,
+    cityId: string,
+    cityName: string,
+    countyId: string,
+    countyName: string,
+    provinceId: string,
+    provinceName: string,
 }
 export default async function (page: chitu.Page) {
+    
     let shop = page.createService(ShoppingService);
     let routeValues = (page.data || {}) as RegionsPageRouteValues;
-    let { city, province, county } = routeValues;
+    let { cityId, cityName, provinceId, provinceName, countyId, countyName } = routeValues;
+    let province: Region = { Id: provinceId, Name: provinceName };
+    let city: Region = { Id: cityId, Name: cityName };
+    let county: Region = { Id: countyId, Name: countyName };
 
     let provinces = await shop.provinces();
     let regionsPage: RegionsPage;
@@ -23,14 +33,22 @@ export default async function (page: chitu.Page) {
         });
 
     page.showing.add((sender) => {
-        let values = sender.data as RegionsPageRouteValues;
-        regionsPage.state.currentCity = values.city;
-        regionsPage.state.currentCounty = values.county;
-        regionsPage.state.currentProvince = values.province;
+        let routeValues = sender.data as RegionsPageRouteValues;
+
+        let { cityId, cityName, provinceId, provinceName, countyId, countyName } = routeValues;
+        let province: Region = { Id: provinceId, Name: provinceName };
+        let city: Region = { Id: cityId, Name: cityName };
+        let county: Region = { Id: countyId, Name: countyName };
+
+        regionsPage.state.currentCity = city;
+        regionsPage.state.currentCounty = county;
+        regionsPage.state.currentProvince = province;
         regionsPage.state.cities = [];
         regionsPage.state.countries = [];
         regionsPage.state.activeIndex = 0;
         regionsPage.setState(regionsPage.state);
+
+        regionsPage.onSelecteRegion = routeValues.selecteRegion;
     })
 
 }
@@ -70,7 +88,7 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
             currentCounty, activeIndex: 0
         };
 
-        window.addEventListener('popstate', this.onBack)
+        // window.addEventListener('popstate', this.onBack)
     }
     private onBack = () => {
         var page = app.currentPage;
@@ -116,7 +134,6 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
         this.setState(this.state);
         let { protocol, host, pathname, search } = location;
         let url = `${protocol}//${host}${pathname}${search}#user_regions?activeIndex=` + activeIndex;
-        history.pushState("skip", "", url);
     }
     selectCounty(county: Region) {
         this.state.currentCounty = county;
@@ -125,9 +142,10 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
             return;
         }
 
-        history.go(-3);
+        // history.go(-3);
         let { currentProvince, currentCity, currentCounty } = this.state;
         this.onSelecteRegion(currentProvince, currentCity, currentCounty);
+        app.back();
     }
     render() {
         let provinces = this.props.provinces;
@@ -142,7 +160,16 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
                 <header>
                     {defaultNavBar(this.props.elementPage, { title: this.state.title })}
                 </header>
-                <section ref={(o: HTMLElement) => this.provincesView = o} style={{ transform: `translateX(${0 - activeIndex * 100}%)` }}>
+                <footer>
+                    <div className="container">
+                        <div className="form-group">
+                            <button className="btn btn-primary btn-block" disabled={activeIndex <= 0}
+                                onClick={() => this.showPrevView()}>上一步</button>
+                        </div>
+                    </div>
+                </footer>
+                <section ref={(o: HTMLElement) => this.provincesView = o}
+                    style={{ transform: `translateX(${0 - activeIndex * 100}%)`, paddingBottom: 60 }}>
                     <ul className="list-group">
                         {provinces.map(o =>
                             <li className="list-group-item" key={o.Id}
@@ -153,7 +180,8 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
                         )}
                     </ul>
                 </section>
-                <section ref={(o: HTMLElement) => this.citiesView = o} style={{ transform: `translateX(${100 - activeIndex * 100}%)` }}>
+                <section ref={(o: HTMLElement) => this.citiesView = o}
+                    style={{ transform: `translateX(${100 - activeIndex * 100}%)`, paddingBottom: 60 }}>
                     <ul className="list-group">
                         {cities.map(o =>
                             <li className="list-group-item" key={o.Id}
@@ -164,7 +192,8 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
                         )}
                     </ul>
                 </section>
-                <section ref={(o: HTMLElement) => this.countriesView = o} style={{ transform: `translateX(${200 - activeIndex * 100}%)` }}>
+                <section ref={(o: HTMLElement) => this.countriesView = o}
+                    style={{ transform: `translateX(${200 - activeIndex * 100}%)`, paddingBottom: 60 }}>
                     <ul className="list-group">
                         {countries.map(o =>
                             <li className="list-group-item" key={o.Id}

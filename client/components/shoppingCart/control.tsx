@@ -148,14 +148,19 @@ export class Footer extends Control<any, FooterStatus>{
             <div className="settlement" style={{ bottom: this.props.hideMenu ? 0 : null, paddingLeft: 0 }}>
                 <div className="pull-right">
                     {this.state.status == 'normal' ?
-                        <button className="btn btn-primary" onClick={() => this.shoppingCart.buy()} disabled={selectedCount == 0}>
+                        <button className="btn btn-primary" disabled={selectedCount == 0}
+                            ref={(e: HTMLButtonElement) => {
+                                if (!e) return;
+                                //onClick={() => this.shoppingCart.buy()}
+                                ui.buttonOnClick(e, () => this.shoppingCart.buy());
+                            }}>
                             {selectedCount > 0 ? `结算（${selectedCount}）` : '结算'}
                         </button>
                         :
                         <button className="btn btn-primary" disabled={deleteItemsCount == 0}
                             ref={(e: HTMLButtonElement) => {
                                 if (!e) return;
-                                e.onclick = ui.buttonOnClick(o => this.shoppingCart.removeSelectedItems(), {
+                                ui.buttonOnClick(e, o => this.shoppingCart.removeSelectedItems(), {
                                     confirm: this.shoppingCart.removeConfirmText()
                                 });
                             }}>

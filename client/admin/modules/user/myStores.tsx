@@ -147,7 +147,7 @@ export default async function (page: chitu.Page) {
                                     <div className="col-xs-6">
                                         <button className="btn btn-success btn-block"
                                             onClick={() => {
-                                                let pageName = (siteMap.nodes.home_index as chitu.SiteMapNode).name;
+                                                let pageName = (siteMap.nodes.home_index as chitu.PageNode).name;
                                                 console.assert(pageName != null);
                                                 location.href = `?appKey=${o.Id}#${pageName}`;
                                             }}

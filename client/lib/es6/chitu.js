@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var chitu;
 (function (chitu) {
     class PageMaster {
-        constructor(siteMap, container) {
+        constructor(nodes, container) {
             this.pageCreated = chitu.Callbacks();
             this.pageLoad = chitu.Callbacks();
             this.pageType = chitu.Page;
@@ -40,18 +40,18 @@ var chitu;
             this.cachePages = {};
             this.page_stack = new Array();
             this.error = chitu.Callbacks();
-            if (!siteMap)
-                throw Errors.argumentNull("siteMap");
+            if (!nodes)
+                throw Errors.argumentNull("nodes");
             if (!container)
                 throw Errors.argumentNull("container");
-            for (let key in siteMap.nodes) {
-                siteMap.nodes[key].name = key;
-                let action = siteMap.nodes[key].action;
+            for (let key in nodes) {
+                nodes[key].name = key;
+                let action = nodes[key].action;
                 if (action == null)
                     throw Errors.actionCanntNull(key);
-                siteMap.nodes[key].action = this.wrapAction(action);
+                nodes[key].action = this.wrapAction(action);
             }
-            this.siteMap = siteMap;
+            this.nodes = nodes;
             this.container = container;
         }
         wrapAction(action) {
@@ -88,15 +88,13 @@ var chitu;
                 return this.page_stack[this.page_stack.length - 1];
             return null;
         }
-        getPage(node, values) {
+        getPage(node, allowCache, values) {
             console.assert(node != null);
             values = values || {};
             let pageName = node.name;
-            let allowCache = this.allowCache(pageName);
-            console.assert(allowCache != null);
             let cachePage = this.cachePages[pageName];
             if (cachePage != null && allowCache) {
-                cachePage.data = values;
+                cachePage.data = Object.assign(cachePage.data || {}, values);
                 return cachePage;
             }
             if (cachePage != null)
@@ -140,7 +138,7 @@ var chitu;
             return page;
         }
         allowCache(pageName) {
-            let node = this.siteMap.nodes[pageName];
+            let node = this.nodes[pageName];
             console.assert(node != null);
             return node.cache || false;
         }
@@ -149,7 +147,7 @@ var chitu;
             this.container.appendChild(element);
             return element;
         }
-        showPage(node, args) {
+        showPage(node, focusNotCache, args) {
             if (!node)
                 throw Errors.argumentNull('node');
             let pageName = node.name;
@@ -157,10 +155,16 @@ var chitu;
                 throw Errors.argumentNull('pageName');
             if (this.currentPage != null && this.currentPage.name == pageName)
                 return;
+            if (typeof (focusNotCache) == 'object') {
+                args = focusNotCache;
+                focusNotCache = false;
+            }
+            let allowCache = focusNotCache == true ? false : this.allowCache(pageName);
+            console.assert(allowCache != null);
             args = args || {};
             let oldCurrentPage = this.currentPage;
             let isNewPage = false;
-            let page = this.getPage(node, args);
+            let page = this.getPage(node, allowCache, args);
             page.show();
             this.pushPage(page);
             console.assert(page == this.currentPage, "page is not current page");
@@ -171,7 +175,7 @@ var chitu;
             this.page_stack.push(page);
         }
         findSiteMapNode(pageName) {
-            return this.siteMap.nodes[pageName];
+            return this.nodes[pageName];
         }
         closeCurrentPage() {
             if (this.page_stack.length <= 0)
@@ -186,6 +190,14 @@ var chitu;
             if (this.currentPage) {
                 this.currentPage.show();
             }
+        }
+        setPageNode(name, action) {
+            let node = {
+                name,
+                action: this.wrapAction(action)
+            };
+            this.nodes[name] = node;
+            return node;
         }
     }
     chitu.PageMaster = PageMaster;
@@ -239,30 +251,16 @@ var chitu;
         let path = path_parts.join('/');
         if (!params)
             return `#${path}`;
-        let stack = [];
-        stack.push(params);
-        while (stack.length > 0) {
-            let obj = stack.pop();
-            for (let key in obj) {
-                let type = typeof (obj[key]);
-                if (type == 'function' || obj[key] == null) {
-                    delete obj[key];
-                    continue;
-                }
-                else if (type == 'object') {
-                    for (let key1 in obj[key])
-                        if (typeof obj[key][key1] == 'object')
-                            stack.push(obj[key][key1]);
-                }
-            }
-        }
-        let paramsText = "";
+        let paramsText = '';
         for (let key in params) {
-            paramsText = paramsText + `&${key}=${params[key]}`;
+            let value = params[key];
+            let type = typeof params[key];
+            if (type == 'function' || type == 'object' || value == null) {
+                continue;
+            }
+            paramsText = paramsText == '' ? `?${key}=${params[key]}` : paramsText + `&${key}=${params[key]}`;
         }
-        if (paramsText.length > 0)
-            paramsText = paramsText.substr(1);
-        return `#${path}?${paramsText}`;
+        return `#${path}${paramsText}`;
     }
     var PAGE_STACK_MAX_SIZE = 30;
     var CACHE_PAGE_SIZE = 30;
@@ -270,7 +268,7 @@ var chitu;
     var VIEW_LOCATION_FORMATER = '{controller}/{action}';
     class Application extends chitu.PageMaster {
         constructor(siteMap) {
-            super(siteMap, document.body);
+            super(siteMap.nodes, document.body);
             this._runned = false;
         }
         parseUrl(url) {
@@ -299,15 +297,14 @@ var chitu;
             });
             this._runned = true;
         }
-        showPageByUrl(url, args) {
+        showPageByUrl(url) {
             if (!url)
                 throw Errors.argumentNull('url');
             var routeData = this.parseUrl(url);
             if (routeData == null) {
                 throw Errors.noneRouteMatched(url);
             }
-            Object.assign(routeData.values, args || {});
-            let node = this.siteMap.nodes[routeData.pageName];
+            let node = this.nodes[routeData.pageName];
             if (node == null)
                 throw Errors.pageNodeNotExists(routeData.pageName);
             return this.showPage(node, routeData.values);
@@ -315,10 +312,13 @@ var chitu;
         setLocationHash(url) {
             history.pushState(EmtpyStateData, "", url);
         }
-        redirect(node, args) {
+        redirect(node, focusNotCache, args) {
             if (!node)
                 throw Errors.argumentNull("node");
-            let result = this.showPage(node, args);
+            let result = this.showPage(node, focusNotCache, args);
+            if (typeof (focusNotCache) == 'object') {
+                args = focusNotCache;
+            }
             let url = this.createUrl(node.name, args);
             this.setLocationHash(url);
             return result;
@@ -689,7 +689,7 @@ var chitu;
                     }
                 }
             }
-            return callAjax(url, { headers, body, method }, this, this.error);
+            return callAjax(url, { headers: headers, body, method }, this, this.error);
         }
     }
     Service.settings = {

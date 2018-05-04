@@ -6,10 +6,10 @@ import { WeiXinService } from 'admin/services/weixin'
 import { Props as OpenIdPageProps, OpenIdPage } from 'weixin/modules/openid'
 
 export type SiteMapNodes = {
-    binding: chitu.SiteMapNode,
-    unbinding: chitu.SiteMapNode,
-    adminLogin: chitu.SiteMapNode,
-    userLogin: chitu.SiteMapNode,
+    binding: chitu.PageNode,
+    unbinding: chitu.PageNode,
+    adminLogin: chitu.PageNode,
+    userLogin: chitu.PageNode,
 }
 
 export class Application extends chitu.Application {

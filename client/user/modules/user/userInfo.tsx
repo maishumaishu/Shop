@@ -156,9 +156,15 @@ export default async function (page: chitu.Page) {
             // let r = this.state.receiptInfo;
             let userInfo = this.state.userInfo;
             let routeValues: RegionsPageRouteValues = {
-                province: { Id: userInfo.ProvinceId, Name: userInfo.Province },
-                county: { Id: userInfo.CountyId, Name: userInfo.CountyId },
-                city: { Id: userInfo.CityId, Name: userInfo.City },
+                // province: { Id: userInfo.ProvinceId, Name: userInfo.Province },
+                // county: { Id: userInfo.CountyId, Name: userInfo.CountyId },
+                // city: { Id: userInfo.CityId, Name: userInfo.City },
+                provinceId: userInfo.ProvinceId,
+                provinceName: userInfo.Province,
+                cityId: userInfo.CityId,
+                cityName: userInfo.City,
+                countyId: userInfo.CountyId,
+                countyName: userInfo.County,
                 selecteRegion: (province, city, county) => {
                     userInfo.City = city.Name;
                     userInfo.County = county.Name;

@@ -26,7 +26,11 @@ export function subscribe<T>(component: React.Component<any, any>, item: chitu.V
 
 //============================================================
 // ui
+export function defaultNavBar(element: HTMLElement,
+    options?: { title?: string, right?: JSX.Element, showBackButton?: boolean });
 export function defaultNavBar(elementPage: chitu.Page,
+    options?: { title?: string, right?: JSX.Element, showBackButton?: boolean });
+export function defaultNavBar(elementPage: any,
     options?: { title?: string, right?: JSX.Element, showBackButton?: boolean }) {
     //=============================
     // window[ADMIN_APP] 表明为设计时
@@ -35,15 +39,25 @@ export function defaultNavBar(elementPage: chitu.Page,
     }
     //=============================
 
-    if (isWeixin) {
-        return weixinNavheader(elementPage, options);
+    let element: HTMLElement;
+    if ((elementPage as chitu.Page).element != null) {
+        element = (elementPage as chitu.Page).element;
     }
+    else {
+        element = elementPage;
+    }
+
+
+    if (isWeixin) {
+        return weixinNavheader(element, options);
+    }
+
     // document.title = options.title || "";
     options = options || {};
     let title = options.title || '';
-    let className = elementPage.element.className;
+    let className = element.className;
     if (className.indexOf("topbar-padding") < 0)
-        elementPage.element.className = className + ' topbar-padding';
+        element.className = className + ' topbar-padding';
 
     return (
         <nav className="bg-primary">
@@ -69,15 +83,26 @@ export function defaultNavBar(elementPage: chitu.Page,
     );
 }
 
-function weixinNavheader(elementPage: chitu.Page, options?: { title?: string, right?: JSX.Element, left?: JSX.Element }) {
+function weixinNavheader(element: HTMLElement, options?: { title?: string, right?: JSX.Element, left?: JSX.Element });
+function weixinNavheader(elementPage: chitu.Page, options?: { title?: string, right?: JSX.Element, left?: JSX.Element })
+function weixinNavheader(elementPage: any, options?: { title?: string, right?: JSX.Element, left?: JSX.Element }) {
+
+    let element: HTMLElement;
+    if ((elementPage as chitu.Page).element != null) {
+        element = (elementPage as chitu.Page).element;
+    }
+    else {
+        element = elementPage;
+    }
+
     let title = options.title || "";
     document.title = options.title || "";
     if (options.left == null && options.right == null)
         return null;
 
-    let className = elementPage.element.className;
+    let className = element.className;
     if (className.indexOf("topbar-padding") < 0)
-        elementPage.element.className = className + ' topbar-padding';
+        element.className = className + ' topbar-padding';
 
     return (
         <nav className="bg-primary">

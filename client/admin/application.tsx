@@ -35,8 +35,8 @@ class Application extends chitu.Application {
 
         this.pageCreated.add((sender, page) => {
 
-            let register = siteMap.nodes.user_register as chitu.SiteMapNode;
-            let login = siteMap.nodes.user_login as chitu.SiteMapNode;
+            let register = siteMap.nodes.user_register as chitu.PageNode;
+            let login = siteMap.nodes.user_login as chitu.PageNode;
 
             console.assert(register.name != null);
             console.assert(login.name != null);
@@ -51,7 +51,7 @@ class Application extends chitu.Application {
             page.hiding.add((sender) => this.masterPage.updateMenu(sender));
 
             page.load.add((sender, args) => {
-                let node = siteMap.nodes.user_login as chitu.SiteMapNode;
+                let node = siteMap.nodes.user_login as chitu.PageNode;
                 console.assert(node.name != null);
                 console.assert(app.currentPage != null);
 
@@ -94,7 +94,7 @@ class Application extends chitu.Application {
             case '724':     //724 为 token 失效
             case '601':     //601 为用户未登录异常
                 var currentPage = this.currentPage;
-                let isLoginPage = currentPage.name == (siteMap.nodes.user_login as chitu.SiteMapNode).name;
+                let isLoginPage = currentPage.name == (siteMap.nodes.user_login as chitu.PageNode).name;
                 if (isLoginPage) {
                     return;
                 }

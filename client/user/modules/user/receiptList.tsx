@@ -1,6 +1,6 @@
-import { defaultNavBar, app } from 'site';
-import { ShoppingService } from 'services/shoppingService';
-import { ReceiptEditPageArguments } from 'modules/user/receiptEdit';
+import { defaultNavBar, app } from 'user/site';
+import { ShoppingService } from 'user/services/shoppingService';
+import { ReceiptEditPageArguments } from 'user/modules/user/receiptEdit';
 export type SetAddress = (address: string, order: Order) => void;
 export interface ReceiptListRouteValues {
     callback: SetAddress,
@@ -39,8 +39,8 @@ export default function (page: chitu.Page) {
                     app.back();
                 }
             } as ReceiptEditPageArguments;
-            app.redirect(siteMap.nodes.user_receiptEdit ,routeValues);//'user_receiptEdit',
-            
+            app.redirect(siteMap.nodes.user_receiptEdit, true, routeValues);//'user_receiptEdit',
+
         }
         private editReceipt(receipt: ReceiptInfo) {
             let routeValues = {
@@ -149,12 +149,10 @@ export default function (page: chitu.Page) {
 
                 </section>,
                 <footer key="f">
-                    <div className="container navbar-fixed-bottom">
-                        <div className="form-group">
-                            <button onClick={() => this.newReceipt()} className="btn btn-primary btn-block">
-                                添加新的收货地址
+                    <div className="form-group">
+                        <button onClick={() => this.newReceipt()} className="btn btn-primary btn-block">
+                            添加新的收货地址
                         </button>
-                        </div>
                     </div>
                 </footer>
             ]

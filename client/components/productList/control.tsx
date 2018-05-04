@@ -167,6 +167,7 @@ export default class ProductListControl extends Control<Props, State> {
                             if (!productId) {
                                 ui.alert({ title: '错误', message: 'Product id is emtpy.' });
                             }
+                            debugger;
                             app.redirect(siteMap.nodes.home_product, { id: productId });
                         })
                     }
