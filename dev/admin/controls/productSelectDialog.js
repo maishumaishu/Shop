@@ -1,7 +1,7 @@
-define(["require", "exports", "admin/services/service", "wuzhui"], function (require, exports, service_1) {
+define(["require", "exports", "./imageThumber", "wuzhui"], function (require, exports, imageThumber_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    requirejs(['css!admin/controls/productSelectDialog']);
+    requirejs(['less!admin/controls/productSelectDialog']);
     class ProductSelectDialog extends React.Component {
         constructor(props) {
             super(props);
@@ -68,13 +68,6 @@ define(["require", "exports", "admin/services/service", "wuzhui"], function (req
         }
         render() {
             let { products, selecteItems } = this.state;
-            // let c: Product[][];
-            // if (products != null) {
-            //     let products1 = products.filter((o, i) => i <= 5);
-            //     let products2 = products.filter((o, i) => i >= 6 && i <= 11);
-            //     let products3 = products.filter((o, i) => i >= 12 && i <= 17);
-            //     c = [products1, products2, products3].filter(o => o && o.length > 0);
-            // }
             let status;
             if (products == null)
                 status = 'loading';
@@ -105,9 +98,7 @@ define(["require", "exports", "admin/services/service", "wuzhui"], function (req
                                 h("div", { className: "products" }, products.map(p => {
                                     let selected = selecteItems.indexOf(p) >= 0;
                                     return h("div", { key: p.Id, className: "product col-lg-2", onClick: () => this.selecteProduct(p) },
-                                        selected ? h("div", { className: "triangle" }) : null,
-                                        h("img", { className: `img-responsive ${selected ? 'selected' : ''}`, src: service_1.imageUrl(p.ImagePath, 150, 150), ref: (e) => e ? ui.renderImage(e, { imageSize: { width: 150, height: 150 } }) : null }),
-                                        h("div", { className: "interception" }, p.Name));
+                                        h(imageThumber_1.default, { imagePath: p.ImagePath, text: p.Name, selectedText: selecteItems.indexOf(p) >= 0 ? `${selecteItems.indexOf(p) + 1}` : '' }));
                                 }))
                                 : null,
                             h("div", { className: "clearfix" })),

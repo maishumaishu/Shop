@@ -61,23 +61,23 @@ module.exports = function (grunt) {
     // });
     //===============================================================
 
-    grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-shell');
+    // grunt.loadNpmTasks('grunt-babel');
+    // grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.loadNpmTasks('grunt-contrib-requirejs');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    // grunt.loadNpmTasks('grunt-contrib-copy');
+    // grunt.loadNpmTasks('grunt-contrib-cssmin');
+    // grunt.loadNpmTasks('grunt-contrib-less');
+    // grunt.loadNpmTasks('grunt-contrib-requirejs');
+    // grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.registerTask('common', ['less', 'copy:client']);
+    // grunt.registerTask('common', ['less', 'copy:client']);
 
-    grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
-    grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
-    grunt.registerTask('run', ['connect', 'watch']);
+    // grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
+    // grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
+    // grunt.registerTask('run', ['connect', 'watch']);
 
-    grunt.registerTask('es5-debug', ['common', 'build-es5', 'copy:es5_www', 'requirejs']);
-    grunt.registerTask('release', ['common', 'build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
-    grunt.registerTask('dev', ['common', 'build-es6', 'copy:es6_www', 'connect', 'watch']);
+    // grunt.registerTask('es5-debug', ['common', 'build-es5', 'copy:es5_www', 'requirejs']);
+    // grunt.registerTask('release', ['common', 'build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
+    grunt.registerTask('dev', ['connect', 'watch']);
 }
 

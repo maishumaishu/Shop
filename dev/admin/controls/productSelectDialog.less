@@ -1,0 +1,103 @@
+.product-select-dialog.modal {
+    .modal-dialog {
+        .modal-content {
+            // @width:700px;
+            // width: @width;
+
+            .modal-body {
+                // @width:700px;
+                // @padding:15px;
+
+                // width: @width;
+                min-height: 200px;
+                // padding: @padding;
+                padding-top: 4px;
+                padding-bottom: 10px;
+
+                .loading, .norecords {
+                    padding: 200px 0 20px 0;
+                    text-align: center; 
+                }
+                .product {
+                    // @border-width: 1px;
+                    // width: (@width - @padding * 2 - @border-width * 2) / 5;
+                    // padding: 10px;
+                    // float: left;
+                    // text-align: center;
+                    padding-top: 10px;
+                    padding-bottom: 20px;
+                    // img {
+                    //     // height: 100px;
+                    //     // width: 100px;
+                    //     border: solid 1px #ccc;
+
+                    // }
+                    // @selected_color:blue;
+                    // .selected {
+                    //     border: solid 1px @selected_color;
+                    // }
+                    
+                    // .triangle {
+                    //     @triangle_height:8px;
+                    //     @size: @triangle_height*2;
+                    //     position: absolute;
+                    //     top: 10px;
+                    //     right: -1px;
+                    //     width:  @size;
+                    //     height: @size;
+                    //     background: transparent;
+                    //     border-top: @size solid transparent;
+                    //     border-bottom:  @size solid @selected_color;
+                    //     border-left: @size solid transparent;
+                    //     border-right: @size solid transparent;
+                    //     margin-top: 0 - @size;
+                    //     transform: rotate(45deg);
+                    // }
+                    // .interception {
+                    //     width:  ~"calc(100% - 30px)"; 
+                    //     display: block;
+                    //     overflow: hidden;
+                    //     white-space: nowrap;
+                    //     -webkit-text-overflow: ellipsis;
+                    //     -moz-binding: url(ellipsis.xml#ellipsis);
+                    //     -ms-text-overflow: ellipsis;
+                    //     -o-text-overflow: ellipsis;
+                    //     text-overflow: ellipsis;  
+                    //     position: absolute;
+                    //     bottom: 20px;
+                    //     height: 24px;
+                    //     padding: 4px 8px 0px 8px;  
+                    //     font-size: 12px;
+                    //     text-align: center;
+                    //     background-color: rgba(0, 0, 0, 0.55);
+                    //     color: white; 
+                    // }
+                    // padding: 5px 5px 5px 5px;
+            
+                }
+            }
+            .modal-footer {
+                .pagination {
+                    margin: 0;
+                    .active {
+                        color: red;
+                    }
+                    li {
+                        display: initial;                        
+                    }
+                    li > a{
+                        padding: 3px 6px;
+                        min-width: 32px;
+                        text-align: center;
+                    }
+                }
+                .paging-bar .total {
+                    float: left;
+                    padding-top: 4px;
+                }
+                
+            }
+        }
+    }
+  
+}

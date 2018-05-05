@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "admin/controls/imageUpload", "admin/controls/imageThumber", "admin/services/station", "share/common", "../site", "wuzhui"], function (require, exports, imageUpload_1, imageThumber_1, station_1, common_1, site_1) {
+define(["require", "exports", "admin/controls/imageUpload", "admin/controls/imageThumber", "admin/services/station", "../site", "wuzhui"], function (require, exports, imageUpload_1, imageThumber_1, station_1, site_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     requirejs(['css!admin/controls/imageManager']);
@@ -94,7 +94,7 @@ define(["require", "exports", "admin/controls/imageUpload", "admin/controls/imag
                         h("h4", { className: "modal-title" }, "\u9009\u62E9\u56FE\u7247")),
                     h("div", { className: "modal-body" },
                         images.map((o, i) => {
-                            let thumber = h(imageThumber_1.default, { key: o.id, imagePath: common_1.imageUrl(o.id, 140, 140), className: "col-xs-2", remove: (imagePath) => this.removeImage(o), selectedText: selectedItems.indexOf(o.id) >= 0 ? `${selectedItems.indexOf(o.id) + 1}` : '', text: o.width != null && o.height != null ? `${o.width} X ${o.height}` : " ", onClick: (sender, e) => {
+                            let thumber = h(imageThumber_1.default, { key: o.id, imagePath: o.id, className: "col-xs-2", remove: (imagePath) => this.removeImage(o), selectedText: selectedItems.indexOf(o.id) >= 0 ? `${selectedItems.indexOf(o.id) + 1}` : '', text: o.width != null && o.height != null ? `${o.width} X ${o.height}` : " ", onClick: (sender, e) => {
                                     if (selectedItems.indexOf(o.id) >= 0) {
                                         this.state.selectedItems = selectedItems.filter(c => c != o.id);
                                     }

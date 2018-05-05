@@ -1,4 +1,4 @@
-define(["require", "exports", "components/editor", "admin/services/station", "../../admin/controls/imageInput"], function (require, exports, editor_1, station_1, imageInput_1) {
+define(["require", "exports", "components/editor", "admin/services/station", "admin/controls/imageInput"], function (require, exports, editor_1, station_1, imageInput_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class ImageEditor extends editor_1.Editor {

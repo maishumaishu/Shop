@@ -63,10 +63,14 @@ requirejs.config({
     },
     baseUrl: '../',
     paths: {
+        css: 'lib/css',
+        less: 'lib/require-less-0.1.5/less',
+        lessc: 'lib/require-less-0.1.5/lessc',
+        normalize: 'lib/require-less-0.1.5/normalize',
+        text: 'lib/text',
         ace_editor: 'lib/ace-builds/src',
         'art-template': 'lib/template-web',
         bootstrap: 'lib/bootstrap',
-        css: 'lib/css',
         clipboard: 'lib/clipboard.min',
         dilu: 'lib/dilu',
         formValidator: 'lib/formValidator',
@@ -76,7 +80,6 @@ requirejs.config({
         react: 'https://cdn.bootcss.com/react/16.0.0/umd/react.development',
         mobileControls: 'lib/mobileControls',
         move: 'lib/move',
-        text: 'lib/text',
         polyfill: 'lib/polyfill',
         polished: 'lib/polished',
         ui: 'lib/ui',
@@ -112,7 +115,7 @@ requirejs.config({
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
     }
 });
-// requirejs(['css!content/jquery-ui-1.10.0.custom'])
+requirejs(['less!content/admin_style_default']);
 requirejs(['build'], function () {
     var references = ['react', 'react-dom', 'admin/application', 'art-template'];
     requirejs(references, function (React, ReactDOM, app, ui) {

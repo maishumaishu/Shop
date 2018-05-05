@@ -1,4 +1,4 @@
-define(["require", "exports", "admin/services/dataSource", "css!admin/controls/pageSelectDialog"], function (require, exports, dataSource_1) {
+define(["require", "exports", "admin/services/dataSource", "less!admin/controls/pageSelectDialog"], function (require, exports, dataSource_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PageSelectDialog extends React.Component {

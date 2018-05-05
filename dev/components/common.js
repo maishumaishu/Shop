@@ -60,7 +60,7 @@ define(["require", "exports", "react", "share/common"], function (require, expor
             var typeName = this.constructor.name;
             typeName = typeName.replace('Control', '');
             typeName = typeName[0].toLowerCase() + typeName.substr(1);
-            requirejs([`css!${exports.componentsDir}/${typeName}/control`]);
+            requirejs([`less!${exports.componentsDir}/${typeName}/control`]);
         }
         subscribe(item, callback) {
             let func = item.add(callback);

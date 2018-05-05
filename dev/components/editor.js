@@ -50,7 +50,7 @@ define(["require", "exports", "components/common"], function (require, exports, 
             var typeName = this.constructor.name;
             typeName = typeName.replace('Editor', '');
             typeName = typeName[0].toLowerCase() + typeName.substr(1);
-            requirejs([`css!${common_1.componentsDir}/${typeName}/editor`]);
+            requirejs([`less!${common_1.componentsDir}/${typeName}/editor`]);
         }
         bindInputElement(e, obj, fieldName, fieldType) {
             if (!e)
