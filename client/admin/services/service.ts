@@ -35,7 +35,9 @@ export class Service extends BaseService {
     ajax<T>(url: string, options: chitu.AjaxOptions): Promise<T> {
         options = options || {} as chitu.AjaxOptions;
         options.headers = options.headers || {};
-        if (Service.token)
+
+        console.assert(Service.token != null);
+        if (Service.token.value)
             options.headers['token'] = Service.token.value;
 
         if (location.search) {

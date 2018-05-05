@@ -5,7 +5,7 @@ import 'wuzhui';
 import { imageUrl } from 'share/common';
 import { app } from '../site';
 
-requirejs(['css!admin/controls/imageManager']);
+requirejs(['less!admin/controls/imageManager']);
 
 type State = {
     images: SiteImageData[],
@@ -106,7 +106,7 @@ class ImageManager extends React.Component<Props, State> {
                     </div>
                     <div className="modal-body">
                         {images.map((o, i) => {
-                            let thumber = <ImageThumber key={o.id} imagePath={imageUrl(o.id, 140, 140)} className="col-xs-2"
+                            let thumber = <ImageThumber key={o.id} imagePath={o.id} className="col-xs-2"
                                 remove={(imagePath: string) => this.removeImage(o)}
                                 selectedText={selectedItems.indexOf(o.id) >= 0 ? `${selectedItems.indexOf(o.id) + 1}` : ''}
                                 text={o.width != null && o.height != null ? `${o.width} X ${o.height}` : " "}
@@ -138,7 +138,6 @@ class ImageManager extends React.Component<Props, State> {
                             onClick={() => {
                                 if (this.showDialogCallback) {
                                     let imageIds = this.state.selectedItems.map(o => o);
-                                    // let images = imageIds.map(o => imageUrl(o));
                                     this.showDialogCallback(imageIds);
                                 }
                                 ui.hideDialog(element);

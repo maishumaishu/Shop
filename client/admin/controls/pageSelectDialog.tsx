@@ -1,6 +1,7 @@
 import { StationService } from "../services/station";
-import 'css!admin/controls/pageSelectDialog';
 import { pageData as dataSource } from 'admin/services/dataSource';
+import 'less!admin/controls/pageSelectDialog';
+
 
 interface Props extends React.Props<PageSelectDialog> {
     station: StationService

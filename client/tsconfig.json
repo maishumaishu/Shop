@@ -3,7 +3,7 @@
         "target": "es6",
         "module": "amd",
         "sourceMap": false,
-        "outDir": "../out/es6",
+        "outDir": ".",
         "jsx": "react",
         "jsxFactory": "h",
         "baseUrl": "../",
@@ -44,8 +44,8 @@
         "mylib"
     ],
     "include": [
-        "lib/*.d.ts",
-        "lib/**/*.d.ts",
+        // "lib/*.d.ts",
+        "lib/typings/**/*.d.ts",
         "share/*.ts",
         "share/**/*.ts",
         "references.d.ts",

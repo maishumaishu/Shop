@@ -100,7 +100,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         var typeName = this.constructor.name;
         typeName = typeName.replace('Control', '');
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
-        requirejs([`css!${componentsDir}/${typeName}/control`]);
+        requirejs([`less!${componentsDir}/${typeName}/control`]);
     }
 
     subscribe<T>(item: chitu.ValueStore<T>, callback: (value: T) => void) {

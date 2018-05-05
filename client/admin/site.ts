@@ -22,6 +22,9 @@ class Site {
         let url = `${protocol}//${host}${pathname}?appKey=${Service.appToken}#home_index`;
         return url;
     }
+    loadCSS(path:string) {
+
+    }
 }
 
 

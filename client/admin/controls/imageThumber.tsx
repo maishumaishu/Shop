@@ -1,3 +1,4 @@
+import { imageUrl } from "../images";
 
 const imageThumbSize = 112;
 
@@ -12,7 +13,7 @@ type ImageThumberState = {
     // selectedText: string
 }
 
-requirejs(['css!admin/controls/imageThumber']);
+requirejs(['less!admin/controls/imageThumber']);
 export default class ImageThumber extends React.Component<ImageThumberProps, ImageThumberState>{
     constructor(props) {
         super(props);
@@ -20,17 +21,17 @@ export default class ImageThumber extends React.Component<ImageThumberProps, Ima
     }
     private setDeleteButton(e: HTMLButtonElement, imagePath: string) {
         if (!e) return;
-        if (this.props.remove) {
-            ui.buttonOnClick(e,
-                (e) => {
-                    e.stopPropagation();
-                    e.cancelBubble = true;
-                    return this.props.remove(imagePath)
-                },
-                {
-                    confirm: '确定删除该图片吗？'
-                });
-        }
+        // if (this.props.remove) {
+        ui.buttonOnClick(e,
+            (e) => {
+                e.stopPropagation();
+                e.cancelBubble = true;
+                return this.props.remove(imagePath)
+            },
+            {
+                confirm: '确定删除该图片吗？'
+            });
+        // }
     }
     render() {
         let { imagePath, className, onClick, selectedText, text, title } = this.props;
@@ -45,16 +46,13 @@ export default class ImageThumber extends React.Component<ImageThumberProps, Ima
                     <div className="triangle"></div>
                     <div className="top">
                         {selectedText}
+                    </div>
+                    {this.props.remove ?
                         <div className="remove">
                             <i className="icon-remove" ref={(e: any) => this.setDeleteButton(e, imagePath)} />
-
-                            {/* <button className="btn-link"
-                                ref={(e: HTMLButtonElement) => this.setDeleteButton(e, imagePath)}>
-                            </button> */}
-                        </div>
-                    </div>
-                    <img className="img-responsive" src={imagePath}
-                        ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
+                        </div> : null}
+                    <img className="img-responsive" src={imageUrl(imagePath, 150, 150)}
+                        ref={(e: HTMLImageElement) => e ? ui.renderImage(e, { imageSize: { width: 150, height: 150 } }) : null} />
                     <div className="bottom">
                         {text}
                     </div>

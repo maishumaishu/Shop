@@ -452,13 +452,18 @@ export class CarouselControl extends Control<Props, State> {
             return;
         }
 
-        if (autoplay == false) {
-            this.carousel.stop();
-            this.carousel.setActiveIndex(0);
-        }
-        else {
-            this.carousel.play();
-        }
+        console.assert(this.element != null);
+        console.assert(this.carousel != null);
+        this.carousel.stop();
+        this.carousel = new Carousel(this.element, { autoplay });
+        this.carousel.setActiveIndex(0);
+        // if (autoplay == false) {
+        //     this.carousel.stop();
+        //     this.carousel.setActiveIndex(0);
+        // }
+        // else {
+        //     this.carousel.play();
+        // }
     }
     _render(h) {
         let { items, autoplay } = this.state;

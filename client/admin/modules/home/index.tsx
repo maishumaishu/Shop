@@ -5,7 +5,7 @@ class IndexPage extends React.Component<any, any> {
         return [
             <h1 key="title" className="text-center" style={{ paddingBottom: 50, paddingTop: 10 }}>欢迎使用{shopName}</h1>,
             <div key="row1" className="row">
-                <div className="col-md-4">
+                <div className="col-sm-4">
                     <ul className="list-group">
                         <li className="list-group-item list-group-item-success" style={{ fontWeight: 'bold' }}>
                             今日注册用户
@@ -18,7 +18,7 @@ class IndexPage extends React.Component<any, any> {
                         </li>
                     </ul>
                 </div>
-                <div className="col-md-4">
+                <div className="col-sm-4">
                     <ul className="list-group">
                         <li className="list-group-item list-group-item-success" style={{ fontWeight: 'bold' }}>
                             今日订单
@@ -31,7 +31,7 @@ class IndexPage extends React.Component<any, any> {
                         </li>
                     </ul>
                 </div>
-                <div className="col-md-4">
+                <div className="col-sm-4">
                     <ul className="list-group">
                         <li className="list-group-item list-group-item-success" style={{ fontWeight: 'bold' }}>
                             今日订单

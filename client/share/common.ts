@@ -32,6 +32,10 @@ export function imageUrl(path: string, width?: number, height?: number) {
     if (path.startsWith('data:image'))
         return path;
 
+    if (path.indexOf(',') > 0) {
+        path = path.split(',')[0];
+    }
+
     let HTTP = 'http://'
     if (path.startsWith(HTTP)) {
         path = path.substr(HTTP.length);

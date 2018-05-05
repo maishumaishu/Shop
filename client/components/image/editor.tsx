@@ -2,9 +2,9 @@ import { Editor, EditorProps } from "components/editor";
 import { State as ControlState, default as CategoriesControl } from 'components/image/control';
 import ImageManager from 'admin/controls/imageManager'
 import { StationService } from "admin/services/station";
-import { imageUrl } from "share/common";
 import tips from "admin/tips";
-import { ImageInput } from "../../admin/controls/imageInput";
+import { ImageInput } from "admin/controls/imageInput";
+import { imageUrl } from "share/common";
 
 export interface EditorState extends Partial<ControlState> {
     uploading: boolean
@@ -52,7 +52,7 @@ export default class ImageEditor extends Editor<EditorProps, EditorState> {
                 <div className="form-group">
                     <label className="col-sm-4">页面链接</label>
                     <div className="col-sm-8">
-                        <input className="form-control" />
+                        <input className="form-control" placeholder="点击图片打开的页面链接" />
                     </div>
                 </div>
             </div>

@@ -69,7 +69,7 @@ export abstract class Editor<P extends EditorProps, S> extends React.Component<P
         typeName = typeName.replace('Editor', '');
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
 
-        requirejs([`css!${componentsDir}/${typeName}/editor`]);
+        requirejs([`less!${componentsDir}/${typeName}/editor`]);
     }
 
     bindInputElement(e: HTMLInputElement | HTMLSelectElement, fieldName: keyof S);

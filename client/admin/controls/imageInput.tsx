@@ -22,9 +22,8 @@ type Props = {
 
 //TODO 缩略图使用小图
 
-requirejs(['css!admin/controls/imageInput']);
+requirejs(['less!admin/controls/imageInput']);
 export class ImageInput extends React.Component<Props, State>{
-    // imageManager: ImageManager;
 
     constructor(props) {
         super(props);

@@ -1,14 +1,20 @@
 import { imageUrl } from 'admin/services/service';
 import { ShoppingService } from 'admin/services/shopping';
 import 'wuzhui';
+import ImageThumber from './imageThumber';
 
-requirejs(['css!admin/controls/productSelectDialog']);
+requirejs(['less!admin/controls/productSelectDialog']);
 
 type ProductsDialogProps = {
     shopping: ShoppingService,
 } & React.Props<ProductSelectDialog>;
 
-export class ProductSelectDialog extends React.Component<ProductsDialogProps, { products: Product[] }>{
+type ProductsDialogState = {
+    products: Product[],
+    selecteItems: Product[],
+}
+
+export class ProductSelectDialog extends React.Component<ProductsDialogProps, ProductsDialogState>{
 
     private element: HTMLElement;
     private dataSource: wuzhui.DataSource<Product>;
@@ -19,12 +25,12 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
     constructor(props) {
         super(props);
 
-        this.state = { products: null };
+        this.state = { products: null, selecteItems: [] };
 
         var shopping = this.props.shopping;
 
         this.dataSource = new wuzhui.DataSource({ select: (args) => shopping.products(args) });
-        this.dataSource.selectArguments.maximumRows = 15;
+        this.dataSource.selectArguments.maximumRows = 18;
         this.dataSource.selectArguments.filter = '!OffShelve';
 
         this.dataSource.selected.add((sender, args) => {
@@ -38,12 +44,23 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
         ui.showDialog(this.element);
     }
 
-    productSelected(p: Product) {
+    selecteProduct(p: Product) {
+
+        if (this.state.selecteItems.indexOf(p) >= 0) {
+            this.state.selecteItems = this.state.selecteItems.filter(o => o != p);
+        }
+        else {
+            this.state.selecteItems.push(p);
+        }
+        this.setState(this.state);
+
         // if (!this.props.selected)
         //     return;
 
-        let result = this.onProductSelected(p) || Promise.resolve();
-        result.then(() => ui.hideDialog(this.element));
+        // let result = this.onProductSelected(p) || Promise.resolve();
+        // result.then(() => ui.hideDialog(this.element));
+
+
         // var isOK = true;
         // if (this.props.selected) {
         // isOK = this.props.selected(p);
@@ -86,16 +103,7 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
     }
 
     render() {
-        let products = this.state.products;
-
-        let c: Product[][];
-        if (products != null) {
-            let products1 = products.filter((o, i) => i <= 4);
-            let products2 = products.filter((o, i) => i >= 5 && i <= 9);
-            let products3 = products.filter((o, i) => i >= 10 && i <= 14);
-            c = [products1, products2, products3].filter(o => o && o.length > 0);
-        }
-
+        let { products, selecteItems } = this.state;
         let status: 'loading' | 'none' | 'finish';
         if (products == null)
             status = 'loading';
@@ -106,7 +114,7 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
 
         return (
             <div className="product-select-dialog modal fade" ref={(e: HTMLElement) => this.element = e || this.element}>
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" onClick={() => ui.hideDialog(this.element)}>
@@ -135,19 +143,20 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, { 
                                     暂无商品数据
                                 </div> : null}
                             {status == 'finish' ?
-                                c.map((products, index) =>
-                                    <div key={index} className="products">
-                                        {products.map(p =>
-                                            <div key={p.Id} className="product"
-                                                onClick={() => this.productSelected(p)}>
-                                                <img src={imageUrl(p.ImagePath, 100)} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />
-                                                <div className="interception">
-                                                    {p.Name}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : null
+                                <div className="products">
+                                    {products.map(p => {
+                                        let selected = selecteItems.indexOf(p) >= 0;
+                                        return <div key={p.Id} className="product col-lg-2"
+                                            onClick={() => this.selecteProduct(p)}>
+                                            <ImageThumber imagePath={p.ImagePath}
+                                                text={p.Name}
+                                                selectedText={selecteItems.indexOf(p) >= 0 ? `${selecteItems.indexOf(p) + 1}` : ''} />
+                                        </div>
+                                    }
+
+                                    )}
+                                </div>
+                                : null
                             }
                             <div className="clearfix"></div>
                         </div>

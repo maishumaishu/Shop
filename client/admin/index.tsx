@@ -41,14 +41,14 @@ requirejs.config({
         um: {
             deps: [
                 'jquery',
-                'css!../scripts/umeditor/themes/default/css/umeditor.css',
-                // '../scripts/umeditor/third-party/template.min',
+                'css!../lib/umeditor/themes/default/css/umeditor.css',
+                // '../lib/umeditor/third-party/template.min',
                 'um_config',
             ]
         },
         // um_config: {
         //     deps: [
-        //         '../scripts/umeditor/third-party/template.min'
+        //         '../lib/umeditor/third-party/template.min'
         //     ]
         // },
         um_zh: {
@@ -63,47 +63,54 @@ requirejs.config({
     },
     baseUrl: '../',
     paths: {
-        ace_editor: 'scripts/ace-builds/src',
-        'art-template': 'scripts/template-web',
-        bootstrap: 'scripts/bootstrap',
-        css: 'scripts/css',
-        clipboard: 'scripts/clipboard.min',
-        dilu: 'scripts/dilu',
-        formValidator: 'scripts/formValidator',
-        hammer: 'scripts/hammer',
-        iscroll: 'scripts/iscroll-lite',
-        jquery: 'scripts/jquery-2.1.3',
-        react: 'https://cdn.bootcss.com/react/16.0.0/umd/react.development',//'../scripts/react',
-        mobileControls: 'scripts/mobileControls',
-        move: 'scripts/move',
-        text: 'scripts/text',
 
-        polyfill: 'scripts/polyfill',
-        polished: 'scripts/polished',
+        css: 'lib/css',
+        less: 'lib/require-less-0.1.5/less',
+        lessc: 'lib/require-less-0.1.5/lessc',
+        normalize: 'lib/require-less-0.1.5/normalize',
+        text: 'lib/text',
 
-        ui: 'scripts/ui',
-        um: 'scripts/umeditor/umeditor',
-        um_config: 'scripts/umeditor/umeditor.config',
-        um_zh: 'scripts/umeditor/lang/zh-cn/zh-cn',
 
-        knockout: 'scripts/knockout-3.2.0.debug',
-        'knockout.validation': 'scripts/knockout.validation',
+        ace_editor: 'lib/ace-builds/src',
+        'art-template': 'lib/template-web',
+        bootstrap: 'lib/bootstrap',
 
-        'bezier-easing': 'scripts/bezier-easing',
-        'jquery.fileupload': 'scripts/jQuery.FileUpload/jquery.fileupload',
-        'jquery.validate': 'scripts/jquery.validate',
-        'jquery-ui': 'https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min',//'../scripts/jquery-ui',
-        'jquery.ui.widget': 'scripts/jquery.ui.widget',
-        'qrcode': 'scripts/qrcode',
-        'react-dom': 'https://cdn.bootcss.com/react-dom/16.0.0/umd/react-dom.development',//'../scripts/react-dom',
-        'prop-types': 'scripts/prop-types',
-        'maishu-chitu': 'scripts/chitu',
-        'chitu.mobile': 'scripts/chitu.mobile',
-        'wuzhui': 'scripts/wuzhui',
+        clipboard: 'lib/clipboard.min',
+        dilu: 'lib/dilu',
+        formValidator: 'lib/formValidator',
+        hammer: 'lib/hammer',
+        iscroll: 'lib/iscroll-lite',
+        jquery: 'lib/jquery-2.1.3',
+        react: 'https://cdn.bootcss.com/react/16.0.0/umd/react.development',//'../lib/react',
+        mobileControls: 'lib/mobileControls',
+        move: 'lib/move',
+
+        polyfill: 'lib/polyfill',
+        polished: 'lib/polished',
+
+        ui: 'lib/ui',
+        um: 'lib/umeditor/umeditor',
+        um_config: 'lib/umeditor/umeditor.config',
+        um_zh: 'lib/umeditor/lang/zh-cn/zh-cn',
+
+        knockout: 'lib/knockout-3.2.0.debug',
+        'knockout.validation': 'lib/knockout.validation',
+
+        'bezier-easing': 'lib/bezier-easing',
+        'jquery.fileupload': 'lib/jQuery.FileUpload/jquery.fileupload',
+        'jquery.validate': 'lib/jquery.validate',
+        'jquery-ui': 'https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min',//'../lib/jquery-ui',
+        'jquery.ui.widget': 'lib/jquery.ui.widget',
+        'qrcode': 'lib/qrcode',
+        'react-dom': 'https://cdn.bootcss.com/react-dom/16.0.0/umd/react-dom.development',//'../lib/react-dom',
+        'prop-types': 'lib/prop-types',
+        'maishu-chitu': 'lib/chitu',
+        'chitu.mobile': 'lib/chitu.mobile',
+        'wuzhui': 'lib/wuzhui',
 
         ace: 'assets/js/uncompressed/ace',
 
-        'ue': 'scripts/ueditor',//'http://web.bailunmei.com/ueditor',//
+        'ue': 'lib/ueditor',//'http://web.bailunmei.com/ueditor',//
         adminServices: 'admin/services',
         'masterPage': 'admin/masterPage',
         // 'application': 'admin/application',
@@ -118,7 +125,7 @@ requirejs.config({
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
     }
 });
-// requirejs(['css!content/jquery-ui-1.10.0.custom'])
+requirejs(['less!content/admin_style_default'])
 requirejs(['build'], function () {
     var references = ['react', 'react-dom', 'admin/application', 'art-template'];
     requirejs(references, function (React, ReactDOM, app, ui) {
