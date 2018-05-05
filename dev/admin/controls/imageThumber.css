@@ -1,0 +1,55 @@
+.image-thumber .item {
+  border: solid 1px #ccc;
+}
+.image-thumber .item .bottom {
+  position: absolute;
+  bottom: 0px;
+  width: calc(100% - 32px);
+  background-color: rgba(0, 0, 0, 0.55);
+  color: white;
+}
+.image-thumber .item .bottom button {
+  color: white;
+}
+.image-thumber .item .top {
+  position: absolute;
+  right: 16px;
+  top: 0px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+.image-thumber .item .top .remove {
+  display: none;
+}
+.image-thumber .item.selected {
+  border: solid 1px blue;
+}
+.image-thumber .item.selected .triangle {
+  position: absolute;
+  top: -16px;
+  right: -1px;
+  width: 16px;
+  height: 16px;
+  background: transparent;
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid blue;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  margin: 0 auto;
+  transform: rotate(45deg);
+}
+.image-thumber .item.selected:hover .remove {
+  display: none;
+}
+.image-thumber .item:hover .remove {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  padding-top: 2px;
+  display: block;
+  background-color: rgba(0, 0, 0, 0.55);
+}
+.image-thumber .item:hover .remove i {
+  color: white;
+}

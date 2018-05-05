@@ -1,0 +1,19 @@
+.productInfo-control .product-name {
+  font-size: 16px;
+  font-weight: bold;
+  min-height: 40px;
+}
+.productInfo-control .empty-info {
+  height: 120px;
+  padding-top: 40px;
+  text-align: center;
+  display: block;
+}
+.productInfo-control .list-group {
+  margin-bottom: 0;
+}
+.productInfo-control hr {
+  border-top-width: 20px;
+  margin: 0;
+  border-top-color: whitesmoke;
+}

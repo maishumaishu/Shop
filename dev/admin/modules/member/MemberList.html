@@ -1,0 +1,41 @@
+﻿<div name="tabs" class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="pull-right">
+            <button data-bind="click:search" class="btn btn-primary btn-sm pull-right">搜索</button>
+            <input type="text" data-bind="value:searchText" class="form-control" style="width: 300px" placeholder="请输入手机号" />
+        </li>
+    </ul>
+</div>
+
+<div name="dlg_recharge" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">充值</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="row form-group">
+                    <label class="col-sm-3 control-label">充值金额</label>
+                    <div class="col-sm-9">
+                        <input data-bind="value:rechargeInfo.Amount" type="text" class="form-control" placeholder="请输入充值到用户账户的金额" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-sm-3 control-label">
+                        操作员密码
+                    </label>
+                    <div class="col-sm-9">
+                        <input data-bind="value:rechargeInfo.password" type="password" class="form-control" placeholder="请输入操作员密码" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button name="btn_cancel" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button data-bind="click:confirmRecharge" name="btn_confirm" type="button" class="btn btn-primary">确认</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,30 @@
+.product-image-mask {
+  position: absolute;
+  left: 20px;
+  top: 0px;
+  width: calc(100% - 40px);
+  height: calc(100% - 80px);
+  background-color: gray;
+  opacity: 0.1;
+  border-radius: 50%;
+}
+.product-image-text {
+  position: absolute;
+  left: 10px;
+  top: 0px;
+  transform: rotate(-31deg);
+  font-weight: bold;
+  font-size: 24px;
+  text-align: left;
+  opacity: 0.8;
+}
+.col-xs-3 .product-image-text {
+  font-size: 14px;
+}
+.col-xs-4 .product-image-text {
+  font-size: 16px;
+}
+.col-xs-5 .product-image-text {
+  font-size: 18px;
+}
+/*# sourceMappingURL=www/user/controls/productImage.css.map */

@@ -1,0 +1,59 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.shopping-orderCoupons section {
+  padding-top: 50px;
+}
+.shopping-orderCoupons.immersion section {
+  padding-top: 65px;
+}
+.shopping-orderCoupons hr {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  /*margin: 0;*/
+  height: 6px;
+  background-color: #eeeeee;
+}
+.shopping-orderCoupons hr:first-child,
+.shopping-orderCoupons hr:last-child {
+  height: 12px;
+}
+.shopping-orderCoupons .coupon {
+  padding: 0;
+  height: 80px;
+}
+.shopping-orderCoupons .coupon .available {
+  background-color: #78acc5;
+}
+.shopping-orderCoupons .coupon .pull-left {
+  width: 80px;
+  height: 80px;
+  padding: 20px 0px 0px 10px;
+  color: white;
+}
+.shopping-orderCoupons .coupon .pull-left .text {
+  font-size: 24px;
+}
+.shopping-orderCoupons .coupon .main {
+  padding: 14px 0px 0px 20px;
+  font-size: 16px;
+  margin-left: 80px;
+}
+.shopping-orderCoupons .coupon .main .date {
+  margin-top: 10px;
+}
+.shopping-orderCoupons .norecords .icon i {
+  top: 33px;
+  font-size: 100px;
+}
+/*# sourceMappingURL=www/user/modules/shopping/orderCoupons.css.map */

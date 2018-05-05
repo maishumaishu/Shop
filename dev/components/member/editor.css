@@ -1,0 +1,19 @@
+.member-editor div > label {
+  width: 90px;
+}
+.member-editor .bg label {
+  position: relative;
+  top: -16px;
+}
+.member-editor .bg a {
+  margin-left: 4px;
+}
+.member-editor .bg img {
+  width: 100px;
+}
+.member-editor div {
+  margin-bottom: 14px;
+}
+.member-editor div:last-child {
+  margin-bottom: 0px;
+}

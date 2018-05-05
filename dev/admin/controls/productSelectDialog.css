@@ -1,0 +1,71 @@
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body {
+  min-height: 200px;
+  padding-top: 4px;
+  padding-bottom: 10px;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body .loading,
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body .norecords {
+  padding: 200px 0 20px 0;
+  text-align: center;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body .product {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body .product img {
+  border: solid 1px #ccc;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body .product .selected {
+  border: solid 1px blue;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body .product .triangle {
+  position: absolute;
+  top: 10px;
+  right: -1px;
+  width: 16px;
+  height: 16px;
+  background: transparent;
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid blue;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  margin-top: -16px;
+  transform: rotate(45deg);
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-body .product .interception {
+  width: calc(100% - 32px);
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  -webkit-text-overflow: ellipsis;
+  -moz-binding: url(ellipsis.xml#ellipsis);
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  position: absolute;
+  bottom: 20px;
+  height: 20px;
+  padding: 4px 8px 0px 8px;
+  font-size: 12px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.55);
+  color: white;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-footer .pagination {
+  margin: 0;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-footer .pagination .active {
+  color: red;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-footer .pagination li {
+  display: initial;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-footer .pagination li > a {
+  padding: 3px 6px;
+  min-width: 32px;
+  text-align: center;
+}
+.product-select-dialog.modal .modal-dialog .modal-content .modal-footer .paging-bar .total {
+  float: left;
+  padding-top: 4px;
+}

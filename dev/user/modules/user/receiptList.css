@@ -1,0 +1,21 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.user-receiptList section {
+  padding-bottom: 50px;
+}
+.user-receiptList .footer .form-group {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+/*# sourceMappingURL=www/user/modules/user/receiptList.css.map */

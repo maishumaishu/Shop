@@ -1,0 +1,127 @@
+.ui-widget-overlay {
+  background: none;
+}
+.modal-backdrop.in {
+  opacity: 0;
+}
+.validationMessage {
+  border: 1px solid #ff6a00;
+  background-color: red;
+  color: #fff !important;
+  border-radius: 4px;
+  position: absolute;
+  top: -28px;
+  left: 16;
+  line-height: 24px;
+  font-size: 12px;
+  padding: 0 10px;
+}
+/*#dialog-confirm {
+    height: auto !important;
+}
+
+.control-label width {
+    width: 70%;
+}
+
+#editor {
+    max-height: 250px;
+    height: 250px;
+    background-color: white;
+    border-collapse: separate;
+    border: 1px solid rgb(204, 204, 204);
+    padding: 4px;
+    box-sizing: content-box;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+    box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    overflow: scroll;
+    outline: none;
+}
+
+#voiceBtn {
+    width: 20px;
+    color: transparent;
+    background-color: transparent;
+    transform: scale(2.0, 2.0);
+    -webkit-transform: scale(2.0, 2.0);
+    -moz-transform: scale(2.0, 2.0);
+    border: transparent;
+    cursor: pointer;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+div[data-role="editor-toolbar"] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.dropdown-menu a {
+    cursor: pointer;
+}
+
+.fileinput-button input[type="file"] {
+    width: 40px;
+    top: -10px;
+    left: -13px;
+    transform: none !important;
+}
+
+.noData {
+    text-align:center;
+    padding:90px 0px 90px 0px !important;
+}*/
+/** 文件上传按钮 */
+.fileinput-button {
+  position: relative;
+  overflow: hidden;
+}
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translate(-300px, 0) scale(4);
+  font-size: 23px;
+  direction: ltr;
+  cursor: pointer;
+}
+.fileinput-button input[type="file"] {
+  width: 40px;
+  top: -10px;
+  left: -13px;
+  transform: none !important;
+}
+ul.nav-tabs li button {
+  margin-left: 2px;
+}
+.pagingBar {
+  background-color: #eff3f8;
+  text-align: right;
+}
+.pagingBar .total {
+  float: left;
+}
+.pagingBar a {
+  /*background-color: #fafafa;
+    color: #2283c5;*/
+  margin-right: 4px;
+}
+.pagingBar a.active {
+  color: red;
+}
+body {
+  background: white;
+}
+/** bootstrap 重写 开始*/
+.dropdown-menu {
+  min-width: 120px;
+}
+/** bootstrap 重写 结束*/

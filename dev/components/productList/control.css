@@ -1,0 +1,95 @@
+.product-list-control {
+  padding-top: 10px;
+  width: 100%;
+  display: table;
+}
+.product-list-control .product {
+  /* 页面样式 开始*/
+}
+.product-list-control .product .interception {
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  -webkit-text-overflow: ellipsis;
+  -moz-binding: url("ellipsis.xml#ellipsis");
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+.product-list-control .product .name {
+  font-size: 14px;
+  color: #333333;
+  text-align: left;
+  margin-top: 10px;
+}
+.product-list-control .product .double-line {
+  height: 40px;
+  overflow: hidden;
+}
+.product-list-control .product .single-line {
+  height: 20px;
+  overflow: hidden;
+}
+.product-list-control .product .price-bar {
+  position: relative;
+  padding-top: 4px;
+}
+.product-list-control .product .price-bar span {
+  font-size: 14px;
+  color: #f70;
+  font-weight: bold;
+  text-align: left;
+}
+.product-list-control .product .price-bar i {
+  font-size: 20px;
+}
+.product-list-control .product .fields-bar {
+  text-align: left;
+  padding: 4px 0px 2px 0px;
+}
+.product-list-control .product.single .name {
+  margin-top: 2px;
+}
+.product-list-control .product.single .title {
+  font-size: 14px;
+  color: gray;
+  text-align: left;
+  margin-top: 4px;
+  height: 20px;
+}
+.product-list-control .product.single .price {
+  margin-top: 4px;
+}
+.product-list-control .product.single .content .buttonBar {
+  width: 120px;
+}
+.product-list-control .product.single hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.product-list-control .product.single img {
+  width: 100%;
+}
+.product-list-control .product.double {
+  text-align: center;
+  border-bottom: solid 1px whitesmoke;
+  padding: 10px 10px 10px 10px ;
+}
+.product-list-control .product.double:nth-child(2n+1) {
+  border-right: 1px solid whitesmoke;
+}
+.product-list-control .product.double img {
+  width: 80%;
+}
+.product-list-control .product .productCout i {
+  margin: 0;
+}
+.product-list-control .product .productCout input {
+  font-size: 14px;
+  display: block;
+  width: 32px;
+  height: 20px;
+  text-align: center;
+  margin: 0 4px 0 2px;
+}

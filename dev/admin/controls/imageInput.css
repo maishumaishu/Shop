@@ -1,0 +1,16 @@
+.image-input .file-upload {
+  position: absolute;
+  width: 38px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  opacity: 0;
+}
+.image-input .input-group-addon {
+  cursor: pointer;
+}
+img.image-input {
+  max-width: 120px;
+  max-height: 120px;
+  margin-top: 10px;
+}

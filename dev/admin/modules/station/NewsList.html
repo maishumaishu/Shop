@@ -1,0 +1,15 @@
+﻿<div id="news" class="tabbable">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="pull-right">
+            <a href="#Station/NewsEdit" class="btn btn-primary btn-sm">添加</a>
+        </li>
+        <li class="pull-right">
+            <button data-bind="click: search" class="btn btn-primary btn-sm">搜索</button>
+        </li>
+        <li class="pull-right">
+            <input type="text" data-bind="value: searchText" class="nav-search-input" style="width: 300px" placeholder="请输入要查找的标题内容" />
+        </li>
+    </ul>
+</div>
+
+<table id="tabNews" class="table table-bordered table-striped responsive-utilities"></table>

@@ -1,0 +1,77 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.user-accountSecurity-mobileBinding section {
+  padding-top: 60px;
+}
+.user-accountSecurity-mobileBinding.immersion section {
+  padding-top: 75px;
+}
+.user-accountSecurity-mobileBinding .wizard.container .step {
+  margin-top: 10px;
+  padding: 0px 10px 0px 10px;
+  height: 80px;
+}
+.user-accountSecurity-mobileBinding .wizard.container .step .step1 {
+  float: left;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  /**/
+  background-color: #777777;
+  font-size: 24px;
+  text-align: center;
+  color: white;
+  padding: 2px;
+}
+.user-accountSecurity-mobileBinding .wizard.container .step .step1 .name {
+  position: relative;
+  top: 10px;
+  left: -20px;
+  width: 80px;
+  font-size: 14px;
+  color: black;
+}
+.user-accountSecurity-mobileBinding .wizard.container .step .step2 {
+  float: right;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #777777;
+  font-size: 24px;
+  text-align: center;
+  color: white;
+  padding: 2px;
+}
+.user-accountSecurity-mobileBinding .wizard.container .step .step2 .name {
+  position: relative;
+  top: 10px;
+  left: -22px;
+  width: 80px;
+  font-size: 14px;
+  color: black;
+}
+.user-accountSecurity-mobileBinding .wizard.container .step .active {
+  background-color: #f50000;
+}
+.user-accountSecurity-mobileBinding .wizard.container .step hr {
+  position: relative;
+  top: 20px;
+}
+.user-accountSecurity-mobileBinding .wizard.container hr {
+  margin-top: 6px;
+}
+.user-accountSecurity-mobileBinding .wizard.container .alert {
+  margin-bottom: 0;
+}
+/*# sourceMappingURL=www/user/modules/user/accountSecurity/mobileBinding.css.map */

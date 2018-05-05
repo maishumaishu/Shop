@@ -1,0 +1,17 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.user-login form {
+  padding-top: 20px;
+}
+/*# sourceMappingURL=www/user/modules/user/login.css.map */

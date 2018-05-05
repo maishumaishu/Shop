@@ -1,0 +1,10 @@
+.item-select-dialog .modal-body .col-xs-2 {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.item-select-dialog .modal-footer .pagination {
+  margin: 0;
+}
+.item-select-dialog .modal-header h4 {
+  margin: 0;
+}

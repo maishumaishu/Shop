@@ -1,0 +1,10 @@
+.image-manager .modal-body .col-xs-2 {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.image-manager .modal-footer .pagination {
+  margin: 0;
+}
+.image-manager .modal-header h4 {
+  margin: 0;
+}

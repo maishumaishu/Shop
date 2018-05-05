@@ -1,0 +1,43 @@
+.user-myStores ul {
+  margin: 0;
+}
+.user-myStores ul li {
+  float: left;
+  list-style: none;
+  width: 280px;
+  height: 234px;
+  border: 1px solid;
+  margin: 4px;
+  padding: 4px;
+}
+.user-myStores ul li .header {
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+.user-myStores ul li .header p {
+  font-size: 18px;
+  padding: 0px;
+  text-align: center;
+  margin: 0px;
+}
+.user-myStores ul li .header p i {
+  margin: 4px 6px 0px 0px;
+  cursor: pointer;
+}
+.user-myStores ul li .body {
+  height: 150px;
+}
+.user-myStores ul li .body .pull-left {
+  width: 80px;
+  padding-left: 14px;
+}
+.user-myStores ul li .footer .col-xs-6 {
+  padding: 0px;
+}
+.user-myStores ul li .add {
+  text-align: center;
+  padding-top: 35px;
+}
+.user-myStores ul li .add i {
+  font-size: 120px;
+}

@@ -1,0 +1,8 @@
+.html-control {
+  padding: 0 10px 0 10px;
+}
+.html-control img {
+  height: auto;
+  width: calc(100% + 20px);
+  margin-left: -10px;
+}

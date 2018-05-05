@@ -1,0 +1,26 @@
+.pull-down-indicator .pull-down-indicator {
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.pull-down-indicator .pull-down-indicator i {
+  margin-right: 4px;
+}
+.pull-down-indicator.immersion .pull-down-indicator {
+  height: 65px;
+}
+.shopping-orderDetail section {
+  padding-top: 50px;
+}
+.shopping-orderDetail.immersion section {
+  padding-top: 65px;
+}
+.shopping-orderDetail section {
+  padding-bottom: 50px;
+}
+.shopping-orderDetail .img-responsive {
+  width: 80%;
+}
+/*# sourceMappingURL=www/user/modules/shopping/orderDetail.css.map */

@@ -1,0 +1,549 @@
+﻿<ul class="nav nav-tabs">
+    <li class="pull-right">
+        <button class="btn btn-sm btn-primary" onclick="app.back()">
+            <i class="icon-reply"></i>返回
+        </button>
+    </li>
+    <li class="pull-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="icon-remove"></i>删除
+                <span class="caret"></span>
+            </button>
+            <ul data-bind="foreach:promotions" class="dropdown-menu">
+                <li>
+                    <a data-bind="click:$parent.removePromotion, text:'第' + (ko.unwrap($index) + 1) + '条' " href="#"></a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <li class="pull-right">
+        <button data-bind="click:createPromotion" href="javascript:" class="btn btn-sm btn-primary">
+            <i class="icon-plus"></i>添加
+        </button>
+    </li>
+</ul>
+
+<div data-bind="visible:ko.unwrap(promotions).length == 0" style="text-align:center;padding:50px 0px 50px 0px;">
+    暂无优惠信息，你可以点击左上角的“添加”按钮进行添加，添加完成后，请点击“保存”按钮。
+</div>
+
+<form data-bind="with:promotion" name="dlg_promotion" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">&nbsp;</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">
+                            *优惠方式
+                        </label>
+                        <div class="col-sm-10">
+                            <!--<input class="form-control" />-->
+                            <label class="radio-inline">
+                                <input name="promotion_type" data-bind="checked:method" type="radio" value="Amount" />按金额优惠
+                            </label>
+                            <label class="radio-inline">
+                                <input name="promotion_type" data-bind="checked:method" type="radio" value="Count" />按购买商品总数
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">
+                            *优惠类型
+                        </label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline">
+                                <input name="promotion_method" data-bind="checked:type" type="radio" value="Given" />满赠
+                            </label>
+                            <label class="radio-inline">
+                                <input name="promotion_method" data-bind="checked:type" type="radio" value="Reduce" />满减
+                            </label>
+                            <label class="radio-inline">
+                                <input name="promotion_method" data-bind="checked:type" type="radio" value="Discount" />满折
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button name="btnOK" data-bind="" type="button" class="btn btn-primary" autofocus>确定</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- ko foreach:promotions-->
+<div name="promotion">
+    <div class="row">
+        <div class="col-md-6">
+            <table data-bind="with:range" border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th colspan="4">优惠范围</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;width:60px;">类型</th>
+                        <th style="text-align:center;">名称</th>
+                        <!--<th style="text-align:center;width:160px;"></th>-->
+                        <th style="text-align:center;width:160px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-bind="visible:ko.unwrap(rules).length == 0">
+                        <td colspan="4" style="border:0px;text-align:center">
+                            <div style="padding:50px 0px 50px 0px;">
+                                <b>暂无优惠商品</b>
+                                <div>可以勾选"全场优惠"或者点击"添加商品"按钮添加要优惠的商品</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- ko foreach:rules -->
+                    <tr>
+                        <td data-bind="text:typeText"></td>
+                        <td data-bind="text:objectName"></td>
+                        <td style="text-align:center;">
+                            <label class="switch">
+                                <input data-bind="checked:isInclude" type="checkbox" class="ace ace-switch ace-switch-5">
+                                <span class="lbl middle" data-lbl="包括 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 排除"></span>
+                            </label>
+                            <button data-bind="click:$parent.removeRule" class="btn btn-minier btn-danger" style="margin-left: 4px;">
+                                <i class="icon-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="">
+                            <div class="pull-left">
+                                <label>
+                                    <input data-bind="checked:allProducts" type="checkbox">&nbsp; 全场优惠
+                                </label>
+                            </div>
+                            <div class="pull-right">
+                                <button data-bind="click:newProductRule" class="btn btn-primary btn-sm">添加商品</button>
+                                <button data-bind="click:newBrandRule" class="btn btn-primary btn-sm">添加品牌</button>
+                                <button data-bind="click:newCategoryRule" class="btn btn-primary btn-sm">添加品类</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table data-bind="with:content" border="1" class="table table-striped table-bordered table-hover" style="border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th colspan="4">优惠内容</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;">名称</th>
+                        <th style="text-align:center;width:100px;">
+                            <!--金额/数量-->
+                            <span data-bind="text:ko.unwrap(method)=='Amount'?'金额':'数量'"></span>
+                        </th>
+                        <th style="text-align:center;width:80px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-bind="visible:ko.unwrap(rules).length==0">
+                        <td colspan="4" style="border:0px;text-align:center">
+                            <div style="padding:50px 0px 50px 0px;">
+                                <b>暂无优惠内容</b>
+                                <div>可以点击"添加优惠内容"按钮,添加优惠内容</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- ko foreach:rules -->
+                    <tr>
+                        <td data-bind="text:description"></td>
+                        <td style="text-align:right;">
+                            <span data-bind="money:levelValue,visible:ko.unwrap(promotion.method)=='Amount'"></span>
+                            <span data-bind="text:levelValue,visible:ko.unwrap(promotion.method)=='Count'"></span>
+                        </td>
+                        <td style="text-align:center;">
+                            <button data-bind="click:$parent.removeRule" class="btn btn-minier btn-danger">
+                                <i class="icon-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="">
+                            <div class="pull-left">
+                                <div style="margin-top:6px;">
+                                    <label style="padding-top:2px;">
+                                        <span style="font-weight:bold">优惠方式：</span>
+                                        <span data-bind="text:methodText"></span>
+                                    </label>
+                                    <label style="padding-top:2px;padding-left:10px;">
+                                        <span style="font-weight:bold">优惠类型：</span>
+                                        <span data-bind="text:typeText"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="pull-right">
+                                <button data-bind="click:showNewRuleDialog" class="btn btn-primary btn-sm">添加优惠内容</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- 满赠窗口 开始-->
+    <form data-bind="with:content" name="dlg_productGiven" class="modal fade">
+        <div data-bind="with:productGivenRule" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div data-bind="visible:ko.unwrap($parent.method)=='Count'" class="form-group">
+                            <label class="control-label col-sm-2">*购买数量</label>
+                            <div class="col-sm-10">
+                                <select data-bind="value: buyCount" class="form-control" autofocus>
+                                    <option value="1">任意1件</option>
+                                    <option value="2">任意2件</option>
+                                    <option value="3">任意3件</option>
+                                    <option value="4">任意4件</option>
+                                    <option value="5">任意5件</option>
+                                    <option value="6">任意6件</option>
+                                    <option value="7">任意7件</option>
+                                    <option value="8">任意8件</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div data-bind="visible:ko.unwrap($parent.method)=='Amount'" class="form-group">
+                            <label class="control-label col-sm-2">*消费金额</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <input data-bind="value:buyAmount" class="form-control" placeholder="请输入消费金额" />
+                                    <div class="input-group-addon">元</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ko foreach:givenProducts -->
+                        <div data-bind="" class="form-group">
+                            <label data-bind="text:ko.unwrap($index) == 0 ? '*赠送商品' : ''" class="control-label col-sm-2">*赠送商品</label>
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    <div class="col-sm-8" style="padding-right:0px;">
+                                        <input data-bind="value:id" class="form-control" placeholder="请输入赠送的商品编号" />
+                                    </div>
+                                    <div class="col-sm-4" style="padding-left:0px;">
+                                        <div class="input-group">
+                                            <select data-bind="value:quantity" class="form-control" style="height:34px;">
+                                                <option value="1">1件</option>
+                                                <option value="2">2件</option>
+                                                <option value="3">3件</option>
+                                                <option value="4">4件</option>
+                                                <option value="5">5件</option>
+                                            </select>
+                                            <div data-bind="click:$parent.addGivenProduct, visible:ko.unwrap($index) == 0" class="input-group-addon">
+                                                <i class="icon-plus"></i>
+                                            </div>
+                                            <div data-bind="click:$parent.removeGivenProduct, visible:ko.unwrap($index) > 0" class="input-group-addon">
+                                                <i class="icon-minus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- 满赠窗口 结束-->
+    <!-- 满减窗口 开始-->
+    <form data-bind="with:content" name="dlg_amountReduce" class="modal fade">
+        <div data-bind="with:amountReduceRule" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div data-bind="visible:ko.unwrap($parent.method)=='Count'" class="form-group">
+                            <label class="control-label col-sm-2">*购买数量</label>
+                            <div class="col-sm-10">
+                                <select data-bind="value: buyCount" class="form-control" autofocus>
+                                    <option value="1">任意1件</option>
+                                    <option value="2">任意2件</option>
+                                    <option value="3">任意3件</option>
+                                    <option value="4">任意4件</option>
+                                    <option value="5">任意5件</option>
+                                    <option value="6">任意6件</option>
+                                    <option value="7">任意7件</option>
+                                    <option value="8">任意8件</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div data-bind="visible:ko.unwrap($parent.method)=='Amount'" class="form-group">
+                            <label class="control-label col-sm-2">*消费金额</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <input data-bind="value:buyAmount" class="form-control" placeholder="请输入消费金额" />
+                                    <div class="input-group-addon">元</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">*减免金额</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <input data-bind="value:reduceAmount" class="form-control" placeholder="请输入减免金额" />
+                                    <div class="input-group-addon">元</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- 满减窗口 结束 -->
+    <!-- 满折窗口 开始 -->
+    <form data-bind="with: content" name="dlg_amountDiscount" class="modal fade">
+        <div data-bind="with:amountDiscountRule" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div data-bind="visible:ko.unwrap($parent.method)=='Count'" class="form-group">
+                            <label class="control-label col-sm-2">*购买数量</label>
+                            <div class="col-sm-10">
+                                <select data-bind="value: buyCount" class="form-control" autofocus>
+                                    <option value="1">任意1件</option>
+                                    <option value="2">任意2件</option>
+                                    <option value="3">任意3件</option>
+                                    <option value="4">任意4件</option>
+                                    <option value="5">任意5件</option>
+                                    <option value="6">任意6件</option>
+                                    <option value="7">任意7件</option>
+                                    <option value="8">任意8件</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div data-bind="visible:ko.unwrap($parent.method)=='Amount'" class="form-group">
+                            <label class="control-label col-sm-2">*消费金额</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <input data-bind="value:buyAmount" class="form-control" placeholder="请输入消费金额" />
+                                    <div class="input-group-addon">元</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">*打折</label>
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    <div class="col-xs-6" style="padding-right:0px;">
+                                        <select data-bind="value:pricePercentMain" class="form-control">
+                                            <option value="9">9</option>
+                                            <option value="8">8</option>
+                                            <option value="7">7</option>
+                                            <option value="6">6</option>
+                                            <option value="5">5</option>
+                                            <option value="4">4</option>
+                                            <option value="3">3</option>
+                                            <option value="2">2</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6" style="padding-left:0px;">
+                                        <div class="input-group">
+                                            <select data-bind="value:pricePercentMinor" class="form-control">
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                            </select>
+                                            <div class="input-group-addon">
+                                                折
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- 满折窗口 结束 -->
+    <form data-bind="with:range.product" name="dlg_product" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">
+                                *产品编号
+                            </label>
+                            <div class="col-sm-10">
+                                <input data-bind="value:id" class="form-control" placeholder="请输入产品编号" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <label class="radio-inline">
+                                    <input data-bind="checked:collectionType,attr:{name:'productType'+ ($index())}" type="radio" value="Include">包含
+                                </label>
+                                <label class="radio-inline">
+                                    <input data-bind="checked:collectionType,attr:{name:'productType'+ ($index())}" type="radio" value="Exclude">排除
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form data-bind="with:range" name="dlg_brand" class="modal fade">
+        <div data-bind="with:brand" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">
+                                *品牌
+                            </label>
+                            <div class="col-sm-10">
+                                <select data-bind="options:$root.brands,optionsText:'Name',optionsValue:'Id',value:id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <label class="radio-inline">
+                                    <input data-bind="checked:collectionType,attr:{name:'brandType'+ ($index())}" type="radio" value="Include">包含
+                                </label>
+                                <label class="radio-inline">
+                                    <input data-bind="checked:collectionType,attr:{name:'brandType'+ ($index())}" type="radio" value="Exclude">排除
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form data-bind="with:range" name="dlg_category" class="modal fade">
+        <div data-bind="with:category" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">
+                                *类别
+                            </label>
+                            <div class="col-sm-10">
+                                <select data-bind="options:$root.categories,optionsText:'Name',optionsValue:'Id',value:id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <label class="radio-inline">
+                                    <input data-bind="checked:collectionType,attr:{name:'categoryType'+ ($index())}" type="radio" value="Include">包含
+                                </label>
+                                <label class="radio-inline">
+                                    <input data-bind="checked:collectionType,attr:{name:'categoryType'+ ($index())}" type="radio" value="Exclude">排除
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button name="btnOK" data-bind="" type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+
+</div>
+<hr />
+<!-- /ko -->

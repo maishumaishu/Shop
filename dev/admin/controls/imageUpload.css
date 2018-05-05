@@ -1,0 +1,7 @@
+.image-upload .item {
+  border: 1px solid #cccccc;
+  text-align: center;
+}
+.image-upload input[type="file"] {
+  opacity: 0;
+}

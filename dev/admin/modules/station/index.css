@@ -1,0 +1,13 @@
+.station-index .well {
+  padding-bottom: 12px;
+}
+.station-index .number {
+  font-size: 24px;
+}
+.station-index .summary {
+  font-size: 14px;
+}
+.station-index h4 {
+  font-size: 16px;
+  margin-bottom: 30px;
+}
