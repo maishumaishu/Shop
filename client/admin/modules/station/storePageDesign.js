@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "components/mobilePageDesigner", "admin/services/station", "user/services/stationService"], function (require, exports, mobilePageDesigner_1, station_1, stationService_1) {
+define(["require", "exports", "components/mobilePageDesigner", "admin/services/station", "user/services/stationService", "share/common", "components/common"], function (require, exports, mobilePageDesigner_1, station_1, stationService_1, common_1, common_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function default_1(page) {
@@ -27,6 +27,27 @@ define(["require", "exports", "components/mobilePageDesigner", "admin/services/s
                 showMenuSwitch: true,
                 showComponentPanel
             };
+            if (storePage == 'menu') {
+                let menuControl = pageData.controls.filter(o => o.controlName == storePage)[0];
+                console.assert(menuControl != null);
+                define('components/menu_design_body/control', ["require", "exports"], function (require, exports) {
+                    exports.default = class MenuBody extends common_2.Control {
+                        _render(h) {
+                            let msg = h("div", null,
+                                h("div", null, "\u70B9\u51FB\u53F3\u8FB9\u64CD\u4F5C\u9762\u677F\u7684"),
+                                h("b", null, "\"\u70B9\u51FB\u6DFB\u52A0\u83DC\u5355\u9879\""),
+                                h("div", null, "\u6309\u94AE\u53EF\u4EE5\u6DFB\u52A0\u83DC\u5355\u9879"));
+                            return h("h4", { style: { padding: "180px 40px 0px 40px", textAlign: 'center', lineHeight: '180%' } }, msg);
+                        }
+                        get hasEditor() {
+                            return false;
+                        }
+                    };
+                });
+                pageData = {
+                    controls: [{ controlName: 'menu_design_body', controlId: common_1.guid(), position: 'view' }]
+                };
+            }
             ReactDOM.render(h(mobilePageDesigner_1.MobilePageDesigner, Object.assign({}, props)), page.element);
         });
     }

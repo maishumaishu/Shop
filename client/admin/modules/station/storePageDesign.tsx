@@ -1,7 +1,8 @@
 import { MobilePageDesigner, Props } from 'components/mobilePageDesigner';
 import { StationService as AdminStation } from 'admin/services/station';
 import { StationService as UserStation } from 'user/services/stationService';
-import { AppError } from 'share/common'
+import { AppError, guid } from 'share/common'
+import { Control } from 'components/common';
 export default async function (page: chitu.Page) {
 
     let arr = page.name.split('_');
@@ -15,7 +16,7 @@ export default async function (page: chitu.Page) {
         throw new Error(`Store page ${storePage} is not exists.`);
 
     let showComponentPanel = storePage == 'home';
-    let pageData = await func.apply(userStation.pages);
+    let pageData: PageData = await func.apply(userStation.pages);
     let props: Props = {
         pageData,
         pageDatas: userStation.pages,
@@ -23,5 +24,35 @@ export default async function (page: chitu.Page) {
         showMenuSwitch: true,
         showComponentPanel
     }
+
+    if (storePage == 'menu') {
+        let menuControl = pageData.controls.filter(o => o.controlName == storePage)[0];
+        console.assert(menuControl != null);
+        define('components/menu_design_body/control', ["require", "exports"], function (require, exports) {
+            exports.default = class MenuBody extends Control<any, any> {
+                persistentMembers: string[];
+                _render(h: any): JSX.Element | JSX.Element[] {
+                    let msg = <div>
+                        <div>点击右边操作面板的</div>
+                        <b>"点击添加菜单项"</b>
+                        <div>按钮可以添加菜单项</div>
+                    </div>;
+                    return <h4 style={{ padding: "180px 40px 0px 40px", textAlign: 'center', lineHeight: '180%' }}>
+                        {msg}
+                    </h4>
+                }
+                get hasEditor() {
+                    return false;
+                }
+            }
+        })
+
+        pageData = {
+            controls: [{ controlName: 'menu_design_body', controlId: guid(), position: 'view' }]
+        }
+    }
+
+
+
     ReactDOM.render(<MobilePageDesigner {...props} />, page.element);
 }

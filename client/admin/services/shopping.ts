@@ -28,7 +28,7 @@ export class ShoppingService extends Service {
         let items = await this.getByJson<Product[]>(url, { ids: productIds });//.then(items => {
         let dic: { [key: string]: Product } = {};
         items.filter(o => o != null).forEach(o => dic[o.Id] = o);
-        let products = productIds.map(id => dic[id]);
+        let products = productIds.map(id => dic[id]).filter(o => o != null);
         return products;
     }
     deleteProduct(id: string) {

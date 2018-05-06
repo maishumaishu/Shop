@@ -11,43 +11,33 @@ export class PageDatas {
     private defaultPages = {
         member: <PageData>{
             name: '*member',
-            view: { controls: [{ controlId: guid(), controlName: 'member', selected: true }] }
+            controls: [{ controlId: guid(), controlName: 'member', selected: true }]
         },
         menu: <PageData>{
             name: '*menu',
-            footer: { controls: [{ controlId: guid(), controlName: 'menu', selected: true }] }
+            controls: [{ controlId: guid(), controlName: 'menu', selected: true }]
         },
         style: <PageData>{
             name: '*style',
-            footer: { controls: [{ controlId: guid(), controlName: 'style', selected: true }] }
+            controls: [{ controlId: guid(), controlName: 'style', selected: true }]
         },
         categories: <PageData>{
             name: '*categories',
-            view: { controls: [{ controlId: guid(), controlName: 'categories', selected: true }] }
+            controls: [{ controlId: guid(), controlName: 'categories', selected: true }]
         },
         home: <PageData>{
             name: '*home',
-            view: { controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }] }
+            controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }]
         },
         shoppingCart: <PageData>{
             name: '*shoppingCart',
             showMenu: true,
             className: 'shopping-shoppingCart',
-            header: {
-                controls: [
-                    { controlId: guid(), controlName: 'shoppingCart:Header' }
-                ]
-            },
-            view: {
-                controls: [
-                    { controlId: guid(), controlName: 'shoppingCart' }
-                ]
-            },
-            footer: {
-                controls: [
-                    { controlId: guid(), controlName: 'shoppingCart:Footer' }
-                ]
-            }
+            controls: [
+                { controlId: guid(), controlName: 'shoppingCart:Header', position: 'header' },
+                { controlId: guid(), controlName: 'shoppingCart', position: 'view' },
+                { controlId: guid(), controlName: 'shoppingCart:Footer', position: 'footer' }
+            ]
         }
     };
 
@@ -67,6 +57,8 @@ export class PageDatas {
             }
             //===========================================
         }
+
+        pageData = await fillPageData(pageData);
         return pageData;
     }
 
@@ -128,17 +120,53 @@ async function fillPageData(pageData: PageData): Promise<PageData> {
     if (pageData == null)
         return null;
 
-    if (pageData.view == null && pageData['controls'] != null) {
-        pageData.view = { controls: pageData['controls'] };
-    }
-    else if (pageData.view == null && pageData['views'] != null) {
-        pageData.view = pageData['views'][0] || {};
+    // if (pageData.view == null && pageData['controls'] != null) {
+    //     pageData.view = { controls: pageData['controls'] };
+    // }
+    // else if (pageData.view == null && pageData['views'] != null) {
+    //     pageData.view = pageData['views'][0] || {};
+    // }
+
+    // pageData.footer = pageData.footer || { controls: [] };
+    // pageData.footer.controls = pageData.footer.controls || [];
+    // pageData.header = pageData.header || { controls: [] };
+    // pageData.header.controls = pageData.header.controls || [];
+
+    let controls = new Array<ControlData>();
+    let obj: any = pageData;
+
+    if (obj.views) {
+        obj.view = obj.views[0];
+        delete obj.views;
     }
 
-    pageData.footer = pageData.footer || { controls: [] };
-    pageData.footer.controls = pageData.footer.controls || [];
-    pageData.header = pageData.header || { controls: [] };
-    pageData.header.controls = pageData.header.controls || [];
+    if (obj.header != null && obj.header.controls != null) {
+        (obj.header.controls as Array<ControlData>).forEach(o => {
+            o.position = 'header';
+            controls.push(o);
+        })
+        delete obj.header;
+    }
+    if (obj.footer != null && obj.footer.controls != null) {
+        (obj.footer.controls as Array<ControlData>).forEach(o => {
+            o.position = 'footer';
+            controls.push(o);
+        })
+        delete obj.footer;
+    }
+    if (obj.view != null && obj.view.controls != null) {
+        (obj.view.controls as Array<ControlData>).forEach(o => {
+            o.position = 'view';
+            controls.push(o);
+        })
+        delete obj.view
+    }
+
+    if (pageData.controls == null)
+        pageData.controls = controls;
+    else
+        pageData.controls.push(...controls);
+
 
     return pageData;
 }
@@ -209,45 +237,45 @@ export class StationService extends Service {
         });
     }
 
-    private translatePageData(pageData: PageData): PageData {
-        if (pageData.view == null && pageData['controls'] != null) {
-            pageData.view = { controls: pageData['controls'] };
-        }
+    // private translatePageData(pageData: PageData): PageData {
+    //     if (pageData.view == null && pageData['controls'] != null) {
+    //         pageData.view = { controls: pageData['controls'] };
+    //     }
 
-        pageData.view = pageData.view || { controls: [] };
+    //     pageData.view = pageData.view || { controls: [] };
 
-        pageData.footer = pageData.footer || { controls: [] };
-        pageData.header = pageData.header || { controls: [] };
-        return pageData;
-    }
+    //     pageData.footer = pageData.footer || { controls: [] };
+    //     pageData.header = pageData.header || { controls: [] };
+    //     return pageData;
+    // }
 
-    async fullPage(page: () => Promise<PageData>) {
-        let result = await Promise.all([page.bind(this)(), this.pages.style(), this.pages.menu()]);
-        let pageData = result[0] as PageData;
-        let stylePageData = result[1];
-        let menuPageData = result[2];
+    // async fullPage(page: () => Promise<PageData>) {
+    //     let result = await Promise.all([page.bind(this)(), this.pages.style(), this.pages.menu()]);
+    //     let pageData = result[0] as PageData;
+    //     let stylePageData = result[1];
+    //     let menuPageData = result[2];
 
-        pageData.footer = pageData.footer || {} as any;
-        pageData.footer.controls = pageData.footer.controls || [];
+    //     pageData.footer = pageData.footer || {} as any;
+    //     pageData.footer.controls = pageData.footer.controls || [];
 
-        // let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
-        // if (!existsStyleControl) {
-        //     // station.stylePage().then(stylePageData => {
-        //     let styleControl = stylePageData.footer.controls[0];
-        //     console.assert(styleControl != null && styleControl.controlName == 'style');
-        //     pageData.footer.controls.push(styleControl);
-        //     // })/home/maishu/projects/shop-cloud/trunk/Assemblies/packages/Microsoft.AspNet.WebApi.Core.5.2.3/lib/net45/System.Web.Http.dll
-        // }
+    //     // let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
+    //     // if (!existsStyleControl) {
+    //     //     // station.stylePage().then(stylePageData => {
+    //     //     let styleControl = stylePageData.footer.controls[0];
+    //     //     console.assert(styleControl != null && styleControl.controlName == 'style');
+    //     //     pageData.footer.controls.push(styleControl);
+    //     //     // })/home/maishu/projects/shop-cloud/trunk/Assemblies/packages/Microsoft.AspNet.WebApi.Core.5.2.3/lib/net45/System.Web.Http.dll
+    //     // }
 
-        let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
-        if (!existsMenuControl && pageData.showMenu) {
-            let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
-            console.assert(menuControlData != null);
-            pageData.footer.controls.push(menuControlData);
-        }
+    //     let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
+    //     if (!existsMenuControl && pageData.showMenu) {
+    //         let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+    //         console.assert(menuControlData != null);
+    //         pageData.footer.controls.push(menuControlData);
+    //     }
 
-        return pageData;
-    }
+    //     return pageData;
+    // }
 
     store() {
         let url = this.url('Store/Get');

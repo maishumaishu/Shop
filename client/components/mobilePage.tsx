@@ -157,10 +157,11 @@ export class MobilePage extends React.Component<Props, State>{
      * @param pageData 页面的数据，用于描述一个页面
      */
     renderHeader(pageData: PageData): JSX.Element {
-        if (!pageData.header)
-            return null;
+        // if (!pageData.header)
+        //     return null;
 
-        let headerControls = (pageData.header || { controls: [] }).controls || [];
+        let headerControls = pageData.controls.filter(o => o.position == 'header');
+        //(pageData.header || { controls: [] }).controls || [];
         this.headerControlsCount = headerControls.length;
         return (
             <header key="header" className="page-header"
@@ -175,7 +176,7 @@ export class MobilePage extends React.Component<Props, State>{
      * @param pageData 页面的数据，用于描述一个页面
      */
     renderFooter(pageData: PageData): JSX.Element {
-        let footerControls = (pageData.footer || { controls: [] }).controls || [];
+        let footerControls = pageData.controls.filter(o => o.position == 'footer'); //(pageData.footer || { controls: [] }).controls || [];
         return (
             <footer key="footer" className="page-footer"
                 ref={(e: HTMLElement) => this.footerElement = e || this.footerElement}>
@@ -200,7 +201,7 @@ export class MobilePage extends React.Component<Props, State>{
     }
 
     renderRuntimeViews(pageData: PageData) {
-        let view = pageData.view || { controls: [] };
+        let viewControls = pageData.controls.filter(o => o.position == 'view'); //pageData.view || { controls: [] };
         return <section key={`view`} className="page-view"
             ref={(e: HTMLElement) => {
                 if (!e) return;
@@ -218,7 +219,7 @@ export class MobilePage extends React.Component<Props, State>{
 
                 }, 500);
             }}>
-            {this.renderControls(view.controls)}
+            {this.renderControls(viewControls)}
         </section>
     }
 
@@ -258,14 +259,14 @@ export class MobilePage extends React.Component<Props, State>{
                     console.assert(controlName != null);
                     ui.helper.remove();
                     if (target == 'footer')
-                        pageData.footer.controls.push({ controlId: guid(), controlName, data: {} });
+                        pageData.controls.push({ controlId: guid(), controlName, data: {}, position: 'footer' });
                     else if (target == 'header')
-                        pageData.header.controls.push({ controlId: guid(), controlName, data: {} });
+                        pageData.controls.push({ controlId: guid(), controlName, data: {}, position: 'header' });
                     else {
                         let children = element.children;
                         debugger;
                         console.assert(newControlIndex != null);
-                        pageData.view.controls.splice(newControlIndex, 0, { controlId: guid(), controlName, data: {} });
+                        pageData.controls.splice(newControlIndex, 0, { controlId: guid(), controlName, data: {}, position: 'view' });
                         newControlIndex = null;
                     }
 
@@ -278,20 +279,22 @@ export class MobilePage extends React.Component<Props, State>{
                     // 排序 view controls
                     for (let i = 0; i < element.children.length; i++) {
                         let child = element.children[i] as HTMLElement;
-                        let control = pageData.view.controls.filter(o => o.controlId == child.id)[0];
+                        let control = pageData.controls.filter(o => o.controlId == child.id && o.position == 'view')[0];
                         console.assert(control != null);
                         view_controls[i] = control;
                     }
                     //===================================================
                     for (let i = 0; i < this.footerElement.children.length; i++) {
                         let child = this.footerElement.children[i] as HTMLElement;
-                        let control = pageData.footer.controls.filter(o => o.controlId == child.id)[0];
+                        let control = pageData.controls.filter(o => o.controlId == child.id && o.position == 'footer')[0];
                         footer_controls[i] = control;
                     }
                     //===================================================
 
-                    pageData.view.controls = view_controls;
-                    pageData.footer.controls = footer_controls;
+                    // pageData.view.controls = view_controls;
+                    // pageData.footer.controls = footer_controls;
+                    let header_controls = pageData.controls.filter(o => o.position == 'header');
+                    pageData.controls = [...header_controls, ...footer_controls, ...view_controls];
                 }
             })
         }
@@ -315,7 +318,7 @@ export class MobilePage extends React.Component<Props, State>{
                 }, 500);
             }}
         >
-            {this.renderControls(pageData.view.controls)}
+            {this.renderControls(pageData.controls.filter(o => o.position == 'view'))}
         </section>
     }
 
@@ -323,15 +326,15 @@ export class MobilePage extends React.Component<Props, State>{
         let children = React.Children.toArray(this.props.children) || [];
         let pageData = this.state.pageData;
 
-        if (pageData.header && pageData.header.controls)
-            this.headerControlsCount = pageData.header.controls.length;
+        // if (pageData.header && pageData.header.controls)
+        //     this.headerControlsCount = pageData.header.controls.length;
 
-        if (pageData.footer && pageData.footer.controls)
-            this.footerControlsCount = pageData.footer.controls.length;
+        // if (pageData.footer && pageData.footer.controls)
+        //     this.footerControlsCount = pageData.footer.controls.length;
 
-        pageData.view = pageData.view || { controls: [] };
+        // pageData.view = pageData.view || { controls: [] };
         this.viewControlsCount = 0;
-        this.viewControlsCount = this.viewControlsCount + (pageData.view.controls || []).length;
+        this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
 
         var result = [
             this.renderHeader(pageData),

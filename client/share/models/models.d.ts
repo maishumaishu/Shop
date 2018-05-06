@@ -164,7 +164,8 @@ interface RegisterModel {
 
 interface ControlData {
     controlId: string, controlName: string, data?: any
-    selected?: boolean | 'disabled'
+    selected?: boolean | 'disabled',
+    position: 'header' | 'view' | 'footer'
 }
 
 interface PageData {
@@ -174,9 +175,10 @@ interface PageData {
     isDefault?: boolean,
     showMenu?: boolean,
     className?: string,
-    header?: { controls: ControlData[] },
-    footer?: { controls: ControlData[] },
-    view?: { controls: ControlData[] }
+    // header?: { controls: ControlData[] },
+    // footer?: { controls: ControlData[] },
+    // view?: { controls: ControlData[] }
+    controls: ControlData[]
 }
 
 interface News {

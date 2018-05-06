@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "user/services/stationService", "user/services/shoppingService", "user/services/service", "components/mobilePage"], function (require, exports, stationService_1, shoppingService_1, service_1, mobilePage_1) {
+define(["require", "exports", "user/services/stationService", "user/services/service", "components/mobilePage"], function (require, exports, stationService_1, service_1, mobilePage_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let dir = 'user/modules';
@@ -59,37 +59,37 @@ define(["require", "exports", "user/services/stationService", "user/services/sho
                 page.data.showBackButton = false;
                 pageData.showMenu = showMenu;
             }
-            pageData = yield station.fullPage(() => Promise.resolve(pageData));
+            // pageData = await station.fullPage(() => Promise.resolve(pageData));
             ReactDOM.render(h(mobilePage_1.MobilePage, { pageData: pageData, elementPage: page }), page.element);
         });
     }
     function home_index_action(page) {
         return __awaiter(this, void 0, void 0, function* () {
             let station = page.createService(stationService_1.StationService);
-            let pageData = yield station.fullPage(() => station.pages.home());
+            let pageData = yield station.pages.home(); // await station.fullPage(() => station.pages.home());
             ReactDOM.render(h(mobilePage_1.MobilePage, { pageData: pageData, elementPage: page }), page.element);
         });
     }
     function home_class_action(page) {
         return __awaiter(this, void 0, void 0, function* () {
             let station = page.createService(stationService_1.StationService);
-            let pageData = yield station.fullPage(() => station.pages.categories());
+            let pageData = yield station.pages.categories(); //await station.fullPage(() => station.pages.categories());
             ReactDOM.render(h(mobilePage_1.MobilePage, { pageData: pageData, elementPage: page }), page.element);
         });
     }
     function user_index_action(page) {
         return __awaiter(this, void 0, void 0, function* () {
             let station = page.createService(stationService_1.StationService);
-            let pageData = yield station.fullPage(() => station.pages.member());
+            let pageData = yield station.pages.member(); //await station.fullPage(() => station.pages.member());
             ReactDOM.render(h(mobilePage_1.MobilePage, { pageData: pageData, elementPage: page }), page.element);
         });
     }
     function home_product_action(page) {
         return __awaiter(this, void 0, void 0, function* () {
-            var shopping = page.createService(shoppingService_1.ShoppingService);
-            let product = yield shopping.product(page.data.id);
+            let station = page.createService(stationService_1.StationService);
+            // let product = await shopping.product(page.data.id);
             let mobilePage;
-            let pageData = yield createPageData(shopping, page.data.id);
+            let pageData = yield station.pages.pageDataById(page.data.id || page.data.pageId || page.data.productId);
             ReactDOM.render(h(mobilePage_1.MobilePage, { pageData: pageData, elementPage: page, ref: e => mobilePage = e || mobilePage }), page.element);
             // page.showing.add(async (sender: Page, args) => {
             //     sender.showLoading();
@@ -102,21 +102,21 @@ define(["require", "exports", "user/services/stationService", "user/services/sho
                 return __awaiter(this, void 0, void 0, function* () {
                     let product = yield shopping.product(productId);
                     let pageData = {
-                        header: {
-                            controls: [
-                                { controlId: service_1.guid(), controlName: 'product:Header' }
-                            ]
-                        },
-                        view: {
-                            controls: [
-                                { controlId: service_1.guid(), controlName: 'product', data: { product } }
-                            ]
-                        },
-                        footer: {
-                            controls: [
-                                { controlId: service_1.guid(), controlName: 'product:Footer', data: { product } }
-                            ]
-                        }
+                        // header: {
+                        controls: [
+                            { controlId: service_1.guid(), controlName: 'product:Header', position: 'header' },
+                            { controlId: service_1.guid(), controlName: 'product', data: { product }, position: 'view' },
+                            { controlId: service_1.guid(), controlName: 'product:Footer', data: { product }, position: 'footer' }
+                        ]
+                        // },
+                        // view: {
+                        //     controls: [
+                        //     ]
+                        // },
+                        // footer: {
+                        //     controls: [
+                        //     ]
+                        // }
                     };
                     return pageData;
                 });

@@ -1,4 +1,4 @@
-@import "../../user/content/common.less";
+@import "../style/variables.less";
 
 .shopping-shoppingCart {
     .shoppingCart();
@@ -20,7 +20,7 @@
         min-height: 80px;
         .icon-ok-sign, .icon-circle-blank {
             font-size: 20px;
-            color: #BF0705;
+            color: @brand-primary;
         }
         button {
             position: absolute;
@@ -32,12 +32,8 @@
         }
     }
 
-    .price();
-
     .settlement {
         
-        // bottom: @menu-height;
-        // position: absolute;
         width: 100%;
         height: @settlement-height;
         padding-top: 10px;

@@ -111,9 +111,10 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
          * @param pageData 页面的数据，用于描述一个页面
          */
         renderHeader(pageData) {
-            if (!pageData.header)
-                return null;
-            let headerControls = (pageData.header || { controls: [] }).controls || [];
+            // if (!pageData.header)
+            //     return null;
+            let headerControls = pageData.controls.filter(o => o.position == 'header');
+            //(pageData.header || { controls: [] }).controls || [];
             this.headerControlsCount = headerControls.length;
             return (h("header", { key: "header", className: "page-header", ref: (e) => this.headerElement = e || this.headerElement }, this.renderControls(headerControls)));
         }
@@ -122,7 +123,7 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
          * @param pageData 页面的数据，用于描述一个页面
          */
         renderFooter(pageData) {
-            let footerControls = (pageData.footer || { controls: [] }).controls || [];
+            let footerControls = pageData.controls.filter(o => o.position == 'footer'); //(pageData.footer || { controls: [] }).controls || [];
             return (h("footer", { key: "footer", className: "page-footer", ref: (e) => this.footerElement = e || this.footerElement }, this.renderControls(footerControls)));
         }
         /**
@@ -137,7 +138,7 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
             return this.renderRuntimeViews(pageData);
         }
         renderRuntimeViews(pageData) {
-            let view = pageData.view || { controls: [] };
+            let viewControls = pageData.controls.filter(o => o.position == 'view'); //pageData.view || { controls: [] };
             return h("section", { key: `view`, className: "page-view", ref: (e) => {
                     if (!e)
                         return;
@@ -152,7 +153,7 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                             e.style.paddingTop = `${height}px`;
                         }
                     }, 500);
-                } }, this.renderControls(view.controls));
+                } }, this.renderControls(viewControls));
         }
         setPageElementClassName(viewElement, pageData) {
             console.assert(viewElement != null);
@@ -185,14 +186,14 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                         console.assert(controlName != null);
                         ui.helper.remove();
                         if (target == 'footer')
-                            pageData.footer.controls.push({ controlId: common_2.guid(), controlName, data: {} });
+                            pageData.controls.push({ controlId: common_2.guid(), controlName, data: {}, position: 'footer' });
                         else if (target == 'header')
-                            pageData.header.controls.push({ controlId: common_2.guid(), controlName, data: {} });
+                            pageData.controls.push({ controlId: common_2.guid(), controlName, data: {}, position: 'header' });
                         else {
                             let children = element.children;
                             debugger;
                             console.assert(newControlIndex != null);
-                            pageData.view.controls.splice(newControlIndex, 0, { controlId: common_2.guid(), controlName, data: {} });
+                            pageData.controls.splice(newControlIndex, 0, { controlId: common_2.guid(), controlName, data: {}, position: 'view' });
                             newControlIndex = null;
                         }
                         this.setState(this.state);
@@ -204,19 +205,21 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                         // 排序 view controls
                         for (let i = 0; i < element.children.length; i++) {
                             let child = element.children[i];
-                            let control = pageData.view.controls.filter(o => o.controlId == child.id)[0];
+                            let control = pageData.controls.filter(o => o.controlId == child.id && o.position == 'view')[0];
                             console.assert(control != null);
                             view_controls[i] = control;
                         }
                         //===================================================
                         for (let i = 0; i < this.footerElement.children.length; i++) {
                             let child = this.footerElement.children[i];
-                            let control = pageData.footer.controls.filter(o => o.controlId == child.id)[0];
+                            let control = pageData.controls.filter(o => o.controlId == child.id && o.position == 'footer')[0];
                             footer_controls[i] = control;
                         }
                         //===================================================
-                        pageData.view.controls = view_controls;
-                        pageData.footer.controls = footer_controls;
+                        // pageData.view.controls = view_controls;
+                        // pageData.footer.controls = footer_controls;
+                        let header_controls = pageData.controls.filter(o => o.position == 'header');
+                        pageData.controls = [...header_controls, ...footer_controls, ...view_controls];
                     }
                 });
             };
@@ -235,18 +238,18 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                             e.style.paddingTop = `${height}px`;
                         }
                     }, 500);
-                } }, this.renderControls(pageData.view.controls));
+                } }, this.renderControls(pageData.controls.filter(o => o.position == 'view')));
         }
         render() {
             let children = React.Children.toArray(this.props.children) || [];
             let pageData = this.state.pageData;
-            if (pageData.header && pageData.header.controls)
-                this.headerControlsCount = pageData.header.controls.length;
-            if (pageData.footer && pageData.footer.controls)
-                this.footerControlsCount = pageData.footer.controls.length;
-            pageData.view = pageData.view || { controls: [] };
+            // if (pageData.header && pageData.header.controls)
+            //     this.headerControlsCount = pageData.header.controls.length;
+            // if (pageData.footer && pageData.footer.controls)
+            //     this.footerControlsCount = pageData.footer.controls.length;
+            // pageData.view = pageData.view || { controls: [] };
             this.viewControlsCount = 0;
-            this.viewControlsCount = this.viewControlsCount + (pageData.view.controls || []).length;
+            this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
             var result = [
                 this.renderHeader(pageData),
                 this.renderFooter(pageData),

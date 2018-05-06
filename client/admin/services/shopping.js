@@ -41,7 +41,7 @@ define(["require", "exports", "admin/services/service"], function (require, expo
                 let items = yield this.getByJson(url, { ids: productIds }); //.then(items => {
                 let dic = {};
                 items.filter(o => o != null).forEach(o => dic[o.Id] = o);
-                let products = productIds.map(id => dic[id]);
+                let products = productIds.map(id => dic[id]).filter(o => o != null);
                 return products;
             });
         }

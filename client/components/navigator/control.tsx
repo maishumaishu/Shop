@@ -103,15 +103,17 @@ export default class NavigatorControl extends Control<Props, State> {
         marginTop = marginTop || '0';
 
         return [
-            <div key="bar" className="scroller"
-                style={{ marginTop: `${marginTop}px`, marginBottom: `${marginBottom}px` }}
-                ref={(e: HTMLElement) => this.element = e || this.element}>
-                <ul>
-                    {items.map((o, i) =>
-                        <li key={i} className={`btn-link ${activeIndex == i ? 'active' : ''}`}
-                            ref={(e: HTMLButtonElement) => this.itemOnClick(e, o, i)} > {o.name}</li>
-                    )}
-                </ul>
+            <div key="bar" className="scroll-container"
+                style={{ marginTop: `${marginTop}px`, marginBottom: `${marginBottom}px` }}>
+                <div className="scroller"
+                    ref={(e: HTMLElement) => this.element = e || this.element}>
+                    <ul>
+                        {items.map((o, i) =>
+                            <li key={i} className={`btn-link ${activeIndex == i ? 'active' : ''}`}
+                                ref={(e: HTMLButtonElement) => this.itemOnClick(e, o, i)} > {o.name}</li>
+                        )}
+                    </ul>
+                </div>
             </div>,
             <div key="container" className="page-container"
                 ref={(e: HTMLElement) => this.container = e || this.container}>

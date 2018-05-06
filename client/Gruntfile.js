@@ -38,7 +38,9 @@ module.exports = function (grunt) {
                     livereload: 20454 //监听前面声明的端口  35729
                 },
                 files: [
-                    `admin/**/*`
+                    `admin/**/*.js`,
+                    `components/**/*.js`,
+                    `user/**/*.js`
                 ]
             }
         }

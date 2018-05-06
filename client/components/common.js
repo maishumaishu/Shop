@@ -1,4 +1,4 @@
-define(["require", "exports", "react", "share/common"], function (require, exports, React, common_1) {
+define(["require", "exports", "react", "share/common", "lessc"], function (require, exports, React, common_1, lessc) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.componentsDir = 'components';
@@ -60,7 +60,22 @@ define(["require", "exports", "react", "share/common"], function (require, expor
             var typeName = this.constructor.name;
             typeName = typeName.replace('Control', '');
             typeName = typeName[0].toLowerCase() + typeName.substr(1);
-            requirejs([`less!${exports.componentsDir}/${typeName}/control`]);
+            let path = `${exports.componentsDir}/${typeName}/control`;
+            let lessText = `@import "../${path}";`;
+            // let styleControl = this.mobilePage.props.pageData.filter(o => o.controlName == 'style')[0];
+            // if (styleControl != null) {
+            // }
+            let parser = new lessc.Parser(window['less']);
+            parser.parse(lessText, (err, tree) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                let style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = tree.toCSS();
+                document.head.appendChild(style);
+            });
         }
         subscribe(item, callback) {
             let func = item.add(callback);

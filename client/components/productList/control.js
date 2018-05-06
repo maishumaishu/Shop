@@ -75,6 +75,8 @@ define(["require", "exports", "components/common", "user/services/service", "use
                         let data = { name, price, image, stock, offShelve, id };
                         html = html + template.render(productTemplate, data);
                     });
+                    //====================================
+                    // 设置延时为了让页面完全渲染完成
                     setTimeout(() => {
                         e.innerHTML = html;
                         let q = e.querySelectorAll('[product-id]');
@@ -85,11 +87,11 @@ define(["require", "exports", "components/common", "user/services/service", "use
                                 if (!productId) {
                                     ui.alert({ title: '错误', message: 'Product id is emtpy.' });
                                 }
-                                debugger;
-                                site_1.app.redirect(siteMap_1.default.nodes.home_product, { id: productId });
+                                site_1.app.redirect(siteMap_1.default.nodes.home_product, { pageId: productId });
                             });
                         }
                     }, 100);
+                    //====================================
                 }) }));
         }
         productTemplate() {

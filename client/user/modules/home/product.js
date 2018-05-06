@@ -30,21 +30,21 @@ define(["require", "exports", "user/services/service", "user/services/shoppingSe
         return __awaiter(this, void 0, void 0, function* () {
             let product = yield shopping.product(productId);
             let pageData = {
-                header: {
-                    controls: [
-                        { controlId: service_1.guid(), controlName: 'product:Header' }
-                    ]
-                },
-                view: {
-                    controls: [
-                        { controlId: service_1.guid(), controlName: 'product', data: { product } }
-                    ]
-                },
-                footer: {
-                    controls: [
-                        { controlId: service_1.guid(), controlName: 'product:Footer', data: { product } }
-                    ]
-                }
+                // header: {
+                controls: [
+                    { controlId: service_1.guid(), controlName: 'product:Header', position: 'header' },
+                    // ]
+                    // },
+                    // view: {
+                    // controls: [
+                    { controlId: service_1.guid(), controlName: 'product', data: { product }, position: 'view' },
+                    //     ]
+                    // },
+                    // footer: {
+                    //     controls: [
+                    { controlId: service_1.guid(), controlName: 'product:Footer', data: { product }, position: 'footer' }
+                ]
+                // }
             };
             return pageData;
         });

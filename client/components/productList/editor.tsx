@@ -7,7 +7,7 @@ import { ProductSelectDialog } from 'admin/controls/productSelectDialog';
 import 'ace_editor/ace';
 
 export interface EditorState extends ControlState {
-
+    showProductTemplate: boolean,
 }
 
 const shopping = new ShoppingService();
@@ -23,7 +23,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
     constructor(props) {
         super(props);
         this.state = {
-
+            showProductTemplate: false
         } as EditorState;
 
         this.loadEditorCSS();
@@ -214,6 +214,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
         let productSourceType = this.state.productSourceType;
         let productIds = this.state.productIds || [];
         let listType = this.state.listType;
+        let showProductTemplate = this.state.showProductTemplate;
         let ctrl = this.props.control as ProductListControl;
         let tmp = this.state.productTemplate || ctrl.productTemplate();
         return (
@@ -335,33 +336,42 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                 <div className="form-group">
                     <label>
                         商品模板
-                        <button type="button" className="btn-link" style={{ color: 'unset' }}>
-                            <i className="icon-plus" />
+                        <button type="button" className="btn-link" style={{ color: 'unset' }}
+                            title="点击显示商品模板"
+                            onClick={() => {
+                                this.state.showProductTemplate = !showProductTemplate;
+                                this.setState(this.state);
+                            }}>
+                            {showProductTemplate ? <i className="icon-minus" /> : <i className="icon-plus" />}
                         </button>
                     </label>
-                    <div className="pull-right">
-
-                    </div>
+                    {!showProductTemplate ?
+                        <span>
+                            通过修改商品模板，可以使得商品的显示更为个性化
+                        </span> : null}
                 </div>
-                <pre style={{ height: 260 }}
-                    ref={(e: HTMLElement) => {
-                        setTimeout(() => {
-                            this.loadTextEditor(e)
-                        })
-                    }}>
-                    {/* <textarea className="form-control" style={{ width: 'calc(100% - 100px)', height: 200 }}
+                {showProductTemplate ? [
+                    <pre key={10} style={{ height: 260 }}
+                        ref={(e: HTMLElement) => {
+                            setTimeout(() => {
+                                this.loadTextEditor(e)
+                            })
+                        }}>
+                        {/* <textarea className="form-control" style={{ width: 'calc(100% - 100px)', height: 200 }}
                             ref={(e: HTMLTextAreaElement) => {
                                 if (!e) return;
                                 this.templateInput = e;
                                 this.templateInput.value = tmp;
                             }} /> */}
-                </pre>
-                <div className="form-group">
-                    <button className="btn btn-primary btn-sm" type="button"
-                        onClick={() => this.updateControlTemplate()}>应用当前模板</button>
-                    <button className="btn btn-default btn-sm" type="button"
-                        onClick={() => this.recoverControlTemplate()}>还原回默认模板</button>
-                </div>
+                    </pre>,
+                    <div key={20} className="form-group">
+                        <button className="btn btn-primary btn-sm" type="button"
+                            onClick={() => this.updateControlTemplate()}>应用当前模板</button>
+                        <button className="btn btn-default btn-sm" type="button"
+                            onClick={() => this.recoverControlTemplate()}>还原回默认模板</button>
+                    </div>
+                ] : null}
+
             </form>
         );
     }

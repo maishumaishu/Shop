@@ -11,18 +11,18 @@ export default async function (page: chitu.Page) {
     let stylePageData = result[1];
     let menuPageData = result[2];
 
-    let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
+    let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
     if (!existsStyleControl) {
-        let styleControl = stylePageData.footer.controls[0];
+        let styleControl = stylePageData.controls[0];
         console.assert(styleControl != null && styleControl.controlName == 'style');
-        pageData.footer.controls.push(styleControl);
+        pageData.controls.push(styleControl);
     }
 
-    let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
+    let existsMenuControl = pageData.controls.filter(o => o.controlName == 'menu').length > 0;
     if (!existsMenuControl && pageData.showMenu) {
-        let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+        let menuControlData = menuPageData.controls.filter(o => o.controlName == 'menu')[0];
         console.assert(menuControlData != null);
-        pageData.footer.controls.push(menuControlData);
+        pageData.controls.push(menuControlData);
     }
 
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);

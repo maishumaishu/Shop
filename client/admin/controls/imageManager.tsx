@@ -154,6 +154,7 @@ class ImageManager extends React.Component<Props, State> {
 
 let element = document.createElement('div');
 element.className = 'image-manager modal fade';
+element.style.zIndex = '1000';
 document.body.appendChild(element);
 
 let instance: ImageManager = ReactDOM.render(<ImageManager element={element} />, element);

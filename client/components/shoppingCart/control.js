@@ -183,6 +183,9 @@ define(["require", "exports", "components/common", "user/services/service", "use
         get persistentMembers() {
             return [];
         }
+        get hasEditor() {
+            return false;
+        }
         // private refreshItems() {
         //     shoppingCart.calculateShoppingCartItems().then((items) => {
         //         this.state.items = items;

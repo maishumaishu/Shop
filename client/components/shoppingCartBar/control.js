@@ -1,10 +1,10 @@
 define(["require", "exports", "components/common", "../../user/site", "../../user/siteMap"], function (require, exports, common_1, site_1, siteMap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    requirejs([`css!${common_1.componentsDir}/shoppingCartBar/control`]);
     class ShoppingCartBarControl extends common_1.Control {
         constructor(props) {
             super(props);
+            this.loadControlCSS();
         }
         get persistentMembers() {
             return null;

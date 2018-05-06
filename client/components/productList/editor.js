@@ -14,7 +14,9 @@ define(["require", "exports", "components/editor", "admin/services/shopping", "a
     class ProductListEditor extends editor_1.Editor {
         constructor(props) {
             super(props);
-            this.state = {};
+            this.state = {
+                showProductTemplate: false
+            };
             this.loadEditorCSS();
         }
         setSourceTypeInput(e) {
@@ -172,6 +174,7 @@ define(["require", "exports", "components/editor", "admin/services/shopping", "a
             let productSourceType = this.state.productSourceType;
             let productIds = this.state.productIds || [];
             let listType = this.state.listType;
+            let showProductTemplate = this.state.showProductTemplate;
             let ctrl = this.props.control;
             let tmp = this.state.productTemplate || ctrl.productTemplate();
             return (h("form", { className: "product-list-editor" },
@@ -245,17 +248,22 @@ define(["require", "exports", "components/editor", "admin/services/shopping", "a
                 h("div", { className: "form-group" },
                     h("label", null,
                         "\u5546\u54C1\u6A21\u677F",
-                        h("button", { type: "button", className: "btn-link", style: { color: 'unset' } },
-                            h("i", { className: "icon-plus" }))),
-                    h("div", { className: "pull-right" })),
-                h("pre", { style: { height: 260 }, ref: (e) => {
-                        setTimeout(() => {
-                            this.loadTextEditor(e);
-                        });
-                    } }),
-                h("div", { className: "form-group" },
-                    h("button", { className: "btn btn-primary btn-sm", type: "button", onClick: () => this.updateControlTemplate() }, "\u5E94\u7528\u5F53\u524D\u6A21\u677F"),
-                    h("button", { className: "btn btn-default btn-sm", type: "button", onClick: () => this.recoverControlTemplate() }, "\u8FD8\u539F\u56DE\u9ED8\u8BA4\u6A21\u677F"))));
+                        h("button", { type: "button", className: "btn-link", style: { color: 'unset' }, title: "点击显示商品模板", onClick: () => {
+                                this.state.showProductTemplate = !showProductTemplate;
+                                this.setState(this.state);
+                            } }, showProductTemplate ? h("i", { className: "icon-minus" }) : h("i", { className: "icon-plus" }))),
+                    !showProductTemplate ?
+                        h("span", null, "\u901A\u8FC7\u4FEE\u6539\u5546\u54C1\u6A21\u677F\uFF0C\u53EF\u4EE5\u4F7F\u5F97\u5546\u54C1\u7684\u663E\u793A\u66F4\u4E3A\u4E2A\u6027\u5316") : null),
+                showProductTemplate ? [
+                    h("pre", { key: 10, style: { height: 260 }, ref: (e) => {
+                            setTimeout(() => {
+                                this.loadTextEditor(e);
+                            });
+                        } }),
+                    h("div", { key: 20, className: "form-group" },
+                        h("button", { className: "btn btn-primary btn-sm", type: "button", onClick: () => this.updateControlTemplate() }, "\u5E94\u7528\u5F53\u524D\u6A21\u677F"),
+                        h("button", { className: "btn btn-default btn-sm", type: "button", onClick: () => this.recoverControlTemplate() }, "\u8FD8\u539F\u56DE\u9ED8\u8BA4\u6A21\u677F"))
+                ] : null));
         }
     }
     exports.default = ProductListEditor;

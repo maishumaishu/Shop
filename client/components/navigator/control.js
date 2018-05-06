@@ -69,10 +69,11 @@ define(["require", "exports", "components/common", "iscroll"], function (require
             marginBottom = marginBottom || '0';
             marginTop = marginTop || '0';
             return [
-                h("div", { key: "bar", className: "scroller", style: { marginTop: `${marginTop}px`, marginBottom: `${marginBottom}px` }, ref: (e) => this.element = e || this.element },
-                    h("ul", null, items.map((o, i) => h("li", { key: i, className: `btn-link ${activeIndex == i ? 'active' : ''}`, ref: (e) => this.itemOnClick(e, o, i) },
-                        " ",
-                        o.name)))),
+                h("div", { key: "bar", className: "scroll-container", style: { marginTop: `${marginTop}px`, marginBottom: `${marginBottom}px` } },
+                    h("div", { className: "scroller", ref: (e) => this.element = e || this.element },
+                        h("ul", null, items.map((o, i) => h("li", { key: i, className: `btn-link ${activeIndex == i ? 'active' : ''}`, ref: (e) => this.itemOnClick(e, o, i) },
+                            " ",
+                            o.name))))),
                 h("div", { key: "container", className: "page-container", ref: (e) => this.container = e || this.container })
             ];
         }

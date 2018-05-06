@@ -10,11 +10,11 @@ export interface State {
 
 }
 
-requirejs([`css!${componentsDir}/shoppingCartBar/control`]);
 
 export default class ShoppingCartBarControl extends Control<Props, State>{
     constructor(props) {
         super(props);
+        this.loadControlCSS();
     }
 
     get persistentMembers(): (keyof State)[] {

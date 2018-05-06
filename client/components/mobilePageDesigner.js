@@ -17,21 +17,21 @@ define(["require", "exports", "components/componentDefines", "components/virtual
             if (this.props.pageData == null)
                 throw new Error("Property of pageData cannt be null.");
             let pageData = JSON.parse(JSON.stringify(this.props.pageData));
-            if (!pageData.footer)
-                pageData.footer = { controls: [] };
-            console.assert(pageData.footer.controls != null, 'footer controls is null.');
+            // if (!pageData.footer)
+            //     pageData.footer = { controls: [] };
+            // console.assert(pageData.footer.controls != null, 'footer controls is null.');
             this.state = { editors: [], pageData };
-            let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
+            let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
             if (!existsStyleControl) {
                 this.props.pageDatas.style().then(stylePageData => {
-                    let styleControl = stylePageData.footer.controls[0];
+                    let styleControl = stylePageData.controls[0];
                     console.assert(styleControl != null && styleControl.controlName == 'style');
                     styleControl.selected = 'disabled';
-                    this.state.pageData.footer.controls.push(styleControl);
+                    this.state.pageData.controls.push(styleControl);
                     this.setState(this.state);
                 });
             }
-            let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
+            let existsMenuControl = pageData.controls.filter(o => o.controlName == 'menu').length > 0;
             if (!existsMenuControl && pageData.showMenu) {
                 this.loadMenu();
             }
@@ -40,16 +40,16 @@ define(["require", "exports", "components/componentDefines", "components/virtual
         loadMenu() {
             return __awaiter(this, void 0, void 0, function* () {
                 let menuPageData = yield this.props.pageDatas.menu();
-                let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
+                let menuControlData = menuPageData.controls.filter(o => o.controlName == 'menu')[0];
                 console.assert(menuControlData != null);
                 menuControlData.selected = 'disabled';
-                this.state.pageData.footer.controls.push(menuControlData);
+                this.state.pageData.controls.push(menuControlData);
                 this.setState(this.state);
             });
         }
         unloadMenu() {
-            var controls = this.state.pageData.footer.controls.filter(o => o.controlName != 'menu');
-            this.state.pageData.footer.controls = controls;
+            var controls = this.state.pageData.controls.filter(o => o.controlName != 'menu');
+            this.state.pageData.controls = controls;
             this.setState(this.state);
         }
         getChildContext() {
@@ -78,13 +78,15 @@ define(["require", "exports", "components/componentDefines", "components/virtual
                 }
                 let pageData = this.state.pageData;
                 pageData.name = this.nameInput.value;
-                setControlValues(this.mobilePage, pageData.view.controls);
-                if (pageData.header) {
-                    setControlValues(this.mobilePage, pageData.header.controls);
-                }
-                if (pageData.footer) {
-                    setControlValues(this.mobilePage, pageData.footer.controls);
-                }
+                // if (pageData.view && pageData.view.controls)
+                //     setControlValues(this.mobilePage, pageData.view.controls);
+                // if (pageData.header && pageData.header.controls) {
+                //     setControlValues(this.mobilePage, pageData.header.controls);
+                // }
+                // if (pageData.footer && pageData.footer.controls) {
+                //     setControlValues(this.mobilePage, pageData.footer.controls);
+                // }
+                setControlValues(this.mobilePage, pageData.controls);
                 /**
                  * 件页面上控件的值，写进 pageData
                  */
@@ -164,15 +166,16 @@ define(["require", "exports", "components/componentDefines", "components/virtual
         }
         removeControl(controlId) {
             let pageData = this.state.pageData;
-            if (pageData.header != null && pageData.header.controls) {
-                pageData.header.controls = pageData.header.controls.filter(o => o.controlId != controlId);
-            }
-            if (pageData.view != null) {
-                pageData.view.controls = pageData.view.controls.filter(o => o.controlId != controlId);
-            }
-            if (pageData.footer != null && pageData.footer.controls != null) {
-                pageData.footer.controls = pageData.footer.controls.filter(o => o.controlId != controlId);
-            }
+            // if (pageData.header != null && pageData.header.controls) {
+            //     pageData.header.controls = pageData.header.controls.filter(o => o.controlId != controlId);
+            // }
+            // if (pageData.view != null) {
+            //     pageData.view.controls = pageData.view.controls.filter(o => o.controlId != controlId);
+            // }
+            // if (pageData.footer != null && pageData.footer.controls != null) {
+            //     pageData.footer.controls = pageData.footer.controls.filter(o => o.controlId != controlId);
+            // }
+            pageData.controls = pageData.controls.filter(o => o.controlId != controlId);
             this.setState(this.state);
             return Promise.resolve();
         }

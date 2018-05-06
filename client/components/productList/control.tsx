@@ -157,6 +157,8 @@ export default class ProductListControl extends Control<Props, State> {
                     html = html + template.render(productTemplate, data);
                 })
 
+                //====================================
+                // 设置延时为了让页面完全渲染完成
                 setTimeout(() => {
                     e.innerHTML = html;
                     let q = e.querySelectorAll('[product-id]');
@@ -167,11 +169,11 @@ export default class ProductListControl extends Control<Props, State> {
                             if (!productId) {
                                 ui.alert({ title: '错误', message: 'Product id is emtpy.' });
                             }
-                            debugger;
-                            app.redirect(siteMap.nodes.home_product, { id: productId });
+                            app.redirect(siteMap.nodes.home_product, { pageId: productId });
                         })
                     }
                 }, 100);
+                 //====================================
 
             }}>
             </div>

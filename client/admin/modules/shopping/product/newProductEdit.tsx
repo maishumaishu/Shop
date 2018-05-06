@@ -72,24 +72,25 @@ export default async function (page: chitu.Page) {
     else {
         pageData = {
             name: '*product',
-            view: {
-                controls: [
-                    { controlName: 'carousel', controlId: guid(), data: { autoplay: false } },
-                    { controlName: 'productInfo', controlId: guid(), selected: true },
-                    { controlName: 'html', controlId: guid(), data: { emptyText: '暂无商品简介，点击设置商品简介，还可以添加其他组件。' } },
-                ]
-            },
-            footer: {
-                controls: [
-                    { controlName: 'productInfoBottomBar', controlId: guid() }
-                ]
-            }
+            // view: {
+            controls: [
+                { controlName: 'carousel', controlId: guid(), data: { autoplay: false }, position: 'view' },
+                { controlName: 'productInfo', controlId: guid(), selected: true, position: 'view' },
+                { controlName: 'html', controlId: guid(), data: { emptyText: '暂无商品简介，点击设置商品简介，还可以添加其他组件。' }, position: 'view' },
+                { controlName: 'productInfoBottomBar', controlId: guid(), position: 'footer' }
+            ]
+            // },
+            // footer: {
+            //     controls: [
+            //         { controlName: 'productInfoBottomBar', controlId: guid() }
+            //     ]
+            // }
         }
     }
 
     //===========================================================
     // 通过 itemWidth 设置列表项的宽
-    let carousel = pageData.view.controls.filter(o => o.controlName == 'carousel')[0];
+    let carousel = pageData.controls.filter(o => o.controlName == 'carousel')[0];
     console.assert(carousel != null);
     let carouselState = (carousel.data as CarouselState);
     carouselState.itemScale = 1;
@@ -100,7 +101,7 @@ export default async function (page: chitu.Page) {
 }
 
 function productFromPageData(pageData: PageData) {
-    let productInfo = pageData.view.controls.filter(o => o.controlName == 'productInfo')[0];
+    let productInfo = pageData.controls.filter(o => o.controlName == 'productInfo')[0];
     console.assert(productInfo != null);
 
     let product: Product = productInfo.data.product;

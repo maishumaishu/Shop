@@ -1,4 +1,5 @@
-@import "client/user/content/common.less";
+@import "../style/variables.less";
+
 .product-control {
     .padding-bottom();
  
@@ -117,6 +118,17 @@
             height: auto;
             width: ~"calc(100% + 20px)";
             margin-left: 0 - @padding;
+        }
+    }
+
+    header nav {
+        button {
+            background-color:@brand-primary;
+        }
+    }
+    .product-panel {
+        nav {
+            background-color: @brand-primary;
         }
     }
 }

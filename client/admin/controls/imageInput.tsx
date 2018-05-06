@@ -18,6 +18,7 @@ export interface State {
 type Props = {
     imageId: string,
     station: StationService,
+    onChange?: (imagePath) => void
 } & React.Props<ImageInput>
 
 //TODO 缩略图使用小图
@@ -41,8 +42,14 @@ export class ImageInput extends React.Component<Props, State>{
 
     showImageDialog() {
         ImageManager.show((images) => {
+            debugger;
+            if (this.state.imageId == images[0])
+                return;
+
             this.state.imageId = images[0];//imageUrl(images[0], 100);
             this.setState(this.state);
+            if (this.props.onChange)
+                this.props.onChange(images[0]);
         });
     }
 

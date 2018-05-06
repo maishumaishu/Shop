@@ -54,7 +54,8 @@
     @import "../../lib/bootstrap-3.3.7/less/buttons.less";
     @import "../../lib/bootstrap-3.3.7/less/type.less";
     
-    @import "../../user/content/common.less";
+    top: 0;
+    
     .container {
         width: 100%;
     }
@@ -66,7 +67,6 @@
         /* 取消弹窗的背景 */
         opacity: 0;
     }
-    top: 0;
 
     .norecords {
         text-align: center;
@@ -139,6 +139,59 @@
             color: white;
         }
     }
+
+    .price(){
+        .price {
+            color:#f70;
+            font-weight: bold;
+        }
+    }
+    
+    .padding-top(@padding-top: 0px){
+        section {
+            padding-top: @nav-height + @padding-top;
+        }
+    
+        &.immersion {
+            section {
+                padding-top: @nav-height + @immersion-height + @padding-top;
+            }
+            // header {
+            //     padding-top: @immersion-height;
+            // }
+            // .norecords {
+            //     padding-top: @norecords-padding-top + @immersion-height;
+            // }
+        }
+    }
+    
+    
+    .pull-down-indicator {
+        .pull-down-indicator {
+            height: @nav-height;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+    
+            i {
+                margin-right: 4px;
+            }
+        }
+    
+        &.immersion {
+            .pull-down-indicator {
+                height: @nav-height + @immersion-height;
+            }
+        }
+    }
+    
+    .padding-bottom(@padding-bottom: 0px){
+        section {
+            padding-bottom: @menu-height + @padding-bottom;
+        }
+    }
+    
 }
 
 
@@ -154,11 +207,6 @@ article.topbar-padding {
 
 
 
-@import "../../lib/bootstrap-3.3.7/less/variables.less";
-@import "../../mylib/mobileControls/controls.less";
 
-// @import "../product/style.less";
-// @import "../summaryHeader/style.less";
-// @import "../shoppingCartBar/style.less";
-// @import "../locationBar/style.less";
+
 

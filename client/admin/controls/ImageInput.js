@@ -27,8 +27,13 @@ define(["require", "exports", "admin/tips", "./imageManager", "../images"], func
         }
         showImageDialog() {
             imageManager_1.default.show((images) => {
+                debugger;
+                if (this.state.imageId == images[0])
+                    return;
                 this.state.imageId = images[0]; //imageUrl(images[0], 100);
                 this.setState(this.state);
+                if (this.props.onChange)
+                    this.props.onChange(images[0]);
             });
         }
         uploadImage(file) {

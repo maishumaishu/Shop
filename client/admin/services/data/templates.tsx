@@ -7,12 +7,7 @@ let templates: (TemplatePageData & { pageData: PageData })[] = [
         name: 'HomePage',
         image: 'https://img.yzcdn.cn/public_files/2017/1/10/a6cf8a4b788be075db7456a022154e1a.png',
         pageData: {
-            "header": { "controls": [] },
-            "footer": { "controls": [] },
-            "view": {
-                "controls": [{ "controlId": guid(), "controlName": "summaryHeader" }]
-            }
-
+            "controls": [{ "controlId": guid(), "controlName": "summaryHeader", position: 'view' }]
         }
     }
 ]

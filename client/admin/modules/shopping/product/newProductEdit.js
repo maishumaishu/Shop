@@ -57,23 +57,24 @@ define(["require", "exports", "components/mobilePageDesigner", "user/services/st
             else {
                 pageData = {
                     name: '*product',
-                    view: {
-                        controls: [
-                            { controlName: 'carousel', controlId: station_1.guid(), data: { autoplay: false } },
-                            { controlName: 'productInfo', controlId: station_1.guid(), selected: true },
-                            { controlName: 'html', controlId: station_1.guid(), data: { emptyText: '暂无商品简介，点击设置商品简介，还可以添加其他组件。' } },
-                        ]
-                    },
-                    footer: {
-                        controls: [
-                            { controlName: 'productInfoBottomBar', controlId: station_1.guid() }
-                        ]
-                    }
+                    // view: {
+                    controls: [
+                        { controlName: 'carousel', controlId: station_1.guid(), data: { autoplay: false }, position: 'view' },
+                        { controlName: 'productInfo', controlId: station_1.guid(), selected: true, position: 'view' },
+                        { controlName: 'html', controlId: station_1.guid(), data: { emptyText: '暂无商品简介，点击设置商品简介，还可以添加其他组件。' }, position: 'view' },
+                        { controlName: 'productInfoBottomBar', controlId: station_1.guid(), position: 'footer' }
+                    ]
+                    // },
+                    // footer: {
+                    //     controls: [
+                    //         { controlName: 'productInfoBottomBar', controlId: guid() }
+                    //     ]
+                    // }
                 };
             }
             //===========================================================
             // 通过 itemWidth 设置列表项的宽
-            let carousel = pageData.view.controls.filter(o => o.controlName == 'carousel')[0];
+            let carousel = pageData.controls.filter(o => o.controlName == 'carousel')[0];
             console.assert(carousel != null);
             let carouselState = carousel.data;
             carouselState.itemScale = 1;
@@ -84,7 +85,7 @@ define(["require", "exports", "components/mobilePageDesigner", "user/services/st
     }
     exports.default = default_1;
     function productFromPageData(pageData) {
-        let productInfo = pageData.view.controls.filter(o => o.controlName == 'productInfo')[0];
+        let productInfo = pageData.controls.filter(o => o.controlName == 'productInfo')[0];
         console.assert(productInfo != null);
         let product = productInfo.data.product;
         return product;

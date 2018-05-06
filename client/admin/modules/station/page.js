@@ -66,10 +66,6 @@ define(["require", "exports", "components/mobilePageDesigner", "admin/services/s
         });
     }
     exports.default = default_1;
-    function checkStyleControl(pageData) {
-        if (pageData.view == null) {
-        }
-    }
     function getPageData(page) {
         return __awaiter(this, void 0, void 0, function* () {
             let station = page.createService(station_1.StationService);
@@ -85,7 +81,7 @@ define(["require", "exports", "components/mobilePageDesigner", "admin/services/s
             else {
                 pageData = {
                     id: station_1.guid(),
-                    view: { controls: [] }
+                    controls: []
                 };
             }
             return pageData;

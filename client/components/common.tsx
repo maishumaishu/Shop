@@ -5,6 +5,7 @@ import { PropTypes } from 'prop-types';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ADMIN_APP } from 'share/common';
+import lessc = require('lessc');
 
 export interface IMobilePageDesigner {
     selecteControl(control: Control<any, any>, controlType: React.ComponentClass<any>);
@@ -100,7 +101,25 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         var typeName = this.constructor.name;
         typeName = typeName.replace('Control', '');
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
-        requirejs([`less!${componentsDir}/${typeName}/control`]);
+        let path = `${componentsDir}/${typeName}/control`;
+        let lessText = `@import "../${path}";`;
+
+        // let styleControl = this.mobilePage.props.pageData.filter(o => o.controlName == 'style')[0];
+        // if (styleControl != null) {
+
+        // }
+
+        let parser = new lessc.Parser(window['less']);
+        parser.parse(lessText, (err, tree) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            let style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = tree.toCSS();
+            document.head.appendChild(style);
+        })
     }
 
     subscribe<T>(item: chitu.ValueStore<T>, callback: (value: T) => void) {

@@ -4,6 +4,10 @@
         ".tscache": true,
         "**/.baseDir.*": true,
         "client/admin/**/*.js": true,
+        "client/admin/**/*.css": true,
+        "client/components/**/*.js": true,
+        "client/components/**/*.css": true,
+        "client/user/**/*.js": true,
         "client/user/**/*.css": true
     }
 }

@@ -61,37 +61,37 @@ async function shopping_shoppingCart_action(page: Page, showMenu?: boolean) {
         pageData.showMenu = showMenu;
     }
 
-    pageData = await station.fullPage(() => Promise.resolve(pageData));
+    // pageData = await station.fullPage(() => Promise.resolve(pageData));
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} ></MobilePage>, page.element);
 }
 
 async function home_index_action(page: chitu.Page) {
     let station = page.createService(StationService);
-    let pageData = await station.fullPage(() => station.pages.home());
+    let pageData = await station.pages.home();// await station.fullPage(() => station.pages.home());
 
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);
 }
 
 async function home_class_action(page: chitu.Page) {
     let station = page.createService(StationService);
-    let pageData = await station.fullPage(() => station.pages.categories());
+    let pageData = await station.pages.categories(); //await station.fullPage(() => station.pages.categories());
 
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);
 }
 
 async function user_index_action(page: chitu.Page) {
     let station = page.createService(StationService);
-    let pageData = await station.fullPage(() => station.pages.member());
+    let pageData = await station.pages.member();//await station.fullPage(() => station.pages.member());
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);
 }
 
 async function home_product_action(page: chitu.Page) {
-    var shopping = page.createService(ShoppingService);
-    let product = await shopping.product(page.data.id);
+    let station = page.createService(StationService);
+    // let product = await shopping.product(page.data.id);
 
     let mobilePage: MobilePage;
 
-    let pageData = await createPageData(shopping, page.data.id);
+    let pageData = await station.pages.pageDataById(page.data.id || page.data.pageId || page.data.productId);
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} ref={e => mobilePage = e || mobilePage} />, page.element);
 
     // page.showing.add(async (sender: Page, args) => {
@@ -105,21 +105,21 @@ async function home_product_action(page: chitu.Page) {
     async function createPageData(shopping: ShoppingService, productId: string) {
         let product = await shopping.product(productId);
         let pageData = {
-            header: {
-                controls: [
-                    { controlId: guid(), controlName: 'product:Header' }
-                ]
-            },
-            view: {
-                controls: [
-                    { controlId: guid(), controlName: 'product', data: { product } }
-                ]
-            },
-            footer: {
-                controls: [
-                    { controlId: guid(), controlName: 'product:Footer', data: { product } }
-                ]
-            }
+            // header: {
+            controls: [
+                { controlId: guid(), controlName: 'product:Header', position: 'header' },
+                { controlId: guid(), controlName: 'product', data: { product }, position: 'view' },
+                { controlId: guid(), controlName: 'product:Footer', data: { product }, position: 'footer' }
+            ]
+            // },
+            // view: {
+            //     controls: [
+            //     ]
+            // },
+            // footer: {
+            //     controls: [
+            //     ]
+            // }
         } as PageData;
         return pageData;
     }

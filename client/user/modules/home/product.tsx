@@ -25,21 +25,21 @@ export default async function (page: Page) {
 async function createPageData(shopping: ShoppingService, productId: string) {
     let product = await shopping.product(productId);
     let pageData = {
-        header: {
-            controls: [
-                { controlId: guid(), controlName: 'product:Header' }
-            ]
-        },
-        view: {
-            controls: [
-                { controlId: guid(), controlName: 'product', data: { product } }
-            ]
-        },
-        footer: {
-            controls: [
-                { controlId: guid(), controlName: 'product:Footer', data: { product } }
-            ]
-        }
+        // header: {
+        controls: [
+            { controlId: guid(), controlName: 'product:Header', position: 'header' },
+            // ]
+            // },
+            // view: {
+            // controls: [
+            { controlId: guid(), controlName: 'product', data: { product }, position: 'view' },
+            //     ]
+            // },
+            // footer: {
+            //     controls: [
+            { controlId: guid(), controlName: 'product:Footer', data: { product }, position: 'footer' }
+        ]
+        // }
     } as PageData;
     return pageData;
 }
