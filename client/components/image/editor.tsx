@@ -38,7 +38,12 @@ export default class ImageEditor extends Editor<EditorProps, EditorState> {
                 <div className="form-group">
                     <label className="col-sm-4">图片链接</label>
                     <div className="col-sm-8">
-                        <ImageInput station={this.station} imageId={source} />
+                        <ImageInput station={this.station} imageId={source}
+                            onChange={(imageId) => {
+                                debugger;
+                                this.state.source = imageId;
+                                this.setState(this.state);
+                            }} />
                     </div>
                 </div>
                 {/* {source ?

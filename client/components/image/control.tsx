@@ -1,4 +1,5 @@
 import { componentsDir, Control, ControlProps } from 'components/common';
+import { imageUrl } from '../../share/common';
 
 export interface State {
     /**
@@ -29,7 +30,7 @@ export default class ImageControl extends Control<Props, State> {
         let { source } = this.state;
         return (
             <div className="image-control">
-                <img src={this.state.source}
+                <img src={imageUrl(this.state.source)}
                     ref={(e: HTMLImageElement) => {
                         if (!e) return;
                         ui.renderImage(e, { imageText: "暂无图片" })

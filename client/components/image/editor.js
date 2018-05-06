@@ -23,7 +23,11 @@ define(["require", "exports", "components/editor", "admin/services/station", "ad
                 h("div", { className: "form-group" },
                     h("label", { className: "col-sm-4" }, "\u56FE\u7247\u94FE\u63A5"),
                     h("div", { className: "col-sm-8" },
-                        h(imageInput_1.ImageInput, { station: this.station, imageId: source }))),
+                        h(imageInput_1.ImageInput, { station: this.station, imageId: source, onChange: (imageId) => {
+                                debugger;
+                                this.state.source = imageId;
+                                this.setState(this.state);
+                            } }))),
                 h("div", { className: "form-group" },
                     h("label", { className: "col-sm-4" }, "\u9875\u9762\u94FE\u63A5"),
                     h("div", { className: "col-sm-8" },
