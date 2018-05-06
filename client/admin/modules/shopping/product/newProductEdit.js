@@ -66,7 +66,7 @@ define(["require", "exports", "components/mobilePageDesigner", "user/services/st
                     },
                     footer: {
                         controls: [
-                            { controlName: 'shoppingCartBar', controlId: station_1.guid() }
+                            { controlName: 'productInfoBottomBar', controlId: station_1.guid() }
                         ]
                     }
                 };

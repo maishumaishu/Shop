@@ -81,7 +81,7 @@ export default async function (page: chitu.Page) {
             },
             footer: {
                 controls: [
-                    { controlName: 'shoppingCartBar', controlId: guid() }
+                    { controlName: 'productInfoBottomBar', controlId: guid() }
                 ]
             }
         }
