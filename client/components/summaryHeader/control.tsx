@@ -5,7 +5,6 @@ import * as ui from 'ui';
 import { app } from 'user/application';
 import siteMap from 'user/siteMap';
 
-requirejs([`css!${common.componentsDir}/summaryHeader/control`]);
 
 export class Data {
 
@@ -31,6 +30,7 @@ export default class SummaryHeaderControl extends common.Control<Props, State>{
             this.state.store = data;
             this.setState(this.state);
         })
+        this.loadControlCSS();
     }
 
     get persistentMembers(): (keyof State)[] {
