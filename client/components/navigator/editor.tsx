@@ -162,6 +162,15 @@ export default class NavigatorEditor extends Editor<NavigatorEditorProps, Editor
                             <button className="btn-link pull-right" type="button"
                                 onClick={() => this.showDialog(o)}>编辑</button>
 
+                            {o.pageId ? <button className="btn-link pull-right" type="button"
+                                ref={async (e: HTMLButtonElement) => {
+                                    if (!e) return;
+                                    e.onclick = () => {
+                                        app.redirect(siteMap.nodes.station_page, { pageId: o.pageId });
+                                    }
+                                }}>
+                                修改页面</button> : null}
+
                             <div className="clearfix"></div>
                         </li>
                     ) :
