@@ -78,26 +78,24 @@ export default class MenuControl extends Control<Props, State>{
 
     private renderMenuWithIcon(h, menuNodes: MenuNode[]) {
         let productsCount = this.state.productsCount || 0;
-        return [
-            <ul className="menu">
-                {menuNodes.map((o, i) => {
-                    let itemWidth = 100 / menuNodes.length;
-                    // let routeString = o.url.startsWith('#') ? o.url.substr(1) : o.url;
+        return <ul className="menu">
+            {menuNodes.map((o, i) => {
+                let itemWidth = 100 / menuNodes.length;
+                // let routeString = o.url.startsWith('#') ? o.url.substr(1) : o.url;
 
-                    var routeData = app.parseUrl(o.url);
-                    let isShoppingCart = routeData.pageName == 'shopping.shoppingCart'
-                    let isActive = this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
-                    return (
-                        <li key={i} style={{ width: `${itemWidth}%` }}>
-                            <div onClick={() => app.redirect(siteMap.nodes[routeData.pageName])} className={isActive ? 'text-primary' : null}>
-                                <i className={o.icon ? o.icon : EMPTY_ICON}></i>
-                                {o.name}
-                            </div>
-                            {isShoppingCart && productsCount > 0 ? <div className="badge bg-primary" >{productsCount}</div> : null}
-                        </li>
-                    );
-                })}
-            </ul>
-        ];
+                var routeData = app.parseUrl(o.url);
+                let isShoppingCart = routeData.pageName == 'shopping.shoppingCart'
+                let isActive = this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
+                return (
+                    <li key={i} style={{ width: `${itemWidth}%` }}>
+                        <div onClick={() => app.redirect(siteMap.nodes[routeData.pageName])} className={isActive ? 'text-primary' : null}>
+                            <i className={o.icon ? o.icon : EMPTY_ICON}></i>
+                            {o.name}
+                        </div>
+                        {isShoppingCart && productsCount > 0 ? <div className="badge bg-primary" >{productsCount}</div> : null}
+                    </li>
+                );
+            })}
+        </ul>
     }
 }
