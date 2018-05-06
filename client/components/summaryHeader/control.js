@@ -1,7 +1,6 @@
 define(["require", "exports", "user/services/service", "user/services/stationService", "components/common", "ui", "user/application", "user/siteMap"], function (require, exports, service_1, stationService_1, common, ui, application_1, siteMap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    requirejs([`css!${common.componentsDir}/summaryHeader/control`]);
     class Data {
     }
     exports.Data = Data;
@@ -14,6 +13,7 @@ define(["require", "exports", "user/services/service", "user/services/stationSer
                 this.state.store = data;
                 this.setState(this.state);
             });
+            this.loadControlCSS();
         }
         get persistentMembers() {
             return ['mode'];
