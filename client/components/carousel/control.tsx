@@ -1,4 +1,5 @@
 import { componentsDir, Control, ControlProps } from 'components/common'
+import { imageUrl } from '../../share/common';
 
 requirejs([`css!${componentsDir}/carousel/control`]);
 
@@ -452,6 +453,10 @@ export class CarouselControl extends Control<Props, State> {
             return;
         }
 
+        if (this.element == null) {
+            return;
+        }
+
         console.assert(this.element != null);
         console.assert(this.carousel != null);
         this.carousel.stop();
@@ -482,7 +487,7 @@ export class CarouselControl extends Control<Props, State> {
                     <div className="carousel-inner">
                         {items.map((o, i) =>
                             <div key={i} className={i == 0 ? "item active" : "item"}>
-                                <img src={o.image} className="img-responsive"
+                                <img src={imageUrl(o.image)} className="img-responsive"
                                     ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null}>
                                 </img>
                                 <div className="carousel-caption">
@@ -493,7 +498,7 @@ export class CarouselControl extends Control<Props, State> {
                 </div> :
                 items.length > 0 ?
                     <div ref={() => this.element = null}>
-                        <img style={{ width: '100%' }} src={items[0].image} />
+                        <img style={{ width: '100%' }} src={imageUrl(items[0].image)} />
                     </div>
                     :
                     <div ref={() => this.element = null}>

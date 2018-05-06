@@ -31,7 +31,7 @@ define(["require", "exports", "components/editor", "admin/services/station", "ad
             return __awaiter(this, void 0, void 0, function* () {
                 images_1.ImageManager.show((imageIds) => {
                     imageIds.forEach(o => {
-                        this.state.items.push({ image: images_1.imageUrl(o, 100), url: '', title: '' });
+                        this.state.items.push({ image: o, url: '', title: '' });
                         this.setState(this.state);
                     });
                 });
@@ -56,7 +56,7 @@ define(["require", "exports", "components/editor", "admin/services/station", "ad
                 h("ul", { key: "ul", className: "carousel-items" },
                     items.map((o, i) => h("li", { key: i, style: { width: itemWidth } },
                         h("div", { className: "form-group" },
-                            h("img", { src: o.image })),
+                            h("img", { src: images_1.imageUrl(o.image, 100) })),
                         clickType == 'openPage' ?
                             h("div", { className: "form-group" },
                                 h("input", { className: "form-control", placeholder: "请输入和图片对应的链接" })) : null,

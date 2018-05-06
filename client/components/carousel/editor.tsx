@@ -46,7 +46,7 @@ export default class CarouselEditor extends Editor<Props, State>{
     async showImageDialog() {
         ImageManager.show((imageIds) => {
             imageIds.forEach(o => {
-                this.state.items.push({ image: imageUrl(o, 100), url: '', title: '' });
+                this.state.items.push({ image: o, url: '', title: '' });
                 this.setState(this.state);
             })
         });
@@ -76,7 +76,7 @@ export default class CarouselEditor extends Editor<Props, State>{
                 {items.map((o, i) =>
                     <li key={i} style={{ width: itemWidth }}>
                         <div className="form-group">
-                            <img src={o.image} />
+                            <img src={imageUrl(o.image, 100)} />
                         </div>
                         {clickType == 'openPage' ?
                             <div className="form-group">

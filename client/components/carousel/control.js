@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "components/common"], function (require, exports, common_1) {
+define(["require", "exports", "components/common", "../../share/common"], function (require, exports, common_1, common_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     requirejs([`css!${common_1.componentsDir}/carousel/control`]);
@@ -358,6 +358,9 @@ define(["require", "exports", "components/common"], function (require, exports, 
                 this.carousel = new Carousel(this.element, { autoplay });
                 return;
             }
+            if (this.element == null) {
+                return;
+            }
             console.assert(this.element != null);
             console.assert(this.carousel != null);
             this.carousel.stop();
@@ -380,11 +383,11 @@ define(["require", "exports", "components/common"], function (require, exports, 
                     } },
                     h("ol", { className: "carousel-indicators" }, items.map((o, i) => h("li", { key: i }))),
                     h("div", { className: "carousel-inner" }, items.map((o, i) => h("div", { key: i, className: i == 0 ? "item active" : "item" },
-                        h("img", { src: o.image, className: "img-responsive", ref: (e) => e ? ui.renderImage(e) : null }),
+                        h("img", { src: common_2.imageUrl(o.image), className: "img-responsive", ref: (e) => e ? ui.renderImage(e) : null }),
                         h("div", { className: "carousel-caption" }))))) :
                 items.length > 0 ?
                     h("div", { ref: () => this.element = null },
-                        h("img", { style: { width: '100%' }, src: items[0].image }))
+                        h("img", { style: { width: '100%' }, src: common_2.imageUrl(items[0].image) }))
                     :
                         h("div", { ref: () => this.element = null },
                             h("img", { style: { width: '100%' }, className: "img-responsive", ref: (e) => {
