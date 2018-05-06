@@ -245,6 +245,10 @@ export default class ShoppingCartControl extends Control<
         return [];
     }
 
+    get hasEditor() {
+        return false;
+    }
+
     // private refreshItems() {
     //     shoppingCart.calculateShoppingCartItems().then((items) => {
     //         this.state.items = items;
