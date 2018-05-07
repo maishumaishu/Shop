@@ -16,7 +16,7 @@ export interface Props extends common.ControlProps<SummaryHeaderControl> {
 
 type HeaderMode = 'normal' | 'simple';
 export interface State {
-    store: StoreInfo,
+    store: Store,
     mode: HeaderMode
 }
 
@@ -70,7 +70,7 @@ class NormalHeader extends React.Component<Props, State>{
         let { store } = this.state;
         store = store || {} as any;
 
-        let src = store.ImagePath ? imageUrl(store.ImagePath) : ui.generateImageBase64(100, 100, store.Name || "");
+        let src = store.Data.ImageId? imageUrl(store.Data.ImageId) : ui.generateImageBase64(100, 100, store.Name || "");
         return [
             <div key={10} className="headerImage pull-left">
                 <img src={src} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />

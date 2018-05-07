@@ -1,4 +1,4 @@
-import { UserService } from 'admin/services/user';
+import { MemberService as UserService } from 'admin/services/member';
 import app from 'admin/application';
 import { siteMap } from 'admin/siteMap';
 import * as ui from 'ui';

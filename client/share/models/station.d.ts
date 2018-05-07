@@ -1,7 +1,7 @@
-interface StoreInfo {
-    Name: string,
-    ImagePath: string
-}
+// interface StoreInfo {
+//     Name: string,
+//     ImagePath: string
+// }
 
 interface ControlDescrtion {
     controlId: string, controlName: string, data?: any,

@@ -43,10 +43,10 @@ define(["require", "exports", "user/services/service"], function (require, expor
         register(data) {
             console.assert(data != null);
             let url = `UserMember/User/Register`;
-            let { mobile, password } = data.user;
+            // let { mobile, password } = data;
             let { smsId, verifyCode } = data;
-            let obj = { username: mobile, password, smsId, verifyCode };
-            return this.postByJson(url, obj).then((data) => {
+            // let obj = { username: mobile, password, smsId, verifyCode };
+            return this.postByJson(url, data).then((data) => {
                 service_1.tokens.userToken.value = data.token;
                 return data;
             });

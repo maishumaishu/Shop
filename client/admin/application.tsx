@@ -9,7 +9,7 @@ import { siteMap } from 'admin/siteMap';
 
 let h = React.createElement;
 
-class Application extends chitu.Application {
+export class Application extends chitu.Application {
 
     private masterPage: MasterPage;
     constructor() {
@@ -61,12 +61,20 @@ class Application extends chitu.Application {
         })
     }
 
+    createService<T extends Service>(type?: chitu.ServiceConstructor<T>): T {
+        let service = new type();
+        service.error.add((sender, err) => {
+            this.error.fire(this, err, this.currentPage);
+        })
+        return service;
+    }
+
     loadCSS(pageName: string) {
         // let path = pageName.split('_').join('/');
         let pageNode = siteMap.nodes[pageName];
         console.assert(pageNode != null);
         console.assert(typeof pageNode.path == 'string');
-        requirejs([`css!${pageNode.path}`]);
+        requirejs([`less!${pageNode.path}`]);
     }
 
     protected createPageElement(pageName: string): HTMLElement {

@@ -155,11 +155,6 @@ interface User {
 }
 
 
-interface RegisterModel {
-    user: { mobile: string, password: string },
-    smsId: string,
-    verifyCode: string
-}
 
 
 interface ControlData {

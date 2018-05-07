@@ -53,11 +53,11 @@ export class MemberService extends Service {
     register(data: RegisterModel) {
         console.assert(data != null);
         let url = `UserMember/User/Register`;
-        let { mobile, password } = data.user;
+        // let { mobile, password } = data;
         let { smsId, verifyCode } = data;
 
-        let obj = { username: mobile, password, smsId, verifyCode };
-        return this.postByJson<{ token: string }>(url, obj).then((data) => {
+        // let obj = { username: mobile, password, smsId, verifyCode };
+        return this.postByJson<{ token: string }>(url, data).then((data) => {
             tokens.userToken.value = data.token;
             return data;
         });

@@ -6,11 +6,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "dilu", "admin/services/user", "ui", "admin/application", "admin/siteMap"], function (require, exports, dilu_1, user_1, ui, application_1, siteMap_1) {
+define(["require", "exports", "dilu", "admin/services/member", "ui", "admin/application", "admin/siteMap"], function (require, exports, dilu_1, member_1, ui, application_1, siteMap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function default_1(page) {
-        let userService = page.createService(user_1.UserService);
+        let userService = page.createService(member_1.MemberService);
         // app.loadCSS(page.name);
         class RegisterPage extends React.Component {
             constructor(props) {

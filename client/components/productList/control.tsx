@@ -272,7 +272,7 @@ export default class ProductListControl extends Control<Props, State> {
 
     createProductImageTemplate() {
         let tmp = `
-        <img class="product-image" src="{{image}}"/>
+        <img class="product-image img-responsive" src="{{image}}"/>
         {{if(offShelve || stock == 0)}}
         <div class="product-image-mask"></div>
         <div class="product-image-text">{{offShelve ? '已下架' : '已售罄'}}</div>

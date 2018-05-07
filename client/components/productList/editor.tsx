@@ -106,7 +106,7 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
             return;
 
         e.onclick = () => {
-            this.productsDialog.show((product) => this.productSelected(product));
+            ProductSelectDialog.show((products) => this.productSelected(products));
         }
     }
 
@@ -142,15 +142,18 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
         ctrl.setState(ctrl.state);
     }
 
-    productSelected(product: Product): Promise<any> {
+    productSelected(products: Product[]): Promise<any> {
         let productIds = this.state.productIds || [];
-        let exists = productIds.indexOf(product.Id) >= 0;
-        if (exists) {
-            ui.alert({ title: "提示", message: '该商品已选择' });
-            return Promise.reject({});
-        }
+        
+        // 排除已存在的 product id
+        let newProducts = products.map(o => o.Id).filter(o => productIds.indexOf(o) < 0)
+        // let exists = productIds.indexOf(product.Id) >= 0;
+        // if (exists) {
+        //     ui.alert({ title: "提示", message: '该商品已选择' });
+        //     return Promise.reject({});
+        // }
 
-        productIds.push(product.Id);
+        productIds.push(...newProducts);
 
         this.state.productIds = productIds;
         this.setState(this.state);
@@ -329,7 +332,6 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
                 </div>
 
                 <div className="form-group">
-                    <ProductSelectDialog shopping={shopping as any} ref={(e: ProductSelectDialog) => this.productsDialog = e || this.productsDialog} />
                     <div className="clearfix"></div>
                 </div>
 

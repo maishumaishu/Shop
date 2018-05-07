@@ -2,14 +2,10 @@ define(["require", "exports", "admin/services/dataSource", "less!admin/controls/
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PageSelectDialog extends React.Component {
-        // dataSource: wuzhui.DataSource<PageData>;
         constructor(props) {
             super(props);
             let { station } = this.props;
             this.state = { items: [] };
-            // this.dataSource = new wuzhui.DataSource({
-            //     select: (args) => station.pageList(args)
-            // })
             dataSource_1.pageData.selected.add((sender, data) => {
                 this.state.items = data.dataItems;
                 this.setState(this.state);

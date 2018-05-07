@@ -183,10 +183,10 @@ export class PropertiesComponent extends React.Component<Props, { properties: Ke
                     <div key={i} className="row form-group">
                         {o.map((c, j) =>
                             <div key={c.key} className="col-lg-4 col-md-4">
-                                <label className="col-lg-3">
+                                <label className="col-lg-4">
                                     {c.key}
                                 </label>
-                                <div className="col-lg-9">
+                                <div className="col-lg-8">
                                     <input className="form-control" value={c.value}
                                         onChange={(e) => this.bindInput(e, c)} />
                                 </div>

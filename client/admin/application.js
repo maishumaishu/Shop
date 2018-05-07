@@ -40,12 +40,19 @@ define(["require", "exports", "react", "react-dom", "ui", "admin/services/servic
                 });
             });
         }
+        createService(type) {
+            let service = new type();
+            service.error.add((sender, err) => {
+                this.error.fire(this, err, this.currentPage);
+            });
+            return service;
+        }
         loadCSS(pageName) {
             // let path = pageName.split('_').join('/');
             let pageNode = siteMap_1.siteMap.nodes[pageName];
             console.assert(pageNode != null);
             console.assert(typeof pageNode.path == 'string');
-            requirejs([`css!${pageNode.path}`]);
+            requirejs([`less!${pageNode.path}`]);
         }
         createPageElement(pageName) {
             let element = document.createElement('div');
@@ -81,6 +88,7 @@ define(["require", "exports", "react", "react-dom", "ui", "admin/services/servic
             }
         }
     }
+    exports.Application = Application;
     let app = window[common_1.ADMIN_APP] = window[common_1.ADMIN_APP] || new Application();
     exports.default = app;
 });

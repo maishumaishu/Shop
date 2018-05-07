@@ -1,4 +1,5 @@
 ﻿import { default as Service } from 'admin/services/service'
+import { siteMap } from 'admin/pageNodes';
 export { default as app } from 'admin/application';
 
 // let bootbox = window['bootbox'];
@@ -22,8 +23,13 @@ class Site {
         let url = `${protocol}//${host}${pathname}?appKey=${Service.appToken}#home_index`;
         return url;
     }
-    loadCSS(path:string) {
+    loadCSS(path: string) {
 
+    }
+    storeUrl(stroeId: string) {
+        let pageName = (siteMap.nodes.home_index as chitu.PageNode).name;
+        console.assert(pageName != null);
+        return `?appKey=${stroeId}#${pageName}`;
     }
 }
 

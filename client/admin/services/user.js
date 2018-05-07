@@ -82,7 +82,7 @@ define(["require", "exports", "admin/services/service"], function (require, expo
             });
         }
         updateApplication(app) {
-            let url = this.url('Seller/UpdateApplication');
+            let url = `${service_1.default.config.memberUrl}Seller/UpdateApplication`;
             return this.putByJson(url, { app });
         }
         deleteApplication(app) {

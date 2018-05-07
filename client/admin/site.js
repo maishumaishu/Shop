@@ -1,4 +1,4 @@
-define(["require", "exports", "admin/services/service", "admin/application"], function (require, exports, service_1, application_1) {
+define(["require", "exports", "admin/services/service", "admin/pageNodes", "admin/application"], function (require, exports, service_1, pageNodes_1, application_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.app = application_1.default;
@@ -22,6 +22,11 @@ define(["require", "exports", "admin/services/service", "admin/application"], fu
             return url;
         }
         loadCSS(path) {
+        }
+        storeUrl(stroeId) {
+            let pageName = pageNodes_1.siteMap.nodes.home_index.name;
+            console.assert(pageName != null);
+            return `?appKey=${stroeId}#${pageName}`;
         }
     }
     let site = new Site();

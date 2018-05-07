@@ -89,7 +89,7 @@ define(["require", "exports", "components/editor", "admin/services/shopping", "a
             if (!e || e.onclick)
                 return;
             e.onclick = () => {
-                this.productsDialog.show((product) => this.productSelected(product));
+                productSelectDialog_1.ProductSelectDialog.show((products) => this.productSelected(products));
             };
         }
         setProductDelete(e, productId) {
@@ -118,14 +118,16 @@ define(["require", "exports", "components/editor", "admin/services/shopping", "a
             this.editor.setValue(ctrl.productTemplate());
             ctrl.setState(ctrl.state);
         }
-        productSelected(product) {
+        productSelected(products) {
             let productIds = this.state.productIds || [];
-            let exists = productIds.indexOf(product.Id) >= 0;
-            if (exists) {
-                ui.alert({ title: "提示", message: '该商品已选择' });
-                return Promise.reject({});
-            }
-            productIds.push(product.Id);
+            // 排除已存在的 product id
+            let newProducts = products.map(o => o.Id).filter(o => productIds.indexOf(o) < 0);
+            // let exists = productIds.indexOf(product.Id) >= 0;
+            // if (exists) {
+            //     ui.alert({ title: "提示", message: '该商品已选择' });
+            //     return Promise.reject({});
+            // }
+            productIds.push(...newProducts);
             this.state.productIds = productIds;
             this.setState(this.state);
             return Promise.resolve();
@@ -243,7 +245,6 @@ define(["require", "exports", "components/editor", "admin/services/shopping", "a
                     h("label", { className: "pull-left" }, "\u9009\u53D6\u5546\u54C1"),
                     h("div", { style: { width: 'calc(100% - 100px)', marginLeft: 100 }, ref: (e) => this.renderProducts(e, productIds) })),
                 h("div", { className: "form-group" },
-                    h(productSelectDialog_1.ProductSelectDialog, { shopping: shopping, ref: (e) => this.productsDialog = e || this.productsDialog }),
                     h("div", { className: "clearfix" })),
                 h("div", { className: "form-group" },
                     h("label", null,

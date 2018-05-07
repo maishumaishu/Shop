@@ -59,7 +59,6 @@ export default async function (page: chitu.Page) {
         let userStation = page.createService(UserStation);
         pageData = await userStation.pages.pageDataById(productId);
         let product = productFromPageData(pageData);
-
         // parentId 不为空，是要复制一份商品，源 id 为 parentId
         if (page.data.parentId) {
             pageData.id = null;

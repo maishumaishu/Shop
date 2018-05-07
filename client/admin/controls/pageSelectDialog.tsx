@@ -17,15 +17,12 @@ export class PageSelectDialog extends React.Component<Props, State> {
     callback: (item: PageData) => void;
     pagingBarElement: HTMLElement;
     element: HTMLElement;
-    // dataSource: wuzhui.DataSource<PageData>;
 
     constructor(props) {
         super(props);
         let { station } = this.props;
         this.state = { items: [] };
-        // this.dataSource = new wuzhui.DataSource({
-        //     select: (args) => station.pageList(args)
-        // })
+
         dataSource.selected.add((sender, data) => {
             this.state.items = data.dataItems;
             this.setState(this.state);

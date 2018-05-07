@@ -6,13 +6,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "admin/services/user", "admin/services/weixin", "admin/application", "admin/siteMap", "dilu", "ui", "share/common", "weixin/modules/openid"], function (require, exports, user_1, weixin_1, application_1, siteMap_1, dilu_1, ui, common_1, openid_1) {
+define(["require", "exports", "admin/services/member", "admin/services/weixin", "admin/application", "admin/siteMap", "dilu", "ui", "share/common", "weixin/modules/openid"], function (require, exports, member_1, weixin_1, application_1, siteMap_1, dilu_1, ui, common_1, openid_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function default_1(page) {
         return __awaiter(this, void 0, void 0, function* () {
             application_1.default.loadCSS(page.name);
-            let userService = page.createService(user_1.UserService);
+            let userService = page.createService(member_1.MemberService);
             let weixinService = page.createService(weixin_1.WeiXinService);
             class LoginPage extends React.Component {
                 constructor(props) {

@@ -299,8 +299,8 @@ define(["require", "exports", "admin/services/service", "admin/services/activity
             this.state = { isInclude: true };
         }
         showProductSelector() {
-            this.productSelectDialog.show((product) => {
-                this.state.product = product;
+            productSelectDialog_1.ProductSelectDialog.show((products) => {
+                this.state.product = products[0];
                 this.setState(this.state);
             });
         }
@@ -379,8 +379,7 @@ define(["require", "exports", "admin/services/service", "admin/services/activity
                                             "\u6392\u9664")))),
                             h("div", { className: "modal-footer" },
                                 h("button", { type: "button", className: "btn btn-default", "data-dismiss": "modal" }, "\u53D6\u6D88"),
-                                h("button", { name: "btnOK", type: "button", className: "btn btn-primary", onClick: () => this.confirm() }, "\u786E\u5B9A"))))),
-                h(productSelectDialog_1.ProductSelectDialog, { key: "productSelectDialog", shopping: shopping, ref: (e) => this.productSelectDialog = e || this.productSelectDialog })
+                                h("button", { name: "btnOK", type: "button", className: "btn btn-primary", onClick: () => this.confirm() }, "\u786E\u5B9A")))))
             ];
         }
     }
@@ -647,7 +646,8 @@ define(["require", "exports", "admin/services/service", "admin/services/activity
             super.show(promotion, onConfirm);
         }
         showProductSelector() {
-            this.productSelectDialog.show((product) => {
+            productSelectDialog_1.ProductSelectDialog.show((products) => {
+                let product = products[0];
                 objectNames[product.Id] = product.Name;
                 this.productNameInput.value = product.Name;
                 this.productIdInput.value = product.Id;
@@ -729,8 +729,7 @@ define(["require", "exports", "admin/services/service", "admin/services/activity
                                     h("option", { value: "2" }, "2\u4EF6"),
                                     h("option", { value: "3" }, "3\u4EF6"),
                                     h("option", { value: "4" }, "4\u4EF6"),
-                                    h("option", { value: "5" }, "5\u4EF6")))))),
-                h(productSelectDialog_1.ProductSelectDialog, { key: "productSelectDialog", shopping: shopping, ref: (e) => this.productSelectDialog = e || this.productSelectDialog })
+                                    h("option", { value: "5" }, "5\u4EF6"))))))
             ];
         }
     }
@@ -894,8 +893,7 @@ define(["require", "exports", "admin/services/service", "admin/services/activity
                                     h("button", { className: "btn btn-primary btn-sm", onClick: () => this.newCategoryRule() }, "\u6DFB\u52A0\u54C1\u7C7B")))))),
                 h(ProductInputDialog, { key: "productInputDialog", page: page, ref: (e) => this.productInputDialog = e || this.productInputDialog }),
                 h(BrandInputDialog, { key: "brandInputDialog", page: page, ref: (e) => this.brandInputDialog = e || this.brandInputDialog }),
-                h(CategoryInputDialog, { key: "categoryInputDialog", page: page, ref: (e) => this.categoryInputDialog = e || this.categoryInputDialog }),
-                h(productSelectDialog_1.ProductSelectDialog, { key: "productSelectDialog", shopping: shopping, ref: (e) => this.productSelectDialog = e || this.productSelectDialog })
+                h(CategoryInputDialog, { key: "categoryInputDialog", page: page, ref: (e) => this.categoryInputDialog = e || this.categoryInputDialog })
             ];
         }
     }

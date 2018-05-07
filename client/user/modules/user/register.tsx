@@ -94,7 +94,8 @@ export default function (page: chitu.Page) {
             let password = this.formElement['password'].value;
             let verifyCode = this.formElement['verifyCode'].value;
             return member.register({
-                user: { mobile, password },
+                username: mobile,
+                password,
                 smsId: this.smsId,
                 verifyCode
             }).then(() => {

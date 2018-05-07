@@ -12,44 +12,28 @@
         }
     }
     
-    .product-add {
-        @width:100px;
-        @height:100px;
-        @icon-fontsize:52px;
-        @padding-top:(@height - @icon-fontsize)/2;
 
-        width: @width;
-        height: 100px;
-        background-color: white;
-        text-align: center;
-        padding-top: @padding-top;
-        border: 1px gray solid;
-        i {
-            font-size: @icon-fontsize;
-            cursor: pointer;
-        }
-        input[type='file'] {
-            width: 100%;
-            height: 100%;
-            margin-top: 0 - @icon-fontsize;
-            opacity: 0;
-        }
-    }
 
     ul.selected-products {
+        @image-height:100px;
+        @image-width: 100px;
+        @border-width: 1px;
+        @height:  @image-height + @border-width * 2;
+        @width: @image-width + @border-width * 2;
         li {
-            height: 100px;
-            width: 100px;
+            height: @height;
+            width: @width;
             float: left;
             margin: 0 10px 10px 0;
+            border: solid 1px #ccc;
             img {
-                width: 100px;
-                height: 100px;
+                width: @image-width;
+                height: @image-height;
             }
             .delete {
                 @height:24px;
                 position: relative; 
-                bottom: @height;
+                margin-top: 0 - @height;
                 height: @height;
                 background-color: rgba(0, 0, 0, 0.55); 
                 color: white;
@@ -57,6 +41,28 @@
                 button {
                     color: white;    
                 }
+            }
+        }
+
+        .product-add {
+            @icon-fontsize:52px;
+            @padding-top:(@height - @icon-fontsize)/2;
+    
+            width: @width;
+            height: @height;
+            background-color: white;
+            text-align: center;
+            padding-top: @padding-top;
+            // border: 1px gray solid;
+            i {
+                font-size: @icon-fontsize;
+                cursor: pointer;
+            }
+            input[type='file'] {
+                width: 100%;
+                height: 100%;
+                margin-top: 0 - @icon-fontsize;
+                opacity: 0;
             }
         }
     }

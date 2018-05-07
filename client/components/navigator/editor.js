@@ -121,6 +121,13 @@ define(["require", "exports", "components/editor", "dilu", "user/services/statio
                         h("button", { className: "btn-link pull-right", type: "button", ref: (e) => e ?
                                 ui.buttonOnClick(e, () => this.removeItem(o), { confirm: `确定要删除"${o.name}"吗` }) : null }, "\u5220\u9664"),
                         h("button", { className: "btn-link pull-right", type: "button", onClick: () => this.showDialog(o) }, "\u7F16\u8F91"),
+                        o.pageId ? h("button", { className: "btn-link pull-right", type: "button", ref: (e) => __awaiter(this, void 0, void 0, function* () {
+                                if (!e)
+                                    return;
+                                e.onclick = () => {
+                                    application_1.default.redirect(siteMap_1.siteMap.nodes.station_page, { pageId: o.pageId });
+                                };
+                            }) }, "\u4FEE\u6539\u9875\u9762") : null,
                         h("div", { className: "clearfix" }))) :
                     h("li", { className: "text-center no-records" }, "\u6682\u65E0\u6570\u636E,\u70B9\u51FB\"\u6DFB\u52A0\u5BFC\u822A\u83DC\u5355\u9879\"\u6309\u94AE\u6DFB\u52A0")),
                 h("div", { key: "button", className: "text-center" },

@@ -12,28 +12,10 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
-export interface RegisterModel {
-    username: string,
-    password: string,
-    smsId: string,
-    verifyCode: string
-}
 
-export interface Application {
-    Id: string,
-    Name: string
-}
-
-export interface Seller {
-    Id: string,
-    UserName: string,
-    OpenId: string,
-    Mobile: string,
-    Email: string,
-}
 
 let { protocol } = location;
-export class UserService extends Service {
+export class MemberService extends Service {
     private url(path: string) {
         let url = `${protocol}//${Service.config.serviceHost}/${path}`;
         return url;
@@ -77,26 +59,39 @@ export class UserService extends Service {
         let url = `${Service.config.memberUrl}Seller/SendVerifyCode`;
         return this.postByJson<{ SmsId: string }>(url, { mobile, type: 'Register' });
     }
-    applications(): Promise<Array<Application>> {
+    stores(): Promise<Array<Store>> {
         let url = `${Service.config.memberUrl}Seller/GetApplications`;
-        return this.get<Application[]>(url);
+        return this.get<Store[]>(url);
     }
-    addApplication(app: Application) {
+    addStore(app: Store) {
         let url = `${Service.config.memberUrl}Seller/AddApplication`;
         return this.postByJson(url, { name: app.Name }).then(data => {
             Object.assign(app, data);
             return data;
         });
     }
-    updateApplication(app: Application) {
-        let url = this.url('Seller/UpdateApplication');
+    updateStore(app: Store) {
+        let url = `${Service.config.memberUrl}Seller/UpdateApplication`;
         return this.putByJson(url, { app });
     }
-    deleteApplication(app: Application) {
+    deleteStore(app: Store) {
         console.assert(app != null)
         let url = `${Service.config.memberUrl}Seller/DeleteApplication`;
         return this.deleteByJson(url, { applicationId: app.Id });
     }
+    //============================================================
+    // 店铺
+    saveStore(store: Store) {
+        let url = `${Service.config.memberUrl}Seller/UpdateApplication`
+        return this.postByJson(url, { app: store });
+    }
+    async store() {
+        let url = `${Service.config.memberUrl}Seller/GetApplication`; //this.url('Store/Get');
+        let app = await this.getByJson<Store>(url);
+        app.Data = app.Data || {} as any;
+        return app;
+    }
+    //============================================================
     recharge(userId: string, amount: number): Promise<{ Balance: number }> {
         let url = Service.config.accountUrl + 'Account/Recharge';
         return this.putByJson(url, { userId, amount });

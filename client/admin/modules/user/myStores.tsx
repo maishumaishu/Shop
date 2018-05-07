@@ -1,16 +1,17 @@
-import { UserService, Application } from 'admin/services/user';
-import { app } from 'admin/site';
+import { MemberService as UserService } from 'admin/services/member';
 import { siteMap } from 'admin/siteMap';
-
 import { FormValidator, rules } from 'dilu';
+import app from 'admin/application';
+import site from 'admin/site';
+
 import * as ui from 'ui';
 
 export default async function (page: chitu.Page) {
     // requirejs([`css!${page.name}.css`]);
     app.loadCSS(page.name);
     let userService = page.createService(UserService);
-    let apps = await userService.applications();
-    class MyStoresPage extends React.Component<{}, { stores: Array<Application> }>{
+    let apps = await userService.stores();
+    class MyStoresPage extends React.Component<{}, { stores: Array<Store> }>{
         private dialogElement: HTMLElement;
         private nameInput: HTMLInputElement;
         private validator: FormValidator;
@@ -19,15 +20,12 @@ export default async function (page: chitu.Page) {
             this.state = { stores: apps };
         }
         componentDidMount() {
-            // this.validator = new FormValidator(this.dialogElement, {
-            //     name: { rules: ['required'], display: '店铺名称' }
-            // })
             let nameElement = this.dialogElement.querySelector('[name="name"]') as HTMLInputElement;
             this.validator = new FormValidator(this.dialogElement,
                 { name: "name", rules: [rules.required('店铺名称')] }
             )
         }
-        async  save(app: Application): Promise<any> {
+        async  save(app: Store): Promise<any> {
             let isValid = await this.validator.check();
             if (!isValid) {
                 return Promise.resolve();
@@ -35,12 +33,12 @@ export default async function (page: chitu.Page) {
 
             let p: Promise<any>;
             if (!app.Id) {
-                p = userService.addApplication(app).then(data => {
+                p = userService.addStore(app).then(data => {
                     this.state.stores.push(app);
                 });
             }
             else {
-                p = userService.updateApplication(app).then(data => {
+                p = userService.updateStore(app).then(data => {
                     this.setState(this.state);
                 });
             }
@@ -51,14 +49,14 @@ export default async function (page: chitu.Page) {
             });
             return p;
         }
-        delete(app: Application) {
-            return userService.deleteApplication(app).then(data => {
+        delete(app: Store) {
+            return userService.deleteStore(app).then(data => {
                 this.state.stores = this.state.stores.filter(o => o != app);
                 this.setState(this.state);
                 return data;
             });
         }
-        showDialog(app: Application) {
+        showDialog(app: Store) {
             let msg = app.Id == null ? '创建店铺成功' : '更新店铺成功';
             ReactDOM.render(
                 <div className="modal-dialog" role="document">
@@ -105,7 +103,7 @@ export default async function (page: chitu.Page) {
 
             ui.showDialog(this.dialogElement);
         }
-        edit(app: Application) {
+        edit(app: Store) {
             this.nameInput.value = app.Name;
             ui.showDialog(this.dialogElement);
         }
@@ -150,7 +148,7 @@ export default async function (page: chitu.Page) {
                                             onClick={() => {
                                                 let pageName = (siteMap.nodes.home_index as chitu.PageNode).name;
                                                 console.assert(pageName != null);
-                                                location.href = `?appKey=${o.Id}#${pageName}`;
+                                                location.href = site.storeUrl(o.Id);
                                             }}
                                         >进入</button>
                                     </div>
@@ -163,7 +161,7 @@ export default async function (page: chitu.Page) {
                                     创建店铺
                                     </p>
                             </div>
-                            <div onClick={() => this.showDialog({} as Application)} className="add">
+                            <div onClick={() => this.showDialog({} as Store)} className="add">
                                 <i className="icon-plus" style={{ fontSize: 120 }}></i>
                             </div>
                         </li>

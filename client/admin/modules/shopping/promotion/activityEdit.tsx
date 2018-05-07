@@ -398,7 +398,6 @@ class ProductInputDialog extends React.Component<React.Props<ProductInputDialog>
     private nameInput: HTMLInputElement;
     private element: HTMLElement;
     private validator: dilu.FormValidator;
-    private productSelectDialog: ProductSelectDialog;
 
     private onProductSelected: (o: Product, isInclude: boolean) => void;
 
@@ -407,8 +406,8 @@ class ProductInputDialog extends React.Component<React.Props<ProductInputDialog>
         this.state = { isInclude: true };
     }
     private showProductSelector() {
-        this.productSelectDialog.show((product) => {
-            this.state.product = product;
+        ProductSelectDialog.show((products) => {
+            this.state.product = products[0];
             this.setState(this.state);
         });
     }
@@ -520,9 +519,7 @@ class ProductInputDialog extends React.Component<React.Props<ProductInputDialog>
                         </div>
                     </div>
                 </div>
-            </form>,
-            <ProductSelectDialog key="productSelectDialog" shopping={shopping}
-                ref={(e) => this.productSelectDialog = e || this.productSelectDialog} />
+            </form>
         ];
     }
 }
@@ -920,7 +917,6 @@ class BuyGivenDialog extends ContentRuleDialog<{ page: chitu.Page },
     private quantityInput: HTMLInputElement;
     private productNameError: HTMLElement;
 
-    private productSelectDialog: ProductSelectDialog;
 
     constructor(props) {
         super(props);
@@ -935,7 +931,8 @@ class BuyGivenDialog extends ContentRuleDialog<{ page: chitu.Page },
     }
 
     private showProductSelector(): any {
-        this.productSelectDialog.show((product) => {
+        ProductSelectDialog.show((products) => {
+            let product = products[0];
             objectNames[product.Id] = product.Name;
             this.productNameInput.value = product.Name;
             this.productIdInput.value = product.Id;
@@ -1051,9 +1048,7 @@ class BuyGivenDialog extends ContentRuleDialog<{ page: chitu.Page },
                         </div>
                     </div>
                 </div>
-            </div>,
-            <ProductSelectDialog key="productSelectDialog" shopping={shopping}
-                ref={(e) => this.productSelectDialog = e || this.productSelectDialog} />
+            </div>
         ]
     }
 }
@@ -1160,7 +1155,6 @@ export class PromotionRangeComponent extends React.Component<
     private categoryInputDialog: CategoryInputDialog;
     private brandInputDialog: BrandInputDialog;
     private productInputDialog: ProductInputDialog;
-    private productSelectDialog: ProductSelectDialog;
 
     constructor(props) {
         super(props);
@@ -1287,9 +1281,7 @@ export class PromotionRangeComponent extends React.Component<
             <BrandInputDialog key="brandInputDialog" page={page}
                 ref={(e) => this.brandInputDialog = e || this.brandInputDialog} />,
             <CategoryInputDialog key="categoryInputDialog" page={page}
-                ref={(e) => this.categoryInputDialog = e || this.categoryInputDialog} />,
-            <ProductSelectDialog key="productSelectDialog" shopping={shopping}
-                ref={(e) => this.productSelectDialog = e || this.productSelectDialog} />
+                ref={(e) => this.categoryInputDialog = e || this.categoryInputDialog} />
         ]
     }
 }

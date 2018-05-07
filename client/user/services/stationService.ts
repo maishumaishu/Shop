@@ -279,6 +279,6 @@ export class StationService extends Service {
 
     store() {
         let url = this.url('Store/Get');
-        return this.getByJson<StoreInfo>(url);
+        return this.getByJson<Store>(url);
     }
 }

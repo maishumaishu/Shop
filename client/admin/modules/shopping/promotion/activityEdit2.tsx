@@ -22,10 +22,6 @@ export default function (page: chitu.Page) {
         renderTopbar(topbarElement);
         //renderTopbar
 
-        let productSelectorElement = document.createElement('div');
-        page.element.appendChild(productSelectorElement);
-        ReactDOM.render(<ProductSelectDialog ref={(e) => productSelectorDialog = e || productSelectorDialog} shopping={shopping} />, productSelectorElement);
-
         page_load(page, page.data);
     });
 
@@ -458,7 +454,7 @@ class PromotionRange {
                     this.product.id(product.Id);
                 }
                 // selected={(product: Product) => Promise.resolve(true)}
-                productSelectorDialog.show(productSelected);
+                ProductSelectDialog.show(productSelected);
             }
         };
         this.brand = { id: ko.observable().extend({ required: true }), collectionType: ko.observable('Include') }
@@ -714,9 +710,7 @@ function renderProductRuleDialog(element: HTMLElement, page: chitu.Page) {
                     <button name="btnOK" data-bind="" type="button" className="btn btn-primary">确定</button>
                 </div>
             </div>
-        </div>,
-        <ProductSelectDialog key="productSelectorDialog" ref={(e) => productSelector = e || productSelector}
-            shopping={shopping} />
+        </div>
 
     ], element);
 

@@ -7,12 +7,13 @@
             width: @item_width;
             margin-right: 10px;
             margin-bottom: 10px;
+
             &:last-child {
                 background-color: white;
                 padding-top: 22px;
                 text-align: center;
-                border: solid #ccc 1px;
                 height: @item_height;
+                border: solid 1px #ccc;
             }
 
             @bottom_height:26px;
@@ -40,7 +41,8 @@
 
             img {
                 width: 100%;
-                height: @item_height;
+                max-height: @item_height;
+                border: solid 1px #ccc;                
             }
 
         }

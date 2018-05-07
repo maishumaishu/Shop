@@ -43,7 +43,8 @@ define(["require", "exports", "components/mobilePageDesigner", "user/services/st
             if (productId) {
                 let station = page.createService(station_1.StationService);
                 // pageData 的 id 和 商品 一样
-                pageData = yield station.pageDataById(productId);
+                let userStation = page.createService(stationService_1.StationService);
+                pageData = yield userStation.pages.pageDataById(productId);
                 let product = productFromPageData(pageData);
                 // parentId 不为空，是要复制一份商品，源 id 为 parentId
                 if (page.data.parentId) {

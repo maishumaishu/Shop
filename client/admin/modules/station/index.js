@@ -6,13 +6,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "admin/site", "admin/services/station", "admin/services/service", "dilu", "user/site", "qrcode", "clipboard", "bootstrap"], function (require, exports, site_1, station_1, service_1, dilu_1, site_2, QRCode, ClipboardJS) {
+define(["require", "exports", "admin/site", "admin/services/service", "dilu", "user/site", "qrcode", "clipboard", "admin/controls/imageManager", "admin/services/member", "bootstrap"], function (require, exports, site_1, service_1, dilu_1, site_2, QRCode, ClipboardJS, imageManager_1, member_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function default_1(page) {
         return __awaiter(this, void 0, void 0, function* () {
             site_1.app.loadCSS(page.name);
-            let station = page.createService(station_1.StationService);
+            let member = page.createService(member_1.MemberService);
             class StationIndexPage extends React.Component {
                 constructor(props) {
                     super(props);
@@ -23,11 +23,11 @@ define(["require", "exports", "admin/site", "admin/services/station", "admin/ser
                         let isValid = yield this.validator.check();
                         if (!isValid)
                             return Promise.reject({});
-                        if (this.imageUpload.changed) {
-                            var data = yield station.saveImage(this.imageUpload.state.src);
-                            this.state.store.ImagePath = data.id;
-                        }
-                        return station.saveStore(this.state.store);
+                        // if (this.imageUpload.changed) {
+                        //     var data = await station.saveImage(this.imageUpload.state.src);
+                        //     this.state.store.Data.ImageId = data.id;
+                        // }
+                        return member.saveStore(this.state.store);
                     });
                 }
                 componentDidMount() {
@@ -98,10 +98,22 @@ define(["require", "exports", "admin/site", "admin/services/station", "admin/ser
                                 h("div", { className: "col-lg-12" },
                                     h("label", { className: "col-md-4", style: { width: 120 } }, "\u5E97\u94FA\u56FE\u6807"),
                                     h("div", { className: "col-md-8", style: { maxWidth: 300 } },
-                                        h(ImageUpload, { ref: e => this.imageUpload = e || this.imageUpload, src: store.ImagePath ? service_1.imageUrl(store.ImagePath) : null })))))));
+                                        h("img", { className: "img-responsive", src: service_1.imageUrl(store.Data.ImageId), title: "点击上传店铺图标", ref: (e) => {
+                                                if (!e)
+                                                    return;
+                                                ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
+                                                e.onclick = () => {
+                                                    imageManager_1.default.show((imageIds) => {
+                                                        store.Data.ImageId = imageIds[0];
+                                                        debugger;
+                                                        this.setState(this.state);
+                                                        // ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
+                                                    });
+                                                };
+                                            } })))))));
                 }
             }
-            let store = yield station.store();
+            let store = yield member.store();
             ReactDOM.render(h(StationIndexPage, { store: store }), page.element);
         });
     }

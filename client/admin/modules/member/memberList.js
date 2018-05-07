@@ -6,11 +6,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "admin/services/user", "myWuZhui", "dilu", "react", "react-dom"], function (require, exports, user_1, wz, dilu_1, React, ReactDOM) {
+define(["require", "exports", "admin/services/member", "myWuZhui", "dilu", "react", "react-dom"], function (require, exports, member_1, wz, dilu_1, React, ReactDOM) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function default_1(page) {
-        let memberService = page.createService(user_1.UserService);
+        let memberService = page.createService(member_1.MemberService);
         let account = page;
         class MemberListPage extends React.Component {
             constructor() {

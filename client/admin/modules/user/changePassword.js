@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "admin/services/user", "admin/services/weixin", "weixin/modules/openid", "admin/application"], function (require, exports, user_1, weixin_1, openid_1, application_1) {
+define(["require", "exports", "admin/services/member", "admin/services/weixin", "weixin/modules/openid", "admin/application"], function (require, exports, member_1, weixin_1, openid_1, application_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const label_max_width = 80;
@@ -14,7 +14,7 @@ define(["require", "exports", "admin/services/user", "admin/services/weixin", "w
     function default_1(page) {
         return __awaiter(this, void 0, void 0, function* () {
             application_1.default.loadCSS(page.name);
-            let userService = page.createService(user_1.UserService);
+            let userService = page.createService(member_1.MemberService);
             let seller = yield userService.me();
             let weixin = page.createService(weixin_1.WeiXinService);
             class AccountSettingPage extends React.Component {

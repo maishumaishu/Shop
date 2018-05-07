@@ -41,20 +41,18 @@ define(["require", "exports", "components/common", "user/site", "user/services/s
         }
         renderMenuWithIcon(h, menuNodes) {
             let productsCount = this.state.productsCount || 0;
-            return [
-                h("ul", { className: "menu" }, menuNodes.map((o, i) => {
-                    let itemWidth = 100 / menuNodes.length;
-                    // let routeString = o.url.startsWith('#') ? o.url.substr(1) : o.url;
-                    var routeData = site_1.app.parseUrl(o.url);
-                    let isShoppingCart = routeData.pageName == 'shopping.shoppingCart';
-                    let isActive = this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
-                    return (h("li", { key: i, style: { width: `${itemWidth}%` } },
-                        h("div", { onClick: () => site_1.app.redirect(siteMap_1.default.nodes[routeData.pageName]), className: isActive ? 'text-primary' : null },
-                            h("i", { className: o.icon ? o.icon : EMPTY_ICON }),
-                            o.name),
-                        isShoppingCart && productsCount > 0 ? h("div", { className: "badge bg-primary" }, productsCount) : null));
-                }))
-            ];
+            return h("ul", { className: "menu" }, menuNodes.map((o, i) => {
+                let itemWidth = 100 / menuNodes.length;
+                // let routeString = o.url.startsWith('#') ? o.url.substr(1) : o.url;
+                var routeData = site_1.app.parseUrl(o.url);
+                let isShoppingCart = routeData.pageName == 'shopping.shoppingCart';
+                let isActive = this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
+                return (h("li", { key: i, style: { width: `${itemWidth}%` } },
+                    h("div", { onClick: () => site_1.app.redirect(siteMap_1.default.nodes[routeData.pageName]), className: isActive ? 'text-primary' : null },
+                        h("i", { className: o.icon ? o.icon : EMPTY_ICON }),
+                        o.name),
+                    isShoppingCart && productsCount > 0 ? h("div", { className: "badge bg-primary" }, productsCount) : null));
+            }));
         }
     }
     exports.default = MenuControl;

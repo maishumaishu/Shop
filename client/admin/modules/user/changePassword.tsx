@@ -1,5 +1,5 @@
 ﻿import { Service, systemWeiXinAppId } from 'admin/services/service';
-import { UserService, Seller } from 'admin/services/user';
+import { MemberService as UserService } from 'admin/services/member';
 import { WeiXinService } from 'admin/services/weixin';
 import * as site from 'user/site';
 import QRCode = require('qrcode');

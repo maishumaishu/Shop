@@ -9,17 +9,19 @@ import { app as userApp, siteMap as userSiteMap, siteMap } from 'user/site';
 
 import QRCode = require('qrcode');
 import ClipboardJS = require('clipboard');
+import imageManager from 'admin/controls/imageManager';
+import { MemberService } from 'admin/services/member';
 
 export default async function (page: chitu.Page) {
 
     app.loadCSS(page.name);
 
-    let station = page.createService(StationService);
+    let member = page.createService(MemberService);
 
-    class StationIndexPage extends React.Component<{ store: StoreInfo }, { store: StoreInfo }>{
+    class StationIndexPage extends React.Component<{ store: Store }, { store: Store }>{
         private qrcodeElement: HTMLElement;
         private nameInput: HTMLInputElement;
-        private imageUpload: ImageUpload;
+        // private imageUpload: ImageUpload;
         private validator: FormValidator;
 
         constructor(props) {
@@ -31,11 +33,11 @@ export default async function (page: chitu.Page) {
             if (!isValid)
                 return Promise.reject({});
 
-            if (this.imageUpload.changed) {
-                var data = await station.saveImage(this.imageUpload.state.src);
-                this.state.store.ImagePath = data.id;
-            }
-            return station.saveStore(this.state.store);
+            // if (this.imageUpload.changed) {
+            //     var data = await station.saveImage(this.imageUpload.state.src);
+            //     this.state.store.Data.ImageId = data.id;
+            // }
+            return member.saveStore(this.state.store);
         }
 
         componentDidMount() {
@@ -134,8 +136,22 @@ export default async function (page: chitu.Page) {
                             <div className="col-lg-12">
                                 <label className="col-md-4" style={{ width: 120 }}>店铺图标</label>
                                 <div className="col-md-8" style={{ maxWidth: 300 }}>
-                                    <ImageUpload ref={e => this.imageUpload = e || this.imageUpload}
-                                        src={store.ImagePath ? imageUrl(store.ImagePath) : null} />
+                                    {/* <ImageUpload ref={e => this.imageUpload = e || this.imageUpload}
+                                        src={store.Data.ImageId ? imageUrl(store.Data.ImageId) : null} /> */}
+                                    <img className="img-responsive" src={imageUrl(store.Data.ImageId)}
+                                        title="点击上传店铺图标"
+                                        ref={(e: HTMLImageElement) => {
+                                            if (!e) return;
+                                            ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
+                                            e.onclick = () => {
+                                                imageManager.show((imageIds) => {
+                                                    store.Data.ImageId = imageIds[0];
+                                                    debugger;
+                                                    this.setState(this.state);
+                                                    // ui.renderImage(e, { imageSize: { width: 300, height: 300 } });
+                                                })
+                                            }
+                                        }} />
                                 </div>
                             </div>
 
@@ -170,7 +186,7 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let store = await station.store();
+    let store = await member.store();
     ReactDOM.render(<StationIndexPage store={store} />, page.element);
 }
 

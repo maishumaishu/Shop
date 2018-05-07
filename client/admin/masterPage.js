@@ -1,4 +1,4 @@
-define(["require", "exports", "react", "admin/services/service", "admin/siteMap"], function (require, exports, React, service_1, siteMap_1) {
+define(["require", "exports", "react", "admin/services/service", "admin/pageNodes", "admin/services/member"], function (require, exports, React, service_1, pageNodes_1, member_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let h = React.createElement;
@@ -11,18 +11,28 @@ define(["require", "exports", "react", "admin/services/service", "admin/siteMap"
             });
             this.state = {
                 currentNode: null, username: service_1.Service.adminName.value,
-                hideExistsButton: true, hideStoreButton: true
+                hideExistsButton: true, hideStoreButton: true,
+                store: null, allStores: [], menuShown: false
             };
             this.props.app.pageCreated.add((sender, page) => {
                 page.shown.add(() => {
                     this.state.currentNode = this.findNodeByName(page.name);
                     this.setState(this.state);
                     console.log(`page '${page.name}' shown`);
-                    let names = siteMap_1.siteMap.anonymous.map(o => o.name);
-                    this.state.hideStoreButton = [...names, siteMap_1.siteMap.nodes.user_myStores.name].indexOf(page.name) >= 0;
+                    let names = pageNodes_1.siteMap.anonymous.map(o => o.name);
+                    this.state.hideStoreButton = [...names, pageNodes_1.siteMap.nodes.user_myStores.name].indexOf(page.name) >= 0;
                     this.state.hideExistsButton = [...names].indexOf(page.name) >= 0;
                     this.setState(this.state);
                 });
+            });
+            let member = this.props.app.createService(member_1.MemberService);
+            member.store().then(store => {
+                this.state.store = store;
+                this.setState(this.state);
+            });
+            member.stores().then(items => {
+                this.state.allStores = items;
+                this.setState(this.state);
             });
         }
         updateMenu(page) {
@@ -34,8 +44,8 @@ define(["require", "exports", "react", "admin/services/service", "admin/siteMap"
         }
         findNodeByName(name) {
             let stack = new Array();
-            for (let i = 0; i < siteMap_1.menuData.length; i++) {
-                stack.push(siteMap_1.menuData[i]);
+            for (let i = 0; i < pageNodes_1.menuData.length; i++) {
+                stack.push(pageNodes_1.menuData[i]);
             }
             while (stack.length > 0) {
                 let node = stack.pop();
@@ -60,7 +70,7 @@ define(["require", "exports", "react", "admin/services/service", "admin/siteMap"
                 url = node.name;
             }
             if (url) {
-                this.props.app.redirect(siteMap_1.siteMap.nodes[url]);
+                this.props.app.redirect(pageNodes_1.siteMap.nodes[url]);
             }
             this.state.currentNode = node;
             this.setState(this.state);
@@ -70,13 +80,7 @@ define(["require", "exports", "react", "admin/services/service", "admin/siteMap"
             let firstLevelNode;
             let secondLevelNode;
             let thirdLevelNode;
-            // if (currentNode == null) {
-            //     return (
-            //         <div ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
-            //         </div>
-            //     );
-            // }
-            let firstLevelNodes = siteMap_1.menuData.filter(o => o.visible == null || o.visible == true);
+            let firstLevelNodes = pageNodes_1.menuData.filter(o => o.visible == null || o.visible == true);
             let secondLevelNodes = [];
             let thirdLevelNodes = [];
             if (currentNode != null) {
@@ -117,9 +121,7 @@ define(["require", "exports", "react", "admin/services/service", "admin/siteMap"
             else if (secondLevelNodes.length == 0) {
                 nodeClassName = 'hideSecond';
             }
-            // let currentPageName = app.currentPage != null ? app.currentPage.name : '';
-            // let hideExistsButton = location.hash == '#user/login' || !Service.token;
-            let { hideExistsButton, hideStoreButton } = this.state;
+            let { hideExistsButton, hideStoreButton, store, allStores, menuShown } = this.state;
             let { app } = this.props;
             return (h("div", { className: nodeClassName },
                 h("div", { className: "first" },
@@ -130,18 +132,49 @@ define(["require", "exports", "react", "admin/services/service", "admin/siteMap"
                     h("ul", { className: "list-group", style: { margin: 0 } }, secondLevelNodes.map((o, i) => h("li", { key: i, className: o == secondLevelNode ? "list-group-item active" : "list-group-item", style: { cursor: 'pointer', display: o.visible == false ? "none" : null }, onClick: () => this.showPageByNode(o) },
                         h("span", { style: { paddingLeft: 8, fontSize: 14 } }, o.title))))),
                 h("div", { className: secondLevelNodes.length == 0 ? "main hideSecond" : 'main' },
-                    h("nav", { className: "navbar navbar-default" },
-                        h("div", { className: "container-fluid" },
-                            h("div", { className: "collapse navbar-collapse", id: "bs-example-navbar-collapse-6" },
-                                h("ul", { className: "nav navbar-nav", style: { width: '100%' } },
-                                    !hideExistsButton ?
-                                        h("li", { className: "light-blue pull-right", style: { color: 'white', paddingTop: 12, cursor: 'pointer' }, onClick: () => app.redirect(siteMap_1.siteMap.nodes.user_login) },
-                                            h("i", { className: "icon-off" }),
-                                            h("span", { style: { paddingLeft: 4 } }, "\u9000\u51FA")) : null,
-                                    !hideStoreButton ?
-                                        h("li", { className: "light-blue pull-right", style: { color: 'white', paddingTop: 12, cursor: 'pointer' }, onClick: () => app.redirect(siteMap_1.siteMap.nodes.user_myStores) },
-                                            h("i", { className: "icon-building" }),
-                                            h("span", { style: { paddingLeft: 4, paddingRight: 10 } }, "\u5E97\u94FA\u7BA1\u7406")) : null)))),
+                    h("nav", { className: "navbar navbar-default", style: { padding: "10px 10px 10px 10px" } },
+                        h("div", { className: "pull-left" },
+                            store != null && !hideStoreButton ?
+                                h("div", { key: 10, className: "btn-link", ref: (e) => {
+                                        if (!e)
+                                            return;
+                                        e.onclick = () => {
+                                            this.state.menuShown = !this.state.menuShown;
+                                            this.setState(this.state);
+                                        };
+                                        window.addEventListener('click', (event) => {
+                                            let target = event.target;
+                                            if (target.parentElement == e) {
+                                                return;
+                                            }
+                                            this.state.menuShown = false;
+                                            this.setState(this.state);
+                                        });
+                                    } },
+                                    h("img", { key: 10, src: service_1.imageUrl(store.Data.ImageId), ref: (e) => {
+                                            if (!e)
+                                                return;
+                                            ui.renderImage(e, { imageSize: { width: 100, height: 100 } });
+                                        } }),
+                                    h("span", { key: 20, style: { padding: "2px 0px 0px 10px", fontSize: '16px', color: 'white' } }, store.Name),
+                                    h("i", { key: 30, className: "icon-caret-down", style: { padding: "2px 0px 0px 4px", fontSize: '14px', color: 'white' } })) : null,
+                            h("ul", { key: 40, className: "dropdown-menu", "aria-labelledby": "dropdownMenu1", style: { display: menuShown ? 'block' : null } }, allStores.map((o, i) => [
+                                h("li", { key: o.Id, style: {
+                                        paddingTop: i == 0 ? 14 : null,
+                                        paddingBottom: i == allStores.length - 1 ? 14 : null
+                                    } },
+                                    h("a", { href: "#" }, o.Name)),
+                                i != allStores.length - 1 ? h("li", { key: o.Id + "S", role: "separator", className: "divider" }) : null
+                            ]))),
+                        h("ul", { className: "nav navbar-nav pull-right" },
+                            !hideExistsButton ?
+                                h("li", { className: "light-blue pull-right", style: { color: 'white', paddingTop: 4, cursor: 'pointer' }, onClick: () => app.redirect(pageNodes_1.siteMap.nodes.user_login) },
+                                    h("i", { className: "icon-off" }),
+                                    h("span", { style: { paddingLeft: 4 } }, "\u9000\u51FA")) : null,
+                            !hideStoreButton ?
+                                h("li", { className: "light-blue pull-right", style: { color: 'white', paddingTop: 4, cursor: 'pointer' }, onClick: () => app.redirect(pageNodes_1.siteMap.nodes.user_myStores) },
+                                    h("i", { className: "icon-building" }),
+                                    h("span", { style: { paddingLeft: 4, paddingRight: 10 } }, "\u5E97\u94FA\u7BA1\u7406")) : null)),
                     h("div", { style: { padding: 20 }, ref: (e) => this.viewContainer = e || this.viewContainer }))));
         }
     }

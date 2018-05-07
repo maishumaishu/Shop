@@ -43,22 +43,19 @@ define(["require", "exports", "admin/services/service", "admin/services/data/tem
                 return { totalRowCount: pageList.totalRowCount, dataItems: pages };
             });
         }
-        pageDataById(pageId) {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (!pageId)
-                    throw new Error('argument pageId null');
-                let url = this.url('Page/GetPageDataById');
-                let data = { pageId };
-                let pageData = yield this.getByJson(url, { id: pageId });
-                if (pageData == null) {
-                    let error = new Error(`Page data ${pageId} is not exists.`);
-                    this.error.fire(this, error);
-                    throw error;
-                }
-                // pageData = await fillPageData(pageData);
-                return pageData;
-            });
-        }
+        // async pageDataById(pageId: string) {
+        //     if (!pageId) throw new Error('argument pageId null');
+        //     let url = this.url('Page/GetPageDataById');
+        //     let data = { pageId };
+        //     let pageData = await this.getByJson<PageData>(url, { id: pageId })
+        //     if (pageData == null) {
+        //         let error = new Error(`Page data ${pageId} is not exists.`);
+        //         this.error.fire(this, error);
+        //         throw error;
+        //     }
+        //     // pageData = await fillPageData(pageData);
+        //     return pageData;
+        // }
         deletePageData(pageId) {
             let url = this.url('Page/DeletePage');
             return this.deleteByJson(url, { pageId });
@@ -110,16 +107,6 @@ define(["require", "exports", "admin/services/service", "admin/services/data/tem
             while (match = search.exec(query))
                 urlParams[decode(match[1])] = decode(match[2]);
             return urlParams;
-        }
-        //============================================================
-        // 店铺
-        saveStore(store) {
-            let url = this.url('Store/Save');
-            return this.postByJson(url, { store });
-        }
-        store() {
-            let url = this.url('Store/Get');
-            return this.getByJson(url);
         }
     }
     exports.StationService = StationService;

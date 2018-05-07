@@ -49,7 +49,7 @@ define(["require", "exports", "user/services/service", "user/services/stationSer
             let url = '';
             let { store } = this.state;
             store = store || {};
-            let src = store.ImagePath ? service_1.imageUrl(store.ImagePath) : ui.generateImageBase64(100, 100, store.Name || "");
+            let src = store.Data.ImageId ? service_1.imageUrl(store.Data.ImageId) : ui.generateImageBase64(100, 100, store.Name || "");
             return [
                 h("div", { key: 10, className: "headerImage pull-left" },
                     h("img", { src: src, ref: (e) => e ? ui.renderImage(e) : null })),

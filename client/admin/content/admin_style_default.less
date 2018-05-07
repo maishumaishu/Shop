@@ -159,6 +159,12 @@
         min-height: 45px;
         position: relative;
         background: #438eb9;
+        img {
+            @img-width: 30px;
+            width: @img-width;
+            height: @img-width;
+            border-radius: @img-width / 2;
+        }
 
         > li {
             float: left;
@@ -168,20 +174,20 @@
             }
         }
         
-        ul {
-            list-style: none;
-            li {
-                position: relative;
-                display: block;
-                float: left;
-                > a {
-                    color: #555;
-                    background: #e7e7e7;
-                    // display: block;
-                    padding: 10px 15px;
-                }
-            }
-        }
+        // ul {
+        //     list-style: none;
+        //     li {
+        //         position: relative;
+        //         display: block;
+        //         float: left;
+        //         > a {
+        //             color: #555;
+        //             background: #e7e7e7;
+        //             // display: block;
+        //             padding: 10px 15px;
+        //         }
+        //     }
+        // }
     }
 
     .nav-tabs {

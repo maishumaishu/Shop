@@ -6,24 +6,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "admin/services/user", "admin/site", "admin/siteMap", "dilu", "ui"], function (require, exports, user_1, site_1, siteMap_1, dilu_1, ui) {
+define(["require", "exports", "admin/services/member", "admin/siteMap", "dilu", "admin/application", "admin/site", "ui"], function (require, exports, member_1, siteMap_1, dilu_1, application_1, site_1, ui) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function default_1(page) {
         return __awaiter(this, void 0, void 0, function* () {
             // requirejs([`css!${page.name}.css`]);
-            site_1.app.loadCSS(page.name);
-            let userService = page.createService(user_1.UserService);
-            let apps = yield userService.applications();
+            application_1.default.loadCSS(page.name);
+            let userService = page.createService(member_1.MemberService);
+            let apps = yield userService.stores();
             class MyStoresPage extends React.Component {
                 constructor(props) {
                     super(props);
                     this.state = { stores: apps };
                 }
                 componentDidMount() {
-                    // this.validator = new FormValidator(this.dialogElement, {
-                    //     name: { rules: ['required'], display: '店铺名称' }
-                    // })
                     let nameElement = this.dialogElement.querySelector('[name="name"]');
                     this.validator = new dilu_1.FormValidator(this.dialogElement, { name: "name", rules: [dilu_1.rules.required('店铺名称')] });
                 }
@@ -35,12 +32,12 @@ define(["require", "exports", "admin/services/user", "admin/site", "admin/siteMa
                         }
                         let p;
                         if (!app.Id) {
-                            p = userService.addApplication(app).then(data => {
+                            p = userService.addStore(app).then(data => {
                                 this.state.stores.push(app);
                             });
                         }
                         else {
-                            p = userService.updateApplication(app).then(data => {
+                            p = userService.updateStore(app).then(data => {
                                 this.setState(this.state);
                             });
                         }
@@ -52,7 +49,7 @@ define(["require", "exports", "admin/services/user", "admin/site", "admin/siteMa
                     });
                 }
                 delete(app) {
-                    return userService.deleteApplication(app).then(data => {
+                    return userService.deleteStore(app).then(data => {
                         this.state.stores = this.state.stores.filter(o => o != app);
                         this.setState(this.state);
                         return data;
@@ -121,7 +118,7 @@ define(["require", "exports", "admin/services/user", "admin/site", "admin/siteMa
                                         h("button", { className: "btn btn-success btn-block", onClick: () => {
                                                 let pageName = siteMap_1.siteMap.nodes.home_index.name;
                                                 console.assert(pageName != null);
-                                                location.href = `?appKey=${o.Id}#${pageName}`;
+                                                location.href = site_1.default.storeUrl(o.Id);
                                             } }, "\u8FDB\u5165"))))),
                             h("li", null,
                                 h("div", { className: "header" },

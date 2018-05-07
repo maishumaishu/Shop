@@ -35,20 +35,20 @@ export class StationService extends Service {
         let pages = pageList.dataItems.map(o => <PageData>{ id: o.Id, name: o.Name });
         return { totalRowCount: pageList.totalRowCount, dataItems: pages };
     }
-    async pageDataById(pageId: string) {
-        if (!pageId) throw new Error('argument pageId null');
+    // async pageDataById(pageId: string) {
+    //     if (!pageId) throw new Error('argument pageId null');
 
-        let url = this.url('Page/GetPageDataById');
-        let data = { pageId };
-        let pageData = await this.getByJson<PageData>(url, { id: pageId })
-        if (pageData == null) {
-            let error = new Error(`Page data ${pageId} is not exists.`);
-            this.error.fire(this, error);
-            throw error;
-        }
-        // pageData = await fillPageData(pageData);
-        return pageData;
-    }
+    //     let url = this.url('Page/GetPageDataById');
+    //     let data = { pageId };
+    //     let pageData = await this.getByJson<PageData>(url, { id: pageId })
+    //     if (pageData == null) {
+    //         let error = new Error(`Page data ${pageId} is not exists.`);
+    //         this.error.fire(this, error);
+    //         throw error;
+    //     }
+    //     // pageData = await fillPageData(pageData);
+    //     return pageData;
+    // }
     deletePageData(pageId: string) {
         let url = this.url('Page/DeletePage');
         return this.deleteByJson(url, { pageId });
@@ -100,15 +100,5 @@ export class StationService extends Service {
         return urlParams;
     }
 
-    //============================================================
-    // 店铺
-    saveStore(store: StoreInfo) {
-        let url = this.url('Store/Save');
-        return this.postByJson(url, { store });
-    }
-    store() {
-        let url = this.url('Store/Get');
-        return this.getByJson<StoreInfo>(url);
-    }
-    //============================================================
+
 }

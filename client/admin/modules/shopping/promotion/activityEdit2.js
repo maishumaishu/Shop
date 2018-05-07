@@ -12,9 +12,6 @@ define(["require", "exports", "knockout", "knockout.validation", "admin/services
             let topbarElement = page.element.querySelector('.nav-tabs');
             renderTopbar(topbarElement);
             //renderTopbar
-            let productSelectorElement = document.createElement('div');
-            page.element.appendChild(productSelectorElement);
-            ReactDOM.render(h(productSelectDialog_1.ProductSelectDialog, { ref: (e) => productSelectorDialog = e || productSelectorDialog, shopping: shopping }), productSelectorElement);
             page_load(page, page.data);
         });
         function page_load(page, args) {
@@ -407,7 +404,7 @@ define(["require", "exports", "knockout", "knockout.validation", "admin/services
                         this.product.id(product.Id);
                     };
                     // selected={(product: Product) => Promise.resolve(true)}
-                    productSelectorDialog.show(productSelected);
+                    productSelectDialog_1.ProductSelectDialog.show(productSelected);
                 }
             };
             this.brand = { id: ko.observable().extend({ required: true }), collectionType: ko.observable('Include') };
@@ -535,8 +532,7 @@ define(["require", "exports", "knockout", "knockout.validation", "admin/services
                                         "\u6392\u9664"))))),
                     h("div", { className: "modal-footer" },
                         h("button", { type: "button", className: "btn btn-default", "data-dismiss": "modal" }, "\u53D6\u6D88"),
-                        h("button", { name: "btnOK", "data-bind": "", type: "button", className: "btn btn-primary" }, "\u786E\u5B9A")))),
-            h(productSelectDialog_1.ProductSelectDialog, { key: "productSelectorDialog", ref: (e) => productSelector = e || productSelector, shopping: shopping })
+                        h("button", { name: "btnOK", "data-bind": "", type: "button", className: "btn btn-primary" }, "\u786E\u5B9A"))))
         ], element);
         // setTimeout(() => {
         //     let btn = element.querySelector('[name="btnSelectProduct"]') as HTMLButtonElement;

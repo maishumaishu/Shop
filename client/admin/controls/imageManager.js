@@ -121,7 +121,6 @@ define(["require", "exports", "admin/controls/imageUpload", "admin/controls/imag
     }
     let element = document.createElement('div');
     element.className = 'image-manager modal fade';
-    element.style.zIndex = '1000';
     document.body.appendChild(element);
     let instance = ReactDOM.render(h(ImageManager, { element: element }), element);
     exports.default = {

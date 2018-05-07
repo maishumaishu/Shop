@@ -1,5 +1,5 @@
 ﻿import { Service, systemWeiXinAppId } from 'admin/services/service';
-import { UserService } from 'admin/services/user';
+import { MemberService as UserService } from 'admin/services/member';
 import { WeiXinService } from 'admin/services/weixin';
 import app from 'admin/application';
 import { default as site } from 'admin/site';

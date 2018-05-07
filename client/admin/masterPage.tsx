@@ -1,17 +1,23 @@
 import * as React from 'react';
-import { Service } from 'admin/services/service';
-import { siteMap, menuData, MenuNode } from 'admin/siteMap';
+import { Service, imageUrl } from 'admin/services/service';
+import { siteMap, menuData, MenuNode } from 'admin/pageNodes';
+import { Application as App } from 'admin/Application';
+import { StationService } from 'admin/services/station';
+import { MemberService } from 'admin/services/member';
 
 let h = React.createElement;
 interface State {
     currentNode: MenuNode,
     username: string,
     hideExistsButton: boolean,
-    hideStoreButton: boolean
+    hideStoreButton: boolean,
+    store: Store,
+    allStores: Store[],
+    menuShown: boolean
 }
 
 interface Props {
-    app: chitu.Application
+    app: App
 }
 
 export class MasterPage extends React.Component<Props, State> {
@@ -25,7 +31,8 @@ export class MasterPage extends React.Component<Props, State> {
 
         this.state = {
             currentNode: null, username: Service.adminName.value,
-            hideExistsButton: true, hideStoreButton: true
+            hideExistsButton: true, hideStoreButton: true,
+            store: null, allStores: [], menuShown: false
         };
 
         this.props.app.pageCreated.add((sender, page) => {
@@ -39,7 +46,16 @@ export class MasterPage extends React.Component<Props, State> {
                 this.state.hideExistsButton = [...names].indexOf(page.name) >= 0;
                 this.setState(this.state);
             })
+        })
 
+        let member = this.props.app.createService(MemberService);
+        member.store().then(store => {
+            this.state.store = store;
+            this.setState(this.state);
+        })
+        member.stores().then(items => {
+            this.state.allStores = items;
+            this.setState(this.state);
         })
     }
 
@@ -94,14 +110,6 @@ export class MasterPage extends React.Component<Props, State> {
         let secondLevelNode: MenuNode;
         let thirdLevelNode: MenuNode;
 
-        // if (currentNode == null) {
-        //     return (
-        //         <div ref={(e: HTMLElement) => viewContainer = e || viewContainer}>
-
-        //         </div>
-        //     );
-        // }
-
         let firstLevelNodes = menuData.filter(o => o.visible == null || o.visible == true);
         let secondLevelNodes: Array<MenuNode> = [];
         let thirdLevelNodes: Array<MenuNode> = [];
@@ -147,9 +155,8 @@ export class MasterPage extends React.Component<Props, State> {
             nodeClassName = 'hideSecond';
         }
 
-        // let currentPageName = app.currentPage != null ? app.currentPage.name : '';
-        // let hideExistsButton = location.hash == '#user/login' || !Service.token;
-        let { hideExistsButton, hideStoreButton } = this.state;
+
+        let { hideExistsButton, hideStoreButton, store, allStores, menuShown } = this.state;
         let { app } = this.props;
 
         return (
@@ -178,27 +185,68 @@ export class MasterPage extends React.Component<Props, State> {
                     </ul>
                 </div>
                 <div className={secondLevelNodes.length == 0 ? "main hideSecond" : 'main'} >
-                    <nav className="navbar navbar-default">
-                        <div className="container-fluid">
-                            <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
-                                <ul className="nav navbar-nav" style={{ width: '100%' }}>
-                                    {!hideExistsButton ?
-                                        <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 12, cursor: 'pointer' }}
-                                            onClick={() => app.redirect(siteMap.nodes.user_login)}>
-                                            <i className="icon-off"></i>
-                                            <span style={{ paddingLeft: 4 }}>退出</span>
-                                        </li> : null
-                                    }
-                                    {!hideStoreButton ?
-                                        <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 12, cursor: 'pointer' }}
-                                            onClick={() => app.redirect(siteMap.nodes.user_myStores)}>
-                                            <i className="icon-building"></i>
-                                            <span style={{ paddingLeft: 4, paddingRight: 10 }}>店铺管理</span>
-                                        </li> : null
-                                    }
-                                </ul>
-                            </div>
+                    <nav className="navbar navbar-default" style={{ padding: "10px 10px 10px 10px" }}>
+                        <div className="pull-left">
+                            {store != null && !hideStoreButton ?
+                                <div key={10} className="btn-link"
+                                    ref={(e: HTMLElement) => {
+                                        if (!e) return;
+
+                                        e.onclick = () => {
+                                            this.state.menuShown = !this.state.menuShown;
+                                            this.setState(this.state);
+                                        }
+                                        window.addEventListener('click', (event) => {
+                                            let target = event.target as HTMLElement;
+                                            if (target.parentElement == e) {
+                                                return;
+                                            }
+                                            this.state.menuShown = false;
+                                            this.setState(this.state);
+                                        })
+                                    }}>
+                                    <img key={10} src={imageUrl(store.Data.ImageId)}
+                                        ref={(e: HTMLImageElement) => {
+                                            if (!e) return;
+                                            ui.renderImage(e, { imageSize: { width: 100, height: 100 } });
+
+                                        }} />
+                                    <span key={20} style={{ padding: "2px 0px 0px 10px", fontSize: '16px', color: 'white' }}>
+                                        {store.Name}
+                                    </span>
+                                    <i key={30} className="icon-caret-down"
+                                        style={{ padding: "2px 0px 0px 4px", fontSize: '14px', color: 'white' }} />
+                                </div> : null}
+                            <ul key={40} className="dropdown-menu" aria-labelledby="dropdownMenu1"
+                                style={{ display: menuShown ? 'block' : null }}>
+                                {allStores.map((o, i) => [
+                                    <li key={o.Id}
+                                        style={{
+                                            paddingTop: i == 0 ? 14 : null,
+                                            paddingBottom: i == allStores.length - 1 ? 14 : null
+                                        }}>
+                                        <a href="#">{o.Name}</a>
+                                    </li>,
+                                    i != allStores.length - 1 ? <li key={o.Id + "S"} role="separator" className="divider"></li> : null
+                                ])}
+                            </ul>
                         </div>
+                        <ul className="nav navbar-nav pull-right" >
+                            {!hideExistsButton ?
+                                <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 4, cursor: 'pointer' }}
+                                    onClick={() => app.redirect(siteMap.nodes.user_login)}>
+                                    <i className="icon-off"></i>
+                                    <span style={{ paddingLeft: 4 }}>退出</span>
+                                </li> : null
+                            }
+                            {!hideStoreButton ?
+                                <li className="light-blue pull-right" style={{ color: 'white', paddingTop: 4, cursor: 'pointer' }}
+                                    onClick={() => app.redirect(siteMap.nodes.user_myStores)}>
+                                    <i className="icon-building"></i>
+                                    <span style={{ paddingLeft: 4, paddingRight: 10 }}>店铺管理</span>
+                                </li> : null
+                            }
+                        </ul>
                     </nav>
                     <div style={{ padding: 20 }}
                         ref={(e: HTMLElement) => this.viewContainer = e || this.viewContainer}>
