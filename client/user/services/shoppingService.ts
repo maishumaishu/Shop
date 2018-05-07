@@ -103,9 +103,9 @@ export class ShoppingService extends Service {
 
         let url = this.url('Product/GetProducts');
         return this.getByJson<{ Products: Array<Product> }>(url, args).then(o => {
-            o.Products.forEach(o => {
-                o.ImagePath = imageUrl(o.ImagePath);
-            });
+            // o.Products.forEach(o => {
+            //     o.ImagePath = imageUrl(o.ImagePath);
+            // });
             return o.Products;
         })
     }

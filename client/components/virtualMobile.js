@@ -11,7 +11,7 @@ define(["require", "exports"], function (require, exports) {
         }
         render() {
             let children = React.Children.toArray(this.props.children) || [];
-            return (h("div", { className: "marvel-device iphone5c blue" },
+            return (h("div", { className: "marvel-device iphone5c blue", style: this.props.style },
                 h("div", { className: "top-bar" }),
                 h("div", { className: "sleep" }),
                 h("div", { className: "volume" }),

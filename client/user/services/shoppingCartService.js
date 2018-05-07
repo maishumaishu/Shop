@@ -198,10 +198,4 @@ define(["require", "exports", "user/services/service"], function (require, expor
     ShoppingCartService._items = new chitu.ValueStore([]);
     ShoppingCartService._productsCount = new chitu.ValueStore();
     exports.ShoppingCartService = ShoppingCartService;
-    if (service_1.tokens.userToken.value) {
-        let shoppingCart = new ShoppingCartService();
-        shoppingCart.items().then(items => {
-            ShoppingCartService.items.value = items;
-        });
-    }
 });

@@ -1,8 +1,19 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 define(["require", "exports", "user/services/service"], function (require, exports, service_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.userInfo = new chitu.ValueStore();
     class MemberService extends service_1.Service {
+        constructor() {
+            super();
+        }
         url(path) {
             return `UserShop/${path}`;
         }
@@ -76,18 +87,16 @@ define(["require", "exports", "user/services/service"], function (require, expor
             let url = `user/changeMobile`;
             return this.putByJson(url, { mobile, smsId, verifyCode });
         }
+        store() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let url = `UserMember/User/GetApplication`; //this.url('Store/Get');
+                let app = yield this.getByJson(url);
+                app.Data = app.Data || {};
+                return app;
+            });
+        }
     }
     exports.MemberService = MemberService;
-    let loadUserInfo = function () {
-        let member = new MemberService();
-        member.userInfo().then(data => {
-            exports.userInfo.value = data;
-        });
-    };
-    if (service_1.tokens.userToken.value) {
-        loadUserInfo();
-    }
-    service_1.tokens.userToken.add(() => loadUserInfo());
 });
 // let member = Service.createService(MemberService);
 // member.userInfo().then((o: UserInfo) => {

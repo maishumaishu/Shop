@@ -8,7 +8,7 @@ export class PageDatas {
         this.station = station;
     }
 
-    private defaultPages = {
+    readonly defaultPages = {
         member: <PageData>{
             name: '*member',
             controls: [{ controlId: guid(), controlName: 'member', selected: true }]
@@ -277,8 +277,8 @@ export class StationService extends Service {
     //     return pageData;
     // }
 
-    store() {
-        let url = this.url('Store/Get');
-        return this.getByJson<Store>(url);
-    }
+    // store() {
+    //     let url = this.url('Store/Get');
+    //     return this.getByJson<Store>(url);
+    // }
 }

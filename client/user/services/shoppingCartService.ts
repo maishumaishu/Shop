@@ -210,9 +210,4 @@ export class ShoppingCartService extends Service {
 }
 
 
-if (tokens.userToken.value) {
-    let shoppingCart = new ShoppingCartService();
-    shoppingCart.items().then(items => {
-        ShoppingCartService.items.value = items;
-    });
-}
+

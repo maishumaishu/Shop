@@ -4,6 +4,7 @@ import * as common from 'components/common'
 import * as ui from 'ui';
 import { app } from 'user/application';
 import siteMap from 'user/siteMap';
+import { MemberService } from '../../user/services/memberService';
 
 
 export class Data {
@@ -25,7 +26,7 @@ export default class SummaryHeaderControl extends common.Control<Props, State>{
     constructor(props) {
         super(props);
         this.state = { store: null, mode: 'normal' };
-        let station = this.elementPage.createService(StationService);
+        let station = this.elementPage.createService(MemberService);
         station.store().then(data => {
             this.state.store = data;
             this.setState(this.state);
@@ -69,8 +70,14 @@ class NormalHeader extends React.Component<Props, State>{
         let url = '';
         let { store } = this.state;
         store = store || {} as any;
+        let src: string;
+        if (store.Data && store.Data.ImageId) {
+            src = imageUrl(store.Data.ImageId)
+        }
+        else {
+            src = ui.generateImageBase64(100, 100, store.Name || "");
+        }
 
-        let src = store.Data.ImageId? imageUrl(store.Data.ImageId) : ui.generateImageBase64(100, 100, store.Name || "");
         return [
             <div key={10} className="headerImage pull-left">
                 <img src={src} ref={(e: HTMLImageElement) => e ? ui.renderImage(e) : null} />

@@ -24,7 +24,6 @@ export default async function (page: chitu.Page) {
         showMenuSwitch: true,
         showComponentPanel
     }
-
     if (storePage == 'menu') {
         let menuControl = pageData.controls.filter(o => o.controlName == storePage)[0];
         console.assert(menuControl != null);
@@ -47,9 +46,7 @@ export default async function (page: chitu.Page) {
             }
         })
 
-        pageData = {
-            controls: [{ controlName: 'menu_design_body', controlId: guid(), position: 'view' }]
-        }
+        pageData.controls.push({ controlName: 'menu_design_body', controlId: guid(), position: 'view' });
     }
 
 

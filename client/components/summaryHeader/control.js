@@ -1,4 +1,4 @@
-define(["require", "exports", "user/services/service", "user/services/stationService", "components/common", "ui", "user/application", "user/siteMap"], function (require, exports, service_1, stationService_1, common, ui, application_1, siteMap_1) {
+define(["require", "exports", "user/services/service", "components/common", "ui", "user/application", "user/siteMap", "../../user/services/memberService"], function (require, exports, service_1, common, ui, application_1, siteMap_1, memberService_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Data {
@@ -8,7 +8,7 @@ define(["require", "exports", "user/services/service", "user/services/stationSer
         constructor(props) {
             super(props);
             this.state = { store: null, mode: 'normal' };
-            let station = this.elementPage.createService(stationService_1.StationService);
+            let station = this.elementPage.createService(memberService_1.MemberService);
             station.store().then(data => {
                 this.state.store = data;
                 this.setState(this.state);
@@ -49,7 +49,13 @@ define(["require", "exports", "user/services/service", "user/services/stationSer
             let url = '';
             let { store } = this.state;
             store = store || {};
-            let src = store.Data.ImageId ? service_1.imageUrl(store.Data.ImageId) : ui.generateImageBase64(100, 100, store.Name || "");
+            let src;
+            if (store.Data && store.Data.ImageId) {
+                src = service_1.imageUrl(store.Data.ImageId);
+            }
+            else {
+                src = ui.generateImageBase64(100, 100, store.Name || "");
+            }
             return [
                 h("div", { key: 10, className: "headerImage pull-left" },
                     h("img", { src: src, ref: (e) => e ? ui.renderImage(e) : null })),

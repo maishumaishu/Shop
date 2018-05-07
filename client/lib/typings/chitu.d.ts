@@ -150,7 +150,7 @@ declare namespace chitu {
         private animationTime;
         private num;
         private _element;
-        private _app;
+        protected _app;
         private _displayer;
         private _action;
         private _name;

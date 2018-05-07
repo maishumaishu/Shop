@@ -2,13 +2,15 @@ import { Control } from 'components/common';
 import { default as StyleControl } from 'components/style/control';
 requirejs(['css!content/devices.css']);
 
-
-export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {}>{
+interface Props extends React.Props<VirtualMobile> {
+    style?: React.CSSProperties
+}
+export class VirtualMobile extends React.Component<Props, {}>{
     private _screenElement: HTMLElement;
     constructor(props) {
         super(props);
     }
-    
+
     get screenElement() {
         return this._screenElement;
     }
@@ -16,7 +18,7 @@ export class VirtualMobile extends React.Component<React.Props<VirtualMobile>, {
     render() {
         let children = React.Children.toArray(this.props.children) || [];
         return (
-            <div className="marvel-device iphone5c blue">
+            <div className="marvel-device iphone5c blue" style={this.props.style}>
                 <div className="top-bar"></div>
                 <div className="sleep"></div>
                 <div className="volume"></div>

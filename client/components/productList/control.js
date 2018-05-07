@@ -176,7 +176,7 @@ define(["require", "exports", "components/common", "user/services/service", "use
         }
         createProductImageTemplate() {
             let tmp = `
-        <img class="product-image img-responsive" src="{{image}}"/>
+        <img class="product-image" src="{{image}}"/>
         {{if(offShelve || stock == 0)}}
         <div class="product-image-mask"></div>
         <div class="product-image-text">{{offShelve ? '已下架' : '已售罄'}}</div>

@@ -97,17 +97,18 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         return this._render(React.createElement);
     }
 
-    protected loadControlCSS() {
+    protected async loadControlCSS() {
         var typeName = this.constructor.name;
         typeName = typeName.replace('Control', '');
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
         let path = `${componentsDir}/${typeName}/control`;
+
         let lessText = `@import "../${path}";`;
 
-        // let styleControl = this.mobilePage.props.pageData.filter(o => o.controlName == 'style')[0];
-        // if (styleControl != null) {
-
-        // }
+        let color = await this.mobilePage.styleColor();
+        if (color != null && color != 'default') {
+            lessText = lessText + `@import "../components/style/colors/${color}.less";`;
+        }
 
         let parser = new lessc.Parser(window['less']);
         parser.parse(lessText, (err, tree) => {

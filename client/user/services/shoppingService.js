@@ -106,9 +106,9 @@ define(["require", "exports", "user/services/service"], function (require, expor
             }
             let url = this.url('Product/GetProducts');
             return this.getByJson(url, args).then(o => {
-                o.Products.forEach(o => {
-                    o.ImagePath = service_1.imageUrl(o.ImagePath);
-                });
+                // o.Products.forEach(o => {
+                //     o.ImagePath = imageUrl(o.ImagePath);
+                // });
                 return o.Products;
             });
         }

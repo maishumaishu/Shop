@@ -1,9 +1,12 @@
 import { Service, config, tokens } from 'user/services/service';
-// import { userData } from 'user/services/userData';
 export type VerifyCodeType = 'reigster' | 'changeMobile';
 
 export let userInfo = new chitu.ValueStore<UserInfo>();
 export class MemberService extends Service {
+
+    constructor() {
+        super();
+    }
 
     private url(path: string) {
         return `UserShop/${path}`;
@@ -92,19 +95,16 @@ export class MemberService extends Service {
         return this.putByJson(url, { mobile, smsId, verifyCode });
     }
 
+    async store() {
+        let url = `UserMember/User/GetApplication`; //this.url('Store/Get');
+        let app = await this.getByJson<Store>(url);
+        app.Data = app.Data || {} as any;
+        return app;
+    }
+
 }
 
-let loadUserInfo = function () {
-    let member = new MemberService();
-    member.userInfo().then(data => {
-        userInfo.value = data;
-    });
-}
-if (tokens.userToken.value) {
-    loadUserInfo();
-}
 
-tokens.userToken.add(() => loadUserInfo());
 
 // let member = Service.createService(MemberService);
 // member.userInfo().then((o: UserInfo) => {

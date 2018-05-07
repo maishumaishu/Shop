@@ -211,42 +211,6 @@ define(["require", "exports", "user/services/service"], function (require, expor
                 return products;
             });
         }
-        // private translatePageData(pageData: PageData): PageData {
-        //     if (pageData.view == null && pageData['controls'] != null) {
-        //         pageData.view = { controls: pageData['controls'] };
-        //     }
-        //     pageData.view = pageData.view || { controls: [] };
-        //     pageData.footer = pageData.footer || { controls: [] };
-        //     pageData.header = pageData.header || { controls: [] };
-        //     return pageData;
-        // }
-        // async fullPage(page: () => Promise<PageData>) {
-        //     let result = await Promise.all([page.bind(this)(), this.pages.style(), this.pages.menu()]);
-        //     let pageData = result[0] as PageData;
-        //     let stylePageData = result[1];
-        //     let menuPageData = result[2];
-        //     pageData.footer = pageData.footer || {} as any;
-        //     pageData.footer.controls = pageData.footer.controls || [];
-        //     // let existsStyleControl = pageData.footer.controls.filter(o => o.controlName == 'style').length > 0;
-        //     // if (!existsStyleControl) {
-        //     //     // station.stylePage().then(stylePageData => {
-        //     //     let styleControl = stylePageData.footer.controls[0];
-        //     //     console.assert(styleControl != null && styleControl.controlName == 'style');
-        //     //     pageData.footer.controls.push(styleControl);
-        //     //     // })/home/maishu/projects/shop-cloud/trunk/Assemblies/packages/Microsoft.AspNet.WebApi.Core.5.2.3/lib/net45/System.Web.Http.dll
-        //     // }
-        //     let existsMenuControl = pageData.footer.controls.filter(o => o.controlName == 'menu').length > 0;
-        //     if (!existsMenuControl && pageData.showMenu) {
-        //         let menuControlData = menuPageData.footer.controls.filter(o => o.controlName == 'menu')[0];
-        //         console.assert(menuControlData != null);
-        //         pageData.footer.controls.push(menuControlData);
-        //     }
-        //     return pageData;
-        // }
-        store() {
-            let url = this.url('Store/Get');
-            return this.getByJson(url);
-        }
     }
     exports.StationService = StationService;
 });

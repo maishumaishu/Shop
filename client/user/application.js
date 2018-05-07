@@ -1,4 +1,12 @@
-define(["require", "exports", "react", "react-dom", "user/services/service", "user/services/stationService", "user/services/userData", "maishu-chitu", "components/mobilePage", "ui", "user/siteMap", "share/common"], function (require, exports, React, ReactDOM, service_1, stationService_1, userData_1, maishu_chitu_1, mobilePage_1, ui, siteMap_1, common_1) {
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+define(["require", "exports", "react", "react-dom", "user/services/service", "user/services/stationService", "user/services/userData", "maishu-chitu", "components/mobilePage", "ui", "user/siteMap", "share/common", "user/services/shoppingCartService", "user/services/memberService"], function (require, exports, React, ReactDOM, service_1, stationService_1, userData_1, maishu_chitu_1, mobilePage_1, ui, siteMap_1, common_1, shoppingCartService_1, memberService_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     window['h'] = window['h'] || React.createElement;
@@ -10,6 +18,8 @@ define(["require", "exports", "react", "react-dom", "user/services/service", "us
     class Page extends maishu_chitu_1.Page {
         constructor(params) {
             super(params);
+            this.enableMock = false;
+            console.assert(this._app instanceof Application);
             this.showLoading();
         }
         loadCSS() {
@@ -36,6 +46,32 @@ define(["require", "exports", "react", "react-dom", "user/services/service", "us
                 loadingView.style.display = 'none';
             }
         }
+        createService(type) {
+            let service = super.createService(type);
+            if (this.enableMock) {
+                this.mockService(service);
+            }
+            return service;
+        }
+        mockService(service) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let mockData = yield chitu.loadjs('user/services/mock');
+                if (service instanceof shoppingCartService_1.ShoppingCartService) {
+                    service.items = () => __awaiter(this, void 0, void 0, function* () {
+                        return mockData.shoppingCartItems;
+                    });
+                    service.calculateShoppingCartItems = () => __awaiter(this, void 0, void 0, function* () {
+                        return mockData.shoppingCartItems;
+                    });
+                }
+                else if (service instanceof memberService_1.MemberService) {
+                    service.store = () => __awaiter(this, void 0, void 0, function* () {
+                        let store = { Id: common_1.guid(), Name: '', Data: { ImageId: '' } };
+                        return store;
+                    });
+                }
+            });
+        }
     }
     exports.Page = Page;
     class Application extends maishu_chitu_1.Application {
@@ -44,6 +80,7 @@ define(["require", "exports", "react", "react-dom", "user/services/service", "us
             chitu.Page.tagName = "article";
             this.pageType = Page;
             this.error.add((s, e, p) => this.on_error(s, e, p));
+            this.init();
         }
         createEmptyPage(element) {
             if (!element)
@@ -127,9 +164,34 @@ define(["require", "exports", "react", "react-dom", "user/services/service", "us
                     break;
             }
         }
+        createService(type) {
+            let service = new type();
+            service.error.add((sender, err) => {
+                this.error.fire(this, err, this.currentPage);
+            });
+            return service;
+        }
+        init() {
+            let loadUserInfo = () => {
+                let member = this.createService(memberService_1.MemberService);
+                member.userInfo().then(data => {
+                    memberService_1.userInfo.value = data;
+                });
+            };
+            if (service_1.tokens.userToken.value) {
+                loadUserInfo();
+            }
+            service_1.tokens.userToken.add(() => loadUserInfo());
+            if (service_1.tokens.userToken.value) {
+                let shoppingCart = this.createService(shoppingCartService_1.ShoppingCartService);
+                shoppingCart.items().then(items => {
+                    shoppingCartService_1.ShoppingCartService.items.value = items;
+                });
+            }
+        }
     }
     exports.Application = Application;
     let storeName = localStorage.getItem(`${service_1.urlParams.appKey}_storeName`) || '';
     ui.loadImageConfig.imageDisaplyText = storeName;
-    exports.app = window["user-app"] = window["user-app"] || new Application();
+    exports.app = window["user-app"]; // = window["user-app"] || new Application();
 });

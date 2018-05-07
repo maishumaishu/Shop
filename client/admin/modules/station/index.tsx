@@ -2,7 +2,7 @@
 // import { Button, ImageBox } from 'common/controls';
 import { default as site, app } from 'admin/site'
 import { StationService } from 'admin/services/station';
-import { imageUrl } from 'admin/services/service';
+import { imageUrl, Service } from 'admin/services/service';
 import { FormValidator, rules } from 'dilu';
 import 'bootstrap';
 import { app as userApp, siteMap as userSiteMap, siteMap } from 'user/site';
@@ -11,6 +11,10 @@ import QRCode = require('qrcode');
 import ClipboardJS = require('clipboard');
 import imageManager from 'admin/controls/imageManager';
 import { MemberService } from 'admin/services/member';
+
+
+let { protocol, port, host } = location;
+let storeHomeUrl = `${protocol}//${host}/user/?appKey=${Service.appToken}`;
 
 export default async function (page: chitu.Page) {
 
@@ -76,10 +80,12 @@ export default async function (page: chitu.Page) {
 
                                             var clipboard = new ClipboardJS(e, {
                                                 text: function () {
-                                                    let pageName = userSiteMap.nodes.home_index.name;
-                                                    console.assert(pageName != null);
-                                                    var url = userApp.createUrl(pageName);
-                                                    return url;
+                                                    // let pageName = userSiteMap.nodes.home_index.name;
+                                                    // console.assert(pageName != null);
+                                                    // let { protocol, port, host } = location;
+                                                    // let baseUrl = `${protocol}//${host}/user/?appKey=${Service.appToken}`;
+                                                    // return baseUrl;
+                                                    return storeHomeUrl;
                                                 }
                                             });
 
@@ -96,8 +102,8 @@ export default async function (page: chitu.Page) {
                                     <div className="pull-right">
                                         <button className="btn-link"
                                             onClick={() => {
-                                                let url = userApp.createUrl(siteMap.nodes.home_index);
-                                                window.open(url, "_blank");
+                                                // let url = userApp.createUrl(siteMap.nodes.home_index);
+                                                window.open(storeHomeUrl, "_blank");
                                             }}>
                                             电脑访问
                                         </button>

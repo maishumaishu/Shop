@@ -54,4 +54,7 @@ export class DesignTimeUserApplication extends UserApplication {
         this.screenElement.appendChild(element);
         return element;
     }
+    // protected on_error(app: chitu.Application, err: Error, page?: chitu.Page) {
+    //     debugger;
+    // }
 }

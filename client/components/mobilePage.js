@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "react", "react-dom", "prop-types", "components/common", "share/common"], function (require, exports, React, ReactDOM, prop_types_1, common_1, common_2) {
+define(["require", "exports", "react", "react-dom", "prop-types", "components/common", "share/common", "../user/services/stationService"], function (require, exports, React, ReactDOM, prop_types_1, common_1, common_2, stationService_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const menuHeight = 50;
@@ -22,6 +22,7 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
             this.createdControlCount = 0;
             this.state = { pageData: this.props.pageData };
             this.controls = [];
+            this.props.elementPage.enableMock = this.props.enableMock;
         }
         static getInstanceByElement(element) {
             return element.mobilePage;
@@ -165,6 +166,15 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                 pageElement.className = className;
             }
         }
+        styleColor() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let station = this.props.elementPage.createService(stationService_1.StationService);
+                let pageData = yield station.pages.style();
+                let styleControl = pageData.controls.filter(o => o.controlName == 'style')[0];
+                console.assert(styleControl != null);
+                return styleControl.data.style;
+            });
+        }
         renderDesigntimeViews(pageData) {
             let sortableElement = (element) => {
                 let newControlIndex = 0;
@@ -191,7 +201,6 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                             pageData.controls.push({ controlId: common_2.guid(), controlName, data: {}, position: 'header' });
                         else {
                             let children = element.children;
-                            debugger;
                             console.assert(newControlIndex != null);
                             pageData.controls.splice(newControlIndex, 0, { controlId: common_2.guid(), controlName, data: {}, position: 'view' });
                             newControlIndex = null;

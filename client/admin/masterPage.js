@@ -26,10 +26,12 @@ define(["require", "exports", "react", "admin/services/service", "admin/pageNode
                 });
             });
             let member = this.props.app.createService(member_1.MemberService);
-            member.store().then(store => {
-                this.state.store = store;
-                this.setState(this.state);
-            });
+            if (service_1.Service.appToken != null) {
+                member.store().then(store => {
+                    this.state.store = store;
+                    this.setState(this.state);
+                });
+            }
             member.stores().then(items => {
                 this.state.allStores = items;
                 this.setState(this.state);
@@ -144,7 +146,7 @@ define(["require", "exports", "react", "admin/services/service", "admin/pageNode
                                         };
                                         window.addEventListener('click', (event) => {
                                             let target = event.target;
-                                            if (target.parentElement == e) {
+                                            if (target.parentElement == e || this.state.menuShown == false) {
                                                 return;
                                             }
                                             this.state.menuShown = false;
@@ -156,7 +158,7 @@ define(["require", "exports", "react", "admin/services/service", "admin/pageNode
                                                 return;
                                             ui.renderImage(e, { imageSize: { width: 100, height: 100 } });
                                         } }),
-                                    h("span", { key: 20, style: { padding: "2px 0px 0px 10px", fontSize: '16px', color: 'white' } }, store.Name),
+                                    h("span", { key: 20, style: { padding: "2px 0px 0px 10px", color: 'white' } }, store.Name),
                                     h("i", { key: 30, className: "icon-caret-down", style: { padding: "2px 0px 0px 4px", fontSize: '14px', color: 'white' } })) : null,
                             h("ul", { key: 40, className: "dropdown-menu", "aria-labelledby": "dropdownMenu1", style: { display: menuShown ? 'block' : null } }, allStores.map((o, i) => [
                                 h("li", { key: o.Id, style: {

@@ -6,9 +6,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "admin/site", "admin/services/service", "dilu", "user/site", "qrcode", "clipboard", "admin/controls/imageManager", "admin/services/member", "bootstrap"], function (require, exports, site_1, service_1, dilu_1, site_2, QRCode, ClipboardJS, imageManager_1, member_1) {
+define(["require", "exports", "admin/site", "admin/services/service", "dilu", "qrcode", "clipboard", "admin/controls/imageManager", "admin/services/member", "bootstrap"], function (require, exports, site_1, service_1, dilu_1, QRCode, ClipboardJS, imageManager_1, member_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    let { protocol, port, host } = location;
+    let storeHomeUrl = `${protocol}//${host}/user/?appKey=${service_1.Service.appToken}`;
     function default_1(page) {
         return __awaiter(this, void 0, void 0, function* () {
             site_1.app.loadCSS(page.name);
@@ -58,10 +60,12 @@ define(["require", "exports", "admin/site", "admin/services/service", "dilu", "u
                                                     return;
                                                 var clipboard = new ClipboardJS(e, {
                                                     text: function () {
-                                                        let pageName = site_2.siteMap.nodes.home_index.name;
-                                                        console.assert(pageName != null);
-                                                        var url = site_2.app.createUrl(pageName);
-                                                        return url;
+                                                        // let pageName = userSiteMap.nodes.home_index.name;
+                                                        // console.assert(pageName != null);
+                                                        // let { protocol, port, host } = location;
+                                                        // let baseUrl = `${protocol}//${host}/user/?appKey=${Service.appToken}`;
+                                                        // return baseUrl;
+                                                        return storeHomeUrl;
                                                     }
                                                 });
                                                 clipboard.on('success', function (e) {
@@ -73,8 +77,8 @@ define(["require", "exports", "admin/site", "admin/services/service", "dilu", "u
                                             } }, "\u590D\u5236\u9875\u9762\u94FE\u63A5"),
                                         h("div", { className: "pull-right" },
                                             h("button", { className: "btn-link", onClick: () => {
-                                                    let url = site_2.app.createUrl(site_2.siteMap.nodes.home_index);
-                                                    window.open(url, "_blank");
+                                                    // let url = userApp.createUrl(siteMap.nodes.home_index);
+                                                    window.open(storeHomeUrl, "_blank");
                                                 } }, "\u7535\u8111\u8BBF\u95EE"))))),
                             h("li", { className: "pull-right" },
                                 h("button", { className: "btn btn-sm btn-primary", ref: (e) => {

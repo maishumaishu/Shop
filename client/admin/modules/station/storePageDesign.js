@@ -44,9 +44,7 @@ define(["require", "exports", "components/mobilePageDesigner", "admin/services/s
                         }
                     };
                 });
-                pageData = {
-                    controls: [{ controlName: 'menu_design_body', controlId: common_1.guid(), position: 'view' }]
-                };
+                pageData.controls.push({ controlName: 'menu_design_body', controlId: common_1.guid(), position: 'view' });
             }
             ReactDOM.render(h(mobilePageDesigner_1.MobilePageDesigner, Object.assign({}, props)), page.element);
         });

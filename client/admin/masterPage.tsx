@@ -49,10 +49,12 @@ export class MasterPage extends React.Component<Props, State> {
         })
 
         let member = this.props.app.createService(MemberService);
-        member.store().then(store => {
-            this.state.store = store;
-            this.setState(this.state);
-        })
+        if (Service.appToken != null) {
+            member.store().then(store => {
+                this.state.store = store;
+                this.setState(this.state);
+            })
+        }
         member.stores().then(items => {
             this.state.allStores = items;
             this.setState(this.state);
@@ -198,7 +200,7 @@ export class MasterPage extends React.Component<Props, State> {
                                         }
                                         window.addEventListener('click', (event) => {
                                             let target = event.target as HTMLElement;
-                                            if (target.parentElement == e) {
+                                            if (target.parentElement == e || this.state.menuShown == false) {
                                                 return;
                                             }
                                             this.state.menuShown = false;
@@ -211,7 +213,7 @@ export class MasterPage extends React.Component<Props, State> {
                                             ui.renderImage(e, { imageSize: { width: 100, height: 100 } });
 
                                         }} />
-                                    <span key={20} style={{ padding: "2px 0px 0px 10px", fontSize: '16px', color: 'white' }}>
+                                    <span key={20} style={{ padding: "2px 0px 0px 10px", color: 'white' }}>
                                         {store.Name}
                                     </span>
                                     <i key={30} className="icon-caret-down"

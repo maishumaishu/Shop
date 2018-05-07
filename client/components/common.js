@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 define(["require", "exports", "react", "share/common", "lessc"], function (require, exports, React, common_1, lessc) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -57,24 +65,27 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
             return this._render(React.createElement);
         }
         loadControlCSS() {
-            var typeName = this.constructor.name;
-            typeName = typeName.replace('Control', '');
-            typeName = typeName[0].toLowerCase() + typeName.substr(1);
-            let path = `${exports.componentsDir}/${typeName}/control`;
-            let lessText = `@import "../${path}";`;
-            // let styleControl = this.mobilePage.props.pageData.filter(o => o.controlName == 'style')[0];
-            // if (styleControl != null) {
-            // }
-            let parser = new lessc.Parser(window['less']);
-            parser.parse(lessText, (err, tree) => {
-                if (err) {
-                    console.error(err);
-                    return;
+            return __awaiter(this, void 0, void 0, function* () {
+                var typeName = this.constructor.name;
+                typeName = typeName.replace('Control', '');
+                typeName = typeName[0].toLowerCase() + typeName.substr(1);
+                let path = `${exports.componentsDir}/${typeName}/control`;
+                let lessText = `@import "../${path}";`;
+                let color = yield this.mobilePage.styleColor();
+                if (color != null && color != 'default') {
+                    lessText = lessText + `@import "../components/style/colors/${color}.less";`;
                 }
-                let style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = tree.toCSS();
-                document.head.appendChild(style);
+                let parser = new lessc.Parser(window['less']);
+                parser.parse(lessText, (err, tree) => {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                    let style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.innerHTML = tree.toCSS();
+                    document.head.appendChild(style);
+                });
             });
         }
         subscribe(item, callback) {

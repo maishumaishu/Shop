@@ -10,7 +10,10 @@ import { Application as BaseApplication, Page as BasePage } from 'maishu-chitu';
 import { MobilePage } from 'components/mobilePage'
 import * as ui from 'ui';
 import siteMap from 'user/siteMap';
-import { AppError, ErrorCodes } from 'share/common';
+import { AppError, ErrorCodes, guid } from 'share/common';
+import { ShoppingCartService } from 'user/services/shoppingCartService';
+import { MockData } from 'user/services/mockData';
+import { MemberService, userInfo } from 'user/services/memberService';
 
 window['h'] = window['h'] || React.createElement;
 
@@ -24,7 +27,7 @@ siteMap.nodes["empty"] = {
 export class Page extends BasePage {
     constructor(params: chitu.PageParams) {
         super(params);
-
+        console.assert(this._app instanceof Application);
         this.showLoading();
     }
     loadCSS() {
@@ -52,6 +55,32 @@ export class Page extends BasePage {
             loadingView.style.display = 'none';
         }
     }
+    enableMock: boolean = false;
+    createService<T extends chitu.Service>(type?: chitu.ServiceConstructor<T>): T {
+        let service = super.createService<T>(type);
+        if (this.enableMock) {
+            this.mockService(service);
+        }
+        return service;
+    }
+
+    private async mockService(service: chitu.Service) {
+        let mockData: MockData = await chitu.loadjs('user/services/mock');
+        if (service instanceof ShoppingCartService) {
+            service.items = async () => {
+                return mockData.shoppingCartItems;
+            }
+            service.calculateShoppingCartItems = async () => {
+                return mockData.shoppingCartItems;
+            }
+        }
+        else if (service instanceof MemberService) {
+            service.store = async () => {
+                let store: Store = { Id: guid(), Name: '', Data: { ImageId: '' } }
+                return store;
+            }
+        }
+    }
 }
 
 export class Application extends BaseApplication {
@@ -64,6 +93,7 @@ export class Application extends BaseApplication {
         chitu.Page.tagName = "article";
         this.pageType = Page;
         this.error.add((s, e: AppError, p) => this.on_error(s, e, p));
+        this.init();
     }
 
     createEmptyPage(element: HTMLElement) {
@@ -128,7 +158,7 @@ export class Application extends BaseApplication {
         return element;
     }
 
-    private on_error(app: chitu.Application, err: AppError, page?: chitu.Page) {
+    protected on_error(app: chitu.Application, err: AppError, page?: chitu.Page) {
         if (err.handled)
             return;
 
@@ -160,29 +190,34 @@ export class Application extends BaseApplication {
         }
     }
 
-    // private static on_pageClosed(sender: chitu.Page) {
-    //     sender.active.remove(Application.on_pageActived);
-    // }
+    createService<T extends chitu.Service>(type?: chitu.ServiceConstructor<T>): T {
+        let service = new type();
+        service.error.add((sender, err) => {
+            this.error.fire(this, err, this.currentPage);
+        })
+        return service;
+    }
 
-    // private static on_pageActived(page: chitu.Page) {
-    //     let stack = new Array<MySiteMapNode>();
+    init() {
+        let loadUserInfo = () => {
+            let member = this.createService(MemberService);
+            member.userInfo().then(data => {
+                userInfo.value = data;
+            });
+        }
+        if (tokens.userToken.value) {
+            loadUserInfo();
+        }
 
-    //     let pageNode: MySiteMapNode;
-    //     stack.push(root);
-    //     while (stack.length > 0) {
-    //         let item = stack.pop();
-    //         if (item.name == page.name) {
-    //             pageNode = item;
-    //             break;
-    //         }
-    //         (item.children || []).forEach(c => stack.push(c));
-    //     }
+        tokens.userToken.add(() => loadUserInfo());
 
-    //     if (pageNode)
-    //         document.title = pageNode.title || '';
-    //     else
-    //         document.title = storeName;
-    // }
+        if (tokens.userToken.value) {
+            let shoppingCart = this.createService(ShoppingCartService);
+            shoppingCart.items().then(items => {
+                ShoppingCartService.items.value = items;
+            });
+        }
+    }
 }
 
 
@@ -193,4 +228,4 @@ ui.loadImageConfig.imageDisaplyText = storeName;
 
 
 
-export let app: Application = window["user-app"] = window["user-app"] || new Application();
+export let app: Application = window["user-app"];// = window["user-app"] || new Application();

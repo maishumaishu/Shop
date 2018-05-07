@@ -38,7 +38,7 @@ export let siteMap = {
 
         station_index: { action: `${dir}/station/index`, cache: true },
         station_store_home: { action: `${dir}/station/storePageDesign`, cache: true },
-        station_store_style: { action: `${dir}/station/storePageDesign`, cache: true },
+        station_store_style: { action: `${dir}/station/storeStyle`, cache: true },
         station_store_shoppingCart: { action: `${dir}/station/storePageDesign`, cache: true },
         station_store_categories: { action: `${dir}/station/storePageDesign`, cache: true },
         station_store_member: { action: `${dir}/station/storePageDesign`, cache: true },

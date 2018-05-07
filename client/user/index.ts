@@ -85,14 +85,16 @@ requirejs.config({
 
 requirejs(['user/build'], function () {
     requirejs(["css!user/content/font-awesome"]);
-    requirejs(['react', 'react-dom', 'user/site', 'ui', 'prop-types'],
-        function (React, ReactDOM, site) {
+    requirejs(['react', 'react-dom', 'user/application', 'ui', 'prop-types'],
+        function (React, ReactDOM, appExports) {
             window['React'] = React;
             window['ReactDOM'] = ReactDOM;
             window['h'] = React.createElement;
 
             ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
 
-            site.app.run();
+            debugger;
+            let app = window["user-app"] = new appExports.Application();
+            app.run();
         })
 })

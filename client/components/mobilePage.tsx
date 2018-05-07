@@ -4,6 +4,10 @@ import { PropTypes } from 'prop-types';
 import MenuControl from 'components/menu/control';
 import { Control, ControlProps, componentsDir } from 'components/common';
 import { guid } from 'share/common';
+import { State as StyleState } from 'components/style/control';
+import { StationService } from '../user/services/stationService';
+import { } from 'admin/application';
+import { Page } from '../user/application';
 
 export interface Props extends React.Props<MobilePage> {
     pageData: PageData;
@@ -14,7 +18,8 @@ export interface Props extends React.Props<MobilePage> {
             controlType: React.ComponentClass<any>
         ) => void
     };
-    controlCreated?: (control: Control<any, any> & { controlName: string }) => void
+    controlCreated?: (control: Control<any, any> & { controlName: string }) => void,
+    enableMock?: boolean,
 }
 
 export interface ControlDescription {
@@ -49,6 +54,7 @@ export class MobilePage extends React.Component<Props, State>{
         super(props);
         this.state = { pageData: this.props.pageData };
         this.controls = [];
+        (this.props.elementPage as Page).enableMock = this.props.enableMock;
     }
 
     static getInstanceByElement(element: HTMLElement): MobilePage {
@@ -236,6 +242,16 @@ export class MobilePage extends React.Component<Props, State>{
         }
     }
 
+
+    async styleColor() {
+        let station = this.props.elementPage.createService(StationService);
+        let pageData = await station.pages.style();
+        let styleControl = pageData.controls.filter(o => o.controlName == 'style')[0];
+        console.assert(styleControl != null)
+        return (styleControl.data as StyleState).style;
+    }
+
+
     renderDesigntimeViews(pageData: PageData) {
         let sortableElement = (element: HTMLElement) => {
             type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
@@ -264,7 +280,6 @@ export class MobilePage extends React.Component<Props, State>{
                         pageData.controls.push({ controlId: guid(), controlName, data: {}, position: 'header' });
                     else {
                         let children = element.children;
-                        debugger;
                         console.assert(newControlIndex != null);
                         pageData.controls.splice(newControlIndex, 0, { controlId: guid(), controlName, data: {}, position: 'view' });
                         newControlIndex = null;
