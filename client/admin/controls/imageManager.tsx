@@ -3,7 +3,7 @@ import ImageThumber from 'admin/controls/imageThumber';
 import { StationService } from 'admin/services/station';
 import 'wuzhui';
 import { imageUrl } from 'share/common';
-import { app } from '../site';
+import app from 'admin/application';
 
 requirejs(['less!admin/controls/imageManager']);
 

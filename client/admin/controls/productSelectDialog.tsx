@@ -1,7 +1,7 @@
 import { imageUrl } from 'admin/services/service';
 import { ShoppingService } from 'admin/services/shopping';
-import 'wuzhui';
 import ImageThumber from './imageThumber';
+import 'wuzhui';
 
 requirejs(['less!admin/controls/productSelectDialog']);
 

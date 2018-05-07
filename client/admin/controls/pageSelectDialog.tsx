@@ -1,4 +1,4 @@
-import { StationService } from "../services/station";
+import { StationService } from "admin/services/station";
 import { pageData as dataSource } from 'admin/services/dataSource';
 import 'less!admin/controls/pageSelectDialog';
 
