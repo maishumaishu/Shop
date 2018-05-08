@@ -15,7 +15,7 @@ export default class ProductInfoBottomBarControl extends Control<Props, State> {
             this.state.productsCount = value;
             this.setState(this.state);
         })
-        this.loadControlCSS();
+        // this.loadControlCSS();
 
         setTimeout(() => {
             let c = this.mobilePage.controls.filter(o => o instanceof ProductInfoControl)[0] as any as ProductInfoControl;

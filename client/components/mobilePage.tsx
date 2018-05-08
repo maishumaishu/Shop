@@ -5,13 +5,14 @@ import MenuControl from 'components/menu/control';
 import { Control, ControlProps, componentsDir } from 'components/common';
 import { guid } from 'share/common';
 import { State as StyleState } from 'components/style/control';
-import { StationService } from '../user/services/stationService';
+import { StationService } from 'user/services/stationService';
 import { } from 'admin/application';
-import { Page } from '../user/application';
+import { Page as UserPage } from 'user/application';
+import { MemberService } from 'user/services/memberService';
 
 export interface Props extends React.Props<MobilePage> {
     pageData: PageData;
-    elementPage: chitu.Page;
+    elementPage: UserPage;
     designTime?: {
         controlSelected?: (
             control: Control<any, any>,
@@ -20,6 +21,7 @@ export interface Props extends React.Props<MobilePage> {
     };
     controlCreated?: (control: Control<any, any> & { controlName: string }) => void,
     enableMock?: boolean,
+    // styleColor?: StyleColor,
 }
 
 export interface ControlDescription {
@@ -31,7 +33,7 @@ export interface ControlDescription {
 
 export type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
 const menuHeight = 50;
-type State = { pageData: PageData, style: string };
+type State = { pageData: PageData, style?: StyleColor };
 
 /**
  * 移动端页面，将 PageData 渲染为移动端页面。
@@ -52,7 +54,10 @@ export class MobilePage extends React.Component<Props, State>{
 
     constructor(props) {
         super(props);
-        this.state = { pageData: this.props.pageData, style: 'default' };
+        this.state = {
+            pageData: this.props.pageData
+        };
+
         this.controls = [];
     }
 
@@ -109,6 +114,13 @@ export class MobilePage extends React.Component<Props, State>{
         }
 
         return this.renderRuntimeControls(controls);
+    }
+
+    async componentDidMount() {
+        let member = this.props.elementPage.createService(MemberService);
+        let store = await member.store();
+        this.state.style = store.Data.Style || 'default';
+        this.setState(this.state);
     }
 
     renderRuntimeControls(controls: ControlDescription[]) {
@@ -237,10 +249,10 @@ export class MobilePage extends React.Component<Props, State>{
         }
     }
 
-    get styleColor(): string {
+    get styleColor(): StyleColor {
         return this.state.style;
     }
-    set styleColor(value: string) {
+    set styleColor(value: StyleColor) {
         this.state.style = value;
         this.setState(this.state);
     }
@@ -337,14 +349,25 @@ export class MobilePage extends React.Component<Props, State>{
         this.viewControlsCount = 0;
         this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
 
+        //=========================================
+        // 还不知道样式，先不渲染，确定了在渲染
         let { style } = this.state;
-        let path = `../components/style/style_${style}.css`;
+        if (style == null) {
+            return [];
+        }
+        //=========================================
+
         var result = [
             this.renderHeader(pageData),
             this.renderFooter(pageData),
             this.renderView(pageData),
-            <link key={path} rel="stylesheet" href={path}></link>
+
         ];
+
+        // if (style) {
+        let path = `../components/style/style_${style}.css`;
+        result.push(<link key={path} rel="stylesheet" href={path}></link>);
+        // }
 
         if (this.props.designTime && this.props.designTime.controlSelected) {
             // 加上延时，否则编辑器有可能显示不出来

@@ -1,7 +1,8 @@
 import { StationService } from 'user/services/stationService';
 import { MobilePage } from 'components/mobilePage';
+import { Page } from 'user/application';
 
-export default async function (page: chitu.Page) {
+export default async function (page: Page) {
 
     let { pageId } = page.data;
     let station = page.createService(StationService);

@@ -17,10 +17,10 @@ export class PageDatas {
             name: '*menu',
             controls: [{ controlId: guid(), controlName: 'menu', selected: true, position: 'footer' }]
         },
-        style: <PageData>{
-            name: '*style',
-            controls: [{ controlId: guid(), controlName: 'style', selected: true, position: 'footer' }]
-        },
+        // style: <PageData>{
+        //     name: '*style',
+        //     controls: [{ controlId: guid(), controlName: 'style', selected: true, position: 'footer' }]
+        // },
         categories: <PageData>{
             name: '*categories',
             controls: [{ controlId: guid(), controlName: 'categories', selected: true, position: 'view' }]
@@ -94,9 +94,9 @@ export class PageDatas {
         return this.pageDataByName('menu');
     }
 
-    style(): Promise<PageData> {
-        return this.pageDataByName('style');
-    }
+    // style(): Promise<PageData> {
+    //     return this.pageDataByName('style');
+    // }
 
     categories(): Promise<PageData> {
         return this.pageDataByName('categories');

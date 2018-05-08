@@ -85,9 +85,12 @@ export class MemberService extends Service {
         let url = `${Service.config.memberUrl}Seller/UpdateApplication`
         return this.postByJson(url, { app: store });
     }
-    async store() {
+    /**
+     * 获取店铺
+     */
+    async store(storeId: string) {
         let url = `${Service.config.memberUrl}Seller/GetApplication`; //this.url('Store/Get');
-        let app = await this.getByJson<Store>(url);
+        let app = await this.getByJson<Store>(url, { applicationId: storeId });
         app.Data = app.Data || {} as any;
         return app;
     }

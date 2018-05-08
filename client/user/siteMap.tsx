@@ -65,27 +65,27 @@ async function shopping_shoppingCart_action(page: Page, showMenu?: boolean) {
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} ></MobilePage>, page.element);
 }
 
-async function home_index_action(page: chitu.Page) {
+async function home_index_action(page: Page) {
     let station = page.createService(StationService);
     let pageData = await station.pages.home();// await station.fullPage(() => station.pages.home());
 
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);
 }
 
-async function home_class_action(page: chitu.Page) {
+async function home_class_action(page: Page) {
     let station = page.createService(StationService);
     let pageData = await station.pages.categories(); //await station.fullPage(() => station.pages.categories());
 
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);
 }
 
-async function user_index_action(page: chitu.Page) {
+async function user_index_action(page: Page) {
     let station = page.createService(StationService);
     let pageData = await station.pages.member();//await station.fullPage(() => station.pages.member());
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, page.element);
 }
 
-async function home_product_action(page: chitu.Page) {
+async function home_product_action(page: Page) {
     let station = page.createService(StationService);
     // let product = await shopping.product(page.data.id);
 

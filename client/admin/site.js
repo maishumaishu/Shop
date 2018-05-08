@@ -28,6 +28,11 @@ define(["require", "exports", "admin/services/service", "admin/pageNodes", "admi
             console.assert(pageName != null);
             return `?appKey=${stroeId}#${pageName}`;
         }
+        appIdFromLocation() {
+            let url = location.search;
+            let params = service_1.parseUrlParams(url);
+            return params.appKey;
+        }
     }
     let site = new Site();
     exports.default = site;

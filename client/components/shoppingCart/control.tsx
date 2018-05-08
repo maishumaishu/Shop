@@ -220,7 +220,7 @@ export default class ShoppingCartControl extends Control<
             deleteItems: [], inputCounts: {}
         };
 
-        this.loadControlCSS();
+        // this.loadControlCSS();
 
 
         ShoppingCartService.items.add(this.on_shoppingCartChanged, this);

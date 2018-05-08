@@ -1,4 +1,4 @@
-define(["require", "exports", "react", "admin/services/service", "admin/pageNodes", "admin/services/member"], function (require, exports, React, service_1, pageNodes_1, member_1) {
+define(["require", "exports", "react", "admin/services/service", "admin/pageNodes", "admin/services/member", "admin/site"], function (require, exports, React, service_1, pageNodes_1, member_1, site_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let h = React.createElement;
@@ -25,9 +25,10 @@ define(["require", "exports", "react", "admin/services/service", "admin/pageNode
                     this.setState(this.state);
                 });
             });
+            let sotreId = site_1.default.appIdFromLocation();
             let member = this.props.app.createService(member_1.MemberService);
             if (service_1.Service.appToken != null) {
-                member.store().then(store => {
+                member.store(sotreId).then(store => {
                     this.state.store = store;
                     this.setState(this.state);
                 });

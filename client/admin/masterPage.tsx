@@ -4,6 +4,7 @@ import { siteMap, menuData, MenuNode } from 'admin/pageNodes';
 import { Application as App } from 'admin/Application';
 import { StationService } from 'admin/services/station';
 import { MemberService } from 'admin/services/member';
+import site from 'admin/site';
 
 let h = React.createElement;
 interface State {
@@ -48,9 +49,10 @@ export class MasterPage extends React.Component<Props, State> {
             })
         })
 
+        let sotreId = site.appIdFromLocation();
         let member = this.props.app.createService(MemberService);
         if (Service.appToken != null) {
-            member.store().then(store => {
+            member.store(sotreId).then(store => {
                 this.state.store = store;
                 this.setState(this.state);
             })

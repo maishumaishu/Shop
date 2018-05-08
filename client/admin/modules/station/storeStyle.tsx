@@ -5,37 +5,54 @@ import { State as ProductListState } from "components/productList/control";
 import { StationService } from "user/services/stationService";
 import { MobilePageDisplay } from "admin/controls/mobilePageDisplay";
 import app from "admin/application";
+import { MemberService } from "admin/services/member";
+import site from "admin/site";
+import tips from "admin/tips";
 
 export default function (page: chitu.Page) {
     ReactDOM.render(<StoreStylePage page={page} />, page.element);
 }
 
-export type StyleType = 'default' | 'red';
-
-class StoreStylePage extends React.Component<{ page: chitu.Page }, any> {
+let allColors: StyleColor[] = ['default', 'red', 'green'];
+class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Store }> {
     productPage: MobilePageDisplay;
     shoppingCartPage: MobilePageDisplay;
     homePage: MobilePageDisplay;
 
     constructor(props) {
         super(props);
-        debugger;
+        this.state = {};
         app.loadCSS(this.props.page.name);
     }
-    setCurrentStyle(name: StyleType) {
-        // this.state.style = name;
-        // this.setState(this.state);
+
+    setCurrentStyle(name: StyleColor) {
         [this.productPage, this.shoppingCartPage, this.homePage].forEach(o => {
             o.changeStyle(name);
         })
+
+        if (this.state.store == null)
+            return;
+
+        debugger;
+        this.state.store.Data.Style = name;
+        this.setState(this.state);
     }
-    styleItem(name: StyleType) {
-        let currentStyle = (this.state || { style: null }).style || 'default';
-        return (
-            <li className={currentStyle == name ? "active" : ''} onClick={() => this.setCurrentStyle(name)}>
-                <div className={name}></div>
-            </li>
-        );
+
+    save() {
+        let member = this.props.page.createService(MemberService);
+        let { store } = this.state;
+        if (store == null) {
+            return;
+        }
+        return member.saveStore(store);
+    }
+
+    async componentDidMount() {
+        let member = this.props.page.createService(MemberService);
+        let appId = site.appIdFromLocation();
+        let store = await member.store(appId);
+        this.state.store = store;
+        this.setState(this.state);
     }
     render() {
         let productListData = {
@@ -45,6 +62,12 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, any> {
         let station = this.props.page.createService(StationService);
         let homePageData: PageData = station.pages.defaultPages.home;
         let shoppingCartPageData = station.pages.defaultPages.shoppingCart;
+        let { store } = this.state;
+        let currentColor: StyleColor = 'default';
+        if (store != null && store.Data.Style != null) {
+            currentColor = store.Data.Style;
+            debugger;
+        }
 
         return [
             <ul key={10} style={{ margin: 0 }} >
@@ -53,7 +76,13 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, any> {
                         <i className="icon-eye-open"></i>
                         <span>预览</span>
                     </button>
-                    <button className="btn btn-sm btn-primary">
+                    <button className="btn btn-sm btn-primary"
+                        ref={(e: HTMLButtonElement) => {
+                            if (!e) return;
+                            ui.buttonOnClick(e, () => {
+                                return this.save();
+                            }, { toast: tips.saveSuccess })
+                        }}>
                         <i className="icon-save"></i>
                         <span>保存</span>
                     </button>
@@ -66,8 +95,12 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, any> {
                 <div className="style-solutions">
                     <header>选择配色方案</header>
                     <ul>
-                        {this.styleItem('default')}
-                        {this.styleItem('red')}
+                        {allColors.map(o =>
+                            <li key={o} className={o == currentColor ? "btn-link active" : 'btn-link'}
+                                onClick={() => this.setCurrentStyle(o)}>
+                                <div className={o}></div>
+                            </li>
+                        )}
                     </ul>
                     <div className="clearfix"></div>
                 </div>

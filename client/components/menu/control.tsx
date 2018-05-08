@@ -38,7 +38,7 @@ export default class MenuControl extends Control<Props, State>{
             this.setState(this.state);
         })
 
-        this.loadControlCSS();
+        // this.loadControlCSS();
     }
 
     _render(h) {

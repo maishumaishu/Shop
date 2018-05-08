@@ -192,7 +192,8 @@ export default async function (page: chitu.Page) {
         }
     }
 
-    let store = await member.store();
+    let sotreId = site.appIdFromLocation();
+    let store = await member.store(sotreId);
     ReactDOM.render(<StationIndexPage store={store} />, page.element);
 }
 

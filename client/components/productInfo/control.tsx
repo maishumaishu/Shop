@@ -17,7 +17,7 @@ export default class ProductInfoControl extends Control<Props, State> {
     }
     constructor(props) {
         super(props);
-        this.loadControlCSS();
+        // this.loadControlCSS();
         this.state = {
             product: {} as Product, hideProperties: false,
             count: 1,

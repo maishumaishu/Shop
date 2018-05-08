@@ -14,6 +14,7 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
     class Control extends React.Component {
         constructor(props) {
             super(props);
+            this.noneCSS = false;
             this.stateChanged = chitu.Callbacks();
             this.setStateTimes = 0;
             this._page = this.props.mobilePage;
@@ -60,6 +61,8 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
             return super.setState(state, callback);
         }
         render() {
+            if (!this.noneCSS)
+                this.loadControlCSS();
             if (this.mobilePage.props.designTime != null)
                 return this._render(createDesignTimeElement);
             return this._render(React.createElement);

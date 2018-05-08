@@ -1,14 +1,16 @@
 interface RegisterModel {
-    username: string, 
+    username: string,
     password: string,
     smsId: string,
     verifyCode: string
 }
 
+type StyleColor = 'default' | 'red' | 'green';
+
 interface Store {
     Id: string,
     Name: string,
-    Data: { ImageId: string },
+    Data: { ImageId?: string, Style?: StyleColor },
 }
 
 interface Seller {

@@ -2,21 +2,22 @@ import components from 'components/componentDefines';
 import StyleControl from 'components/style/control';
 import { VirtualMobile } from 'components/virtualMobile';
 import { MobilePage } from 'components/mobilePage';
-import { Control, componentsDir, IMobilePageDesigner } from 'components/common';
-import { Editor, EditorProps } from 'components/editor';
-import { guid } from 'admin/services/station';
-import { PropTypes } from 'prop-types';
-
-import { AppError, ErrorCodes } from 'share/common';
 import { DesignTimeUserApplication } from 'components/designTimeUserApplication';
+import { Editor, EditorProps } from 'components/editor';
+import { Control, componentsDir, IMobilePageDesigner } from 'components/common';
+import { guid } from 'admin/services/station';
+import app from 'admin/application';
+import { siteMap } from 'admin/siteMap';
+import { siteMap as userSiteMap } from 'user/site';
+import { PageDatas } from 'user/services/stationService';
+import { Page as UserPage, app as userApp } from 'user/application';
+import { AppError, ErrorCodes } from 'share/common';
+
+import { PropTypes } from 'prop-types';
+import { FormValidator, rules } from 'dilu';
 
 import * as ui from 'ui';
 import 'jquery-ui';
-import app from 'admin/application';
-import { siteMap } from 'admin/siteMap';
-import { siteMap as userSiteMap, app as userApp } from 'user/site';
-import { PageDatas } from 'user/services/stationService';
-import { FormValidator, rules } from 'dilu';
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData: PageData,
@@ -272,7 +273,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         if (this.userApp == null) {
             this.userApp = new DesignTimeUserApplication(screenElement);
-            this.userApp.designPageNode.action = (page: chitu.Page) => {
+            this.userApp.designPageNode.action = (page: UserPage) => {
                 ReactDOM.render(<MobilePage pageData={pageData}
                     elementPage={page}
                     ref={(e) => this.mobilePage = e || this.mobilePage}

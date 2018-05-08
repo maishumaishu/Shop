@@ -28,6 +28,8 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     private _elementPage: chitu.Page;
     private _state: S;
 
+    protected noneCSS = false;
+
     stateChanged = chitu.Callbacks<this, any>();
     id: string;
 
@@ -76,6 +78,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         return true;
     }
 
+
     private setStateTimes = 0;
     setState(f: (prevState: S, props: P) => S, callback?: () => any): void;
     setState(state: S, callback?: () => any): void;
@@ -91,6 +94,10 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     }
 
     render() {
+
+        if (!this.noneCSS)
+            this.loadControlCSS();
+
         if (this.mobilePage.props.designTime != null)
             return this._render(createDesignTimeElement);
 
@@ -104,7 +111,6 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         let path = `${componentsDir}/${typeName}/control`;
 
         let lessText = `@import "../${path}";`;
-
         let color = this.mobilePage.styleColor;
         if (color != null && color != 'default') {
             lessText = lessText + `@import "../components/style/colors/${color}.less";`;

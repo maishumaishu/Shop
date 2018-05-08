@@ -19,7 +19,7 @@
 // Components
 @import "../../lib/bootstrap-3.3.7/less/component-animations.less";
 // @import "client/lib/bootstrap-3.3.7/less/dropdowns.less";
-@import "../../lib/bootstrap-3.3.7/less/button-groups.less";
+// @import "../../lib/bootstrap-3.3.7/less/button-groups.less";
 @import "../../lib/bootstrap-3.3.7/less/input-groups.less";
 @import "../../lib/bootstrap-3.3.7/less/navs.less";
 @import "../../lib/bootstrap-3.3.7/less/navbar.less";
@@ -50,10 +50,13 @@
 @import "../../lib/bootstrap-3.3.7/less/responsive-utilities.less";
 @import "variables.less";
 
+
+
 .mobile-page {
+
     @import "../../lib/bootstrap-3.3.7/less/buttons.less";
     @import "../../lib/bootstrap-3.3.7/less/type.less";
-    
+
     top: 0;
     
     .container {
@@ -111,8 +114,19 @@
             margin-top: 10px;
         }
     }
+
     footer {
         background-color: @body-bg;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+    }
+
+    header {
+        background-color: @body-bg;
+        width: 100%;
+        position: absolute;
+        top: 0;
     }
 
     .validationMessage {

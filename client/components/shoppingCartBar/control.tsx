@@ -14,7 +14,7 @@ export interface State {
 export default class ShoppingCartBarControl extends Control<Props, State>{
     constructor(props) {
         super(props);
-        this.loadControlCSS();
+        // this.loadControlCSS();
     }
 
     get persistentMembers(): (keyof State)[] {

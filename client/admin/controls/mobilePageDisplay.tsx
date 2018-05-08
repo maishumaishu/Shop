@@ -1,7 +1,9 @@
 import { VirtualMobile } from "components/virtualMobile";
 import { DesignTimeUserApplication } from "components/designTimeUserApplication";
 import { MobilePage } from "components/mobilePage";
-import { State as StyleControlState, StyleType } from 'components/style/control';
+// import { State as StyleControlState, StyleType } from 'components/style/control';
+import { Page as UserPage } from 'user/application';
+
 interface Props extends React.Props<MobilePageDisplay> {
     pageData: PageData,
     style?: React.CSSProperties,
@@ -19,7 +21,7 @@ export class MobilePageDisplay extends React.Component<Props, State>{
         super(props);
         this.state = { pageData: this.props.pageData };
     }
-    changeStyle(style: StyleType): any {
+    changeStyle(style: StyleColor): any {
         this.mobilePage.styleColor = style;
     }
     renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
@@ -27,7 +29,7 @@ export class MobilePageDisplay extends React.Component<Props, State>{
 
         if (this.userApp == null) {
             this.userApp = new DesignTimeUserApplication(screenElement, this.props.enableMock);
-            this.userApp.designPageNode.action = (page: chitu.Page) => {
+            this.userApp.designPageNode.action = (page: UserPage) => {
                 ReactDOM.render(<MobilePage pageData={pageData}
                     elementPage={page}
                     ref={(e) => this.mobilePage = e || this.mobilePage}

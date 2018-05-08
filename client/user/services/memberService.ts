@@ -101,7 +101,6 @@ export class MemberService extends Service {
         app.Data = app.Data || {} as any;
         return app;
     }
-
 }
 
 

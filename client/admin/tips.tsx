@@ -8,6 +8,7 @@ let tips = {
     noProductRegular: '暂无商品规格',
     noProductProperty: '暂无商品属性',
     imageFromAlbum: '从相册选择图片',
-    uploadImage: '上传图片'
+    uploadImage: '上传图片',
+    saveSuccess: '保存成功'
 }
 export default tips;

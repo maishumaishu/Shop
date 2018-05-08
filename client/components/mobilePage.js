@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "react", "react-dom", "prop-types", "components/common", "share/common"], function (require, exports, React, ReactDOM, prop_types_1, common_1, common_2) {
+define(["require", "exports", "react", "react-dom", "prop-types", "components/common", "share/common", "user/services/memberService"], function (require, exports, React, ReactDOM, prop_types_1, common_1, common_2, memberService_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const menuHeight = 50;
@@ -20,7 +20,9 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
             this.footerControlsCount = 0;
             this.viewControlsCount = 0;
             this.createdControlCount = 0;
-            this.state = { pageData: this.props.pageData, style: 'default' };
+            this.state = {
+                pageData: this.props.pageData
+            };
             this.controls = [];
         }
         static getInstanceByElement(element) {
@@ -69,6 +71,14 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                 return this.renderDesigntimeControls(controls);
             }
             return this.renderRuntimeControls(controls);
+        }
+        componentDidMount() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let member = this.props.elementPage.createService(memberService_1.MemberService);
+                let store = yield member.store();
+                this.state.style = store.Data.Style || 'default';
+                this.setState(this.state);
+            });
         }
         renderRuntimeControls(controls) {
             controls = controls || [];
@@ -248,14 +258,22 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
             let pageData = this.state.pageData;
             this.viewControlsCount = 0;
             this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
+            //=========================================
+            // 还不知道样式，先不渲染，确定了在渲染
             let { style } = this.state;
-            let path = `../components/style/style_${style}.css`;
+            if (style == null) {
+                return [];
+            }
+            //=========================================
             var result = [
                 this.renderHeader(pageData),
                 this.renderFooter(pageData),
                 this.renderView(pageData),
-                h("link", { key: path, rel: "stylesheet", href: path })
             ];
+            // if (style) {
+            let path = `../components/style/style_${style}.css`;
+            result.push(h("link", { key: path, rel: "stylesheet", href: path }));
+            // }
             if (this.props.designTime && this.props.designTime.controlSelected) {
                 // 加上延时，否则编辑器有可能显示不出来
                 setTimeout(() => {

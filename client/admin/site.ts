@@ -1,4 +1,4 @@
-﻿import { default as Service } from 'admin/services/service'
+﻿import { default as Service, parseUrlParams } from 'admin/services/service'
 import { siteMap } from 'admin/pageNodes';
 export { default as app } from 'admin/application';
 
@@ -30,6 +30,11 @@ class Site {
         let pageName = (siteMap.nodes.home_index as chitu.PageNode).name;
         console.assert(pageName != null);
         return `?appKey=${stroeId}#${pageName}`;
+    }
+    appIdFromLocation() {
+        let url = location.search;
+        let params = parseUrlParams(url);
+        return params.appKey;
     }
 }
 
