@@ -60,7 +60,6 @@ export class MemberService extends Service {
         return this.postByJson<{ SmsId: string }>(url, { mobile, type: 'Register' });
     }
     stores(): Promise<Array<Store>> {
-        debugger;
         let url = `${Service.config.memberUrl}Seller/GetApplications`;
         return this.get<Store[]>(url);
     }
