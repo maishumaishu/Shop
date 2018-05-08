@@ -12,13 +12,14 @@ type ProductsDialogProps = {
 } & React.Props<ProductSelectDialog>;
 
 type ProductsDialogState = {
-    products: Product[],
+    products?: Product[],
     selecteItems: Product[],
 }
 
+
+let defaultState = () => ({ selecteItems: [] });
 export class ProductSelectDialog extends React.Component<ProductsDialogProps, ProductsDialogState>{
 
-    // private element: HTMLElement;
     private dataSource: wuzhui.DataSource<Product>;
     private pagingBarElement: HTMLElement;
     private searchInput: HTMLInputElement;
@@ -27,12 +28,10 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, Pr
     constructor(props) {
         super(props);
 
-        this.state = { products: null, selecteItems: [] };
+        this.state = defaultState();
 
         let shopping = new ShoppingService();
         shopping.error.add((sender, err) => app.error.fire(app, err, app.currentPage));
-        // var shopping = this.props.shopping;
-
         this.dataSource = new wuzhui.DataSource({ select: (args) => shopping.products(args) });
         this.dataSource.selectArguments.maximumRows = 18;
         this.dataSource.selectArguments.filter = '!OffShelve';
@@ -44,9 +43,10 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, Pr
     }
 
     static show(confirmSelectedProducts: (products: Product[]) => Promise<any> | void) {
-        // this.confirmSelectedProducts = confirmSelectedProducts;
-        // ui.showDialog(this.element);
         instance.confirmSelectedProducts = confirmSelectedProducts;
+        instance.state = defaultState();
+        instance.setState(instance.state);
+        ui.showDialog(element);
     }
 
     selecteProduct(p: Product) {
@@ -152,7 +152,8 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, Pr
                         <div className="paging-bar pull-left"
                             ref={(e: HTMLElement) => this.pagingBarElement = e || this.pagingBarElement} >
                         </div>
-                        <button name="cancel" type="button" className="btn btn-default">
+                        <button name="cancel" type="button" className="btn btn-default"
+                            onClick={() => ui.hideDialog(element)}>
                             取消
                             </button>
                         <button name="ok" type="button" className="btn btn-primary"
