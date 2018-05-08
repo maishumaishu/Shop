@@ -4,9 +4,9 @@ import { ShoppingService } from 'user/services/shoppingService';
 import { DataList, dataList, MyDataList } from 'user/controls/dataList';
 import { Tabs } from 'user/controls/tabs';
 import { ProductImage } from 'user/controls/productImage';
-import { Page } from 'user/application';
+import { UserPage } from 'user/application';
 
-export default async function (page: Page) {
+export default async function (page: UserPage) {
     page.loadCSS();
     class ProductListHeader extends React.Component<{ title: string }, {}>{
         render() {
@@ -100,7 +100,7 @@ export default async function (page: Page) {
         ref={e => productListView = e || productListView} />, page.element);
 
     type Params = { categoryId: string };
-    page.showing.add(async (sender: Page, args: Params) => {
+    page.showing.add(async (sender: UserPage, args: Params) => {
         categoryId = args.categoryId;
         if (productListView.state.categoryId == categoryId)
             return;

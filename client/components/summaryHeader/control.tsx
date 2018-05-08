@@ -100,7 +100,7 @@ class SimpleHeader extends React.Component<Props, State>{
         return (
             <div className="summaryHeaderControl simpleHeader">
                 <i className="icon-user pull-right"
-                    onClick={() => app.redirect(siteMap.nodes.user_index)}></i>
+                    onClick={() => app().redirect(siteMap.nodes.user_index)}></i>
                 <div className="position interception">
                     <i className="icon-map-marker"></i>
                     <span>暂时获取不到位置信息</span>

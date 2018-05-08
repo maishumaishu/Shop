@@ -1,30 +1,11 @@
 import { StationService } from 'user/services/stationService';
 import { MobilePage } from 'components/mobilePage';
-import { Page } from 'user/application';
+import { UserPage } from 'user/application';
 
-export default async function (page: Page) {
+export default async function (page: UserPage) {
 
     let { pageId } = page.data;
     let station = page.createService(StationService);
-
-    // let result = await Promise.all([station.pages.pageDataById(pageId), station.pages.style(), station.pages.menu()]);
-    // let pageData = result[0];
-    // let stylePageData = result[1];
-    // let menuPageData = result[2];
-
-    // let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
-    // if (!existsStyleControl) {
-    //     let styleControl = stylePageData.controls[0];
-    //     console.assert(styleControl != null && styleControl.controlName == 'style');
-    //     pageData.controls.push(styleControl);
-    // }
-
-    // let existsMenuControl = pageData.controls.filter(o => o.controlName == 'menu').length > 0;
-    // if (!existsMenuControl && pageData.showMenu) {
-    //     let menuControlData = menuPageData.controls.filter(o => o.controlName == 'menu')[0];
-    //     console.assert(menuControlData != null);
-    //     pageData.controls.push(menuControlData);
-    // }
 
     let pageData = await station.pages.pageDataById(pageId)
 

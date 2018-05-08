@@ -1,4 +1,4 @@
-define(["require", "exports", "admin/services/service", "admin/site", "admin/siteMap"], function (require, exports, service_1, site_1, siteMap_1) {
+define(["require", "exports", "admin/services/service", "admin/application", "admin/siteMap"], function (require, exports, service_1, application_1, siteMap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     service_1.Service.error.add((sender, err) => {
@@ -14,7 +14,7 @@ define(["require", "exports", "admin/services/service", "admin/site", "admin/sit
                 if (err.name == '724') {
                     service_1.Service.token.value = '';
                 }
-                var currentPage = site_1.app.currentPage;
+                var currentPage = application_1.app.currentPage;
                 let isLoginPage = currentPage.name == 'user.login';
                 if (isLoginPage) {
                     return;
@@ -31,7 +31,7 @@ define(["require", "exports", "admin/services/service", "admin/site", "admin/sit
                 //     app.redirect('user_login', { return: currentPage.routeData.routeString });
                 // }
                 //========================================================
-                site_1.app.redirect(siteMap_1.siteMap.nodes.user_login, { return: currentPage.name });
+                application_1.app.redirect(siteMap_1.siteMap.nodes.user_login, { return: currentPage.name });
                 break;
             case '725':
                 ui.alert({ title: '错误', message: 'application-key 配置错误' });

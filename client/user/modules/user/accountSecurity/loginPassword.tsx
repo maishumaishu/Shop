@@ -3,9 +3,9 @@ import { FormValidator, rules } from 'dilu';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
 import { MemberService } from 'user/services/memberService';
 import * as ui from 'ui';
-import { Page } from 'user/application';
+import { UserPage } from 'user/application';
 
-export default function (page: Page) {
+export default function (page: UserPage) {
     page.loadCSS();
     class LoginPasswordPage extends React.Component<{ userInfo: UserInfo }, { step: number }>{
         private validator: FormValidator;

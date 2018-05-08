@@ -4,13 +4,13 @@ import * as ui from 'ui';
 import { FormValidator, rules } from 'dilu';
 import WizardComponent from 'modules/user/accountSecurity/wizard';
 import VerifyCodeButton from 'controls/verifyCodeButton';
-import { Page } from 'user/application';
+import { UserPage } from 'user/application';
 
 export interface MobileBindingPageArguments {
     mobileChanged: (mobile: string) => void
 }
 
-export default function (page: Page) {
+export default function (page: UserPage) {
     page.loadCSS();
     let args: MobileBindingPageArguments = page.data as MobileBindingPageArguments;
     let member = page.createService(MemberService);

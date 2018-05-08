@@ -121,6 +121,6 @@ export class Application extends chitu.Application {
 
 
 
-let app: Application = window[ADMIN_APP] = window[ADMIN_APP] || new Application();
+export let app: Application = window[ADMIN_APP] = window[ADMIN_APP] || new Application();
 
 export default app;

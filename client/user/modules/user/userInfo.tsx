@@ -1,4 +1,5 @@
-import { defaultNavBar, app } from 'site';
+import { defaultNavBar } from 'user/site';
+import { app } from 'user/application';
 // import { ShoppingService, MemberService, isWeixin, createWeixinClient, userData } from 'services';
 import { MemberService } from 'user/services/memberService';
 import { userData } from 'user/services/userData';
@@ -175,7 +176,7 @@ export default async function (page: chitu.Page) {
                     this.setState(this.state);
                 }
             };
-            app.showPage(siteMap.nodes.user_regions, routeValues);
+            app().showPage(siteMap.nodes.user_regions, routeValues);
         }
         componentDidMount() {
             this.genderSelector.valueChanged = (item) => {

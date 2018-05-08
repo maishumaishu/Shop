@@ -10,7 +10,7 @@ import app from 'admin/application';
 import { siteMap } from 'admin/siteMap';
 import { siteMap as userSiteMap } from 'user/site';
 import { PageDatas } from 'user/services/stationService';
-import { Page as UserPage, app as userApp } from 'user/application';
+import { UserPage as UserPage } from 'user/application';
 import { AppError, ErrorCodes } from 'share/common';
 
 import { PropTypes } from 'prop-types';
@@ -264,6 +264,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             ui.alert({ title: '提示', message: `预览前必须先保存页面, 请点击"保存"按钮保存页面` });
             return;
         }
+        let userApp = this.mobilePage.props.elementPage.app
         let url = userApp.createUrl(userSiteMap.nodes.page, { pageId: pageData.id });
         open(url, '_blank');
     }

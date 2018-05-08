@@ -6,7 +6,7 @@ import { StationService } from 'user/services/stationService';
 import { WeiXinService } from 'user/services/weixinService';
 import { userData } from 'user/services/userData';
 
-import { Application as BaseApplication, Page as BasePage } from 'maishu-chitu';
+// import { Application as BaseApplication, Page as BasePage } from 'maishu-chitu';
 import { MobilePage } from 'components/mobilePage'
 import * as ui from 'ui';
 import siteMap from 'user/siteMap';
@@ -18,15 +18,15 @@ window['h'] = window['h'] || React.createElement;
 
 
 siteMap.nodes["empty"] = {
-    action(page: Page) {
+    action(page: UserPage) {
         page.hideLoading();
     }
 }
 
-export class Page extends BasePage {
+export class UserPage extends chitu.Page {
     constructor(params: chitu.PageParams) {
         super(params);
-        console.assert(this._app instanceof Application);
+        console.assert(this._app instanceof UserApplication);
         this.showLoading();
     }
     loadCSS() {
@@ -54,13 +54,13 @@ export class Page extends BasePage {
             loadingView.style.display = 'none';
         }
     }
-    get app(): Application {
-        return this._app as Application;
+    get app(): UserApplication {
+        return this._app as UserApplication;
     }
 
 }
 
-export class Application extends BaseApplication {
+export class UserApplication extends chitu.Application {
     // private topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
     private emtpyPageElement: HTMLElement;
 
@@ -68,7 +68,7 @@ export class Application extends BaseApplication {
         super(siteMap);
 
         chitu.Page.tagName = "article";
-        this.pageType = Page;
+        this.pageType = UserPage;
         this.error.add((s, e: AppError, p) => this.on_error(s, e, p));
         this.init();
     }
@@ -77,7 +77,7 @@ export class Application extends BaseApplication {
         if (!element) throw new Error("argument element is null.");
 
         this.emtpyPageElement = element;
-        let page = this.createPage("empty") as Page;
+        let page = this.createPage("empty") as UserPage;
         return page;
     }
 
@@ -99,9 +99,9 @@ export class Application extends BaseApplication {
         return url;
     }
 
-    private styleloaded: boolean;
+    // private styleloaded: boolean;
     protected createPage(pageName: string, value?: any) {
-        let page = super.createPage(pageName, value) as BasePage;
+        let page = super.createPage(pageName, value) as UserPage;
         //===================================================
         // 生成样式
         // if (!this.styleloaded) {
@@ -205,4 +205,7 @@ ui.loadImageConfig.imageDisaplyText = storeName;
 
 
 
-export let app: Application = window["user-app"];// = window["user-app"] || new Application();
+export function app(): UserApplication {
+    return window["user-app"];
+}
+// = window["user-app"];// = window["user-app"] || new Application();

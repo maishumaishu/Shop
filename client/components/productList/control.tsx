@@ -3,10 +3,11 @@ import { imageUrl } from 'user/services/service';
 import { ShoppingCartService } from 'user/services/shoppingCartService';
 import { ShoppingService } from 'user/services/shoppingService';
 import { ProductImage } from 'user/controls/productImage';
-import { app } from 'user/site';
+// import { app } from 'user/site';
 import siteMap from 'user/siteMap';
 import product from 'user/modules/home/product';
 import template = require('art-template');
+import { app } from 'user/application';
 
 requirejs(['css!user/controls/productImage']);
 
@@ -169,11 +170,12 @@ export default class ProductListControl extends Control<Props, State> {
                             if (!productId) {
                                 ui.alert({ title: '错误', message: 'Product id is emtpy.' });
                             }
-                            app.redirect(siteMap.nodes.home_product, { pageId: productId });
+                            // let app = this.props.mobilePage.props.elementPage.app;
+                            app().redirect(siteMap.nodes.home_product, { pageId: productId });
                         })
                     }
                 }, 100);
-                 //====================================
+                //====================================
 
             }}>
             </div>

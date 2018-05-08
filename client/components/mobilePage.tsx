@@ -7,7 +7,7 @@ import { guid } from 'share/common';
 import { State as StyleState } from 'components/style/control';
 import { StationService } from 'user/services/stationService';
 import { } from 'admin/application';
-import { Page as UserPage } from 'user/application';
+import { UserPage as UserPage } from 'user/application';
 import { MemberService } from 'user/services/memberService';
 
 export interface Props extends React.Props<MobilePage> {

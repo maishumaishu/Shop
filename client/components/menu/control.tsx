@@ -2,7 +2,7 @@ import { componentsDir, Control, ControlState, ControlProps } from 'components/c
 // import { app } from 'user/site';
 import { ShoppingCartService } from 'user/services/shoppingCartService';
 import siteMap from 'user/siteMap';
-import { Page as UserPage } from 'user/application';
+import { UserPage as UserPage } from 'user/application';
 
 export interface MenuNode {
     name: string,

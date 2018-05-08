@@ -1,6 +1,7 @@
 import { ShoppingService } from 'admin/services/shopping';
 import { StationService } from 'admin/services/station';
-import { default as site, app } from 'admin/site';
+import { default as site } from 'admin/site';
+import { app } from 'admin/application';
 import tips from 'admin/tips';
 import { siteMap } from 'admin/siteMap';
 import { product as dataSource } from 'admin/services/dataSource';
@@ -492,7 +493,7 @@ class OperationField<T> extends wuzhui.CustomField<T> {
                                 text: function () {
                                     let pageName = userSiteMap.nodes.home_product.name;
                                     console.assert(pageName != null);
-                                    var url = userApp.createUrl(pageName, { id: dataItem.Id });
+                                    var url = userApp().createUrl(pageName, { id: dataItem.Id });
                                     return url;
                                 }
                             });

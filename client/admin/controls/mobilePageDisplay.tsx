@@ -2,7 +2,7 @@ import { VirtualMobile } from "components/virtualMobile";
 import { DesignTimeUserApplication } from "components/designTimeUserApplication";
 import { MobilePage } from "components/mobilePage";
 // import { State as StyleControlState, StyleType } from 'components/style/control';
-import { Page as UserPage } from 'user/application';
+import { UserPage as UserPage } from 'user/application';
 
 interface Props extends React.Props<MobilePageDisplay> {
     pageData: PageData,

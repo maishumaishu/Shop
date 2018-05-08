@@ -2,10 +2,10 @@ import { defaultNavBar } from 'user/site';
 import { MemberService } from 'user/services/memberService';
 import { app } from 'user/site';
 import { FormValidator, rules } from 'dilu';
-import { Page } from 'user/application';
+import { UserPage } from 'user/application';
 import siteMap from 'user/siteMap';
 
-export default function (page: Page) {
+export default function (page: UserPage) {
     let member = page.createService(MemberService);
     let usernameInput: HTMLInputElement;
     let passwordInput: HTMLInputElement;
@@ -21,7 +21,7 @@ export default function (page: Page) {
                 return;
 
             await member.login(usernameInput.value, passwordInput.value);
-            app.redirect(siteMap.nodes[returnPage]);
+            app().redirect(siteMap.nodes[returnPage]);
         }
         componentDidMount() {
             let { required } = rules;

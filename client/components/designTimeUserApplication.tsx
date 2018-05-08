@@ -1,4 +1,4 @@
-import { Application as UserApplication, Page as UserPage } from 'user/application';
+import { UserApplication as UserApplication, UserPage as UserPage } from 'user/application';
 import { MobilePage } from 'components/mobilePage';
 import userSiteMap from 'user/siteMap';
 import { renderQRCode } from 'weixin/modules/openid';

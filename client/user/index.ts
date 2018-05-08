@@ -94,7 +94,7 @@ requirejs(['user/build'], function () {
             ui.dialogConfig.dialogContainer = document.getElementById('dialogContainer');
 
             debugger;
-            let app = window["user-app"] = new appExports.Application();
+            let app = window["user-app"] = new appExports.UserApplication();
             app.run();
         })
 })

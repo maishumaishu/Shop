@@ -1,4 +1,5 @@
-import { defaultNavBar, app, formatDate } from 'site';
+import { defaultNavBar, formatDate } from 'site';
+import { app } from 'user/application';
 import { AccountService } from 'user/services/accountService';
 import { DataList } from 'user/controls/dataList';
 

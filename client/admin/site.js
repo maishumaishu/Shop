@@ -1,7 +1,6 @@
-define(["require", "exports", "admin/services/service", "admin/pageNodes", "admin/application"], function (require, exports, service_1, pageNodes_1, application_1) {
+define(["require", "exports", "admin/services/service", "admin/pageNodes"], function (require, exports, service_1, pageNodes_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.app = application_1.default;
     // let bootbox = window['bootbox'];
     class Site {
         constructor() {

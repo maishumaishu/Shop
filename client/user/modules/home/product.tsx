@@ -2,9 +2,9 @@ import { default as ProductControl } from 'components/product/control';
 import { guid } from 'user/services/service';
 import { ShoppingService } from 'user/services/shoppingService';
 import { MobilePage } from 'components/mobilePage';
-import { Page } from 'application';
+import { UserPage } from 'application';
 
-export default async function (page: Page) {
+export default async function (page: UserPage) {
     var shopping = page.createService(ShoppingService);
     let product = await shopping.product(page.data.id);
 
@@ -13,7 +13,7 @@ export default async function (page: Page) {
     let pageData = await createPageData(shopping, page.data.id);
     ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} ref={e => mobilePage = e || mobilePage} />, page.element);
 
-    page.showing.add(async (sender: Page, args) => {
+    page.showing.add(async (sender: UserPage, args) => {
         sender.showLoading();
         let pageData = await createPageData(shopping, page.data.id);
         mobilePage.state.pageData = pageData;

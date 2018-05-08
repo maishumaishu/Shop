@@ -34,8 +34,8 @@ define(["require", "exports", "react", "react-dom", "ui", "admin/services/servic
                 page.load.add((sender, args) => {
                     let node = siteMap_1.siteMap.nodes.user_login;
                     console.assert(node.name != null);
-                    console.assert(app.currentPage != null);
-                    this.masterPage.state.hideExistsButton = app.currentPage.name == node.name || !service_1.Service.token.value;
+                    console.assert(exports.app.currentPage != null);
+                    this.masterPage.state.hideExistsButton = exports.app.currentPage.name == node.name || !service_1.Service.token.value;
                     this.masterPage.setState(this.masterPage.state);
                 });
             });
@@ -81,7 +81,7 @@ define(["require", "exports", "react", "react-dom", "ui", "admin/services/servic
                     if (isLoginPage) {
                         return;
                     }
-                    this.redirect(siteMap_1.siteMap.nodes.user_login, { return: app.createUrl(currentPage.name, currentPage.data) });
+                    this.redirect(siteMap_1.siteMap.nodes.user_login, { return: exports.app.createUrl(currentPage.name, currentPage.data) });
                     break;
                 case '725':
                     ui.alert({ title: '错误', message: 'application-key 配置错误' });
@@ -90,6 +90,6 @@ define(["require", "exports", "react", "react-dom", "ui", "admin/services/servic
         }
     }
     exports.Application = Application;
-    let app = window[common_1.ADMIN_APP] = window[common_1.ADMIN_APP] || new Application();
-    exports.default = app;
+    exports.app = window[common_1.ADMIN_APP] = window[common_1.ADMIN_APP] || new Application();
+    exports.default = exports.app;
 });

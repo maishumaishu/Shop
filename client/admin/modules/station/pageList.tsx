@@ -1,4 +1,4 @@
-import { app } from 'admin/site';
+import { app } from 'admin/application';
 import { siteMap } from 'admin/siteMap';
 import { StationService } from 'admin/services/station';
 import * as wz from 'myWuZhui';

@@ -4,7 +4,8 @@ import { ShoppingCartService } from 'user/services/shoppingCartService';
 import { ShoppingService } from 'user/services/shoppingService';
 import { StationService } from 'user/services/stationService';
 import { userData } from 'user/services/userData';
-import { app, defaultNavBar } from 'user/site';
+import { defaultNavBar } from 'user/site';
+import { app } from 'user/application';
 import siteMap from 'user/siteMap';
 
 type ControlStatus = 'normal' | 'edit'
@@ -384,7 +385,7 @@ export default class ShoppingCartControl extends Control<
 
         let result = this.shop.createOrder(productIds, quantities)
             .then((order) => {
-                app.redirect(siteMap.nodes.shopping_orderProducts, { id: order.Id });//shopping_orderProducts
+                app().redirect(siteMap.nodes.shopping_orderProducts, { id: order.Id });//shopping_orderProducts
             })
 
         return result;

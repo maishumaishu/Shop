@@ -47,20 +47,27 @@ export class MasterPage extends React.Component<Props, State> {
                 this.state.hideExistsButton = [...names].indexOf(page.name) >= 0;
                 this.setState(this.state);
             })
+
+            if (page.name == 'home_index') {
+                let sotreId = site.appIdFromLocation();
+                if (sotreId) {
+                    if (Service.appToken != null) {
+                        member.store(sotreId).then(store => {
+                            this.state.store = store;
+                            this.setState(this.state);
+                        })
+                    }
+                }
+            }
         })
 
-        let sotreId = site.appIdFromLocation();
         let member = this.props.app.createService(MemberService);
-        if (Service.appToken != null) {
-            member.store(sotreId).then(store => {
-                this.state.store = store;
-                this.setState(this.state);
-            })
-        }
         member.stores().then(items => {
             this.state.allStores = items;
             this.setState(this.state);
         })
+
+
     }
 
     updateMenu(page: chitu.Page) {

@@ -136,7 +136,7 @@ class ReceiptEditPage extends React.Component<
             }
         };
 
-        app.redirect(siteMap.nodes.user_regions, routeValues);
+        app().redirect(siteMap.nodes.user_regions, routeValues);
     }
     clear() {
         this.state.receiptInfo = {} as ReceiptInfo;

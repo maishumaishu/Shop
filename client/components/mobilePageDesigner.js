@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "components/componentDefines", "components/virtualMobile", "components/mobilePage", "components/designTimeUserApplication", "components/editor", "user/site", "user/application", "prop-types", "dilu", "ui", "jquery-ui"], function (require, exports, componentDefines_1, virtualMobile_1, mobilePage_1, designTimeUserApplication_1, editor_1, site_1, application_1, prop_types_1, dilu_1, ui) {
+define(["require", "exports", "components/componentDefines", "components/virtualMobile", "components/mobilePage", "components/designTimeUserApplication", "components/editor", "user/site", "prop-types", "dilu", "ui", "jquery-ui"], function (require, exports, componentDefines_1, virtualMobile_1, mobilePage_1, designTimeUserApplication_1, editor_1, site_1, prop_types_1, dilu_1, ui) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MobilePageDesigner extends React.Component {
@@ -187,7 +187,8 @@ define(["require", "exports", "components/componentDefines", "components/virtual
                 ui.alert({ title: '提示', message: `预览前必须先保存页面, 请点击"保存"按钮保存页面` });
                 return;
             }
-            let url = application_1.app.createUrl(site_1.siteMap.nodes.page, { pageId: pageData.id });
+            let userApp = this.mobilePage.props.elementPage.app;
+            let url = userApp.createUrl(site_1.siteMap.nodes.page, { pageId: pageData.id });
             open(url, '_blank');
         }
         renederVirtualMobile(screenElement, pageData) {

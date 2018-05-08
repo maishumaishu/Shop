@@ -1,6 +1,5 @@
 ﻿import { default as Service, parseUrlParams } from 'admin/services/service'
 import { siteMap } from 'admin/pageNodes';
-export { default as app } from 'admin/application';
 
 // let bootbox = window['bootbox'];
 

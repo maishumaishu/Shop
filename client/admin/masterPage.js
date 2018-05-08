@@ -24,15 +24,19 @@ define(["require", "exports", "react", "admin/services/service", "admin/pageNode
                     this.state.hideExistsButton = [...names].indexOf(page.name) >= 0;
                     this.setState(this.state);
                 });
+                if (page.name == 'home_index') {
+                    let sotreId = site_1.default.appIdFromLocation();
+                    if (sotreId) {
+                        if (service_1.Service.appToken != null) {
+                            member.store(sotreId).then(store => {
+                                this.state.store = store;
+                                this.setState(this.state);
+                            });
+                        }
+                    }
+                }
             });
-            let sotreId = site_1.default.appIdFromLocation();
             let member = this.props.app.createService(member_1.MemberService);
-            if (service_1.Service.appToken != null) {
-                member.store(sotreId).then(store => {
-                    this.state.store = store;
-                    this.setState(this.state);
-                });
-            }
             member.stores().then(items => {
                 this.state.allStores = items;
                 this.setState(this.state);

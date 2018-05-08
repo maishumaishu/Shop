@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 define(["require", "exports", "user/application", "user/siteMap", "weixin/modules/openid", "user/services/weixinService", "user/services/mockData", "user/services/shoppingCartService", "user/services/memberService", "share/common"], function (require, exports, application_1, siteMap_1, openid_1, weixinService_1, mockData, shoppingCartService_1, memberService_1, common_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class DesignTimeUserPage extends application_1.Page {
+    class DesignTimeUserPage extends application_1.UserPage {
         createService(type) {
             let service = super.createService(type);
             console.assert(this._app instanceof DesignTimeUserApplication);
@@ -19,7 +19,7 @@ define(["require", "exports", "user/application", "user/siteMap", "weixin/module
             return service;
         }
     }
-    class DesignTimeUserApplication extends application_1.Application {
+    class DesignTimeUserApplication extends application_1.UserApplication {
         constructor(screenElement, enableMock) {
             super();
             this.screenElement = screenElement;

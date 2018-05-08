@@ -64,7 +64,7 @@ export function defaultNavBar(elementPage: any,
             <div className="pull-left" style={{ padding: 0, width: 60 }}>
                 {options.showBackButton == false ?
                     <span dangerouslySetInnerHTML={{ __html: "&nbsp;" }}></span> :
-                    <button name="back-button" className="left-button" style={{ opacity: 1 }} onClick={() => app.back()}>
+                    <button name="back-button" className="left-button" style={{ opacity: 1 }} onClick={() => app().back()}>
                         <i className="icon-chevron-left"></i>
                     </button>
                 }

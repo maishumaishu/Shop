@@ -62,20 +62,48 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
         let station = this.props.page.createService(StationService);
         let homePageData: PageData = station.pages.defaultPages.home;
         let shoppingCartPageData = station.pages.defaultPages.shoppingCart;
+        let productPageData: PageData = {
+            controls: [
+                {
+                    controlId: guid(), controlName: 'carousel', position: 'view',
+                    data: {
+                        items: [{ image: "27260990-305a-02bc-7b43-aff92038fd6d" }]
+                    }
+                },
+                {
+                    controlId: guid(), controlName: 'productInfo', position: 'view',
+                    data: {
+                        "product": {
+                            "Id": "417f106d-d15c-4d11-a08f-bfb6eb9a4eb4",
+                            "Name": "晶璨花瓶—shiny",
+                            "Price": 59, "Fields": [],
+                            "Arguments": [
+                                { "key": "工艺", "value": "手工吹制" },
+                                { "key": "材质", "value": "材质" },
+                                { "key": "花瓶口径", "value": "8.2CM" },
+                                { "key": "花瓶高度", "value": "22CM" },
+                                { "key": "花瓶宽度", "value": "17CM" },
+                                { "key": "备注", "value": "手工测量，存在些许误差" }
+                            ],
+                            "ImagePath": "2c5509ad-9aee-3458-71ff-538e00d85086",
+                            "ProductCategoryId": "9f8b32a1-070e-4b70-abd2-3adc554b6a18",
+                            "ProductCategoryName": "配件"
+                        }, "hideProperties": false
+                    }
+                },
+                { controlId: guid(), controlName: 'productInfoBottomBar', position: 'footer' }
+            ]
+        }
+
         let { store } = this.state;
         let currentColor: StyleColor = 'default';
         if (store != null && store.Data.Style != null) {
             currentColor = store.Data.Style;
-            debugger;
         }
 
         return [
             <ul key={10} style={{ margin: 0 }} >
                 <li className="pull-right">
-                    <button className="btn btn-sm btn-primary">
-                        <i className="icon-eye-open"></i>
-                        <span>预览</span>
-                    </button>
                     <button className="btn btn-sm btn-primary"
                         ref={(e: HTMLButtonElement) => {
                             if (!e) return;
@@ -115,7 +143,7 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
                         enableMock={true} ref={(e) => this.shoppingCartPage = e || this.shoppingCartPage} />
                 </div>
                 <div className="col-lg-4" style={{ textAlign: 'center' }}>
-                    <MobilePageDisplay pageData={{ controls: [] } as PageData} style={{ transform: 'scale(0.9)' }}
+                    <MobilePageDisplay pageData={productPageData} style={{ transform: 'scale(0.9)' }}
                         ref={(e) => this.productPage = e || this.productPage} />
                 </div>
             </div>
