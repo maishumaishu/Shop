@@ -95,22 +95,16 @@ export class MemberService extends Service {
         return this.putByJson(url, { mobile, smsId, verifyCode });
     }
 
+    private _store: Store;
     async store() {
-        let url = `UserMember/User/GetApplication`; //this.url('Store/Get');
+        if (this._store) {
+            return this._store;
+        }
+        let url = `UserMember/User/GetApplication`;
         let app = await this.getByJson<Store>(url);
         app.Data = app.Data || {} as any;
-        return app;
+        this._store = app;
+        return this._store;
     }
 }
 
-
-
-// let member = Service.createService(MemberService);
-// member.userInfo().then((o: UserInfo) => {
-//     // userData.toEvaluateCount.value = o.ToEvaluateCount;
-//     // userData.sendCount.value = o.SendCount;
-//     // userData.notPaidCount.value = o.NotPaidCount;
-//     // userData.balance.value = 0;
-//     userData.nickName.value = o.NickName;
-//     userData.score.value = 0;
-// })
