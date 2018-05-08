@@ -60,9 +60,9 @@ export default class ProductListEditor extends Editor<EditorProps, EditorState> 
             option.text = i as any;
             e.appendChild(option);
         }
-        e.value = `${this.state.prodcutsCount}`;
+        e.value = `${this.state.productsCount}`;
         e.onchange = () => {
-            this.state.prodcutsCount = Number.parseInt(e.value);
+            this.state.productsCount = Number.parseInt(e.value);
             this.setState(this.state);
         }
         // e.options[0].selected = true;

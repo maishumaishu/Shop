@@ -44,7 +44,6 @@ export interface State {
     productSourceType: 'category' | 'custom',
     //=======================================
     // 按类别
-    prodcutsCount?: number,
     categoryId?: string,
     //=======================================
     // 自定义
@@ -64,6 +63,7 @@ export interface State {
     // shoppingCartItems: ShoppingCartItem[],
     imageSize: 'small' | 'medium' | 'large',
 
+    productsCount?: number,
     productCounts?: { [key: string]: number },
 
     /**
@@ -89,7 +89,7 @@ export default class ProductListControl extends Control<Props, State> {
     shopping: ShoppingService;
     get persistentMembers(): (keyof State)[] {
         return [
-            'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',
+            'productSourceType', 'productsCount', 'categoryId', 'productIds',
             'listType', 'displayType', 'imageSize', 'productNameLines',
             'showFields', 'productTemplate'
         ]
@@ -103,7 +103,7 @@ export default class ProductListControl extends Control<Props, State> {
         }
 
         this.state = {
-            prodcutsCount: 1, productCounts,
+            productsCount: 1, productCounts,
             productSourceType: 'category', productNameLines: 'singleLine',
             showFields: 'independent', imageSize: 'small',
             listType: 'doubleColumn'
@@ -252,7 +252,7 @@ export default class ProductListControl extends Control<Props, State> {
     async products(): Promise<Product[]> {
         var products: Product[];
         if (this.state.productSourceType == 'category')
-            products = await this.shopping.productsByCategory(this.state.prodcutsCount, this.state.categoryId);
+            products = await this.shopping.productsByCategory(this.state.productsCount, this.state.categoryId);
         else {
             products = await this.shopping.productsByIds(this.state.productIds);
         }
