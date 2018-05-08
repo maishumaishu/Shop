@@ -145,7 +145,7 @@ export default class ProductControl extends Control<Props, State>{
     constructor(props) {
         super(props);
 
-        // this.loadControlCSS();
+        this.hasCSS = true;
         this.state = {
             productSelectedText: this.productSelectedText(this.props.product), content: null,
             pullUpStatus: 'init', isFavored: false, productsCount: userData.productsCount.value, count: 1,

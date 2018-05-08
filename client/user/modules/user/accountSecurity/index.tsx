@@ -17,7 +17,7 @@ export default function (page: chitu.Page) {
                     this.setState(this.state);
                 }
             }
-            app.redirect(siteMap.nodes.user_accountSecurity_mobileBinding, args);
+            app().redirect(siteMap.nodes.user_accountSecurity_mobileBinding, args);
         }
         render() {
             let userInfo = this.state.userInfo;

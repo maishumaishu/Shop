@@ -91,7 +91,7 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
         // window.addEventListener('popstate', this.onBack)
     }
     private onBack = () => {
-        var page = app.currentPage;
+        var page = app().currentPage;
         if (page.name == "user.regions") {
             this.showPrevView();
         }
@@ -145,7 +145,7 @@ class RegionsPage extends React.Component<RegiosPageProps, RegiosPageState>
         // history.go(-3);
         let { currentProvince, currentCity, currentCounty } = this.state;
         this.onSelecteRegion(currentProvince, currentCity, currentCounty);
-        app.back();
+        app().back();
     }
     render() {
         let provinces = this.props.provinces;

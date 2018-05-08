@@ -427,7 +427,7 @@ export class CarouselControl extends Control<Props, State> {
     element: HTMLElement;
     constructor(props) {
         super(props);
-        // this.loadControlCSS();
+        this.hasCSS = true;
         this.state = { items: [], autoplay: true, clickType: 'openPage' };
     }
     get persistentMembers(): (keyof State)[] {

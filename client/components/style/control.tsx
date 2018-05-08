@@ -17,7 +17,7 @@ export default class StyleControl extends Control<Props, State>{
     constructor(props) {
         super(props);
         this.state = {};
-        this.noneCSS = true;
+        this.hasCSS = false;
     }
  
     _render(h) {

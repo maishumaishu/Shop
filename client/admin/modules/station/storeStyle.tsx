@@ -13,7 +13,7 @@ export default function (page: chitu.Page) {
     ReactDOM.render(<StoreStylePage page={page} />, page.element);
 }
 
-let allColors: StyleColor[] = ['default', 'red', 'green'];
+let allColors: StyleColor[] = ['default', 'red', 'green', 'pink'];
 class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Store }> {
     productPage: MobilePageDisplay;
     shoppingCartPage: MobilePageDisplay;
@@ -33,7 +33,6 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
         if (this.state.store == null)
             return;
 
-        debugger;
         this.state.store.Data.Style = name;
         this.setState(this.state);
     }
@@ -100,7 +99,7 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
         if (store != null && store.Data.Style != null) {
             currentColor = store.Data.Style;
         }
-
+        let scale = 0.85;
         return [
             <ul key={10} style={{ margin: 0 }} >
                 <li className="pull-right">
@@ -119,7 +118,7 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
                 </li>
             </ul>,
             <hr key={20} style={{ marginTop: 0 }} />,
-            <div className="style-editor">
+            <div key={25} className="style-editor">
                 <div className="style-solutions">
                     <header>选择配色方案</header>
                     <ul>
@@ -133,17 +132,17 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
                     <div className="clearfix"></div>
                 </div>
             </div>,
-            <div key={30}>
-                <div className="col-lg-4" style={{ textAlign: 'center' }}>
-                    <MobilePageDisplay style={{ transform: 'scale(0.9)' }} pageData={homePageData}
+            <div key={30} className="row">
+                <div className="col-md-4" style={{ textAlign: 'center', width: '33.33' }}>
+                    <MobilePageDisplay style={{ transform: `scale(${scale})` }} pageData={homePageData}
                         ref={(e) => this.homePage = e || this.homePage} />
                 </div>
-                <div className="col-lg-4" style={{ textAlign: 'center' }}>
-                    <MobilePageDisplay style={{ transform: 'scale(0.9)' }} pageData={shoppingCartPageData}
+                <div className="col-md-4" style={{ textAlign: 'center', width: '33.33' }}>
+                    <MobilePageDisplay style={{ transform: `scale(${scale})` }} pageData={shoppingCartPageData}
                         enableMock={true} ref={(e) => this.shoppingCartPage = e || this.shoppingCartPage} />
                 </div>
-                <div className="col-lg-4" style={{ textAlign: 'center' }}>
-                    <MobilePageDisplay pageData={productPageData} style={{ transform: 'scale(0.9)' }}
+                <div className="col-md-4" style={{ textAlign: 'center', width: '33.33' }}>
+                    <MobilePageDisplay pageData={productPageData} style={{ transform: `scale(${scale})` }}
                         ref={(e) => this.productPage = e || this.productPage} />
                 </div>
             </div>

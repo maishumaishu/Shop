@@ -1,4 +1,4 @@
-define(["require", "exports", "react", "react-dom", "ui", "admin/services/service", "share/common", "masterPage", "admin/siteMap"], function (require, exports, React, ReactDOM, ui, service_1, common_1, masterPage_1, siteMap_1) {
+define(["require", "exports", "react", "react-dom", "ui", "admin/services/service", "share/common", "masterPage", "admin/siteMap", "less!../components/style/baseStyle.less"], function (require, exports, React, ReactDOM, ui, service_1, common_1, masterPage_1, siteMap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let h = React.createElement;

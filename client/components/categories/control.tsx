@@ -14,7 +14,7 @@ export default class CategoriesControl extends Control<any, State> {
     constructor(props) {
         super(props);
         this.state = { showIcons: false };
-        // this.loadControlCSS();
+        this.hasCSS = true;
 
         let shopping = this.elementPage.createService(ShoppingService);
         (this.elementPage as UserPage).showLoading();

@@ -122,7 +122,7 @@ export default class ProductListControl extends Control<Props, State> {
         this.shopping = this.props.mobilePage.props.elementPage.createService(ShoppingService);
         this.shoppingCart = this.props.mobilePage.props.elementPage.createService(ShoppingCartService);
 
-        // this.loadControlCSS();
+        this.hasCSS = true;
         // this.stateChanged.add(() => {
 
         // })

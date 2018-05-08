@@ -5,7 +5,7 @@ interface RegisterModel {
     verifyCode: string
 }
 
-type StyleColor = 'default' | 'red' | 'green';
+type StyleColor = 'default' | 'red' | 'green' | 'pink';
 
 interface Store {
     Id: string,

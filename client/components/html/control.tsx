@@ -18,7 +18,7 @@ const defaultEmptyText = '请设置 HTML';
 export default class HtmlControl extends Control<Props, State> {
     constructor(props) {
         super(props);
-        // this.loadControlCSS();
+        this.hasCSS = true;
     }
     get persistentMembers(): (keyof State)[] {
         return ["html"]

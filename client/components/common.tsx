@@ -28,7 +28,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     private _elementPage: chitu.Page;
     private _state: S;
 
-    protected noneCSS = false;
+    protected hasCSS = false;
 
     stateChanged = chitu.Callbacks<this, any>();
     id: string;
@@ -95,7 +95,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
 
     render() {
 
-        if (!this.noneCSS)
+        if (this.hasCSS)
             this.loadControlCSS();
 
         if (this.mobilePage.props.designTime != null)
@@ -105,14 +105,31 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
     }
 
     protected async loadControlCSS() {
+
+
         var typeName = this.constructor.name;
         typeName = typeName.replace('Control', '');
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
-        let path = `${componentsDir}/${typeName}/control`;
 
+        let style: HTMLStyleElement = document.head.querySelector(`style[name="${typeName}"]`);
+        if (!style) {
+            style = document.createElement('style');
+            style.type = 'text/css';
+            style.setAttribute('name', typeName);
+            document.head.appendChild(style);
+        }
+
+
+        let color = this.mobilePage.styleColor || 'default';
+        if (color == style.getAttribute('color')) {
+            return;
+        }
+
+        style.setAttribute('color', color);
+
+        let path = `${componentsDir}/${typeName}/control`;
         let lessText = `@import "../${path}";`;
-        let color = this.mobilePage.styleColor;
-        if (color != null && color != 'default') {
+        if (color != 'default') {
             lessText = lessText + `@import "../components/style/colors/${color}.less";`;
         }
 
@@ -122,10 +139,8 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
                 console.error(err);
                 return;
             }
-            let style = document.createElement('style');
-            style.type = 'text/css';
+
             style.innerHTML = tree.toCSS();
-            document.head.appendChild(style);
         })
     }
 

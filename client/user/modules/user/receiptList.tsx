@@ -36,10 +36,10 @@ export default function (page: chitu.Page) {
                     }
                     this.state.items.unshift(receipt);
                     this.setState(this.state);
-                    app.back();
+                    app().back();
                 }
             } as ReceiptEditPageArguments;
-            app.redirect(siteMap.nodes.user_receiptEdit, true, routeValues);//'user_receiptEdit',
+            app().redirect(siteMap.nodes.user_receiptEdit, true, routeValues);//'user_receiptEdit',
 
         }
         private editReceipt(receipt: ReceiptInfo) {
@@ -56,10 +56,10 @@ export default function (page: chitu.Page) {
                     }
 
                     this.setState(this.state);
-                    app.back();
+                    app().back();
                 }
             } as ReceiptEditPageArguments;
-            app.redirect(siteMap.nodes.user_receiptEdit, routeValues);
+            app().redirect(siteMap.nodes.user_receiptEdit, routeValues);
         }
         async setDefaultReceipt(receipt: ReceiptInfo) {
             await shop.setDefaultReceiptInfo(receipt.Id);
@@ -81,7 +81,7 @@ export default function (page: chitu.Page) {
             shop.changeReceipt(routeValue.orderId, receipt.Id)
                 .then((order) => {
                     routeValue.callback(this.detail(receipt), order);
-                    app.back();
+                    app().back();
                 });
         }
         render() {

@@ -14,7 +14,7 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
     class Control extends React.Component {
         constructor(props) {
             super(props);
-            this.noneCSS = false;
+            this.hasCSS = false;
             this.stateChanged = chitu.Callbacks();
             this.setStateTimes = 0;
             this._page = this.props.mobilePage;
@@ -61,7 +61,7 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
             return super.setState(state, callback);
         }
         render() {
-            if (!this.noneCSS)
+            if (this.hasCSS)
                 this.loadControlCSS();
             if (this.mobilePage.props.designTime != null)
                 return this._render(createDesignTimeElement);
@@ -72,10 +72,21 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
                 var typeName = this.constructor.name;
                 typeName = typeName.replace('Control', '');
                 typeName = typeName[0].toLowerCase() + typeName.substr(1);
+                let style = document.head.querySelector(`style[name="${typeName}"]`);
+                if (!style) {
+                    style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.setAttribute('name', typeName);
+                    document.head.appendChild(style);
+                }
+                let color = this.mobilePage.styleColor || 'default';
+                if (color == style.getAttribute('color')) {
+                    return;
+                }
+                style.setAttribute('color', color);
                 let path = `${exports.componentsDir}/${typeName}/control`;
                 let lessText = `@import "../${path}";`;
-                let color = this.mobilePage.styleColor;
-                if (color != null && color != 'default') {
+                if (color != 'default') {
                     lessText = lessText + `@import "../components/style/colors/${color}.less";`;
                 }
                 let parser = new lessc.Parser(window['less']);
@@ -84,10 +95,7 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
                         console.error(err);
                         return;
                     }
-                    let style = document.createElement('style');
-                    style.type = 'text/css';
                     style.innerHTML = tree.toCSS();
-                    document.head.appendChild(style);
                 });
             });
         }

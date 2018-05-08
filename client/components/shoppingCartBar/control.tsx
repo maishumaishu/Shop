@@ -14,7 +14,7 @@ export interface State {
 export default class ShoppingCartBarControl extends Control<Props, State>{
     constructor(props) {
         super(props);
-        // this.loadControlCSS();
+        this.hasCSS = true;
     }
 
     get persistentMembers(): (keyof State)[] {
@@ -25,7 +25,7 @@ export default class ShoppingCartBarControl extends Control<Props, State>{
         return (
             <div className="settlement">
                 <div className="pull-left btn-link"
-                    onClick={() => app.redirect(siteMap.nodes.shopping_shoppingCart)}>
+                    onClick={() => app().redirect(siteMap.nodes.shopping_shoppingCart)}>
                     <i className="icon-shopping-cart"></i>
                 </div>
                 <div className="pull-right">

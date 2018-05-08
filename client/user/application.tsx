@@ -60,8 +60,9 @@ export class UserPage extends chitu.Page {
 
 }
 
+let link: HTMLLinkElement;
+
 export class UserApplication extends chitu.Application {
-    // private topLevelPages = ['home.index', 'home.class', 'shopping.shoppingCart', 'home.newsList', 'user.index'];
     private emtpyPageElement: HTMLElement;
 
     constructor() {
@@ -71,6 +72,27 @@ export class UserApplication extends chitu.Application {
         this.pageType = UserPage;
         this.error.add((s, e: AppError, p) => this.on_error(s, e, p));
         this.init();
+        if (link == null) {
+            link = document.createElement('link');
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            let member = this.createService(MemberService);
+            member.store().then(store => {
+                if (store.Data.Style)
+                    this.loadCSS(store.Data.Style)
+            })
+
+            document.head.appendChild(link);
+        }
+    }
+
+    loadCSS(color: StyleColor) {
+        let href = `../components/style/style_${color}.css`;
+        if (link.href == href) {
+            return;
+        }
+
+        link.href = href;
     }
 
     createEmptyPage(element: HTMLElement) {
@@ -208,4 +230,7 @@ ui.loadImageConfig.imageDisaplyText = storeName;
 export function app(): UserApplication {
     return window["user-app"];
 }
+
+
+
 // = window["user-app"];// = window["user-app"] || new Application();

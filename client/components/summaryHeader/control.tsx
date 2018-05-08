@@ -31,6 +31,7 @@ export default class SummaryHeaderControl extends common.Control<Props, State>{
             this.state.store = data;
             this.setState(this.state);
         })
+        this.hasCSS = true;
     }
 
     get persistentMembers(): (keyof State)[] {

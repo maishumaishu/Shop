@@ -260,10 +260,10 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
             this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
             //=========================================
             // 还不知道样式，先不渲染，确定了在渲染
-            let { style } = this.state;
-            if (style == null) {
-                return [];
-            }
+            // let { style } = this.state;
+            // if (style == null) {
+            //     return [];
+            // }
             //=========================================
             var result = [
                 this.renderHeader(pageData),
@@ -271,8 +271,8 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                 this.renderView(pageData),
             ];
             // if (style) {
-            let path = `../components/style/style_${style}.css`;
-            result.push(h("link", { key: path, rel: "stylesheet", href: path }));
+            // let path = `../components/style/style_${style}.css`;
+            // result.push(<link key={path} rel="stylesheet" href={path}></link>);
             // }
             if (this.props.designTime && this.props.designTime.controlSelected) {
                 // 加上延时，否则编辑器有可能显示不出来

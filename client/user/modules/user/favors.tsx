@@ -28,7 +28,7 @@ export default function (page: chitu.Page) {
         }
 
         showProduct(productId: string) {
-            app.redirect(siteMap.nodes.home_product, { id: productId });
+            app().redirect(siteMap.nodes.home_product, { id: productId });
         }
         loadFavorProducts(pageIndex: number) {
             if (pageIndex > 0) {

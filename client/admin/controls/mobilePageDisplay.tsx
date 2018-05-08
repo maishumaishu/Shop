@@ -23,6 +23,7 @@ export class MobilePageDisplay extends React.Component<Props, State>{
     }
     changeStyle(style: StyleColor): any {
         this.mobilePage.styleColor = style;
+        this.userApp.loadCSS(style);
     }
     renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
         console.assert(screenElement != null);

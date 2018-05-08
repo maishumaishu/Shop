@@ -6,6 +6,7 @@ import { Service } from 'admin/services/service';
 import { shopName, ADMIN_APP } from 'share/common';
 import { MasterPage } from 'masterPage';
 import { siteMap } from 'admin/siteMap';
+import 'less!../components/style/baseStyle.less';
 
 let h = React.createElement;
 

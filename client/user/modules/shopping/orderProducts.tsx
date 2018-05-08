@@ -44,12 +44,12 @@ export default async function (page: chitu.Page) {
             return shop.confirmOrder(orderId, remark, invoice).then(() => {
                 let productIds = order.OrderDetails.map(o => o.ProductId);
                 shoppingCart.removeItems(productIds);
-                app.redirect(siteMap.nodes.shopping_purchase, { id: orderId })// `shopping_purchase?id=${order.Id}`);
+                app().redirect(siteMap.nodes.shopping_purchase, { id: orderId })// `shopping_purchase?id=${order.Id}`);
             });
         }
         private showReceiptList() {
             let routeValue: ReceiptListRouteValues = { callback: this.setAddress, orderId: this.state.order.Id };
-            app.redirect(siteMap.nodes.user_receiptList, routeValue);//'user_receiptList'
+            app().redirect(siteMap.nodes.user_receiptList, routeValue);//'user_receiptList'
         }
         render() {
             let order = this.state.order;
@@ -140,7 +140,7 @@ export default async function (page: chitu.Page) {
                         : null}
 
                     <div className="container"
-                        onClick={() => app.showPage(siteMap.nodes.shopping_invoice, {
+                        onClick={() => app().showPage(siteMap.nodes.shopping_invoice, {
                             callback: (invoice: string) => {
                                 this.state.order.Invoice = invoice;
                                 this.setState(this.state);

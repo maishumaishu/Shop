@@ -84,7 +84,7 @@ export default function (page: chitu.Page) {
                                         if (!o) return;
                                         o.onclick = ui.buttonOnClick(() => {
                                             return this.balancePurchase(order).then(() => {
-                                                app.redirect(siteMap.nodes.shopping_orderList);//'shopping_orderList'
+                                                app().redirect(siteMap.nodes.shopping_orderList);//'shopping_orderList'
                                             });
                                         })
                                     }}>立即支付</button>

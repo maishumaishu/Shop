@@ -351,10 +351,10 @@ export class MobilePage extends React.Component<Props, State>{
 
         //=========================================
         // 还不知道样式，先不渲染，确定了在渲染
-        let { style } = this.state;
-        if (style == null) {
-            return [];
-        }
+        // let { style } = this.state;
+        // if (style == null) {
+        //     return [];
+        // }
         //=========================================
 
         var result = [
@@ -365,8 +365,8 @@ export class MobilePage extends React.Component<Props, State>{
         ];
 
         // if (style) {
-        let path = `../components/style/style_${style}.css`;
-        result.push(<link key={path} rel="stylesheet" href={path}></link>);
+        // let path = `../components/style/style_${style}.css`;
+        // result.push(<link key={path} rel="stylesheet" href={path}></link>);
         // }
 
         if (this.props.designTime && this.props.designTime.controlSelected) {

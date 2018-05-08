@@ -22,6 +22,7 @@ export class Header extends Control<any, { status: ControlStatus }> {
             this.state.status = value;
             this.setState(this.state);
         })
+        this.hasCSS = false;
     }
 
     get persistentMembers() {
@@ -91,6 +92,7 @@ export class Footer extends Control<any, FooterStatus>{
             this.state.deleteItemsCount = deleteItemsCount.value;
             this.setState(this.state);
         })
+        this.hasCSS = false;
     }
 
     get shoppingCart(): ShoppingCartControl {
@@ -221,7 +223,7 @@ export default class ShoppingCartControl extends Control<
             deleteItems: [], inputCounts: {}
         };
 
-        // this.loadControlCSS();
+        this.hasCSS = true;
 
 
         ShoppingCartService.items.add(this.on_shoppingCartChanged, this);

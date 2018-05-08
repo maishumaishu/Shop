@@ -19,7 +19,7 @@ export default function (page: chitu.Page) {
             if (callback) {
                 callback(`类型：${this.state.type}，抬头：${this.state.title}`);
             }
-            app.back();
+            app().back();
         }
         render() {
             let type = this.state.type;

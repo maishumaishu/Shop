@@ -28,7 +28,7 @@ export default class NavigatorControl extends Control<Props, State> {
 
     constructor(props) {
         super(props);
-        // this.loadControlCSS();
+        this.hasCSS = true;
         this.state = { items: [], activeIndex: 0 };
 
     }
