@@ -1,4 +1,4 @@
-define(["require", "exports", "maishu-chitu"], function (require, exports, chitu) {
+define(["require", "exports", "chitu"], function (require, exports, chitu) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Service extends chitu.Service {

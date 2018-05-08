@@ -23,7 +23,7 @@ requirejs.config({
             deps: ['react-dom', 'react']
         },
         application: {
-            deps: ['maishu-chitu']
+            deps: ['chitu']
         },
         mobileControls: {
             exports: 'controls',
@@ -37,12 +37,12 @@ requirejs.config({
             deps: ['polyfill']
         },
         site: {
-            deps: ['react', 'maishu-chitu', 'polyfill']
+            deps: ['react', 'chitu', 'polyfill']
         },
         'prop-types': {
             deps: ['react']
         },
-        'maishu-chitu': {
+        'chitu': {
             deps: ['polyfill']
         }
     },
@@ -58,7 +58,7 @@ requirejs.config({
         'art-template': 'lib/template-web',
         'bezier-easing': 'lib/bezier-easing',
         // chitu: 'lib/chitu',
-        'maishu-chitu': 'lib/chitu',
+        'chitu': 'lib/chitu',
         dilu: 'lib/dilu',
         fetch: 'lib/fetch',
         hammer: 'lib/hammer',

@@ -10,7 +10,7 @@ define(["require", "exports", "admin/services/service", "admin/application", "ad
                 console.log(err);
                 break;
             case '724': //724 为 token 失效
-            case '601'://601 为用户未登录异常
+            case '601':
                 if (err.name == '724') {
                     service_1.Service.token.value = '';
                 }

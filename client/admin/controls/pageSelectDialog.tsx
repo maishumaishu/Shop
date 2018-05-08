@@ -1,6 +1,7 @@
 import { StationService } from "admin/services/station";
 import { pageData as dataSource } from 'admin/services/dataSource';
-import 'less!admin/controls/pageSelectDialog';
+
+requirejs(['less!admin/controls/pageSelectDialog']);
 
 
 interface Props extends React.Props<PageSelectDialog> {

@@ -64,10 +64,10 @@ define(["require", "exports"], function (require, exports) {
         }
     ];
     function controlPath(name) {
-        return `mobileComponents/${name}/control`;
+        return `components/${name}/control`;
     }
     function editorPath(name) {
-        return `mobileComponents/${name}/control`;
+        return `components/${name}/control`;
     }
     exports.default = componets;
 });

@@ -69,10 +69,10 @@ let componets: Array<ComponentDefine> = [
 ];
 
 function controlPath(name: string) {
-    return `mobileComponents/${name}/control`;
+    return `components/${name}/control`;
 }
 function editorPath(name: string) {
-    return `mobileComponents/${name}/control`;
+    return `components/${name}/control`;
 }
 
 export default componets;

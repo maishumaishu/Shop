@@ -12,6 +12,29 @@
 //     removeComments: true,
 //     sourceMap: false,
 // };
+var lib_es6_files = [
+    `lib/chitu.js`, 'lib/chitu.mobile.js', `lib/wuzhui.js`, `lib/ui.js`, `lib/dilu.js`
+];
+var requirejs_paths = {
+
+    css: 'lib/css',
+    less: 'lib/require-less-0.1.5/less',
+    lessc: 'lib/require-less-0.1.5/lessc',
+    'less-builder': 'lib/require-less-0.1.5/less-builder',
+    normalize: 'lib/require-less-0.1.5/normalize',
+    text: 'lib/text',
+
+    chitu: 'lib/chitu',
+    dilu: 'lib/dilu',
+    fetch: 'lib/fetch',
+    react: 'lib/react.production',
+    'react-dom': 'lib/react-dom.production',
+    'prop-types': 'lib/prop-types',
+    polyfill: 'lib/polyfill',
+    'template-web': 'lib/template-web',
+    'url-search-params-polyfill': 'lib/url-search-params-polyfill',
+    ui: 'lib/ui',
+};
 module.exports = function (grunt) {
     grunt.initConfig({
         // 通过connect任务，创建一个静态服务器
@@ -43,43 +66,97 @@ module.exports = function (grunt) {
                     `user/**/*.js`
                 ]
             }
-        }
+        },
+        babel: {
+            source: {
+                options: {
+                    sourceMap: false,
+                    presets: ["es2015"],
+                },
+                files: [{
+                    expand: true,
+                    cwd: `./`,
+                    src: [
+                        `admin/**/*.js`, `components/**/*.js`, `user/**/*.js`,
+                        `share/**/*.js`, ...lib_es6_files
+                    ],
+                    dest: `../out/es5`
+                }]
+            }
+        },
+        copy: {
+            options: {
+                noProcess: lib_es6_files
+            },
+            client: {
+                files: [{
+                    expand: true,
+                    cwd: `./`,
+                    src: [`lib/**/*`, ...lib_es6_files.map(o => `!${o}`),
+                        'admin/index.html', 'user/index.html'
+                    ],
+                    dest: `../out/es5`
+                }]
+            }
+        },
+        requirejs: {
+            user: {
+                options: {
+                    baseUrl: `../out/es5`,
+                    include: [
+                        "polyfill", 'url-search-params-polyfill', 'fetch',
+                        "css", "react", "react-dom", 'prop-types', 'ui',
+                        "dilu", "user/application"
+                    ],
+                    out: `../www/user/build.js`,
+                    optimize: 'uglify', // 'none',//
+                    paths: Object.assign(requirejs_paths, {
+                        site: 'user/site',
+                        errorHandle: 'user/errorHandle',
+                    }),
+                    shim: {
+                        dilu: {
+                            exports: 'dilu'
+                        },
+                        ui: {
+                            exports: 'ui'
+                        }
+                    }
+                }
+            },
+            admin: {
+                options: {
+                    baseUrl: `../out/es5`,
+                    include: [
+                        "polyfill", 'url-search-params-polyfill', 'fetch',
+                        "css", "react", "react-dom", 'prop-types', 'ui',
+                        "dilu", 'share/common', 'share/service', 'template-web',
+                        'admin/services/service', 'admin/application',
+                    ],
+                    out: `../www/admin/build.js`,
+                    optimize: 'uglify', //'none',
+                    paths: Object.assign(requirejs_paths, {
+                        masterPage: 'admin/masterPage'
+                    }),
+                    shim: {
+                        dilu: {
+                            exports: 'dilu'
+                        },
+                        ui: {
+                            exports: 'ui'
+                        }
+                    }
+                }
+            }
+        },
     });
 
-    //===============================================================
-    // grunt.event.on('watch', function (action, filepath, target) {
-    //     grunt.log.writeln(`action:${action}\n`);
-    //     grunt.log.writeln(`filepath:${filepath}\n`);
-    //     grunt.log.writeln(`target:${target}\n`);
-
-    //     let arr = filepath.split(/\/|\\/);
-    //     arr.shift();
-    //     arr[0] = 'www';
-    //     let target_pathname = arr.join('/');//filepath.replace('out\es6', 'www');
-    //     grunt.log.writeln(`target_pathname:${target_pathname}\n`);
-
-    //     grunt.file.copy(filepath, `${target_pathname}`);
-
-    // });
-    //===============================================================
-
-    // grunt.loadNpmTasks('grunt-babel');
-    // grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-babel');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-connect');
-    // grunt.loadNpmTasks('grunt-contrib-copy');
-    // grunt.loadNpmTasks('grunt-contrib-cssmin');
-    // grunt.loadNpmTasks('grunt-contrib-less');
-    // grunt.loadNpmTasks('grunt-contrib-requirejs');
-    // grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    // grunt.registerTask('common', ['less', 'copy:client']);
-
-    // grunt.registerTask('build-es6', ['shell', 'copy:lib_es6']);
-    // grunt.registerTask('build-es5', ['shell', 'copy:lib_es5', 'copy:lib_es6', 'babel']);
-    // grunt.registerTask('run', ['connect', 'watch']);
-
-    // grunt.registerTask('es5-debug', ['common', 'build-es5', 'copy:es5_www', 'requirejs']);
-    // grunt.registerTask('release', ['common', 'build-es5', 'copy:es5_www', 'uglify', 'requirejs']);
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.registerTask('dev', ['connect', 'watch']);
 }
 
+///Volumes/data/projects/shop/out/es5/lib/polyfill.js

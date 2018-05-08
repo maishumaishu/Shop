@@ -7,19 +7,11 @@ requirejs.config({
         bootstrap: {
             deps: ['jquery']
         },
-        // bootbox: {
-        //     deps: ['bootstrap']
-        // },
-        'maishu-chitu': {
-            deps: [
-                'polyfill'
-            ]
-        },
         dilu: {
             exports: 'dilu'
         },
         application: {
-            deps: ['maishu-chitu']
+            deps: ['chitu']
         },
         'jquery-ui': {
             exports: 'window["$"]',
@@ -35,9 +27,6 @@ requirejs.config({
         ui: {
             exports: 'ui'
         },
-        // 'user/services': {
-        //     exports: 'user/services'
-        // },
         um: {
             deps: [
                 'jquery',
@@ -46,11 +35,6 @@ requirejs.config({
                 'um_config',
             ]
         },
-        // um_config: {
-        //     deps: [
-        //         '../lib/umeditor/third-party/template.min'
-        //     ]
-        // },
         um_zh: {
             deps: ['um']
         },
@@ -96,7 +80,7 @@ requirejs.config({
         'qrcode': 'lib/qrcode',
         'react-dom': 'https://cdn.bootcss.com/react-dom/16.0.0/umd/react-dom.development',
         'prop-types': 'lib/prop-types',
-        'maishu-chitu': 'lib/chitu',
+        'chitu': 'lib/chitu',
         'chitu.mobile': 'lib/chitu.mobile',
         'wuzhui': 'lib/wuzhui',
         ace: 'assets/js/uncompressed/ace',

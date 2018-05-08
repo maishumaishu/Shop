@@ -1,5 +1,4 @@
 import components from 'components/componentDefines';
-import StyleControl from 'components/style/control';
 import { VirtualMobile } from 'components/virtualMobile';
 import { MobilePage } from 'components/mobilePage';
 import { DesignTimeUserApplication } from 'components/designTimeUserApplication';

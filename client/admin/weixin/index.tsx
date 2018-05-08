@@ -8,7 +8,6 @@ requirejs.config({
         },
     },
     paths: {
-        'maishu-chitu': '../../scripts/chitu',
         'share': '../../share',
         'react-dom': '../../scripts/react-dom',
 

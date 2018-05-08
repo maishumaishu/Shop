@@ -1,4 +1,4 @@
-import * as chitu from 'maishu-chitu';
+import * as chitu from 'chitu';
 
 export default class Service extends chitu.Service {
     constructor() {

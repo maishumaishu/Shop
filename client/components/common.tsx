@@ -111,7 +111,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
         typeName = typeName.replace('Control', '');
         typeName = typeName[0].toLowerCase() + typeName.substr(1);
 
-        let style: HTMLStyleElement = document.head.querySelector(`style[name="${typeName}"]`);
+        let style = document.head.querySelector(`style[name="${typeName}"]`) as HTMLStyleElement;
         if (!style) {
             style = document.createElement('style');
             style.type = 'text/css';

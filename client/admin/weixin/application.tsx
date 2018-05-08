@@ -1,4 +1,4 @@
-import * as chitu from 'maishu-chitu';
+import * as chitu from 'chitu';
 import * as ui from 'ui';
 import { parseUrlParams, shopName } from 'share/common';
 import { loadjs } from 'common'

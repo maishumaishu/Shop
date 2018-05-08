@@ -1,5 +1,5 @@
 ﻿// import $ = require('jquery');
-import * as chitu from 'maishu-chitu';
+import * as chitu from 'chitu';
 import { urlParams, parseUrlParams, serviceHost, imageServiceBaseUrl } from 'share/common';
 import BaseService from 'share/service';
 export { guid, imageUrl, parseUrlParams, formatDate, formatDateTime } from 'share/common';

@@ -1,4 +1,4 @@
-import * as chitu from 'maishu-chitu';
+import * as chitu from 'chitu';
 import { guid } from 'components/editor';
 import { urlParams, serviceHost } from 'share/common';
 import BaseService from 'share/service';

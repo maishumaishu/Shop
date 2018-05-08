@@ -4,7 +4,6 @@ import { PropTypes } from 'prop-types';
 import MenuControl from 'components/menu/control';
 import { Control, ControlProps, componentsDir } from 'components/common';
 import { guid } from 'share/common';
-import { State as StyleState } from 'components/style/control';
 import { StationService } from 'user/services/stationService';
 import { } from 'admin/application';
 import { UserPage as UserPage } from 'user/application';

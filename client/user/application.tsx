@@ -5,8 +5,6 @@ import { Service, urlParams, tokens } from 'user/services/service';
 import { StationService } from 'user/services/stationService';
 import { WeiXinService } from 'user/services/weixinService';
 import { userData } from 'user/services/userData';
-
-// import { Application as BaseApplication, Page as BasePage } from 'maishu-chitu';
 import { MobilePage } from 'components/mobilePage'
 import * as ui from 'ui';
 import siteMap from 'user/siteMap';

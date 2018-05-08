@@ -1,6 +1,7 @@
-define(["require", "exports", "react", "react-dom", "ui", "admin/services/service", "share/common", "masterPage", "admin/siteMap", "less!../components/style/baseStyle.less"], function (require, exports, React, ReactDOM, ui, service_1, common_1, masterPage_1, siteMap_1) {
+define(["require", "exports", "react", "react-dom", "ui", "admin/services/service", "share/common", "masterPage", "admin/siteMap"], function (require, exports, React, ReactDOM, ui, service_1, common_1, masterPage_1, siteMap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    requirejs(['less!../components/style/baseStyle.less']);
     let h = React.createElement;
     class Application extends chitu.Application {
         constructor() {
@@ -75,7 +76,7 @@ define(["require", "exports", "react", "react-dom", "ui", "admin/services/servic
                     break;
                 case '710':
                 case '724': //724 为 token 失效
-                case '601'://601 为用户未登录异常
+                case '601':
                     var currentPage = this.currentPage;
                     let isLoginPage = currentPage.name == siteMap_1.siteMap.nodes.user_login.name;
                     if (isLoginPage) {

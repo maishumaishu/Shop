@@ -1,5 +1,4 @@
 import { Control } from 'components/common';
-import { default as StyleControl } from 'components/style/control';
 requirejs(['css!content/devices.css']);
 
 interface Props extends React.Props<VirtualMobile> {
