@@ -6,7 +6,6 @@ import { Service } from 'admin/services/service';
 import { shopName, ADMIN_APP } from 'share/common';
 import { MasterPage } from 'masterPage';
 import { siteMap } from 'admin/siteMap';
-import { MockData } from 'user/services/mockData';
 
 let h = React.createElement;
 
