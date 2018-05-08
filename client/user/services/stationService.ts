@@ -170,6 +170,9 @@ async function fillPageData(pageData: PageData): Promise<PageData> {
     else
         pageData.controls.push(...controls);
 
+    // 过滤掉 style control，不用了
+    pageData.controls = pageData.controls.filter(o => o.controlName != 'style');
+
 
     return pageData;
 }
