@@ -31,7 +31,7 @@ export interface ControlDescription {
 
 export type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
 const menuHeight = 50;
-type State = { pageData: PageData };
+type State = { pageData: PageData, style: string };
 
 /**
  * 移动端页面，将 PageData 渲染为移动端页面。
@@ -52,7 +52,7 @@ export class MobilePage extends React.Component<Props, State>{
 
     constructor(props) {
         super(props);
-        this.state = { pageData: this.props.pageData };
+        this.state = { pageData: this.props.pageData, style: 'default' };
         this.controls = [];
     }
 
@@ -162,11 +162,7 @@ export class MobilePage extends React.Component<Props, State>{
      * @param pageData 页面的数据，用于描述一个页面
      */
     renderHeader(pageData: PageData): JSX.Element {
-        // if (!pageData.header)
-        //     return null;
-
         let headerControls = pageData.controls.filter(o => o.position == 'header');
-        //(pageData.header || { controls: [] }).controls || [];
         this.headerControlsCount = headerControls.length;
         return (
             <header key="header" className="page-header"
@@ -181,7 +177,7 @@ export class MobilePage extends React.Component<Props, State>{
      * @param pageData 页面的数据，用于描述一个页面
      */
     renderFooter(pageData: PageData): JSX.Element {
-        let footerControls = pageData.controls.filter(o => o.position == 'footer'); //(pageData.footer || { controls: [] }).controls || [];
+        let footerControls = pageData.controls.filter(o => o.position == 'footer');
         return (
             <footer key="footer" className="page-footer"
                 ref={(e: HTMLElement) => this.footerElement = e || this.footerElement}>
@@ -241,15 +237,13 @@ export class MobilePage extends React.Component<Props, State>{
         }
     }
 
-
-    async styleColor() {
-        let station = this.props.elementPage.createService(StationService);
-        let pageData = await station.pages.style();
-        let styleControl = pageData.controls.filter(o => o.controlName == 'style')[0];
-        console.assert(styleControl != null)
-        return (styleControl.data as StyleState).style;
+    get styleColor(): string {
+        return this.state.style;
     }
-
+    set styleColor(value: string) {
+        this.state.style = value;
+        this.setState(this.state);
+    }
 
     renderDesigntimeViews(pageData: PageData) {
         let sortableElement = (element: HTMLElement) => {
@@ -340,20 +334,16 @@ export class MobilePage extends React.Component<Props, State>{
         let children = React.Children.toArray(this.props.children) || [];
         let pageData = this.state.pageData;
 
-        // if (pageData.header && pageData.header.controls)
-        //     this.headerControlsCount = pageData.header.controls.length;
-
-        // if (pageData.footer && pageData.footer.controls)
-        //     this.footerControlsCount = pageData.footer.controls.length;
-
-        // pageData.view = pageData.view || { controls: [] };
         this.viewControlsCount = 0;
         this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
 
+        let { style } = this.state;
+        let path = `../components/style/style_${style}.css`;
         var result = [
             this.renderHeader(pageData),
             this.renderFooter(pageData),
             this.renderView(pageData),
+            <link key={path} rel="stylesheet" href={path}></link>
         ];
 
         if (this.props.designTime && this.props.designTime.controlSelected) {

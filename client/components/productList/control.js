@@ -22,7 +22,7 @@ define(["require", "exports", "components/common", "user/services/service", "use
     class ProductListControl extends common_1.Control {
         get persistentMembers() {
             return [
-                'productSourceType', 'prodcutsCount', 'categoryId', 'productIds',
+                'productSourceType', 'productsCount', 'categoryId', 'productIds',
                 'listType', 'displayType', 'imageSize', 'productNameLines',
                 'showFields', 'productTemplate'
             ];
@@ -35,7 +35,7 @@ define(["require", "exports", "components/common", "user/services/service", "use
                 productCounts[item.ProductId] = item.Count;
             }
             this.state = {
-                prodcutsCount: 1, productCounts,
+                productsCount: 1, productCounts,
                 productSourceType: 'category', productNameLines: 'singleLine',
                 showFields: 'independent', imageSize: 'small',
                 listType: 'doubleColumn'
@@ -159,7 +159,7 @@ define(["require", "exports", "components/common", "user/services/service", "use
             return __awaiter(this, void 0, void 0, function* () {
                 var products;
                 if (this.state.productSourceType == 'category')
-                    products = yield this.shopping.productsByCategory(this.state.prodcutsCount, this.state.categoryId);
+                    products = yield this.shopping.productsByCategory(this.state.productsCount, this.state.categoryId);
                 else {
                     products = yield this.shopping.productsByIds(this.state.productIds);
                 }

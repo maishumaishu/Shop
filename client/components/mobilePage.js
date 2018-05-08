@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "react", "react-dom", "prop-types", "components/common", "share/common", "../user/services/stationService"], function (require, exports, React, ReactDOM, prop_types_1, common_1, common_2, stationService_1) {
+define(["require", "exports", "react", "react-dom", "prop-types", "components/common", "share/common"], function (require, exports, React, ReactDOM, prop_types_1, common_1, common_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const menuHeight = 50;
@@ -20,9 +20,8 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
             this.footerControlsCount = 0;
             this.viewControlsCount = 0;
             this.createdControlCount = 0;
-            this.state = { pageData: this.props.pageData };
+            this.state = { pageData: this.props.pageData, style: 'default' };
             this.controls = [];
-            this.props.elementPage.enableMock = this.props.enableMock;
         }
         static getInstanceByElement(element) {
             return element.mobilePage;
@@ -112,10 +111,7 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
          * @param pageData 页面的数据，用于描述一个页面
          */
         renderHeader(pageData) {
-            // if (!pageData.header)
-            //     return null;
             let headerControls = pageData.controls.filter(o => o.position == 'header');
-            //(pageData.header || { controls: [] }).controls || [];
             this.headerControlsCount = headerControls.length;
             return (h("header", { key: "header", className: "page-header", ref: (e) => this.headerElement = e || this.headerElement }, this.renderControls(headerControls)));
         }
@@ -124,7 +120,7 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
          * @param pageData 页面的数据，用于描述一个页面
          */
         renderFooter(pageData) {
-            let footerControls = pageData.controls.filter(o => o.position == 'footer'); //(pageData.footer || { controls: [] }).controls || [];
+            let footerControls = pageData.controls.filter(o => o.position == 'footer');
             return (h("footer", { key: "footer", className: "page-footer", ref: (e) => this.footerElement = e || this.footerElement }, this.renderControls(footerControls)));
         }
         /**
@@ -166,14 +162,12 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
                 pageElement.className = className;
             }
         }
-        styleColor() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let station = this.props.elementPage.createService(stationService_1.StationService);
-                let pageData = yield station.pages.style();
-                let styleControl = pageData.controls.filter(o => o.controlName == 'style')[0];
-                console.assert(styleControl != null);
-                return styleControl.data.style;
-            });
+        get styleColor() {
+            return this.state.style;
+        }
+        set styleColor(value) {
+            this.state.style = value;
+            this.setState(this.state);
         }
         renderDesigntimeViews(pageData) {
             let sortableElement = (element) => {
@@ -252,17 +246,15 @@ define(["require", "exports", "react", "react-dom", "prop-types", "components/co
         render() {
             let children = React.Children.toArray(this.props.children) || [];
             let pageData = this.state.pageData;
-            // if (pageData.header && pageData.header.controls)
-            //     this.headerControlsCount = pageData.header.controls.length;
-            // if (pageData.footer && pageData.footer.controls)
-            //     this.footerControlsCount = pageData.footer.controls.length;
-            // pageData.view = pageData.view || { controls: [] };
             this.viewControlsCount = 0;
             this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
+            let { style } = this.state;
+            let path = `../components/style/style_${style}.css`;
             var result = [
                 this.renderHeader(pageData),
                 this.renderFooter(pageData),
                 this.renderView(pageData),
+                h("link", { key: path, rel: "stylesheet", href: path })
             ];
             if (this.props.designTime && this.props.designTime.controlSelected) {
                 // 加上延时，否则编辑器有可能显示不出来

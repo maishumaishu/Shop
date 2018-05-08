@@ -71,7 +71,7 @@ define(["require", "exports", "react", "share/common", "lessc"], function (requi
                 typeName = typeName[0].toLowerCase() + typeName.substr(1);
                 let path = `${exports.componentsDir}/${typeName}/control`;
                 let lessText = `@import "../${path}";`;
-                let color = yield this.mobilePage.styleColor();
+                let color = this.mobilePage.styleColor;
                 if (color != null && color != 'default') {
                     lessText = lessText + `@import "../components/style/colors/${color}.less";`;
                 }

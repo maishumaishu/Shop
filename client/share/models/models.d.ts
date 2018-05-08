@@ -160,7 +160,11 @@ interface User {
 interface ControlData {
     controlId: string, controlName: string, data?: any
     selected?: boolean | 'disabled',
-    position: 'header' | 'view' | 'footer'
+    position: 'header' | 'view' | 'footer',
+    /**
+     * 是否保存到数据库，默认保存，true 保存，false 不保存
+     */
+    save?: boolean,
 }
 
 interface PageData {

@@ -14,7 +14,9 @@ export class StationService extends Service {
     }
     savePageData(pageData: PageData, isSystem?: boolean) {
         let url = `${Service.config.siteUrl}Page/SavePageData`;
-        return this.postByJson(url, { pageData, isSystem }).then((data) => {
+        let obj = pageData;
+        obj.controls = pageData.controls.filter(o => o.save != false);
+        return this.postByJson(url, { pageData: obj, isSystem }).then((data) => {
             Object.assign(pageData, data);
             return data;
         });

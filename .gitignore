@@ -13,6 +13,9 @@ server/images/*.js
 server/images/*.js.map
 server/images/ueditor/net/upload/image
 server/images/build
-client/**/*.js
+client/admin/**/*.js
+client/components/**/*.js
+client/user/**/*.js
+
 out
 **/package-lock.json

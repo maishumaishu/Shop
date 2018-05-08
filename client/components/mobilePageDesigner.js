@@ -22,15 +22,16 @@ define(["require", "exports", "components/componentDefines", "components/virtual
             // console.assert(pageData.footer.controls != null, 'footer controls is null.');
             this.state = { editors: [], pageData };
             let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
-            if (!existsStyleControl) {
-                this.props.pageDatas.style().then(stylePageData => {
-                    let styleControl = stylePageData.controls[0];
-                    console.assert(styleControl != null && styleControl.controlName == 'style');
-                    styleControl.selected = 'disabled';
-                    this.state.pageData.controls.push(styleControl);
-                    this.setState(this.state);
-                });
-            }
+            console.assert(!existsStyleControl);
+            // if (!existsStyleControl) {
+            //     this.props.pageDatas.style().then(stylePageData => {
+            //         let styleControl = stylePageData.controls[0];
+            //         console.assert(styleControl != null && styleControl.controlName == 'style');
+            //         styleControl.selected = 'disabled';
+            //         this.state.pageData.controls.push(styleControl);
+            //         this.setState(this.state);
+            //     })
+            // }
             let existsMenuControl = pageData.controls.filter(o => o.controlName == 'menu').length > 0;
             if (!existsMenuControl && pageData.showMenu) {
                 this.loadMenu();
@@ -292,15 +293,13 @@ define(["require", "exports", "components/componentDefines", "components/virtual
                                 padding: 0, listStyle: 'none',
                                 display: showComponentPanel == true ? 'block' : 'none'
                             } },
-                            componentDefines_1.default.filter(o => o.visible != false).map((c, i) => {
-                                return (h("li", { key: c.name, "data-control-name": c.name, "data-target": c.target, style: {
-                                        float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
-                                        textAlign: 'center', paddingTop: 8, backgroundColor: 'white', zIndex: 100
-                                    } },
-                                    h("div", null,
-                                        h("i", { className: c.icon, style: { fontSize: 44 } })),
-                                    h("div", null, c.displayName)));
-                            }),
+                            componentDefines_1.default.filter(o => o.visible != false).map((c, i) => h("li", { key: c.name, "data-control-name": c.name, "data-target": c.target, style: {
+                                    float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
+                                    textAlign: 'center', paddingTop: 8, backgroundColor: 'white', zIndex: 100
+                                } },
+                                h("div", { className: "btn-link" },
+                                    h("i", { className: c.icon, style: { fontSize: 44, color: 'black' } })),
+                                h("div", null, c.displayName))),
                             h("li", { className: "clearfix" }))),
                     showComponentPanel ?
                         h("div", { className: "form-group" },

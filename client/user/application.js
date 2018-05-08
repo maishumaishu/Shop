@@ -1,12 +1,4 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-define(["require", "exports", "react", "react-dom", "user/services/service", "user/services/stationService", "user/services/userData", "maishu-chitu", "components/mobilePage", "ui", "user/siteMap", "share/common", "user/services/shoppingCartService", "user/services/memberService"], function (require, exports, React, ReactDOM, service_1, stationService_1, userData_1, maishu_chitu_1, mobilePage_1, ui, siteMap_1, common_1, shoppingCartService_1, memberService_1) {
+define(["require", "exports", "react", "user/services/service", "user/services/userData", "maishu-chitu", "ui", "user/siteMap", "share/common", "user/services/shoppingCartService", "user/services/memberService"], function (require, exports, React, service_1, userData_1, maishu_chitu_1, ui, siteMap_1, common_1, shoppingCartService_1, memberService_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     window['h'] = window['h'] || React.createElement;
@@ -18,7 +10,6 @@ define(["require", "exports", "react", "react-dom", "user/services/service", "us
     class Page extends maishu_chitu_1.Page {
         constructor(params) {
             super(params);
-            this.enableMock = false;
             console.assert(this._app instanceof Application);
             this.showLoading();
         }
@@ -46,31 +37,8 @@ define(["require", "exports", "react", "react-dom", "user/services/service", "us
                 loadingView.style.display = 'none';
             }
         }
-        createService(type) {
-            let service = super.createService(type);
-            if (this.enableMock) {
-                this.mockService(service);
-            }
-            return service;
-        }
-        mockService(service) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let mockData = yield chitu.loadjs('user/services/mock');
-                if (service instanceof shoppingCartService_1.ShoppingCartService) {
-                    service.items = () => __awaiter(this, void 0, void 0, function* () {
-                        return mockData.shoppingCartItems;
-                    });
-                    service.calculateShoppingCartItems = () => __awaiter(this, void 0, void 0, function* () {
-                        return mockData.shoppingCartItems;
-                    });
-                }
-                else if (service instanceof memberService_1.MemberService) {
-                    service.store = () => __awaiter(this, void 0, void 0, function* () {
-                        let store = { Id: common_1.guid(), Name: '', Data: { ImageId: '' } };
-                        return store;
-                    });
-                }
-            });
+        get app() {
+            return this._app;
         }
     }
     exports.Page = Page;
@@ -107,15 +75,15 @@ define(["require", "exports", "react", "react-dom", "user/services/service", "us
             let page = super.createPage(pageName, value);
             //===================================================
             // 生成样式
-            if (!this.styleloaded) {
-                let element = document.createElement('div');
-                document.body.appendChild(element);
-                let station = page.createService(stationService_1.StationService);
-                station.pages.style().then(pageData => {
-                    ReactDOM.render(h(mobilePage_1.MobilePage, { pageData: pageData, elementPage: page }), element);
-                });
-                this.styleloaded = true;
-            }
+            // if (!this.styleloaded) {
+            //     let element = document.createElement('div');
+            //     document.body.appendChild(element);
+            //     let station = page.createService(StationService);
+            //     station.pages.style().then(pageData => {
+            //         ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, element);
+            //     })
+            //     this.styleloaded = true;
+            // }
             //===================================================
             return page;
         }

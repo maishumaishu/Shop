@@ -105,7 +105,7 @@ export abstract class Control<P extends ControlProps<any>, S> extends React.Comp
 
         let lessText = `@import "../${path}";`;
 
-        let color = await this.mobilePage.styleColor();
+        let color = this.mobilePage.styleColor;
         if (color != null && color != 'default') {
             lessText = lessText + `@import "../components/style/colors/${color}.less";`;
         }

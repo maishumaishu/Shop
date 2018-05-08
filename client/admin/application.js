@@ -48,11 +48,12 @@ define(["require", "exports", "react", "react-dom", "ui", "admin/services/servic
             return service;
         }
         loadCSS(pageName) {
-            // let path = pageName.split('_').join('/');
             let pageNode = siteMap_1.siteMap.nodes[pageName];
             console.assert(pageNode != null);
             console.assert(typeof pageNode.path == 'string');
-            requirejs([`less!${pageNode.path}`]);
+            requirejs([`less!${pageNode.path}`], function () {
+                console.log(`load less!${pageNode.path}`);
+            });
         }
         createPageElement(pageName) {
             let element = document.createElement('div');

@@ -66,15 +66,16 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         this.state = { editors: [], pageData };
         let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
-        if (!existsStyleControl) {
-            this.props.pageDatas.style().then(stylePageData => {
-                let styleControl = stylePageData.controls[0];
-                console.assert(styleControl != null && styleControl.controlName == 'style');
-                styleControl.selected = 'disabled';
-                this.state.pageData.controls.push(styleControl);
-                this.setState(this.state);
-            })
-        }
+        console.assert(!existsStyleControl)
+        // if (!existsStyleControl) {
+        //     this.props.pageDatas.style().then(stylePageData => {
+        //         let styleControl = stylePageData.controls[0];
+        //         console.assert(styleControl != null && styleControl.controlName == 'style');
+        //         styleControl.selected = 'disabled';
+        //         this.state.pageData.controls.push(styleControl);
+        //         this.setState(this.state);
+        //     })
+        // }
 
         let existsMenuControl = pageData.controls.filter(o => o.controlName == 'menu').length > 0;
         if (!existsMenuControl && pageData.showMenu) {
@@ -408,22 +409,20 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                 padding: 0, listStyle: 'none',
                                 display: showComponentPanel == true ? 'block' : 'none'
                             }}>
-                            {components.filter(o => o.visible != false).map((c, i) => {
-                                return (
-                                    <li key={c.name} data-control-name={c.name} data-target={c.target}
-                                        style={{
-                                            float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
-                                            textAlign: 'center', paddingTop: 8, backgroundColor: 'white', zIndex: 100
-                                        }} >
-                                        <div>
-                                            <i className={c.icon} style={{ fontSize: 44 }} />
-                                        </div>
-                                        <div>
-                                            {c.displayName}
-                                        </div>
-                                    </li>
-                                )
-                            })}
+                            {components.filter(o => o.visible != false).map((c, i) =>
+                                <li key={c.name} data-control-name={c.name} data-target={c.target}
+                                    style={{
+                                        float: 'left', height: 80, width: 80, border: 'solid 1px #ccc', marginLeft: 4,
+                                        textAlign: 'center', paddingTop: 8, backgroundColor: 'white', zIndex: 100
+                                    }} >
+                                    <div className="btn-link">
+                                        <i className={c.icon} style={{ fontSize: 44, color: 'black' }} />
+                                    </div>
+                                    <div>
+                                        {c.displayName}
+                                    </div>
+                                </li>
+                            )}
                             <li className="clearfix"></li>
                         </ul>
                     </div>

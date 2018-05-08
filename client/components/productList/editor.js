@@ -49,9 +49,9 @@ define(["require", "exports", "components/editor", "admin/services/shopping", "a
                 option.text = i;
                 e.appendChild(option);
             }
-            e.value = `${this.state.prodcutsCount}`;
+            e.value = `${this.state.productsCount}`;
             e.onchange = () => {
-                this.state.prodcutsCount = Number.parseInt(e.value);
+                this.state.productsCount = Number.parseInt(e.value);
                 this.setState(this.state);
             };
             // e.options[0].selected = true;

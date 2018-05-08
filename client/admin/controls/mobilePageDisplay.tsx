@@ -1,7 +1,7 @@
 import { VirtualMobile } from "components/virtualMobile";
 import { DesignTimeUserApplication } from "components/designTimeUserApplication";
 import { MobilePage } from "components/mobilePage";
-
+import { State as StyleControlState, StyleType } from 'components/style/control';
 interface Props extends React.Props<MobilePageDisplay> {
     pageData: PageData,
     style?: React.CSSProperties,
@@ -10,7 +10,8 @@ interface Props extends React.Props<MobilePageDisplay> {
 interface State {
     pageData: PageData
 }
-export class MobilePageDisplay extends React.Component<Props, any>{
+export class MobilePageDisplay extends React.Component<Props, State>{
+
     mobilePage: MobilePage;
     userApp: DesignTimeUserApplication;
     virtualMobile: VirtualMobile;
@@ -18,7 +19,9 @@ export class MobilePageDisplay extends React.Component<Props, any>{
         super(props);
         this.state = { pageData: this.props.pageData };
     }
-
+    changeStyle(style: StyleType): any {
+        this.mobilePage.styleColor = style;
+    }
     renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
         console.assert(screenElement != null);
 

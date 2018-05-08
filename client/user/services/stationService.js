@@ -14,23 +14,26 @@ define(["require", "exports", "user/services/service"], function (require, expor
             this.defaultPages = {
                 member: {
                     name: '*member',
-                    controls: [{ controlId: service_1.guid(), controlName: 'member', selected: true }]
+                    controls: [{ controlId: service_1.guid(), controlName: 'member', selected: true, position: 'view' }]
                 },
                 menu: {
                     name: '*menu',
-                    controls: [{ controlId: service_1.guid(), controlName: 'menu', selected: true }]
+                    controls: [{ controlId: service_1.guid(), controlName: 'menu', selected: true, position: 'footer' }]
                 },
                 style: {
                     name: '*style',
-                    controls: [{ controlId: service_1.guid(), controlName: 'style', selected: true }]
+                    controls: [{ controlId: service_1.guid(), controlName: 'style', selected: true, position: 'footer' }]
                 },
                 categories: {
                     name: '*categories',
-                    controls: [{ controlId: service_1.guid(), controlName: 'categories', selected: true }]
+                    controls: [{ controlId: service_1.guid(), controlName: 'categories', selected: true, position: 'view' }]
                 },
                 home: {
                     name: '*home',
-                    controls: [{ controlId: service_1.guid(), controlName: 'summaryHeader', selected: true }]
+                    controls: [
+                        { controlId: service_1.guid(), controlName: 'summaryHeader', selected: true, position: 'view' },
+                        { controlId: service_1.guid(), controlName: 'productList', position: 'view', data: { productsCount: 10 } }
+                    ]
                 },
                 shoppingCart: {
                     name: '*shoppingCart',

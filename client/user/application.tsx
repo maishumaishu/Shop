@@ -104,15 +104,15 @@ export class Application extends BaseApplication {
         let page = super.createPage(pageName, value) as BasePage;
         //===================================================
         // 生成样式
-        if (!this.styleloaded) {
-            let element = document.createElement('div');
-            document.body.appendChild(element);
-            let station = page.createService(StationService);
-            station.pages.style().then(pageData => {
-                ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, element);
-            })
-            this.styleloaded = true;
-        }
+        // if (!this.styleloaded) {
+        //     let element = document.createElement('div');
+        //     document.body.appendChild(element);
+        //     let station = page.createService(StationService);
+        //     station.pages.style().then(pageData => {
+        //         ReactDOM.render(<MobilePage pageData={pageData} elementPage={page} />, element);
+        //     })
+        //     this.styleloaded = true;
+        // }
         //===================================================
         return page;
     }

@@ -70,11 +70,12 @@ export class Application extends chitu.Application {
     }
 
     loadCSS(pageName: string) {
-        // let path = pageName.split('_').join('/');
         let pageNode = siteMap.nodes[pageName];
         console.assert(pageNode != null);
         console.assert(typeof pageNode.path == 'string');
-        requirejs([`less!${pageNode.path}`]);
+        requirejs([`less!${pageNode.path}`], function () {
+            console.log(`load less!${pageNode.path}`);
+        });
     }
 
     protected createPageElement(pageName: string): HTMLElement {

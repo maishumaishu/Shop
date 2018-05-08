@@ -46,7 +46,7 @@ export default async function (page: chitu.Page) {
             }
         })
 
-        pageData.controls.push({ controlName: 'menu_design_body', controlId: guid(), position: 'view' });
+        pageData.controls.push({ controlName: 'menu_design_body', controlId: guid(), position: 'view', save: false });
     }
 
 

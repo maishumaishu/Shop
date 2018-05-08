@@ -1,4 +1,4 @@
-define(["require", "exports", "components/common", "user/site", "user/services/shoppingCartService", "user/siteMap"], function (require, exports, common_1, site_1, shoppingCartService_1, siteMap_1) {
+define(["require", "exports", "components/common", "user/services/shoppingCartService", "user/siteMap"], function (require, exports, common_1, shoppingCartService_1, siteMap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const EMPTY_ICON = 'icon-check-empty';
@@ -26,7 +26,8 @@ define(["require", "exports", "components/common", "user/site", "user/services/s
             ];
         }
         isShoppingCart(routeString) {
-            var routeData = site_1.app.parseUrl(routeString);
+            let page = this.props.mobilePage.props.elementPage;
+            var routeData = page.app.parseUrl(routeString);
             if (routeData.pageName == 'shopping.shoppingCart') {
                 return true;
             }
@@ -44,11 +45,12 @@ define(["require", "exports", "components/common", "user/site", "user/services/s
             return h("ul", { className: "menu" }, menuNodes.map((o, i) => {
                 let itemWidth = 100 / menuNodes.length;
                 // let routeString = o.url.startsWith('#') ? o.url.substr(1) : o.url;
-                var routeData = site_1.app.parseUrl(o.url);
+                let page = this.elementPage;
+                var routeData = page.app.parseUrl(o.url);
                 let isShoppingCart = routeData.pageName == 'shopping.shoppingCart';
                 let isActive = this.elementPage.name == routeData.pageName; //app.currentPage != null && app.currentPage.name == routeData.pageName;
                 return (h("li", { key: i, style: { width: `${itemWidth}%` } },
-                    h("div", { onClick: () => site_1.app.redirect(siteMap_1.default.nodes[routeData.pageName]), className: isActive ? 'text-primary' : null },
+                    h("div", { onClick: () => page.app.redirect(siteMap_1.default.nodes[routeData.pageName]), className: isActive ? 'text-primary' : null },
                         h("i", { className: o.icon ? o.icon : EMPTY_ICON }),
                         o.name),
                     isShoppingCart && productsCount > 0 ? h("div", { className: "badge bg-primary" }, productsCount) : null));

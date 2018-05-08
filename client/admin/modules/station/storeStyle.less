@@ -1,0 +1,45 @@
+@import "../../../components/style/variables.less";
+@import "../../../lib/bootstrap-3.3.7/less/variables.less";
+.station-store-style {
+    .style-solutions {
+        padding: 20px;
+        background-color: @well-bg;
+        label {
+            width: 120px;
+        }
+        header {
+            padding: 0 0 10px 0;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            li {
+                padding: 2px;
+                width: 40px;
+                height: 20px;
+                display: inline-block;
+                
+                div {
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .default {
+                    @import "../../../components/style/colors/default.less";
+                    background-color: @brand-primary;
+                }
+
+                .red {
+                    @import "../../../components/style/colors/red.less";
+                    background-color: @brand-primary;
+                }
+                
+
+                &.active {
+                    border: 1px solid #66afe9;
+                }
+            }
+        }
+    }
+}

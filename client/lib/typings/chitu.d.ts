@@ -132,7 +132,7 @@ declare namespace chitu {
         [key: string]: any;
     };
     interface PageDisplayConstructor {
-        new (app: PageMaster): PageDisplayer;
+        new(app: PageMaster): PageDisplayer;
     }
     interface PageDisplayer {
         show(targetPage: Page, currentPage: chitu.Page): Promise<any>;
@@ -150,7 +150,7 @@ declare namespace chitu {
         private animationTime;
         private num;
         private _element;
-        protected _app;
+        protected _app: chitu.Application;
         private _displayer;
         private _action;
         private _name;
@@ -184,10 +184,10 @@ declare namespace chitu {
     }
 }
 interface PageActionConstructor {
-    new (page: chitu.Page): any;
+    new(page: chitu.Page): any;
 }
 interface PageConstructor {
-    new (args: chitu.PageParams): chitu.Page;
+    new(args: chitu.PageParams): chitu.Page;
 }
 declare class PageDisplayerImplement implements chitu.PageDisplayer {
     show(page: chitu.Page, previous: chitu.Page): Promise<void>;
@@ -200,7 +200,7 @@ declare function ajax<T>(url: string, options: RequestInit): Promise<T>;
 declare function callAjax<T>(url: string, options: RequestInit, service: chitu.Service, error: chitu.Callback1<chitu.Service, Error>): Promise<T>;
 declare namespace chitu {
     interface ServiceConstructor<T> {
-        new (): T;
+        new(): T;
     }
     type AjaxOptions = {
         data?: Object;
@@ -220,11 +220,11 @@ declare namespace chitu {
 declare namespace chitu {
 }
 
-declare module "maishu-chitu" { 
-    export = chitu; 
+declare module "maishu-chitu" {
+    export = chitu;
 }
 
-declare module "chitu" { 
-    export = chitu; 
+declare module "chitu" {
+    export = chitu;
 }
 
