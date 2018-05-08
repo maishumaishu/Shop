@@ -11,23 +11,26 @@ export class PageDatas {
     readonly defaultPages = {
         member: <PageData>{
             name: '*member',
-            controls: [{ controlId: guid(), controlName: 'member', selected: true }]
+            controls: [{ controlId: guid(), controlName: 'member', selected: true, position: 'view' }]
         },
         menu: <PageData>{
             name: '*menu',
-            controls: [{ controlId: guid(), controlName: 'menu', selected: true }]
+            controls: [{ controlId: guid(), controlName: 'menu', selected: true, position: 'footer' }]
         },
         style: <PageData>{
             name: '*style',
-            controls: [{ controlId: guid(), controlName: 'style', selected: true }]
+            controls: [{ controlId: guid(), controlName: 'style', selected: true, position: 'footer' }]
         },
         categories: <PageData>{
             name: '*categories',
-            controls: [{ controlId: guid(), controlName: 'categories', selected: true }]
+            controls: [{ controlId: guid(), controlName: 'categories', selected: true, position: 'view' }]
         },
         home: <PageData>{
             name: '*home',
-            controls: [{ controlId: guid(), controlName: 'summaryHeader', selected: true }]
+            controls: [
+                { controlId: guid(), controlName: 'summaryHeader', selected: true, position: 'view' },
+                { controlId: guid(), controlName: 'productList', position: 'view', data: { productsCount: 10 } }
+            ]
         },
         shoppingCart: <PageData>{
             name: '*shoppingCart',
