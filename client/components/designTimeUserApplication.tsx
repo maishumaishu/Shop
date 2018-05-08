@@ -1,14 +1,35 @@
-import { Application as UserApplication } from 'user/application';
+import { Application as UserApplication, Page as UserPage } from 'user/application';
 import { MobilePage } from 'components/mobilePage';
 import userSiteMap from 'user/siteMap';
 import { renderQRCode } from 'weixin/modules/openid';
 import { WeiXinService } from 'user/services/weixinService';
+import * as mockData from 'user/services/mockData';
+import { ShoppingCartService } from 'user/services/shoppingCartService';
+import { MemberService } from 'user/services/memberService';
+import { guid } from 'share/common';
+
+class DesignTimeUserPage extends UserPage {
+    createService<T extends chitu.Service>(type?: chitu.ServiceConstructor<T>): T {
+        let service = super.createService<T>(type);
+        console.assert(this._app instanceof DesignTimeUserApplication);
+        if ((this._app as DesignTimeUserApplication).enableMock) {
+            service = mockService<T>(service);
+        }
+        return service;
+    }
+}
 
 export class DesignTimeUserApplication extends UserApplication {
     private screenElement: HTMLElement;
-    constructor(screenElement: HTMLElement) {
+
+    private _enableMock: boolean;
+
+    constructor(screenElement: HTMLElement, enableMock?: boolean) {
         super();
+
         this.screenElement = screenElement;
+        this.pageType = DesignTimeUserPage;
+        this._enableMock = enableMock == null ? false : enableMock;
 
         let pageName = userSiteMap.nodes.user_login.name;
         console.assert(pageName != null);
@@ -17,7 +38,7 @@ export class DesignTimeUserApplication extends UserApplication {
         this.nodes[pageName].action = function (page: chitu.Page) {
             ReactDOM.render([
                 <div key={10} className="text-center" style={{ paddingTop: 100 }}>
-                    <b>该页面需要登录后才能操作</b>
+                    <b>该页面需要登录后才能显示</b>
                     <br />
                     <b>请使用微信扫描二维登录客户端</b>
                 </div>,
@@ -41,10 +62,12 @@ export class DesignTimeUserApplication extends UserApplication {
                 </div>
             ], page.element);
         }
-
     }
     get designPageNode() {
         return userSiteMap.nodes.emtpy;
+    }
+    get enableMock() {
+        return this._enableMock;
     }
     showDesignPage() {
         this.showPage(userSiteMap.nodes.emtpy);
@@ -54,7 +77,30 @@ export class DesignTimeUserApplication extends UserApplication {
         this.screenElement.appendChild(element);
         return element;
     }
-    // protected on_error(app: chitu.Application, err: Error, page?: chitu.Page) {
-    //     debugger;
-    // }
+    createService<T extends chitu.Service>(type?: chitu.ServiceConstructor<T>): T {
+        let service = super.createService<T>(type);
+        if (this._enableMock) {
+            service = mockService<T>(service);
+        }
+        return service;
+    }
+}
+
+function mockService<T extends chitu.Service>(service: T): T {
+    if (service instanceof ShoppingCartService) {
+        service.items = async () => {
+            return mockData.shoppingCartItems;
+        }
+        service.calculateShoppingCartItems = async () => {
+            return mockData.shoppingCartItems;
+        }
+    }
+    else if (service instanceof MemberService) {
+        service.store = async () => {
+            let store: Store = { Id: guid(), Name: '', Data: { ImageId: '' } }
+            return store;
+        }
+    }
+
+    return service;
 }

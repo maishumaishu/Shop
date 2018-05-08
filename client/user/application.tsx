@@ -12,7 +12,6 @@ import * as ui from 'ui';
 import siteMap from 'user/siteMap';
 import { AppError, ErrorCodes, guid } from 'share/common';
 import { ShoppingCartService } from 'user/services/shoppingCartService';
-import { MockData } from 'user/services/mockData';
 import { MemberService, userInfo } from 'user/services/memberService';
 
 window['h'] = window['h'] || React.createElement;
@@ -55,32 +54,10 @@ export class Page extends BasePage {
             loadingView.style.display = 'none';
         }
     }
-    enableMock: boolean = false;
-    createService<T extends chitu.Service>(type?: chitu.ServiceConstructor<T>): T {
-        let service = super.createService<T>(type);
-        if (this.enableMock) {
-            this.mockService(service);
-        }
-        return service;
+    get app(): Application {
+        return this._app as Application;
     }
 
-    private async mockService(service: chitu.Service) {
-        let mockData: MockData = await chitu.loadjs('user/services/mock');
-        if (service instanceof ShoppingCartService) {
-            service.items = async () => {
-                return mockData.shoppingCartItems;
-            }
-            service.calculateShoppingCartItems = async () => {
-                return mockData.shoppingCartItems;
-            }
-        }
-        else if (service instanceof MemberService) {
-            service.store = async () => {
-                let store: Store = { Id: guid(), Name: '', Data: { ImageId: '' } }
-                return store;
-            }
-        }
-    }
 }
 
 export class Application extends BaseApplication {

@@ -54,7 +54,6 @@ export class MobilePage extends React.Component<Props, State>{
         super(props);
         this.state = { pageData: this.props.pageData };
         this.controls = [];
-        (this.props.elementPage as Page).enableMock = this.props.enableMock;
     }
 
     static getInstanceByElement(element: HTMLElement): MobilePage {
