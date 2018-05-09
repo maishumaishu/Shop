@@ -35,7 +35,24 @@ var requirejs_paths = {
     'url-search-params-polyfill': 'lib/url-search-params-polyfill',
     ui: 'lib/ui',
 };
+
+// task names
+let dev = 'dev', debug = 'debug', release = 'release';
+
+var usages = `
+grunt ${dev}
+grunt ${debug}
+grunt ${release}
+`;
+
 module.exports = function (grunt) {
+
+    let custom_tasks = [dev, debug, release];
+    let has_custom_task = grunt.cli.tasks.filter(o => custom_tasks.indexOf(o) >= 0).length >= 0;
+    if (has_custom_task && grunt.cli.tasks.length > 1) {
+        console.log(usages);
+        return false;
+    }
     grunt.initConfig({
         // 通过connect任务，创建一个静态服务器
         connect: {
@@ -99,6 +116,20 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        less: {
+            client: {
+                options: {
+                    sourceMap: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: `./`,
+                    src: ['components/style/*.less'],
+                    dest: `../out/es5`,
+                    ext: '.css'
+                },]
+            },
+        },
         requirejs: {
             user: {
                 options: {
@@ -108,8 +139,8 @@ module.exports = function (grunt) {
                         "css", "react", "react-dom", 'prop-types', 'ui',
                         "dilu", "user/application"
                     ],
-                    out: `../www/user/build.js`,
-                    optimize: 'uglify', // 'none',//
+                    out: `../out/es5/user/build.js`,
+                    optimize: 'uglify',
                     paths: Object.assign(requirejs_paths, {
                         site: 'user/site',
                         errorHandle: 'user/errorHandle',
@@ -133,7 +164,7 @@ module.exports = function (grunt) {
                         "dilu", 'share/common', 'share/service', 'template-web',
                         'admin/services/service', 'admin/application',
                     ],
-                    out: `../www/admin/build.js`,
+                    out: `../out/es5/admin/build.js`,
                     optimize: 'uglify', //'none',
                     paths: Object.assign(requirejs_paths, {
                         masterPage: 'admin/masterPage'
@@ -154,9 +185,17 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
-    grunt.registerTask('dev', ['connect', 'watch']);
+
+    grunt.registerTask(dev, ['connect', 'watch']);
+    grunt.registerTask(debug, [
+        'copy:client',
+        'babel',
+        'less',
+        'requirejs'
+    ])
 }
 
 ///Volumes/data/projects/shop/out/es5/lib/polyfill.js
