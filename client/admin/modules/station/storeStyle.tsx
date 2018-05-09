@@ -13,7 +13,7 @@ export default function (page: chitu.Page) {
     ReactDOM.render(<StoreStylePage page={page} />, page.element);
 }
 
-let allColors: StyleColor[] = ['default', 'red', 'green', 'pink'];
+let allColors: StyleColor[] = ['default', 'red', 'green', 'pink', 'goldenrod'];
 class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Store }> {
     productPage: MobilePageDisplay;
     shoppingCartPage: MobilePageDisplay;
