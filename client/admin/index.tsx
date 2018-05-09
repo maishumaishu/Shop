@@ -17,7 +17,7 @@ requirejs.config({
             exports: 'window["$"]',
             deps: [
                 'jquery',
-                'css!content/jquery-ui-1.10.0.custom'
+                'css!lib/jquery-ui-1.10.0.custom'
             ]
         },
         mobileControls: {

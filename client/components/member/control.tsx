@@ -5,7 +5,6 @@ import { imageUrl } from 'user/services/service';
 
 let member = new MemberService();
 
-requirejs([`css!${componentsDir}/member/control`]);
 
 export interface Props extends ControlProps<MemberControl> {
     // showBalance?: boolean,// = false;
@@ -56,6 +55,7 @@ export default class MemberControl extends Control<Props, State>{
             this.state.userInfo = value;
             this.setState(this.state);
         })
+        this.hasCSS = true;
     }
 
     _render(h) {

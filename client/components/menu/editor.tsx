@@ -3,7 +3,7 @@ import { State as ControlState, default as Control, MenuNode } from 'components/
 import { StationService } from 'user/services/stationService';
 import { FormValidator, rules } from 'dilu';
 
-requirejs(['css!components/menu/editor.css']);
+// requirejs(['css!components/menu/editor.css']);
 let h = React.createElement;
 
 export interface MenuEditorState extends Partial<ControlState> {
@@ -46,6 +46,7 @@ export default class MenuEditor extends Editor<MenuEditorProps, MenuEditorState>
     constructor(props) {
         super(props);
         this.state = { currentItem: {} as MenuNode };
+        this.loadEditorCSS();
     }
     editItem(menuItem: MenuNode) {
         this.state.currentItem = menuItem;

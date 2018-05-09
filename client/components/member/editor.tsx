@@ -3,14 +3,12 @@ import { Props as ControlProps, State as ControlState, default as Control } from
 import { StationService } from 'admin/services/station';
 import { imageUrl } from 'user/services/service';
 
-// requirejs(['css!components/member/editor.css']);
 
 export interface EditorState extends Partial<ControlState> {
 
 }
 
 let station = new StationService();
-//station.saveImage()
 
 export default class MemberEditor extends Editor<EditorProps, EditorState> {
     constructor(props) {
