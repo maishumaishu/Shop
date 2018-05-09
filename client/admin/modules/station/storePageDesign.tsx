@@ -17,13 +17,7 @@ export default async function (page: chitu.Page) {
 
     let showComponentPanel = storePage == 'home';
     let pageData: PageData = await func.apply(userStation.pages);
-    let props: Props = {
-        pageData,
-        pageDatas: userStation.pages,
-        save: adminStation.savePageData.bind(adminStation),
-        showMenuSwitch: true,
-        showComponentPanel
-    }
+    let leftButtons: JSX.Element[] = []
     if (storePage == 'menu') {
         let menuControl = pageData.controls.filter(o => o.controlName == storePage)[0];
         console.assert(menuControl != null);
@@ -49,7 +43,14 @@ export default async function (page: chitu.Page) {
         pageData.controls.push({ controlName: 'menu_design_body', controlId: guid(), position: 'view', save: false });
     }
 
-
-
+    let props: Props = {
+        pageData,
+        pageDatas: userStation.pages,
+        save: adminStation.savePageData.bind(adminStation),
+        showMenuSwitch: true,
+        showComponentPanel,
+        showTemplateButton: true,
+        showSnapshootButton: true,
+    }
     ReactDOM.render(<MobilePageDesigner {...props} />, page.element);
 }

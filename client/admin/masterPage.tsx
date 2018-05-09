@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Service, imageUrl } from 'admin/services/service';
 import { siteMap, menuData, MenuNode } from 'admin/pageNodes';
-import { Application as App } from 'admin/Application';
+import { AdminApplication as App } from 'admin/Application';
 import { StationService } from 'admin/services/station';
 import { MemberService } from 'admin/services/member';
 import site from 'admin/site';
@@ -48,17 +48,17 @@ export class MasterPage extends React.Component<Props, State> {
                 this.setState(this.state);
             })
 
-            if (page.name == 'home_index') {
-                let sotreId = site.appIdFromLocation();
-                if (sotreId) {
-                    if (Service.appToken != null) {
-                        member.store(sotreId).then(store => {
-                            this.state.store = store;
-                            this.setState(this.state);
-                        })
-                    }
+            // if (page.name == 'home_index') {
+            let sotreId = site.appIdFromLocation();
+            if (sotreId) {
+                if (Service.appToken != null) {
+                    member.store(sotreId).then(store => {
+                        this.state.store = store;
+                        this.setState(this.state);
+                    })
                 }
             }
+            // }
         })
 
         let member = this.props.app.createService(MemberService);

@@ -14,6 +14,7 @@ import { MemberService, userInfo } from 'user/services/memberService';
 
 window['h'] = window['h'] || React.createElement;
 
+requirejs(['css!components/style/baseStyle']);
 
 siteMap.nodes["empty"] = {
     action(page: UserPage) {

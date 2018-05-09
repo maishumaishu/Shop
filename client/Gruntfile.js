@@ -20,7 +20,6 @@ var requirejs_paths = {
     css: 'lib/css',
     less: 'lib/require-less-0.1.5/less',
     lessc: 'lib/require-less-0.1.5/lessc',
-    'less-builder': 'lib/require-less-0.1.5/less-builder',
     normalize: 'lib/require-less-0.1.5/normalize',
     text: 'lib/text',
 
@@ -28,13 +27,23 @@ var requirejs_paths = {
     dilu: 'lib/dilu',
     fetch: 'lib/fetch',
     react: 'lib/react.production',
+    polyfill: 'lib/polyfill',
+    ui: 'lib/ui',
+
+    'less-builder': 'lib/require-less-0.1.5/less-builder',
     'react-dom': 'lib/react-dom.production',
     'prop-types': 'lib/prop-types',
-    polyfill: 'lib/polyfill',
     'template-web': 'lib/template-web',
     'url-search-params-polyfill': 'lib/url-search-params-polyfill',
-    ui: 'lib/ui',
+    'iscroll-lite': 'lib/iscroll-lite'
 };
+
+let user_style = [
+    'components/html/control.less',
+    'components/navigator/control.less',
+    'components/image/control.less',
+    'components/productList/control.less'
+];
 
 // task names
 let dev = 'dev', debug = 'debug', release = 'release';
@@ -114,6 +123,22 @@ module.exports = function (grunt) {
                     ],
                     dest: `../out/es5`
                 }]
+            },
+            release: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: `../out/es5`,
+                        src: ['**/*'],
+                        dest: `../www`
+                    },
+                    {
+                        expand: true,
+                        cwd: `./`,
+                        src: ['**/*.less'],
+                        dest: `../www`
+                    }
+                ]
             }
         },
         less: {
@@ -139,7 +164,7 @@ module.exports = function (grunt) {
                     src: ['components/style/*.less'],
                     dest: `../out/es5`,
                     ext: '.css'
-                },]
+                }]
             },
         },
         requirejs: {
@@ -149,7 +174,9 @@ module.exports = function (grunt) {
                     include: [
                         "polyfill", 'url-search-params-polyfill', 'fetch',
                         "css", "react", "react-dom", 'prop-types', 'ui',
-                        "dilu", "user/application"
+                        "dilu", "user/application", 'template-web',
+                        'iscroll-lite',
+                        // ...user_style
                     ],
                     out: `../out/es5/user/build.js`,
                     optimize: 'uglify',
@@ -177,7 +204,7 @@ module.exports = function (grunt) {
                         'admin/services/service', 'admin/application',
                     ],
                     out: `../out/es5/admin/build.js`,
-                    optimize: 'uglify', //'none',
+                    optimize: 'uglify',
                     paths: Object.assign(requirejs_paths, {
                         masterPage: 'admin/masterPage'
                     }),
@@ -192,6 +219,23 @@ module.exports = function (grunt) {
                 }
             }
         },
+        uglify: {
+            out: {
+                options: {
+                    mangle: false
+                },
+                files: [{
+                    expand: true,
+                    cwd: `../out/es5`,
+                    src: [
+                        '**/*.js',
+                        '!components/**/*.js',
+                        '!lib/**/*.js'
+                    ],
+                    dest: `www`
+                }]
+            }
+        },
     });
 
     grunt.loadNpmTasks('grunt-babel');
@@ -200,6 +244,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     grunt.registerTask(dev, ['connect', 'watch']);
     grunt.registerTask(debug, [
@@ -207,7 +252,12 @@ module.exports = function (grunt) {
         'babel',
         'less',
         'requirejs'
-    ])
+    ]);
+    grunt.registerTask(release, [
+        'debug',
+        'copy:release',
+        'uglify',
+    ]);
 }
 
 ///Volumes/data/projects/shop/out/es5/lib/polyfill.js

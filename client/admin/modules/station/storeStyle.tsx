@@ -120,7 +120,7 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
             <hr key={20} style={{ marginTop: 0 }} />,
             <div key={25} className="style-editor">
                 <div className="style-solutions">
-                    <header>选择配色方案</header>
+                    <span className="header">选择配色方案</span>
                     <ul>
                         {allColors.map(o =>
                             <li key={o} className={o == currentColor ? "btn-link active" : 'btn-link'}

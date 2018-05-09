@@ -9,7 +9,7 @@ import product from 'user/modules/home/product';
 import template = require('art-template');
 import { app } from 'user/application';
 
-requirejs(['css!user/controls/productImage']);
+requirejs(['less!user/controls/productImage']);
 
 export class Data {
     private _product: Product;

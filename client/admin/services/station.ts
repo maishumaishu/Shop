@@ -3,10 +3,6 @@ import templates from 'admin/services/data/templates'
 import { imageServiceBaseUrl } from 'share/common';
 export { guid } from 'admin/services/service';
 
-// type ImageData = {
-//     id: string, width?: number, height?: number
-// }
-
 export class StationService extends Service {
     private url(path: string) {
         let url = `${Service.config.siteUrl}${path}`;
@@ -25,11 +21,17 @@ export class StationService extends Service {
         var pageData = templates.filter(o => o.id == templateId).map(o => o.pageData)[0];
         return Promise.resolve(pageData);
     }
-    pageDatas() {
-        let url = this.url('Page/GetPageDatas');
-        return this.getByJson<PageData[]>(url).then(o => {
-            return o || [];
-        });
+    /**
+     * 保存页面数据快照
+     * @param pageData 要保存为快照的页面数据
+     */
+    saveSnapshoot(pageData: PageData) {
+        console.assert(pageData.id != null);
+        pageData = JSON.parse(JSON.stringify(pageData));
+        pageData.name = pageData.id;
+        delete pageData.id;
+
+        return this.savePageData(pageData, true);
     }
     async pageList(args: wuzhui.DataSourceSelectArguments): Promise<wuzhui.DataSourceSelectResult<PageData>> {
         let url = this.url('Page/GetPageList');
@@ -37,20 +39,6 @@ export class StationService extends Service {
         let pages = pageList.dataItems.map(o => <PageData>{ id: o.Id, name: o.Name });
         return { totalRowCount: pageList.totalRowCount, dataItems: pages };
     }
-    // async pageDataById(pageId: string) {
-    //     if (!pageId) throw new Error('argument pageId null');
-
-    //     let url = this.url('Page/GetPageDataById');
-    //     let data = { pageId };
-    //     let pageData = await this.getByJson<PageData>(url, { id: pageId })
-    //     if (pageData == null) {
-    //         let error = new Error(`Page data ${pageId} is not exists.`);
-    //         this.error.fire(this, error);
-    //         throw error;
-    //     }
-    //     // pageData = await fillPageData(pageData);
-    //     return pageData;
-    // }
     deletePageData(pageId: string) {
         let url = this.url('Page/DeletePage');
         return this.deleteByJson(url, { pageId });
@@ -101,6 +89,4 @@ export class StationService extends Service {
             urlParams[decode(match[1])] = decode(match[2]);
         return urlParams;
     }
-
-
 }

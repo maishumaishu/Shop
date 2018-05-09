@@ -57,7 +57,7 @@ export default async function (page: chitu.Page) {
             return (
                 <MobilePageDesigner ref={(o) => this.designer = o} pageData={pageData} showComponentPanel={true} showPageEditor={true}
                     save={(pageData) => this.savePageData(pageData)} showMenuSwitch={true}
-                    buttons={[
+                    rightButtons={[
                         <button key="return" className="btn btn-sm btn-primary" onClick={() => app.back()}>
                             <i className="icon-reply" />
                             <span>返回</span>

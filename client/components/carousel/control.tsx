@@ -1,8 +1,6 @@
 import { componentsDir, Control, ControlProps } from 'components/common'
 import { imageUrl } from '../../share/common';
 
-requirejs([`css!${componentsDir}/carousel/control`]);
-
 // let Carousel = (function () {
 
 class Errors {

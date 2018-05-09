@@ -39,7 +39,7 @@ export default async function (page: chitu.Page) {
                     save={(pageData) => this.saveProduct(pageData)}
                     pageDatas={userStation.pages}
                     showComponentPanel={true}
-                    buttons={[
+                    rightButtons={[
                         <button key={100} className="btn btn-sm btn-primary" onClick={() => history.back()}>
                             <i className="icon-reply" />
                             <span>返回</span>

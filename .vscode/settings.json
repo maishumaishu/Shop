@@ -8,6 +8,8 @@
         "client/components/**/*.js": true,
         "client/components/**/*.css": true,
         "client/user/**/*.js": true,
-        "client/user/**/*.css": true
+        "client/user/**/*.css": true,
+        "client/**/*.map":true,
+        "client/**/*.css.map":true
     }
 }

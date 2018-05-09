@@ -37,6 +37,7 @@ export class ImageInput extends React.Component<Props, State>{
         e.onchange = () => {
             this.state[member] = e.value || "";
             this.setState(this.state);
+            e.value = "";
         }
     }
 
@@ -59,6 +60,8 @@ export class ImageInput extends React.Component<Props, State>{
         let result = await station.saveImage(data);
         this.state.imageId = result.id;
         this.setState(this.state);
+        if (this.props.onChange)
+            this.props.onChange(this.state.imageId);
     }
 
     render() {

@@ -76,7 +76,10 @@ class PageList extends React.Component<{ station: StationService }, {}>{
         return [
             <ul key={10} style={{ margin: 0, listStyle: 'none' }}>
                 <li className="pull-right">
-                    <button onClick={(e) => this.showCreatePageDialog()} className="btn btn-sm btn-primary">新建页面</button>
+                    <button onClick={(e) => this.showCreatePageDialog()} className="btn btn-sm btn-primary">
+                        <i className="icon-plus"></i>
+                        <span>新建页面</span>
+                    </button>
                 </li>
             </ul>,
             <table key={20} ref={(e: HTMLTableElement) => {

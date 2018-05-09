@@ -111,7 +111,7 @@ requirejs.config({
 });
 requirejs(['less!content/admin_style_default'])
 requirejs(['build'], function () {
-    var references = ['react', 'react-dom', 'admin/application', 'art-template'];
+    var references = ['react', 'react-dom', 'admin/application', 'art-template', 'bootstrap'];
     requirejs(references, function (React, ReactDOM, app, ui) {
         window['React'] = React;
         window['ReactDOM'] = ReactDOM;

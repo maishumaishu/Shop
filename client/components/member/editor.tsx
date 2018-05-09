@@ -27,7 +27,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                         背景图
                     </label>
                     <span style={{ display: 'table-cell', width: 120, height: 66, textAlign: 'center', cursor: 'pointer' }}>
-                        <img src={bg} style={{ width: '100%', height: '100%' }} />
+                        <img src={imageUrl(bg)} style={{ width: '100%', height: '100%' }} />
                         <input type="file" title="点击修改背景图" multiple={false}
                             style={{
                                 display: 'table-cell', width: 120, height: 66,
@@ -39,7 +39,7 @@ export default class MemberEditor extends Editor<EditorProps, EditorState> {
                                     if (e.files[0]) {
                                         let { base64, width, height } = await ui.imageFileToBase64(e.files[0], { width: 316, height: 184 });
                                         let { id } = await station.saveImage(base64);
-                                        this.state.bg = `${id}_${width}_${height}`;
+                                        this.state.bg = `${id}`;
                                         this.setState(this.state);
                                     }
                                 }

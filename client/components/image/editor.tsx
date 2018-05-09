@@ -40,7 +40,6 @@ export default class ImageEditor extends Editor<EditorProps, EditorState> {
                     <div className="col-sm-8">
                         <ImageInput station={this.station} imageId={source}
                             onChange={(imageId) => {
-                                debugger;
                                 this.state.source = imageId;
                                 this.setState(this.state);
                             }} />

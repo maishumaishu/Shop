@@ -19,6 +19,7 @@ client/components/**/*.js
 client/components/**/*.css
 client/user/**/*.js
 client/user/**/*.css
+client/**/*.map
 
 out
 **/package-lock.json

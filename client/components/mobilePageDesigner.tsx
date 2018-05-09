@@ -4,7 +4,7 @@ import { MobilePage } from 'components/mobilePage';
 import { DesignTimeUserApplication } from 'components/designTimeUserApplication';
 import { Editor, EditorProps } from 'components/editor';
 import { Control, componentsDir, IMobilePageDesigner } from 'components/common';
-import { guid } from 'admin/services/station';
+import { guid, StationService } from 'admin/services/station';
 import app from 'admin/application';
 import { siteMap } from 'admin/siteMap';
 import { siteMap as userSiteMap } from 'user/site';
@@ -25,7 +25,10 @@ export interface Props extends React.Props<MobilePageDesigner> {
     showMenuSwitch?: boolean,
     save: (pageData: PageData) => Promise<PageData>,
     pageDatas: PageDatas,
-    buttons?: JSX.Element[]
+    leftButtons?: JSX.Element[]
+    rightButtons?: JSX.Element[],
+    showTemplateButton?: boolean,
+    showSnapshootButton?: boolean,
 }
 
 export interface State {
@@ -59,23 +62,11 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             throw new Error("Property of pageData cannt be null.");
 
         let pageData = JSON.parse(JSON.stringify(this.props.pageData)) as PageData;
-        // if (!pageData.footer)
-        //     pageData.footer = { controls: [] };
-
-        // console.assert(pageData.footer.controls != null, 'footer controls is null.');
 
         this.state = { editors: [], pageData };
         let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
         console.assert(!existsStyleControl)
-        // if (!existsStyleControl) {
-        //     this.props.pageDatas.style().then(stylePageData => {
-        //         let styleControl = stylePageData.controls[0];
-        //         console.assert(styleControl != null && styleControl.controlName == 'style');
-        //         styleControl.selected = 'disabled';
-        //         this.state.pageData.controls.push(styleControl);
-        //         this.setState(this.state);
-        //     })
-        // }
+
 
         let existsMenuControl = pageData.controls.filter(o => o.controlName == 'menu').length > 0;
         if (!existsMenuControl && pageData.showMenu) {
@@ -132,16 +123,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
         let pageData = this.state.pageData;
         pageData.name = this.nameInput.value;
-
-        // if (pageData.view && pageData.view.controls)
-        //     setControlValues(this.mobilePage, pageData.view.controls);
-
-        // if (pageData.header && pageData.header.controls) {
-        //     setControlValues(this.mobilePage, pageData.header.controls);
-        // }
-        // if (pageData.footer && pageData.footer.controls) {
-        //     setControlValues(this.mobilePage, pageData.footer.controls);
-        // }
         setControlValues(this.mobilePage, pageData.controls);
 
         /**
@@ -170,6 +151,18 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         });
     }
 
+    async saveSnapshoot() {
+        let { pageData } = this.state;
+        console.assert(pageData != null);
+        if (this.hasChanged || !pageData.id) {
+            ui.alert({ title: '提示', message: `保存快照前必须先保存页面, 请点击"保存"按钮保存页面` });
+            return Promise.reject("page data is not save.");
+        }
+
+        let station = app.createService(StationService);
+        return station.saveSnapshoot(pageData);
+    }
+
     selecteControl(control: Control<any, any> & { id?: string, controlName: string }) {
 
         console.assert(control.id != null);
@@ -195,17 +188,12 @@ export class MobilePageDesigner extends React.Component<Props, State> {
             this.currentEditor.style.display = 'none';
 
         editorElement.style.display = 'block';
-        // if (this.currentEditor)
-        //     this.currentEditor.style.display = 'none';
-
         this.currentEditor = editorElement;
     }
 
     loadControlEditor(control: Control<any, any> & { id?: string, controlName: string }) {
-        // if (!control.id)
-        //     control.id = guid();
-        console.assert(control.id != null && control.id != '');
 
+        console.assert(control.id != null && control.id != '');
         if (!control.hasEditor) {
             return;
         }
@@ -239,17 +227,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     removeControl(controlId: string) {
         let pageData = this.state.pageData;
-        // if (pageData.header != null && pageData.header.controls) {
-        //     pageData.header.controls = pageData.header.controls.filter(o => o.controlId != controlId);
-        // }
 
-        // if (pageData.view != null) {
-        //     pageData.view.controls = pageData.view.controls.filter(o => o.controlId != controlId);
-        // }
-
-        // if (pageData.footer != null && pageData.footer.controls != null) {
-        //     pageData.footer.controls = pageData.footer.controls.filter(o => o.controlId != controlId);
-        // }
         pageData.controls = pageData.controls.filter(o => o.controlId != controlId);
 
         this.setState(this.state);
@@ -315,8 +293,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         let h = React.createElement;
         let children = (React.Children.toArray(this.props.children) || []);
         let { pageData } = this.state;
-        let { showComponentPanel, buttons } = this.props;
-        buttons = buttons || [];
+        let { showComponentPanel, rightButtons, leftButtons,
+            showTemplateButton, showSnapshootButton } = this.props;
         return (
             <div ref={(e: HTMLElement) => this._element = e || this._element}>
                 <div style={{ position: 'absolute' }}>
@@ -354,6 +332,36 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                             </label>
                         </li> : null}
                         <li className="pull-right">
+                            {leftButtons}
+                            {showTemplateButton ?
+                                <button className="btn btn-sm btn-primary">
+                                    <i className="icon-copy" />
+                                    <span>使用模板</span>
+                                </button> : null}
+                            {showSnapshootButton ?
+                                <div className="btn-group">
+                                    <button className="btn btn-sm btn-primary dropdown-toggle"
+                                        ref={(e: HTMLButtonElement) => {
+                                            if (!e) return;
+                                            ui.buttonOnClick(e, () => {
+                                                return this.saveSnapshoot();
+                                            }, { toast: '保存快照成功' })
+                                        }}>
+                                        <i className="icon-camera" />
+                                        <span>存为快照</span>
+                                    </button>
+                                    <button type="button" className="btn btn-sm btn-primary dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i className="icon-caret-down"></i>
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        <li style={{ padding: '6px 0' }}>
+                                            <a>查看快照
+                                                <span className="badge pull-right">4</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div> : null}
                             <button className="btn btn-sm btn-primary" onClick={() => this.preview()}>
                                 <i className="icon-eye-open" />
                                 <span>预览</span>
@@ -363,7 +371,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                 <i className="icon-save" />
                                 <span>保存</span>
                             </button>
-                            {buttons}
+                            {rightButtons}
                         </li>
                         <li className="clearfix">
                         </li>

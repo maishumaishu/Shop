@@ -7,11 +7,9 @@ import { shopName, ADMIN_APP } from 'share/common';
 import { MasterPage } from 'masterPage';
 import { siteMap } from 'admin/siteMap';
 
-requirejs(['less!components/style/baseStyle']);
-
 let h = React.createElement;
 
-export class Application extends chitu.Application {
+export class AdminApplication extends chitu.Application {
 
     private masterPage: MasterPage;
     constructor() {
@@ -123,6 +121,6 @@ export class Application extends chitu.Application {
 
 
 
-export let app: Application = window[ADMIN_APP] = window[ADMIN_APP] || new Application();
+export let app: AdminApplication = window[ADMIN_APP] = window[ADMIN_APP] || new AdminApplication();
 
 export default app;
