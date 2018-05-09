@@ -117,6 +117,18 @@ module.exports = function (grunt) {
             }
         },
         less: {
+            dev: {
+                options: {
+                    sourceMap: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: `./`,
+                    src: ['components/style/*.less'],
+                    // dest: `../out/es5`,
+                    ext: '.css'
+                }]
+            },
             client: {
                 options: {
                     sourceMap: true
