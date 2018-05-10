@@ -1,15 +1,52 @@
 import { guid } from "share/common";
+import { State as ProductListState } from 'components/productList/control';
 
-
-let templates: (TemplatePageData & { pageData: PageData })[] = [
+let templates: PageData[] = [
     {
-        id: '59a25f4e694b85c03d3c4951',
-        name: 'HomePage',
-        image: 'https://img.yzcdn.cn/public_files/2017/1/10/a6cf8a4b788be075db7456a022154e1a.png',
-        pageData: {
-            "controls": [{ "controlId": guid(), "controlName": "summaryHeader", position: 'view' }]
-        }
+        id: guid(),
+        controls: [
+            viewControl('summaryHeader'),
+            viewControl('productList', {
+                productsCount: 6
+            } as ProductListState),
+        ]
+    },
+    {
+        id: guid(),
+        controls: [
+            headerControl('locationBar'),
+            viewControl('productList', {
+                productsCount: 6
+            } as ProductListState),
+            footerControl('shoppingCartBar')
+        ]
     }
 ]
+
+function viewControl(controlName: string, data?: any): ControlData {
+    return {
+        controlId: guid(),
+        controlName,
+        position: 'view',
+        data
+    }
+}
+
+function footerControl(controlName: string): ControlData {
+    return {
+        controlId: guid(),
+        controlName,
+        position: 'footer'
+    }
+}
+
+function headerControl(controlName: string): ControlData {
+    return {
+        controlId: guid(),
+        controlName,
+        position: 'header'
+    }
+}
+
 
 export default templates;
