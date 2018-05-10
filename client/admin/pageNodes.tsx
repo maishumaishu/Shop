@@ -43,6 +43,7 @@ export let siteMap = {
         station_store_categories: { action: `${dir}/station/storePageDesign`, cache: true },
         station_store_member: { action: `${dir}/station/storePageDesign`, cache: true },
         station_store_menu: { action: `${dir}/station/storePageDesign`, cache: true },
+        station_productTemplates: { action: `${dir}/station/productTemplates` },
 
         station_page: { action: `${dir}/station/page`, cache: false },
         station_pageList: { action: `${dir}/station/pageList`, cache: true },
@@ -104,6 +105,7 @@ export let menuData: MenuNode[] = [
             }),
             Object.assign(siteMap.nodes.shopping_categoryList, { title: '商品分类' }),
             Object.assign(siteMap.nodes.shopping_brandList, { title: "商品品牌" }),
+            Object.assign(siteMap.nodes.station_productTemplates, { title: "商品模板" }),
         ]
     },
     {
