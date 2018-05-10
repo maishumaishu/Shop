@@ -2,7 +2,9 @@ import { Control } from 'components/common';
 requirejs(['css!lib/devices.css']);
 
 interface Props extends React.Props<VirtualMobile> {
-    style?: React.CSSProperties
+    // style?: React.CSSProperties
+    scale?: number,
+    color?: string,
 }
 export class VirtualMobile extends React.Component<Props, {}>{
     private _screenElement: HTMLElement;
@@ -16,8 +18,10 @@ export class VirtualMobile extends React.Component<Props, {}>{
 
     render() {
         let children = React.Children.toArray(this.props.children) || [];
+        let scale = this.props.scale != null ? this.props.scale : 1;
+        let color = this.props.color ? this.props.color : 'blue';
         return (
-            <div className="marvel-device iphone5c blue" style={this.props.style}>
+            <div className={`marvel-device iphone5c ${color}`} style={{ transform: `scale(${scale})` }}>
                 <div className="top-bar"></div>
                 <div className="sleep"></div>
                 <div className="volume"></div>

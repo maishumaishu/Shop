@@ -18,7 +18,7 @@ export class StationService extends Service {
         });
     }
     pageDataByTemplate(templateId: string): Promise<PageData> {
-        var pageData = templates.filter(o => o.id == templateId).map(o => o.pageData)[0];
+        var pageData = templates.filter(o => o.id == templateId).map(o => o)[0];
         return Promise.resolve(pageData);
     }
     /**
@@ -47,7 +47,7 @@ export class StationService extends Service {
         let url = this.url('Page/SetDefaultPage');
         return this.putByJson(url, { pageId });
     }
-    async pageTemplates(): Promise<TemplatePageData[]> {
+    async pageTemplates(): Promise<PageData[]> {
         return Promise.resolve(templates);
     }
 

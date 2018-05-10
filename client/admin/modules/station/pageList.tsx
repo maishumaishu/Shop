@@ -4,6 +4,7 @@ import { StationService } from 'admin/services/station';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import { pageData as dataSource } from 'admin/services/dataSource';
+import { showTemplateDialog } from 'admin/controls/templateDialog';
 
 export default function (page: chitu.Page) {
     app.loadCSS(page.name);
@@ -16,7 +17,6 @@ export default function (page: chitu.Page) {
 class PageList extends React.Component<{ station: StationService }, {}>{
     private pagesElement: HTMLTableElement;
     private dataSource: wuzhui.DataSource<PageData>;
-    private templateDialog: TemplateDialog;
 
     constructor(props) {
         super(props);
@@ -35,8 +35,7 @@ class PageList extends React.Component<{ station: StationService }, {}>{
     private pageSave(pageData: PageData) {
     }
     private showCreatePageDialog() {
-        // $(this.templateDialogElement).modal();
-        this.templateDialog.showDialog();
+        showTemplateDialog();
     }
 
     componentDidMount() {
@@ -87,7 +86,6 @@ class PageList extends React.Component<{ station: StationService }, {}>{
                 this.pagesElement = e || this.pagesElement;
 
             }} />,
-            <TemplateDialog key={30} ref={(e) => this.templateDialog = e} {...{ station: this.props.station }} />
         ];
     }
 }
@@ -177,69 +175,6 @@ class HomePageCell extends React.Component<{ pageData: PageData, station: Statio
     }
 }
 
-type TemplateDialogProps = { station: StationService } & React.Props<TemplateDialog>;
-class TemplateDialog extends React.Component<TemplateDialogProps, { templates: TemplatePageData[] }> {
-    templateDialogElement: HTMLElement;
-
-    constructor(props) {
-        super(props);
-        this.state = { templates: [] };
-    }
-
-    private selecteTemplate(template: TemplatePageData) {
-        // var routeValue: RouteValue = { onSave: this.pageSave.bind(this) };
-        // let url = 'station/page?templateId=' + template._id;
-        app.redirect(siteMap.nodes.station_page, { templateId: template.id });
-    }
-
-    showDialog() {
-        ui.showDialog(this.templateDialogElement);
-    }
-
-    async componentDidMount() {
-        let station = this.props.station;
-        let templates = await station.pageTemplates();
-        this.state.templates = templates;
-        this.setState(this.state);
-    }
-
-    render() {
-        let { templates } = this.state;
-        return (
-            <div key={30} className="modal fade templates-dialog"
-                ref={(e: HTMLElement) => this.templateDialogElement = e || this.templateDialogElement}>
-                <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal"
-                                ref={(e: HTMLButtonElement) => {
-                                    if (!e) return;
-                                    e.onclick = () => ui.hideDialog(this.templateDialogElement);
-                                }}>
-                                <span aria-hidden="true">&times;</span><span className="sr-only">Close</span>
-                            </button>
-                            <h4 className="modal-title">请选择模板</h4>
-                        </div>
-                        <div className="modal-body row">
-                            {templates ?
-                                templates.map(o =>
-                                    <div key={o.id} className="col-md-4 template-item"
-                                        onClick={() => this.selecteTemplate(o)}>
-                                        <img src={o.image} className="img-responsive" />
-                                        <div className="name">{o.name}</div>
-                                    </div>
-                                ) :
-                                <div>数据正在加载中...</div>
-                            }
-                            <div className="clear-fix">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-}
 
 
 {/* <div key={30} className="modal fade templates-dialog" ref={(e: HTMLElement) => this.templateDialogElement = e || this.templateDialogElement}>

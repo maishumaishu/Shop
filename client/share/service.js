@@ -15,7 +15,7 @@ define(["require", "exports", "chitu"], function (require, exports, chitu) {
                         let k = key[0].toLowerCase() + key.substr(1);
                         d[k] = data[key];
                     }
-                    return d;
+                    data = d;
                 }
                 this.travelJSON(data);
                 return data;

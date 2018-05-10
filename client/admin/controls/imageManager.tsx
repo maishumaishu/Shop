@@ -4,6 +4,7 @@ import { StationService } from 'admin/services/station';
 import 'wuzhui';
 import { imageUrl } from 'share/common';
 import app from 'admin/application';
+import { createDialogElement } from 'admin/controls/utiltiy';
 
 requirejs(['less!admin/controls/imageManager']);
 
@@ -152,14 +153,12 @@ class ImageManager extends React.Component<Props, State> {
     }
 }
 
-let element = document.createElement('div');
-element.className = 'image-manager modal fade';
-document.body.appendChild(element);
+let element = createDialogElement('image-manager');
 
 let instance: ImageManager = ReactDOM.render(<ImageManager element={element} />, element);
 
 export default {
     show(callback?: (imageIds: string[]) => void) {
-        instance.show(callback);
+        ui.showDialog(element);
     }
 }

@@ -29,26 +29,41 @@
                 .default {
                     @import "../../../components/style/colors/default.less";
                     background-color: @brand-primary;
+                    .marvel-device.iphone5c.blue {
+                        background-color: @brand-primary;
+                    }
                 }
 
                 .red {
                     @import "../../../components/style/colors/red.less";
                     background-color: @brand-primary;
+                    .marvel-device {
+                        background-color: @brand-primary;
+                    }
                 }
 
                 .green {
                     @import "../../../components/style/colors/green.less";
                     background-color: @brand-primary;
+                    .marvel-device.iphone5c.blue {
+                        background-color: @brand-primary;
+                    }
                 }
 
                 .pink {
                     @import "../../../components/style/colors/pink.less";
                     background-color: @brand-primary;
+                    .marvel-device.iphone5c.blue {
+                        background-color: @brand-primary;
+                    }
                 }
 
                 .goldenrod {
                     @import "../../../components/style/colors/goldenrod.less";
                     background-color: @brand-primary;
+                    .marvel-device.iphone5c.blue {
+                        background-color: @brand-primary;
+                    }
                 }
                 
                 &.active {
@@ -60,4 +75,52 @@
     .row {
         margin-top: -30px;
     }
+    hr {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    
+    .marvel-device {
+        margin-top: -20px;
+        &.iphone5c.default {
+            @import "../../../components/style/colors/default.less";
+            background: @brand-primary;
+            .volume, .sleep {
+                background: @brand-primary;
+            }
+        }
+        &.iphone5c.red {
+            @import "../../../components/style/colors/red.less";
+            background: @brand-primary;
+            .volume, .sleep {
+                background: @brand-primary;
+            }
+        }
+        &.iphone5c.green {
+            @import "../../../components/style/colors/green.less";
+            background: @brand-primary;
+            .volume, .sleep {
+                background: @brand-primary;
+            }
+        }
+        &.iphone5c.pink {
+            @import "../../../components/style/colors/pink.less";
+            background: @brand-primary;
+            .volume, .sleep {
+                background: @brand-primary;
+            }
+        }
+        &.iphone5c.goldenrod {
+            @import "../../../components/style/colors/goldenrod.less";
+            background: @brand-primary;
+            .volume, .sleep {
+                background: @brand-primary;
+            }
+        }
+    }
+
+    
+    
+
+    
 }

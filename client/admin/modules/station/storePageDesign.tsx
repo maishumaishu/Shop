@@ -49,8 +49,8 @@ export default async function (page: chitu.Page) {
         save: adminStation.savePageData.bind(adminStation),
         showMenuSwitch: true,
         showComponentPanel,
-        showTemplateButton: true,
-        showSnapshootButton: true,
+        showTemplateButton: storePage == 'home',
+        showSnapshootButton: storePage == 'home',
     }
     ReactDOM.render(<MobilePageDesigner {...props} />, page.element);
 }

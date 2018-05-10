@@ -109,6 +109,8 @@ requirejs.config({
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io'
     }
 });
+
+requirejs(['css!lib/bootstrap-3.3.7/bootstrap.css'])
 requirejs(['less!content/admin_style_default'])
 requirejs(['build'], function () {
     var references = ['react', 'react-dom', 'admin/application', 'art-template', 'bootstrap'];

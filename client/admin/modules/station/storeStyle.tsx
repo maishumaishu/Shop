@@ -117,7 +117,7 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
                 <li className="clearfix">
                 </li>
             </ul>,
-            <hr key={20} style={{ marginTop: 0 }} />,
+            <hr key={20} />,
             <div key={25} className="style-editor">
                 <div className="style-solutions">
                     <span className="header">选择配色方案</span>
@@ -132,17 +132,17 @@ class StoreStylePage extends React.Component<{ page: chitu.Page }, { store?: Sto
                     <div className="clearfix"></div>
                 </div>
             </div>,
-            <div key={30} className="row">
+            <div key={30} className={`row ${currentColor}`}>
                 <div className="col-md-4" style={{ textAlign: 'center', width: '33.33' }}>
-                    <MobilePageDisplay style={{ transform: `scale(${scale})` }} pageData={homePageData}
+                    <MobilePageDisplay scale={0.8} pageData={homePageData} color={currentColor}
                         ref={(e) => this.homePage = e || this.homePage} />
                 </div>
                 <div className="col-md-4" style={{ textAlign: 'center', width: '33.33' }}>
-                    <MobilePageDisplay style={{ transform: `scale(${scale})` }} pageData={shoppingCartPageData}
+                    <MobilePageDisplay scale={0.8} pageData={shoppingCartPageData} color={currentColor}
                         enableMock={true} ref={(e) => this.shoppingCartPage = e || this.shoppingCartPage} />
                 </div>
                 <div className="col-md-4" style={{ textAlign: 'center', width: '33.33' }}>
-                    <MobilePageDisplay pageData={productPageData} style={{ transform: `scale(${scale})` }}
+                    <MobilePageDisplay pageData={productPageData} scale={0.8} color={currentColor}
                         ref={(e) => this.productPage = e || this.productPage} />
                 </div>
             </div>

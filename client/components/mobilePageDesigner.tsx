@@ -17,6 +17,7 @@ import { FormValidator, rules } from 'dilu';
 
 import * as ui from 'ui';
 import 'jquery-ui';
+import { showTemplateDialog } from 'admin/controls/templateDialog';
 
 export interface Props extends React.Props<MobilePageDesigner> {
     pageData: PageData,
@@ -246,6 +247,14 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         open(url, '_blank');
     }
 
+    changeTemplate() {
+        showTemplateDialog((pageData) => {
+            debugger;
+            this.userApp = null;
+            this.renederVirtualMobile(this.virtualMobile.screenElement, pageData);
+        });
+    }
+
     renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
         console.assert(screenElement != null);
 
@@ -334,9 +343,10 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                         <li className="pull-right">
                             {leftButtons}
                             {showTemplateButton ?
-                                <button className="btn btn-sm btn-primary">
+                                <button className="btn btn-sm btn-primary"
+                                    onClick={() => this.changeTemplate()}>
                                     <i className="icon-copy" />
-                                    <span>使用模板</span>
+                                    <span>更换模板</span>
                                 </button> : null}
                             {showSnapshootButton ?
                                 <div className="btn-group">

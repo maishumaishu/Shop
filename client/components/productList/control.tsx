@@ -65,6 +65,10 @@ export interface State {
     imageSize: 'small' | 'medium' | 'large',
 
     productsCount?: number,
+
+    /**
+     * 购买商品数量，用于购物车按钮
+     */
     productCounts?: { [key: string]: number },
 
     /**

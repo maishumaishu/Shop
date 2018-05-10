@@ -16,7 +16,7 @@ export default class Service extends chitu.Service {
                     d[k] = data[key];
                 }
 
-                return d;
+                data = d;
             }
 
             this.travelJSON(data);

@@ -4,6 +4,7 @@ import app from 'admin/application';
 import ImageThumber from './imageThumber';
 import { ProductImage } from 'user/controls/productImage';
 import 'wuzhui';
+import { createDialogElement } from 'admin/controls/utiltiy';
 
 requirejs(['less!admin/controls/productSelectDialog']);
 
@@ -172,8 +173,6 @@ export class ProductSelectDialog extends React.Component<ProductsDialogProps, Pr
     }
 }
 
-let element = document.createElement('div');
-element.className = 'product-select-dialog modal fade';
-document.body.appendChild(element);
+let element = createDialogElement('product-select-dialog');
 
 let instance: ProductSelectDialog = ReactDOM.render(<ProductSelectDialog />, element);
