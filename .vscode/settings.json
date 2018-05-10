@@ -10,6 +10,7 @@
         "client/user/**/*.js": true,
         "client/user/**/*.css": true,
         "client/**/*.map":true,
-        "client/**/*.css.map":true
+        "client/**/*.css.map":true,
+        "client/share/**/*.js": true
     }
 }

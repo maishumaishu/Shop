@@ -20,6 +20,8 @@ client/components/**/*.css
 client/user/**/*.js
 client/user/**/*.css
 client/**/*.map
+client/share/**/*.js
+client/share/**/*.css
 
 out
 **/package-lock.json
