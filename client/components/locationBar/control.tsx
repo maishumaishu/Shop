@@ -14,6 +14,10 @@ export interface Props extends ControlProps<LocationBarControl> {
 
 
 export default class LocationBarControl extends Control<Props, State>{
+    constructor(props) {
+        super(props);
+        this.hasCSS = true;
+    }
     get persistentMembers() {
         return [] as any;
     }
@@ -22,7 +26,7 @@ export default class LocationBarControl extends Control<Props, State>{
          * 要在控件设置和控件大小相关的样式，例如 padding，margin，height
          */
         return (
-            <div className="locationBar" style={{ padding: 14 }}>
+            <div className="location-bar" style={{ padding: 14 }}>
                 <i className="icon-user pull-right"
                     onClick={() => app().redirect(siteMap.nodes.user_index)}></i>
                 <div className="position interception">
