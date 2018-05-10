@@ -249,9 +249,11 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     changeTemplate() {
         showTemplateDialog((pageData) => {
-            debugger;
-            this.userApp = null;
-            this.renederVirtualMobile(this.virtualMobile.screenElement, pageData);
+            let obj: PageData = JSON.parse(JSON.stringify(pageData));
+            delete obj.id;
+
+            Object.assign(this.state.pageData, obj);
+            this.setState(this.state);
         });
     }
 
@@ -300,7 +302,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     render() {
         let h = React.createElement;
-        let children = (React.Children.toArray(this.props.children) || []);
+        // let children = (React.Children.toArray(this.props.children) || []);
         let { pageData } = this.state;
         let { showComponentPanel, rightButtons, leftButtons,
             showTemplateButton, showSnapshootButton } = this.props;
@@ -312,9 +314,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                         setTimeout(() => {
                             this.renederVirtualMobile(this.virtualMobile.screenElement, pageData);
                         }, 100);
-                    }} >
-                        {children}
-                    </VirtualMobile>
+                    }} />
                 </div>
 
                 <div style={{ paddingLeft: 390 }} >
