@@ -1,13 +1,18 @@
 import { VirtualMobile } from "components/virtualMobile";
 import { DesignTimeUserApplication } from "components/designTimeUserApplication";
 import { MobilePage } from "components/mobilePage";
-// import { State as StyleControlState, StyleType } from 'components/style/control';
 import { UserPage as UserPage } from 'user/application';
+import { loadControlCSS } from "admin/controls/utiltiy";
+
+loadControlCSS('mobilePageDisplay');
 
 interface Props extends React.Props<MobilePageDisplay> {
     pageData: PageData,
-    style?: React.CSSProperties,
+    // style?: React.CSSProperties,
+    displayMobile?: boolean,
+    scale?: number,
     enableMock?: boolean,
+    color?: string
 }
 interface State {
     pageData: PageData
@@ -16,7 +21,8 @@ export class MobilePageDisplay extends React.Component<Props, State>{
 
     mobilePage: MobilePage;
     userApp: DesignTimeUserApplication;
-    virtualMobile: VirtualMobile;
+    screenElement: HTMLElement;
+
     constructor(props) {
         super(props);
         this.state = { pageData: this.props.pageData };
@@ -25,7 +31,7 @@ export class MobilePageDisplay extends React.Component<Props, State>{
         this.mobilePage.styleColor = style;
         this.userApp.loadCSS(style);
     }
-    renederVirtualMobile(screenElement: HTMLElement, pageData: PageData) {
+    renederMobilePage(screenElement: HTMLElement, pageData: PageData) {
         console.assert(screenElement != null);
 
         if (this.userApp == null) {
@@ -47,14 +53,25 @@ export class MobilePageDisplay extends React.Component<Props, State>{
 
     render() {
         let { pageData } = this.state;
-        let { style } = this.props;
-        return <VirtualMobile style={style} ref={(e) => {
-            this.virtualMobile = e || this.virtualMobile;
-            setTimeout(() => {
-                this.renederVirtualMobile(this.virtualMobile.screenElement, pageData);
-            }, 100);
-        }}>
+        let { scale, displayMobile, color } = this.props;
+        displayMobile = displayMobile == null ? true : displayMobile;
 
-        </VirtualMobile>
+        return displayMobile ?
+            <VirtualMobile color={color} scale={scale} ref={(e) => {
+                this.screenElement = e != null ? e.screenElement : this.screenElement;
+                setTimeout(() => {
+                    this.renederMobilePage(this.screenElement, pageData);
+                }, 100);
+            }}>
+            </VirtualMobile> :
+
+            <div className="mobile-page-display" style={{ transform: `scale(${scale})` }}
+                ref={(e: HTMLElement) => {
+                    this.screenElement = e || this.screenElement;
+                    setTimeout(() => {
+                        this.renederMobilePage(this.screenElement, pageData);
+                    }, 100);
+                }} >
+            </div>
     }
 }
