@@ -2,7 +2,6 @@ import { Control } from 'components/common';
 requirejs(['css!lib/devices.css']);
 
 interface Props extends React.Props<VirtualMobile> {
-    // style?: React.CSSProperties
     scale?: number,
     color?: string,
 }

@@ -1,5 +1,11 @@
 .mobile-page-display {
-    height: 568px; 
-    width: 320px;
+    height: 570px; 
+    width: 322px;
     border: 1px solid #ccc;
+    .mobile-page {
+        /** 由于有边框，要减去边框的宽度 */
+        width: ~"calc(100% - 2px)";
+        height: ~"calc(100% - 2px)";
+        box-shadow:unset;
+    }
 }

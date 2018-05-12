@@ -132,56 +132,60 @@ export default class ProductListControl extends Control<Props, State> {
         // })
     }
 
+    async   renderByTemplate(e: HTMLElement) {
+        let productTemplate = this.state.productTemplate || this.productTemplate();
+        var products = await this.products();
+
+        if (products.length == 0) {
+            ReactDOM.render(
+                <div className="text-center" style={{ height: 200, padding: 100 }}>
+                    暂无可显示的商品
+                </div>, e);
+            return;
+        }
+
+        let html = "";
+        products.map(o => {
+            let product = o;
+            let name = this.productDisplayName(product);
+            let price = `￥${product.Price.toFixed(2)}`;
+            let image = imageUrl(product.ImagePath, 200, 200);
+            let stock = product.Stock;
+            let offShelve = product.OffShelve;
+            let id = product.Id;
+            let data = { name, price, image, stock, offShelve, id };
+            html = html + template.render(productTemplate, data);
+        })
+
+        //====================================
+        // 设置延时为了让页面完全渲染完成
+        setTimeout(() => {
+            e.innerHTML = html;
+            let q = e.querySelectorAll('[product-id]');
+            for (let i = 0; i < q.length; i++) {
+                let o = q.item(i) as HTMLElement;
+                this.elementOnClick(o, () => {
+                    let productId = o.getAttribute('product-id');
+                    if (!productId) {
+                        ui.alert({ title: '错误', message: 'Product id is emtpy.' });
+                    }
+                    // let app = this.props.mobilePage.props.elementPage.app;
+                    app().redirect(siteMap.nodes.home_product, { pageId: productId });
+                })
+            }
+        }, 100);
+        //====================================
+    }
+
     _render(h) {
 
-        let productTemplate = this.state.productTemplate || this.productTemplate();
 
         return (
-            <div className="product-list-control" ref={async (e: HTMLElement) => {
-                if (!e) return;
-                var products = await this.products();
-
-                if (products.length == 0) {
-                    ReactDOM.render(
-                        <div className="text-center" style={{ height: 200, padding: 100 }}>
-                            暂无可显示的商品
-                        </div>, e);
-                    return;
-                }
-
-                let html = "";
-                products.map(o => {
-                    let product = o;
-                    let name = this.productDisplayName(product);
-                    let price = `￥${product.Price.toFixed(2)}`;
-                    let image = imageUrl(product.ImagePath, 200, 200);
-                    let stock = product.Stock;
-                    let offShelve = product.OffShelve;
-                    let id = product.Id;
-                    let data = { name, price, image, stock, offShelve, id };
-                    html = html + template.render(productTemplate, data);
-                })
-
-                //====================================
-                // 设置延时为了让页面完全渲染完成
-                setTimeout(() => {
-                    e.innerHTML = html;
-                    let q = e.querySelectorAll('[product-id]');
-                    for (let i = 0; i < q.length; i++) {
-                        let o = q.item(i) as HTMLElement;
-                        this.elementOnClick(o, () => {
-                            let productId = o.getAttribute('product-id');
-                            if (!productId) {
-                                ui.alert({ title: '错误', message: 'Product id is emtpy.' });
-                            }
-                            // let app = this.props.mobilePage.props.elementPage.app;
-                            app().redirect(siteMap.nodes.home_product, { pageId: productId });
-                        })
-                    }
-                }, 100);
-                //====================================
-
-            }}>
+            <div className="product-list-control"
+                ref={async (e: HTMLElement) => {
+                    if (!e) return;
+                    this.renderByTemplate(e);
+                }}>
             </div>
         );
     }

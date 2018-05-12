@@ -57,9 +57,6 @@ class TemplateDialog extends React.Component<TemplateDialogProps, { templates: P
                             <div key={o.id} className="template-item" onClick={() => this.selecteTemplate(o)}
                                 title="点击选择该模板">
                                 <MobilePageDisplay pageData={o} scale={0.8} displayMobile={false} />
-                                {/* <button className="btn btn-primary select-button" onClick={() => this.selecteTemplate(o)}>
-                                    选择模板
-                                </button> */}
                             </div>
                         ) :
                         <div>数据正在加载中...</div>

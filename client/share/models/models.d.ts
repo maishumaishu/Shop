@@ -174,6 +174,7 @@ interface PageData {
     isDefault?: boolean,
     showMenu?: boolean,
     className?: string,
+    createDateTime?: Date
     // header?: { controls: ControlData[] },
     // footer?: { controls: ControlData[] },
     // view?: { controls: ControlData[] }

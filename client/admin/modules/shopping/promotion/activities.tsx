@@ -3,7 +3,7 @@ import { ActivityService } from 'admin/services/activity';
 import site from 'admin/site';
 import app from 'admin/application';
 import { FormValidator, rules } from 'dilu';
-import { siteMap } from 'admin/siteMap';
+import { siteMap } from 'admin/pageNodes';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
 import { GridViewItemPopupEditor } from 'myWuZhui';

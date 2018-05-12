@@ -101,8 +101,6 @@ requirejs.config({
         // site: 'admin/site',
         modules: 'admin/modules',
         content: 'admin/content',
-        build: 'admin/build',
-        weixin: 'admin/weixin',
         // 'tips': 'admin/tips',
         'ue.ext': 'admin/ue.ext',
         myWuZhui: 'admin/myWuZhui',
@@ -110,14 +108,14 @@ requirejs.config({
     }
 });
 
-requirejs(['css!lib/bootstrap-3.3.7/bootstrap.css'])
-requirejs(['less!content/admin_style_default'])
-requirejs(['build'], function () {
-    var references = ['react', 'react-dom', 'admin/application', 'art-template', 'bootstrap'];
-    requirejs(references, function (React, ReactDOM, app, ui) {
+requirejs(['admin/build', 'admin/weixin/build'], function () {
+    requirejs(['less!admin/content/admin_style_default'])
+    var references = ['react', 'react-dom', 'admin/application', 'qrcode', 'art-template', 'bootstrap'];
+    requirejs(references, function (React, ReactDOM, app, qrcode) {
         window['React'] = React;
         window['ReactDOM'] = ReactDOM;
         window['h'] = React.createElement;
+        window['QRCode'] = qrcode || window['QRCode']
 
         app.default.run();
 

@@ -7,8 +7,6 @@ import { FormValidator, rules } from 'dilu';
 import 'bootstrap';
 import { siteMap as userSiteMap, siteMap } from 'user/site';
 import app from 'admin/application';
-
-import QRCode = require('qrcode');
 import ClipboardJS = require('clipboard');
 import imageManager from 'admin/controls/imageManager';
 import { MemberService } from 'admin/services/member';

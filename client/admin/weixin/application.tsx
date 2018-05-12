@@ -3,9 +3,10 @@ import * as ui from 'ui';
 import { parseUrlParams, shopName } from 'share/common';
 import { loadjs } from 'common'
 import { WeiXinService } from 'admin/services/weixin'
-import { Props as OpenIdPageProps, OpenIdPage } from 'weixin/modules/openid'
+import { Props as OpenIdPageProps, OpenIdPage } from 'admin/weixin/modules/openid'
 
 export type SiteMapNodes = {
+    index: chitu.PageNode,
     binding: chitu.PageNode,
     unbinding: chitu.PageNode,
     adminLogin: chitu.PageNode,
@@ -16,6 +17,7 @@ export class Application extends chitu.Application {
 
     static siteMap: { nodes: SiteMapNodes } = {
         nodes: {
+            index: { action: (page: chitu.Page) => null },
             binding: { action: binding_action },
             unbinding: { action: unbinding_action },
             adminLogin: { action: adminLogin_action },

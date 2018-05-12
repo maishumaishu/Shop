@@ -23,17 +23,21 @@ var requirejs_paths = {
     normalize: 'lib/require-less-0.1.5/normalize',
     text: 'lib/text',
 
+    bootstrap: 'lib/bootstrap',
     chitu: 'lib/chitu',
     dilu: 'lib/dilu',
     fetch: 'lib/fetch',
+    jquery: 'lib/jquery-2.1.3',
     react: 'lib/react.production',
     polyfill: 'lib/polyfill',
+    qrcode: 'lib/qrcode',
     ui: 'lib/ui',
+    wuzhui: 'lib/wuzhui',
 
     'less-builder': 'lib/require-less-0.1.5/less-builder',
     'react-dom': 'lib/react-dom.production',
     'prop-types': 'lib/prop-types',
-    'template-web': 'lib/template-web',
+    'art-template': 'lib/template-web',
     'url-search-params-polyfill': 'lib/url-search-params-polyfill',
     'iscroll-lite': 'lib/iscroll-lite'
 };
@@ -57,7 +61,7 @@ grunt ${release}
 module.exports = function (grunt) {
 
     let custom_tasks = [dev, debug, release];
-    let has_custom_task = grunt.cli.tasks.filter(o => custom_tasks.indexOf(o) >= 0).length >= 0;
+    let has_custom_task = grunt.cli.tasks.filter(o => custom_tasks.indexOf(o) >= 0).length > 0;
     if (has_custom_task && grunt.cli.tasks.length > 1) {
         console.log(usages);
         return false;
@@ -135,7 +139,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: `./`,
-                        src: ['**/*.less'],
+                        src: ['**/*.less', '!node_modules/**/*.less'],
                         dest: `../www`
                     }
                 ]
@@ -174,7 +178,7 @@ module.exports = function (grunt) {
                     include: [
                         "polyfill", 'url-search-params-polyfill', 'fetch',
                         "css", "react", "react-dom", 'prop-types', 'ui',
-                        "dilu", "user/application", 'template-web',
+                        "dilu", "user/application", 'art-template',
                         'iscroll-lite',
                         // ...user_style
                     ],
@@ -199,9 +203,14 @@ module.exports = function (grunt) {
                     baseUrl: `../out/es5`,
                     include: [
                         "polyfill", 'url-search-params-polyfill', 'fetch',
-                        "css", "react", "react-dom", 'prop-types', 'ui',
-                        "dilu", 'share/common', 'share/service', 'template-web',
-                        'admin/services/service', 'admin/application',
+                        "css", 'less', 'lessc', 'normalize',
+                        'jquery', 'bootstrap',
+                        "react", "react-dom", 'prop-types',
+                        'art-template', 'qrcode',
+                        'ui', "dilu",
+                        'share/common', 'share/service',
+                        'admin/services/service', 'admin/application', 'wuzhui',
+                        'chitu',
                     ],
                     out: `../out/es5/admin/build.js`,
                     optimize: 'uglify',
@@ -215,6 +224,23 @@ module.exports = function (grunt) {
                         ui: {
                             exports: 'ui'
                         }
+                    }
+                }
+            },
+            weixin: {
+                options: {
+                    baseUrl: `../out/es5`,
+                    include: [
+                        'admin/weixin/application',
+                        'admin/weixin/common',
+                        'admin/weixin/qrCodeControls',
+                        'admin/weixin/modules/openid',
+                    ],
+                    out: `../out/es5/admin/weixin/build.js`,
+                    optimize: 'uglify',
+                    paths: requirejs_paths,
+                    shim:{
+
                     }
                 }
             }
@@ -232,7 +258,7 @@ module.exports = function (grunt) {
                         '!components/**/*.js',
                         '!lib/**/*.js'
                     ],
-                    dest: `www`
+                    dest: `../www`
                 }]
             }
         },

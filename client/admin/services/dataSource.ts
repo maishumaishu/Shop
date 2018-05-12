@@ -17,13 +17,13 @@ export let pageData = new wuzhui.DataSource<PageData>({
     delete: (item) => station.deletePageData(item.id)
 })
 
-export let productTemplate = new wuzhui.DataSource<PageData>({
+export let productTemplate = Object.assign(new wuzhui.DataSource<PageData>({
     primaryKeys: ['id'],
     select: (args) => station.pageList(args),
     insert: (item, args: { isSystem }) => station.savePageData(item, args.isSystem),
     update: (item) => station.savePageData(item),
     delete: (item) => station.deletePageData(item.id)
-})
+}), { count: new chitu.ValueStore() })
 
 export let product: wuzhui.DataSource<Product> = window['product_dataSource'] ||
     new wuzhui.DataSource<Product>({

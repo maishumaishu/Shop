@@ -1,5 +1,5 @@
 import { MemberService as UserService } from 'admin/services/member';
-import { siteMap } from 'admin/siteMap';
+import { siteMap } from 'admin/pageNodes';
 import { FormValidator, rules } from 'dilu';
 import app from 'admin/application';
 import site from 'admin/site';

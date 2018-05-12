@@ -3,7 +3,7 @@ import { StationService } from 'admin/services/station';
 import { default as site } from 'admin/site';
 import { app } from 'admin/application';
 import tips from 'admin/tips';
-import { siteMap } from 'admin/siteMap';
+import { siteMap } from 'admin/pageNodes';
 import { product as dataSource } from 'admin/services/dataSource';
 import { app as userApp } from 'user/application';
 import userSiteMap from 'user/siteMap';

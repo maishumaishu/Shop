@@ -2,7 +2,7 @@ import { app } from 'admin/application';
 import { formatDate } from 'share/common';
 import { ShoppingService } from 'admin/services/shopping';
 import { buttonOnClick } from 'ui';
-import { PromotionRangeComponent } from 'modules/shopping/promotion/activityEdit'
+import { PromotionRangeComponent } from 'admin/modules/shopping/promotion/activityEdit'
 import 'jquery-ui';
 
 export default async function (page: chitu.Page) {

@@ -33,7 +33,6 @@ export let siteMap = {
         shopping_orderList: { action: `${dir}/shopping/orderList`, cache: true },
         shopping_promotion_activities: { action: `${dir}/shopping/promotion/activities`, cache: true },
         shopping_promotion_activityEdit: { action: `${dir}/shopping/promotion/activityEdit2`, cache: false },
-        // shopping_product_productEdit: { action: `${dir}/shopping/product/productEdit`, cache: false },
         shopping_product_productEdit: { action: `${dir}/shopping/product/newProductEdit`, cache: false },
 
         station_index: { action: `${dir}/station/index`, cache: true },
@@ -48,12 +47,12 @@ export let siteMap = {
         station_page: { action: `${dir}/station/page`, cache: false },
         station_pageList: { action: `${dir}/station/pageList`, cache: true },
         station_preView: { action: `${dir}/station/preView`, cache: false } as chitu.PageNode,
+        station_home_snapshoots: { action: `${dir}/station/snapshoots` } as chitu.PageNode,
         user_myStores: { action: `${dir}/user/myStores`, cache: false } as chitu.PageNode,
         weixin_setting: { action: `${dir}/weixin/setting`, cache: false },
     },
     anonymous
 }
-
 
 
 export type MenuNode = chitu.PageNode & {
@@ -73,10 +72,13 @@ export let menuData: MenuNode[] = [
             Object.assign(siteMap.nodes.station_store_home, {
                 title: '店铺首页',
                 children: [
-                    Object.assign(siteMap.nodes.station_page, { visible: false })
+                    Object.assign(siteMap.nodes.station_page, { visible: false }),
+                    Object.assign(siteMap.nodes.station_home_snapshoots, { title: "页面快照" }),
                 ]
             }),
-            Object.assign(siteMap.nodes.station_store_member, { title: '会员主页' }),
+            Object.assign(siteMap.nodes.station_store_member, {
+                title: '会员主页'
+            }),
             Object.assign(siteMap.nodes.station_store_menu, { title: '店铺导航' }),
             Object.assign(siteMap.nodes.station_store_shoppingCart, { title: '购物车' }),
             Object.assign(siteMap.nodes.station_store_style, { title: '店铺风格' }),
@@ -89,7 +91,6 @@ export let menuData: MenuNode[] = [
                     { title: '页面', action: 'station/page1', visible: false }
                 ],
             }),
-            // Object.assign(siteMap.nodes.shopping_product_productEdit1, { title: 'Test' })
         ]
     },
     {
@@ -208,4 +209,5 @@ while (stack.length > 0) {
         stack.push(c);
     })
 }
+
 

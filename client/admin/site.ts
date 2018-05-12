@@ -31,8 +31,11 @@ class Site {
         return `?appKey=${stroeId}#${pageName}`;
     }
     appIdFromLocation() {
-        let url = location.search;
-        let params = parseUrlParams(url);
+        let search = location.search;
+        if (!search) {
+            return null;
+        }
+        let params = parseUrlParams(search);
         return params.appKey;
     }
 }

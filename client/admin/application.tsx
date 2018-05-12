@@ -4,10 +4,17 @@ import * as ReactDOM from 'react-dom';
 import * as ui from 'ui';
 import { Service } from 'admin/services/service';
 import { shopName, ADMIN_APP } from 'share/common';
-import { MasterPage } from 'masterPage';
-import { siteMap } from 'admin/siteMap';
+import { MasterPage } from 'admin/masterPage';
+import { siteMap } from 'admin/pageNodes';
 
 let h = React.createElement;
+
+
+for (let key in siteMap.nodes) {
+    if (typeof siteMap.nodes[key].action == 'string') {
+        siteMap.nodes[key].action = wrapAction(siteMap.nodes[key].action);
+    }
+}
 
 export class AdminApplication extends chitu.Application {
 
@@ -116,7 +123,31 @@ export class AdminApplication extends chitu.Application {
     }
 }
 
+function wrapAction(path: string): chitu.Action {
 
+    let action = (page: chitu.Page) => {
+        requirejs([path],
+            (exports) => {
+                console.assert(typeof exports.default == 'function');
+
+                if ((exports.default as Function).prototype.isReactComponent) {
+                    let reactElement = React.createElement(exports.default);
+                    ReactDOM.render(reactElement, page.element);
+                    return;
+                }
+
+
+                exports.default(page);
+                return;
+            },
+            (err) => {
+                app.error.fire(app, err, app.currentPage);
+            }
+        )
+    }
+
+    return action;
+}
 
 
 

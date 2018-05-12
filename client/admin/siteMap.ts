@@ -1,1 +1,0 @@
-export { siteMap } from 'admin/pageNodes'

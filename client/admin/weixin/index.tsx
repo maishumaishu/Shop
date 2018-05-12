@@ -7,31 +7,30 @@ requirejs.config({
             deps: ['polyfill']
         },
     },
+    baseUrl: '../../',
     paths: {
-        'share': '../../share',
-        'react-dom': '../../scripts/react-dom',
 
-        ui: '../../scripts/ui',
-        polyfill: '../../scripts/polyfill',
-        react: '../../scripts/react',
+        react: 'lib/react',
+        'react-dom': 'lib/react-dom',
 
-        services: '../services',
-        qrcode: '../../scripts/qrcode',
-        weixin: './',
+        chitu: 'lib/chitu',
+        ui: 'lib/ui',
+        polyfill: 'lib/polyfill',
+        qrcode: 'lib/qrcode',
         'socket.io': 'http://shopws.bailunmei.com/socket.io/socket.io',
     }
 });
 
-if (location.hash) {
-    var path = location.hash.substr(1);
-    var references = ['react', 'react-dom'];
-    requirejs(references, function (React, ReactDOM) {
-        window['React'] = React;
-        window['ReactDOM'] = ReactDOM;
-        window['h'] = React.createElement;
+// if (location.hash) {
+var path = location.hash.substr(1);
+var references = ['react', 'react-dom', 'admin/weixin/build'];
+requirejs(references, function (React, ReactDOM) {
+    window['React'] = React;
+    window['ReactDOM'] = ReactDOM;
+    window['h'] = React.createElement;
 
-        requirejs(['application'], function (app) {
-            (app.default as chitu.Application).run();
-        })
-    });
-}
+    requirejs(['admin/weixin/application'], function (app) {
+        (app.default as chitu.Application).run();
+    })
+});
+//}

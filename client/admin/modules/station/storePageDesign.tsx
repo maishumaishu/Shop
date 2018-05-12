@@ -45,7 +45,6 @@ export default async function (page: chitu.Page) {
 
     let props: Props = {
         pageData,
-        pageDatas: userStation.pages,
         save: adminStation.savePageData.bind(adminStation),
         showMenuSwitch: true,
         showComponentPanel,

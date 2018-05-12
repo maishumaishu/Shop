@@ -6,8 +6,8 @@ import { FormValidator, rules } from 'dilu';
 import { StationService as UserStation } from 'user/services/stationService';
 import { StationService as AdminStation } from 'admin/services/station';
 import app from 'admin/application';
-import { siteMap } from '../../admin/siteMap';
-import { PageSelectDialog } from '../../admin/controls/pageSelectDialog';
+import { siteMap } from 'admin/pageNodes';
+import { PageSelectDialog } from 'admin/controls/pageSelectDialog';
 
 export interface EditorState extends Partial<ControlState> {
 }

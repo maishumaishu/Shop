@@ -31,11 +31,11 @@ export class MobilePageDisplay extends React.Component<Props, State>{
         this.mobilePage.styleColor = style;
         this.userApp.loadCSS(style);
     }
-    renederMobilePage(screenElement: HTMLElement, pageData: PageData) {
-        console.assert(screenElement != null);
-
+    renederMobilePage(pageData: PageData) {
+        console.assert(this.screenElement != null);
+        Object.assign(this.state.pageData, pageData);
         if (this.userApp == null) {
-            this.userApp = new DesignTimeUserApplication(screenElement, this.props.enableMock);
+            this.userApp = new DesignTimeUserApplication(this.screenElement, this.props.enableMock);
             this.userApp.designPageNode.action = (page: UserPage) => {
                 ReactDOM.render(<MobilePage pageData={pageData}
                     elementPage={page}
@@ -60,7 +60,7 @@ export class MobilePageDisplay extends React.Component<Props, State>{
             <VirtualMobile color={color} scale={scale} ref={(e) => {
                 this.screenElement = e != null ? e.screenElement : this.screenElement;
                 setTimeout(() => {
-                    this.renederMobilePage(this.screenElement, pageData);
+                    this.renederMobilePage(pageData);
                 }, 100);
             }}>
             </VirtualMobile> :
@@ -69,7 +69,7 @@ export class MobilePageDisplay extends React.Component<Props, State>{
                 ref={(e: HTMLElement) => {
                     this.screenElement = e || this.screenElement;
                     setTimeout(() => {
-                        this.renederMobilePage(this.screenElement, pageData);
+                        this.renederMobilePage(pageData);
                     }, 100);
                 }} >
             </div>

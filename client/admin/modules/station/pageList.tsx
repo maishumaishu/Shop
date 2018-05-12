@@ -1,5 +1,5 @@
 import { app } from 'admin/application';
-import { siteMap } from 'admin/siteMap';
+import { siteMap } from 'admin/pageNodes';
 import { StationService } from 'admin/services/station';
 import * as wz from 'myWuZhui';
 import * as ui from 'ui';
@@ -22,11 +22,6 @@ class PageList extends React.Component<{ station: StationService }, {}>{
         super(props);
         this.state = { templates: null };
         let station = this.props.station;
-        // this.dataSource = new wuzhui.DataSource<DataItem>({
-        //     primaryKeys: ['id'],
-        //     select: (args) => station.pageList(args),
-        //     delete: (item) => station.deletePageData(item.Id)
-        // });
         this.dataSource = dataSource;
     }
     private showPage(pageId?: string) {

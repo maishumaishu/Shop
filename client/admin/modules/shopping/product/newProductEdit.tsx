@@ -22,7 +22,6 @@ export default async function (page: chitu.Page) {
             console.assert(product != null);
 
             let parentId = page.data.parentId;
-            // return shop.saveProduct({ product, parentId, id: pageData.id });
             return dataSource.update(product, { parentId, id: pageData.id });
         }
 
@@ -37,7 +36,6 @@ export default async function (page: chitu.Page) {
             return (
                 <MobilePageDesigner pageData={pageData}
                     save={(pageData) => this.saveProduct(pageData)}
-                    pageDatas={userStation.pages}
                     showComponentPanel={true}
                     rightButtons={[
                         <button key={100} className="btn btn-sm btn-primary" onClick={() => history.back()}>

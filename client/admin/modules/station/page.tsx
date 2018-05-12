@@ -62,8 +62,7 @@ export default async function (page: chitu.Page) {
                             <i className="icon-reply" />
                             <span>返回</span>
                         </button>
-                    ]}
-                    pageDatas={userStation.pages}>
+                    ]}>
                 </MobilePageDesigner>
             );
         }
