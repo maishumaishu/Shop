@@ -1,4 +1,3 @@
-import QRCode = require('qrcode');
 
 interface QRCodeDialogProps {
     title: string,

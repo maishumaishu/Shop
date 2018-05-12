@@ -1,7 +1,7 @@
 import { UserApplication as UserApplication, UserPage as UserPage } from 'user/application';
 import { MobilePage } from 'components/mobilePage';
 import userSiteMap from 'user/siteMap';
-import { renderQRCode } from 'weixin/modules/openid';
+import { renderQRCode } from 'admin/weixin/modules/openid';
 import { WeiXinService } from 'user/services/weixinService';
 import * as mockData from 'user/services/mockData';
 import { ShoppingCartService } from 'user/services/shoppingCartService';

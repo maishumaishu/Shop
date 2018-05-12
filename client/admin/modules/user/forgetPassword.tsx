@@ -2,7 +2,7 @@ import { FormValidator, rules } from 'dilu';
 import { MemberService as UserService } from 'admin/services/member';
 import * as ui from 'ui';
 import app from 'admin/application';
-import { siteMap } from 'admin/siteMap';
+import { siteMap } from 'admin/pageNodes';
 
 export default function (page: chitu.Page) {
 

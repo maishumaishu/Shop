@@ -2,10 +2,9 @@
 import { MemberService as UserService } from 'admin/services/member';
 import { WeiXinService } from 'admin/services/weixin';
 import * as site from 'user/site';
-import QRCode = require('qrcode');
 import { WebSockentMessage } from 'weixin/common';
 import { websocketUrl } from 'share/common';
-import { showQRCodeDialog } from 'weixin/modules/openid';
+import { showQRCodeDialog } from 'admin/weixin/modules/openid';
 import app from 'admin/application';
 
 const label_max_width = 80;

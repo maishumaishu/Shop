@@ -6,12 +6,12 @@ import { Editor, EditorProps } from 'components/editor';
 import { Control, componentsDir, IMobilePageDesigner } from 'components/common';
 import { guid, StationService } from 'admin/services/station';
 import app from 'admin/application';
-import { siteMap } from 'admin/siteMap';
+import { siteMap } from 'admin/pageNodes';
 import { siteMap as userSiteMap } from 'user/site';
-import { PageDatas } from 'user/services/stationService';
+import { PageDatas, StationService as UserStationService } from 'user/services/stationService';
 import { UserPage as UserPage } from 'user/application';
 import { AppError, ErrorCodes } from 'share/common';
-
+import { app as userApp } from 'user/application';
 import { PropTypes } from 'prop-types';
 import { FormValidator, rules } from 'dilu';
 
@@ -25,7 +25,6 @@ export interface Props extends React.Props<MobilePageDesigner> {
     showPageEditor?: boolean,
     showMenuSwitch?: boolean,
     save: (pageData: PageData) => Promise<PageData>,
-    pageDatas: PageDatas,
     leftButtons?: JSX.Element[]
     rightButtons?: JSX.Element[],
     showTemplateButton?: boolean,
@@ -35,6 +34,7 @@ export interface Props extends React.Props<MobilePageDesigner> {
 export interface State {
     editors: React.ReactElement<any>[],
     pageData: PageData,
+    snapshootCount?: number,
 }
 
 export class MobilePageDesigner extends React.Component<Props, State> {
@@ -53,6 +53,7 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     private editorName: string;
     private form: HTMLElement;
     private editors = new Array<Editor<EditorProps, any>>();
+    // private snapshootCount: chitu.ValueStore<number>;
 
     mobilePage: MobilePage;
     saved: chitu.Callback1<MobilePageDesigner, { pageData: PageData }>;
@@ -65,8 +66,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
         let pageData = JSON.parse(JSON.stringify(this.props.pageData)) as PageData;
 
         this.state = { editors: [], pageData };
-        let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
-        console.assert(!existsStyleControl)
+        // let existsStyleControl = pageData.controls.filter(o => o.controlName == 'style').length > 0;
+        // console.assert(!existsStyleControl)
 
 
         let existsMenuControl = pageData.controls.filter(o => o.controlName == 'menu').length > 0;
@@ -78,7 +79,8 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     }
 
     async loadMenu() {
-        let menuPageData = await this.props.pageDatas.menu();
+        let station = userApp().createService(UserStationService);
+        let menuPageData = await station.pages.menu(); //await this.props.pageDatas.menu();
         let menuControlData = menuPageData.controls.filter(o => o.controlName == 'menu')[0];
         console.assert(menuControlData != null);
         menuControlData.selected = 'disabled';
@@ -96,10 +98,6 @@ export class MobilePageDesigner extends React.Component<Props, State> {
 
     getChildContext(): { designer: IMobilePageDesigner } {
         return { designer: this }
-    }
-
-    get element() {
-        return this._element;
     }
 
     async save() {
@@ -250,9 +248,12 @@ export class MobilePageDesigner extends React.Component<Props, State> {
     changeTemplate() {
         showTemplateDialog((pageData) => {
             let obj: PageData = JSON.parse(JSON.stringify(pageData));
-            delete obj.id;
+            //=====================================
+            // 清除控件编辑器
+            this.editorsElement.innerHTML = "";
+            //=====================================
 
-            Object.assign(this.state.pageData, obj);
+            this.state.pageData.controls = obj.controls;
             this.setState(this.state);
         });
     }
@@ -298,12 +299,21 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                 { name: 'name', rules: [rules.required('请输入页面名称')] }
             )
         }
+
+        let station = app.createService(StationService);
+        let snapshootCount = await station.snapshootCount(this.state.pageData.id);
+        this.state.snapshootCount = snapshootCount.value;
+        this.setState(this.state);
+        snapshootCount.add((value) => {
+            this.state.snapshootCount = value;
+            this.setState(this.state);
+        })
     }
 
     render() {
         let h = React.createElement;
         // let children = (React.Children.toArray(this.props.children) || []);
-        let { pageData } = this.state;
+        let { pageData, snapshootCount } = this.state;
         let { showComponentPanel, rightButtons, leftButtons,
             showTemplateButton, showSnapshootButton } = this.props;
         return (
@@ -366,8 +376,12 @@ export class MobilePageDesigner extends React.Component<Props, State> {
                                     </button>
                                     <ul className="dropdown-menu">
                                         <li style={{ padding: '6px 0' }}>
-                                            <a>查看快照
-                                                <span className="badge pull-right">4</span>
+                                            <a className="btn-link"
+                                                onClick={() => app.redirect(siteMap.nodes.station_home_snapshoots, { pageDataId: pageData.id })}>
+                                                查看快照
+                                                <span className="badge pull-right">
+                                                    {snapshootCount}
+                                                </span>
                                             </a>
                                         </li>
                                     </ul>

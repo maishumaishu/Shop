@@ -1,10 +1,9 @@
 import { parseUrlParams, websocketUrl } from 'share/common';
-import { loadjs, WebSockentMessage } from 'weixin/common'
+import { loadjs, WebSockentMessage } from 'admin/weixin/common'
 import { WeiXinService } from 'admin/services/weixin'
 import { Service, systemWeiXinAppId } from 'admin/services/service';
 import app, { SiteMapNodes } from 'admin/weixin/application';
-import QRCode = require('qrcode');
-import { QRCodeImage, QRCodeDialog } from 'weixin/qrCodeControls';
+import { QRCodeImage, QRCodeDialog } from 'admin/weixin/qrCodeControls';
 
 let q = location.search ? parseUrlParams(location.search) : {};
 let openid: string = "";
