@@ -16,7 +16,8 @@ let templates: PageData[] = [
         controls: [
             headerControl('locationBar'),
             viewControl('productList', {
-                productsCount: 6
+                productsCount: 6,
+                listType: 'singleColumn'
             } as ProductListState),
             footerControl('shoppingCartBar')
         ]
