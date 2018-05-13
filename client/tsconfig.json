@@ -28,7 +28,7 @@
                 "client/share/*"
             ],
             "myWuZhui": [
-                "admin/myWuZhui",
+                "admin/myWuZhui"
             ]
             // "adminComponents/*": [
             //     "client/admin/components/*"
